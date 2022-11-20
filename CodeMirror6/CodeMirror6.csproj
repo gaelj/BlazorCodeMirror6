@@ -15,4 +15,15 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0" />
   </ItemGroup>
 
+  <!-- Restore libman packages on build -->
+  <Target Name="RestoreTools" BeforeTargets="LibmanClean">
+    <Exec Command="dotnet tool restore" />
+  </Target>
+  <Target Name="LibmanClean" BeforeTargets="LibmanRestore">
+    <Exec Command="dotnet tool run libman cache clean" />
+  </Target>
+  <Target Name="LibmanRestore" BeforeTargets="BeforeBuild;BeforeRebuild">
+    <Exec Command="dotnet tool run libman restore" />
+  </Target>
+
 </Project>
