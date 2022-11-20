@@ -475,3 +475,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Auto-generated files
+
+**/wwwroot/lib
+**/wwwroot/bundle
