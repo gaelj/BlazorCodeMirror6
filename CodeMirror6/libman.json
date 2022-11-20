@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "codemirror@6.65.7",
+      "destination": "wwwroot/lib/codemirror"
+    }
+  ]
+}
