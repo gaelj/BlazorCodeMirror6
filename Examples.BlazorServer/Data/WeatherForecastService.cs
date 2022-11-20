@@ -1,4 +1,4 @@
-namespace CodeMirror6.Examples.BlazorServer.Data;
+namespace Examples.BlazorServer.Data;
 
 public class WeatherForecastService
 {
