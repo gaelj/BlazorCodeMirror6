@@ -1,3 +1,45 @@
-﻿<div class="my-component">
-    This component is defined in the <strong>CodeMirror6</strong> library.
-</div>
+﻿@implements IAsyncDisposable
+
+@inject IJSRuntime JSRuntime
+
+<hr />
+
+<textarea
+    id=@Id
+    @onchange=@((ChangeEventArgs e) => OnChanged(e.Value?.ToString()))
+/>
+
+<hr />
+
+Result:
+<pre>@Text</pre>
+
+
+@code {
+    [Parameter] public string Id { get; set; } = $"CodeMirror6_Editor_{Guid.NewGuid().ToString()}";
+    [Parameter] public string Text { get; set; }
+    [Parameter] public EventCallback<string> TextChanged { get; set; }
+
+    private CodeMirrorJsInterop JsInterop;
+
+    private async Task OnChanged(string value)
+    {
+        Text = value;
+        await TextChanged.InvokeAsync(value);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) {
+            if (JsInterop == null) {
+                JsInterop = new CodeMirrorJsInterop(JSRuntime);
+                await JsInterop.InitCodeMirror(Id);
+            }
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await JsInterop.DisposeAsync();
+    }
+}
