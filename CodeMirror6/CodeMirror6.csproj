@@ -2,13 +2,27 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+    <OutputType>Library</OutputType>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>CodeMirror6</AssemblyName>
+    <IsPackable>true</IsPackable>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageProjectUrl>https://github.com/gaelj/BlazorCodeMirror6</PackageProjectUrl>
+    <Authors>Gaël James</Authors>
+    <Title>Tools</Title>
+    <Description>See http://gitlab.aweurope.be/libraries/cs-libs/tools-hosting/blob/main/README.md</Description>
+    <PackageTags>Blazor;CodeMirror6</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/gaelj/BlazorCodeMirror6</RepositoryUrl>
+    <TrimUnusedDependencies>false</TrimUnusedDependencies>
   </PropertyGroup>
-
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />
+    <SupportedPlatform Include="browser-wasm" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,7 +30,7 @@
   </ItemGroup>
 
   <!-- Restore libman packages on build -->
-  <Target Name="RestoreTools" BeforeTargets="LibmanClean">
+  <!-- <Target Name="RestoreTools" BeforeTargets="LibmanClean">
     <Exec Command="dotnet tool restore" />
   </Target>
   <Target Name="LibmanClean" BeforeTargets="LibmanRestore">
@@ -24,6 +38,6 @@
   </Target>
   <Target Name="LibmanRestore" BeforeTargets="BeforeBuild;BeforeRebuild">
     <Exec Command="dotnet tool run libman restore" />
-  </Target>
+  </Target> -->
 
 </Project>
