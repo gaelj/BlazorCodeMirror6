@@ -1,6 +1,12 @@
 ﻿@page "/"
 
-<h1>Code Mirror 6</h1>
+<h1>Code Mirror 6 demo</h1>
 
 <CodeMirror6
+    @bind-Text=@Text
 />
+
+
+@code {
+    private string Text;
+}
