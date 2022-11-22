@@ -1,10 +1,10 @@
-﻿@implements IAsyncDisposable
+@implements IAsyncDisposable
 
 @inject IJSRuntime JSRuntime
 
 <hr />
 
-<textarea
+<div
     id=@Id
     @onchange=@((ChangeEventArgs e) => OnChanged(e.Value?.ToString()))
 />
