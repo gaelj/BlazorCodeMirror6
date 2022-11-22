@@ -478,5 +478,5 @@ $RECYCLE.BIN/
 
 # Auto-generated files
 
-**/wwwroot/lib
 **/wwwroot/bundle
+**/wwwroot/index.js
