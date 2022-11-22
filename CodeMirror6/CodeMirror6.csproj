@@ -13,7 +13,7 @@
     <PackageProjectUrl>https://github.com/gaelj/BlazorCodeMirror6</PackageProjectUrl>
     <Authors>Gaël James</Authors>
     <Title>Tools</Title>
-    <Description>See http://gitlab.aweurope.be/libraries/cs-libs/tools-hosting/blob/main/README.md</Description>
+    <Description>See https://github.com/gaelj/BlazorCodeMirror6/blob/main/README.md</Description>
     <PackageTags>Blazor;CodeMirror6</PackageTags>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/gaelj/BlazorCodeMirror6</RepositoryUrl>
