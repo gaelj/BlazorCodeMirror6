@@ -31,7 +31,7 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     /// <param name="initialText"></param>
     /// <param name="setText"></param>
     /// <returns></returns>
-    public async Task InitCodeMirror(string id, string initialText, Func<string, Task> setText)
+    public async Task InitCodeMirror(string id, string? initialText, Func<string, Task> setText)
     {
         if (_dotnetHelperRef == null)
             _dotnetHelperRef = DotNetObjectReference.Create(new DotNetHelper(
