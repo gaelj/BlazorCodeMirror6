@@ -6,12 +6,12 @@ import {css} from "@codemirror/lang-css"
 import {html} from "@codemirror/lang-html"
 import {javascript} from "@codemirror/lang-javascript"
 import {json} from "@codemirror/lang-json"
-import {markdown} from "@codemirror/lang-markdown"
+import {markdown, markdownLanguage} from "@codemirror/lang-markdown"
 import {python} from "@codemirror/lang-python"
 import {sql} from "@codemirror/lang-sql"
 import {xml} from "@codemirror/lang-xml"
 import {indentWithTab} from "@codemirror/commands"
-
+import {languages} from "@codemirror/language-data"
 
 var dotNetHelpers: { [id: string]: any } = {}
 let language = new Compartment
@@ -25,7 +25,7 @@ export function initCodeMirror(id: string, initialText: string) {
         doc: initialText,
         extensions: [
             basicSetup,
-            language.of(markdown()),
+            language.of(markdown({ base: markdownLanguage, codeLanguages: languages })),
             tabSize.of(EditorState.tabSize.of(4)),
             keymap.of([indentWithTab]),
             EditorView.updateListener.of(async (update) => {

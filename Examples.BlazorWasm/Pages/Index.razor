@@ -5,12 +5,43 @@
 <CodeMirror6
     @bind-Text=@Text
 />
+<hr />
+Result:
+<pre>@Text</pre>
+
 <CodeMirror6
     @bind-Text=@Text2
 />
+<hr />
+Result:
+<pre>@Text2</pre>
 
 
 @code {
-    private string? Text = "# Example 1";
+    private const string code = @"## Title
+
+```jsx
+function Demo() {
+  return <div>demo</div>
+}
+```
+
+```bash
+# Not dependent on uiw.
+npm install @codemirror/lang-markdown --save
+npm install @codemirror/language-data --save
+```
+
+[weisit ulr](https://uiwjs.github.io/react-codemirror/)
+
+```go
+package main
+import ""fmt""
+func main() {
+  fmt.Println(""Hello, 世界"")
+}
+```
+";
+    private string? Text = code;
     private string? Text2 = "# Example 2";
 }
