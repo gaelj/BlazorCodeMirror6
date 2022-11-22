@@ -1,5 +1,3 @@
-
-
 using System;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
@@ -7,7 +5,7 @@ using Microsoft.JSInterop;
 namespace CodeMirror6;
 
 /// <summary>
-/// .Net interop from Javascript
+/// DotNet interop from Javascript
 /// </summary>
 public class DotNetHelper
 {
@@ -21,7 +19,7 @@ public class DotNetHelper
     /// <param name="uploadFileBlob"></param>
     /// <param name="requestPasteAction"></param>
     public DotNetHelper(
-        Func<Task> setText,
+        Func<string, Task> setText,
         Func<Task> cursorActivity,
         Func<Task> onFocus,
         Func<Task> onBlur,
@@ -36,14 +34,15 @@ public class DotNetHelper
         DoRequestPasteAction = requestPasteAction;
     }
 
-    private Func<Task> SetText;
+    private Func<string, Task> SetText;
     private Func<Task> DoCursorActivity;
     private Func<Task> DoOnFocus;
     private Func<Task> DoOnBlur;
     private Func<string, string, Task<string>> DoUploadFileBlob;
     private Func<string[], Task<string>> DoRequestPasteAction;
 
-    /* [JSInvokable] public async Task UpdateText() => await SetText();
+    [JSInvokable] public async Task UpdateText(string text) => await SetText(text);
+    /* 
     [JSInvokable] public async Task CursorActivity() => await DoCursorActivity();
     [JSInvokable] public async Task OnFocus() => await DoOnFocus();
     [JSInvokable] public async Task OnBlur() => await DoOnBlur();

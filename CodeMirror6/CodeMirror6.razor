@@ -6,7 +6,6 @@
 
 <div
     id=@Id
-    @onchange=@((ChangeEventArgs e) => OnChanged(e.Value?.ToString()))
 />
 
 <hr />
@@ -22,20 +21,20 @@ Result:
 
     private CodeMirrorJsInterop? JsInterop = null;
 
-    private async Task OnChanged(string? value)
-    {
-        Text = value;
-        await TextChanged.InvokeAsync(value);
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender) {
             if (JsInterop == null) {
                 JsInterop = new CodeMirrorJsInterop(JSRuntime);
-                await JsInterop.InitCodeMirror(Id);
+                await JsInterop.InitCodeMirror(Id, SetText);
             }
         }
+    }
+
+    private async Task SetText(string value)
+    {
+        Text = value;
+        await TextChanged.InvokeAsync(value);
     }
 
     public async ValueTask DisposeAsync()
