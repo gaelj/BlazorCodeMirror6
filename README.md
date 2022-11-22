@@ -1,2 +1,17 @@
-# BlazorCodeMirror6
-Blazor wrapper for CodeMirror 6
+# Blazor CodeMirror 6
+
+A CodeMirror 6 component for Blazor in .Net 7.
+
+## Install
+
+Fork / clone the repository and reference it in your `csproj` file:
+
+`<ProjectReference Include="..\CodeMirror6\CodeMirror6.csproj" />`
+
+## Usage
+
+See `Index.razor` in the Example projects.
+
+Resources are loaded automatically (nothing to add in `_Host.cshtml`).
+
+Just add `@using CodeMirror6` in `_Imports.razor` or in your razor page / component and use `<CodeMirror6 />` as in the examples.

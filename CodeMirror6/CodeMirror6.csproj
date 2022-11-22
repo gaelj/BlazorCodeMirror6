@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>CodeMirror6</AssemblyName>
+    <IsPackable>true</IsPackable>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageProjectUrl>https://github.com/gaelj/BlazorCodeMirror6</PackageProjectUrl>
+    <Authors>Gaël James</Authors>
+    <Title>Tools</Title>
+    <Description>See http://gitlab.aweurope.be/libraries/cs-libs/tools-hosting/blob/main/README.md</Description>
+    <PackageTags>Blazor;CodeMirror6</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/gaelj/BlazorCodeMirror6</RepositoryUrl>
+    <TrimUnusedDependencies>false</TrimUnusedDependencies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+    <SupportedPlatform Include="browser-wasm" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0" />
+  </ItemGroup>
+
+   <Target Name="Rollup" BeforeTargets="BeforeBuild;BeforeRebuild">
+    <Exec Command="cd NodeLib &amp;&amp; npx rollup --config" />
+  </Target>
+
+</Project>
