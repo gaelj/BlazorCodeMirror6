@@ -11,19 +11,25 @@ let tabSize = new Compartment
 let state: EditorState
 let view: EditorView
 
-function setTabSize(view: EditorView, size: number) {
+export function setTabSize(view: EditorView, size: number) {
     view.dispatch({
         effects: tabSize.reconfigure(EditorState.tabSize.of(size))
     })
 }
 
-export function initCodeMirror(id: string) {
+export function initCodeMirror(id: string, initialText: string) {
     state = EditorState.create({
+        doc: initialText,
         extensions: [
             basicSetup,
             language.of(markdown()),
             tabSize.of(EditorState.tabSize.of(4)),
             keymap.of([indentWithTab]),
+            EditorView.updateListener.of(async (update) => {
+                if (update.docChanged) {
+                    await dotNetHelpers[id].invokeMethodAsync("UpdateText", update.state.doc.toString());
+                }
+            }),
         ]
     })
 

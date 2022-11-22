@@ -26,7 +26,7 @@ Result:
         if (firstRender) {
             if (JsInterop == null) {
                 JsInterop = new CodeMirrorJsInterop(JSRuntime);
-                await JsInterop.InitCodeMirror(Id, SetText);
+                await JsInterop.InitCodeMirror(Id, Text, SetText);
             }
         }
     }

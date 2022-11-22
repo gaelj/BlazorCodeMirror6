@@ -28,9 +28,10 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     /// Call the Javascript initialization
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="initialText"></param>
     /// <param name="setText"></param>
     /// <returns></returns>
-    public async Task InitCodeMirror(string id, Func<string, Task> setText)
+    public async Task InitCodeMirror(string id, string initialText, Func<string, Task> setText)
     {
         if (_dotnetHelperRef == null)
             _dotnetHelperRef = DotNetObjectReference.Create(new DotNetHelper(
@@ -45,7 +46,7 @@ public class CodeMirrorJsInterop : IAsyncDisposable
         var module = await _moduleTask.Value;
         if (module == null) return;
         await module.InvokeVoidAsync("initDotNetHelpers", _dotnetHelperRef, id);
-        await module.InvokeVoidAsync("initCodeMirror", id);
+        await module.InvokeVoidAsync("initCodeMirror", id, initialText);
     }
 
     /// <summary>
