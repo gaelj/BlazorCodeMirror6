@@ -30,7 +30,7 @@ export function initCodeMirror(id: string, initialText: string) {
             keymap.of([indentWithTab]),
             EditorView.updateListener.of(async (update) => {
                 if (update.docChanged) {
-                    await dotNetHelpers[id].invokeMethodAsync("UpdateText", update.state.doc.toString());
+                    await dotNetHelpers[id].invokeMethodAsync("DocChanged", update.state.doc.toString());
                 }
             }),
         ]
