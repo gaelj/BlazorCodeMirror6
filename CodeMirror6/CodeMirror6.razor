@@ -1,4 +1,4 @@
-@implements IAsyncDisposable
+﻿@implements IAsyncDisposable
 
 @inject IJSRuntime JSRuntime
 
@@ -17,12 +17,12 @@ Result:
 
 @code {
     [Parameter] public string Id { get; set; } = $"CodeMirror6_Editor_{Guid.NewGuid().ToString()}";
-    [Parameter] public string Text { get; set; }
-    [Parameter] public EventCallback<string> TextChanged { get; set; }
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public EventCallback<string?> TextChanged { get; set; }
 
-    private CodeMirrorJsInterop JsInterop;
+    private CodeMirrorJsInterop? JsInterop = null;
 
-    private async Task OnChanged(string value)
+    private async Task OnChanged(string? value)
     {
         Text = value;
         await TextChanged.InvokeAsync(value);
