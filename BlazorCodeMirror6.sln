@@ -3,6 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMirror6", "CodeMirror6\CodeMirror6.csproj", "{323D2773-23E2-4F74-85CF-DA9815C07C16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.BlazorServer", "Examples.BlazorServer\Examples.BlazorServer.csproj", "{5A81B862-5CE2-4EBA-ACE7-5561B07F8CD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.BlazorWasm", "Examples.BlazorWasm\Examples.BlazorWasm.csproj", "{C0FC7EBB-34B4-4466-9EE7-025DCE521174}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -10,5 +16,19 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{323D2773-23E2-4F74-85CF-DA9815C07C16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{323D2773-23E2-4F74-85CF-DA9815C07C16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{323D2773-23E2-4F74-85CF-DA9815C07C16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{323D2773-23E2-4F74-85CF-DA9815C07C16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A81B862-5CE2-4EBA-ACE7-5561B07F8CD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A81B862-5CE2-4EBA-ACE7-5561B07F8CD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A81B862-5CE2-4EBA-ACE7-5561B07F8CD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A81B862-5CE2-4EBA-ACE7-5561B07F8CD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0FC7EBB-34B4-4466-9EE7-025DCE521174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0FC7EBB-34B4-4466-9EE7-025DCE521174}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0FC7EBB-34B4-4466-9EE7-025DCE521174}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0FC7EBB-34B4-4466-9EE7-025DCE521174}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
