@@ -1,5 +1,7 @@
 # Blazor CodeMirror 6
 
+![](codemirror.svg)
+
 A CodeMirror 6 component for Blazor in .Net 7.
 
 ## Install
