@@ -1,33 +1,36 @@
 import {basicSetup} from "codemirror"
 import {EditorView, keymap} from "@codemirror/view"
 import {EditorState, Compartment} from "@codemirror/state"
-import {markdown} from "@codemirror/lang-markdown"
+import {cpp} from "@codemirror/lang-cpp"
+import {css} from "@codemirror/lang-css"
+import {html} from "@codemirror/lang-html"
+import {javascript} from "@codemirror/lang-javascript"
+import {json} from "@codemirror/lang-json"
+import {markdown, markdownLanguage} from "@codemirror/lang-markdown"
+import {python} from "@codemirror/lang-python"
+import {sql} from "@codemirror/lang-sql"
+import {xml} from "@codemirror/lang-xml"
 import {indentWithTab} from "@codemirror/commands"
+import {languages} from "@codemirror/language-data"
 
-
+var dotNetHelpers: { [id: string]: any } = {}
 let language = new Compartment
 let tabSize = new Compartment
-
 let state: EditorState
 let view: EditorView
 
-export function setTabSize(view: EditorView, size: number) {
-    view.dispatch({
-        effects: tabSize.reconfigure(EditorState.tabSize.of(size))
-    })
-}
 
 export function initCodeMirror(id: string, initialText: string) {
     state = EditorState.create({
         doc: initialText,
         extensions: [
             basicSetup,
-            language.of(markdown()),
+            language.of(markdown({ base: markdownLanguage, codeLanguages: languages })),
             tabSize.of(EditorState.tabSize.of(4)),
             keymap.of([indentWithTab]),
             EditorView.updateListener.of(async (update) => {
                 if (update.docChanged) {
-                    await dotNetHelpers[id].invokeMethodAsync("UpdateText", update.state.doc.toString());
+                    await dotNetHelpers[id].invokeMethodAsync("DocChanged", update.state.doc.toString());
                 }
             }),
         ]
@@ -35,13 +38,18 @@ export function initCodeMirror(id: string, initialText: string) {
 
     view = new EditorView({
         state,
-        parent: document.getElementById(id) //document.body//
+        parent: document.getElementById(id)
     })
 }
 
-var dotNetHelpers: { [id: string]: any } = {};
+export function setTabSize(view: EditorView, size: number) {
+    view.dispatch({
+        effects: tabSize.reconfigure(EditorState.tabSize.of(size))
+    })
+}
+
 
 export function initDotNetHelpers(dotnetHelper: any, id: string)
 {
-    dotNetHelpers[id] = dotnetHelper;
+    dotNetHelpers[id] = dotnetHelper
 }

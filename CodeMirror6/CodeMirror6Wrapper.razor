@@ -2,16 +2,8 @@
 
 @inject IJSRuntime JSRuntime
 
-<hr />
 
-<div
-    id=@Id
-/>
-
-<hr />
-
-Result:
-<pre>@Text</pre>
+<div id=@Id />
 
 
 @code {
@@ -26,12 +18,12 @@ Result:
         if (firstRender) {
             if (JsInterop == null) {
                 JsInterop = new CodeMirrorJsInterop(JSRuntime);
-                await JsInterop.InitCodeMirror(Id, Text, SetText);
+                await JsInterop.InitCodeMirror(this);
             }
         }
     }
 
-    private async Task SetText(string value)
+    internal async Task DocChanged(string value)
     {
         Text = value;
         await TextChanged.InvokeAsync(value);

@@ -16,7 +16,7 @@ See `Index.razor` in the Example projects.
 
 Resources are loaded automatically (nothing to add in `_Host.cshtml`).
 
-Just add `@using CodeMirror6` in `_Imports.razor` or in your razor page / component and use `<CodeMirror6 />` as in the examples.
+Just add `@using CodeMirror6` in `_Imports.razor` or in your razor page / component and use `<CodeMirror6Wrapper />` as in the examples.
 
 ## Modification
 
