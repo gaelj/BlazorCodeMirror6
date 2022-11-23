@@ -1,10 +1,15 @@
 # Blazor CodeMirror 6
 
-![](codemirror.svg)
+![codemirror.svg](codemirror.svg)
 
 A CodeMirror 6 component for Blazor in .Net 7.
 
-## Install
+## Features
+
+- 2-way-binding of the text content
+- event handling
+
+## Installation
 
 Fork / clone the repository and reference it in your `csproj` file:
 
@@ -26,6 +31,8 @@ Interop from .Net to JS is in `CodeMirror6/CodeMirrorJsInterop.cs`
 
 Interop from JS to .Net is in `CodeMirror6/DotNetHelper.cs`
 
-The blazor component is in `CodeMirror6.razor`
+The blazor component is in `CodeMirror6Wrapper.razor`
+
+The example component is in `Examples.Common/Example.razor`
 
 > The Node project is automatically built with the .Net project
