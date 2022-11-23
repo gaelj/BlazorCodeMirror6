@@ -1,5 +1,5 @@
 import {basicSetup} from "codemirror"
-import {EditorView, keymap} from "@codemirror/view"
+import {EditorView, keymap, placeholder} from "@codemirror/view"
 import {EditorState, Compartment} from "@codemirror/state"
 import {cpp} from "@codemirror/lang-cpp"
 import {css} from "@codemirror/lang-css"
@@ -20,7 +20,8 @@ let state: EditorState
 let view: EditorView
 
 
-export function initCodeMirror(id: string, initialText: string) {
+export function initCodeMirror(dotnetHelper: any, id: string, initialText: string, placeholderText?: string) {
+    dotNetHelpers[id] = dotnetHelper
     state = EditorState.create({
         doc: initialText,
         extensions: [
@@ -32,13 +33,17 @@ export function initCodeMirror(id: string, initialText: string) {
                 if (update.docChanged) {
                     await dotNetHelpers[id].invokeMethodAsync("DocChanged", update.state.doc.toString());
                 }
+                if (update.focusChanged) {
+                    await dotNetHelpers[id].invokeMethodAsync("FocusChanged", update.view.hasFocus);
+                }
             }),
+            placeholder(placeholderText),
         ]
     })
 
     view = new EditorView({
         state,
-        parent: document.getElementById(id)
+        parent: document.getElementById(id),
     })
 }
 
@@ -46,10 +51,4 @@ export function setTabSize(view: EditorView, size: number) {
     view.dispatch({
         effects: tabSize.reconfigure(EditorState.tabSize.of(size))
     })
-}
-
-
-export function initDotNetHelpers(dotnetHelper: any, id: string)
-{
-    dotNetHelpers[id] = dotnetHelper
 }

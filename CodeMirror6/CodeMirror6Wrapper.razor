@@ -1,4 +1,4 @@
-﻿@implements IAsyncDisposable
+@implements IAsyncDisposable
 
 @inject IJSRuntime JSRuntime
 
@@ -10,8 +10,27 @@
     [Parameter] public string Id { get; set; } = $"CodeMirror6_Editor_{Guid.NewGuid().ToString()}";
     [Parameter] public string? Text { get; set; }
     [Parameter] public EventCallback<string?> TextChanged { get; set; }
+    [Parameter] public string? PlaceholderText { get; set; }
+    [Parameter] public EventCallback<bool> OnFocusChanged { get; set; }
 
     private CodeMirrorJsInterop? JsInterop = null;
+    private bool HasFocus;
+
+
+
+    internal async Task DocChanged(string value)
+    {
+        Text = value;
+        await TextChanged.InvokeAsync(value);
+    }
+    internal async Task FocusChanged(bool value)
+    {
+        HasFocus = value;
+        await OnFocusChanged.InvokeAsync(HasFocus);
+        await InvokeAsync(StateHasChanged);
+    }
+
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -21,12 +40,6 @@
                 await JsInterop.InitCodeMirror(this);
             }
         }
-    }
-
-    internal async Task DocChanged(string value)
-    {
-        Text = value;
-        await TextChanged.InvokeAsync(value);
     }
 
     public async ValueTask DisposeAsync()

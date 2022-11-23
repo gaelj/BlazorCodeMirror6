@@ -6,6 +6,7 @@
 <hr />
 Result:
 <pre>@Text</pre>
+<hr />
 
 <CodeMirror6Wrapper
     @bind-Text=@Text2
@@ -13,7 +14,12 @@ Result:
 <hr />
 Result:
 <pre>@Text2</pre>
+<hr />
 
+<CodeMirror6Wrapper
+    @bind-Text=@Text3
+    PlaceholderText="Enter some text"
+/>
 
 @code {
     private const string code = @"## Title
@@ -42,4 +48,5 @@ func main() {
 ";
     private string? Text = code;
     private string? Text2 = "# Example 2";
+    private string? Text3;
 }

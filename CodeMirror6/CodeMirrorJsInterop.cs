@@ -36,8 +36,13 @@ public class CodeMirrorJsInterop : IAsyncDisposable
         if (_dotnetHelperRef == null) return;
         var module = await _moduleTask.Value;
         if (module == null) return;
-        await module.InvokeVoidAsync("initDotNetHelpers", _dotnetHelperRef, codeMirror.Id);
-        await module.InvokeVoidAsync("initCodeMirror", codeMirror.Id, codeMirror.Text);
+        await module.InvokeVoidAsync(
+            "initCodeMirror",
+            _dotnetHelperRef,
+            codeMirror.Id,
+            codeMirror.Text,
+            codeMirror.PlaceholderText
+        );
     }
 
     /// <summary>

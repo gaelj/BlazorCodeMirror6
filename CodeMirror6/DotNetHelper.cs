@@ -11,14 +11,29 @@ public class DotNetHelper
     /// Instantiate the function callbacks
     /// </summary>
     /// <param name="codeMirror"></param>
-    public DotNetHelper(CodeMirror6Wrapper codeMirror) {
+    public DotNetHelper(CodeMirror6Wrapper codeMirror)
+    {
         this.codeMirror = codeMirror;
     }
 
     private CodeMirror6Wrapper codeMirror;
 
+    /// <summary>
+    /// The document contents has changed
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    [JSInvokable]
+    public async Task DocChanged(string text) => await codeMirror.DocChanged(text);
 
-    [JSInvokable] public async Task DocChanged(string text) => await codeMirror.DocChanged(text);
+    /// <summary>
+    /// The document focus has changed
+    /// </summary>
+    /// <param name="hasFocus"></param>
+    /// <returns></returns>
+    [JSInvokable]
+    public async Task FocusChanged(bool hasFocus) => await codeMirror.FocusChanged(hasFocus);
+
     /* 
     [JSInvokable] public async Task CursorActivity() => await DoCursorActivity();
     [JSInvokable] public async Task OnFocus() => await DoOnFocus();
