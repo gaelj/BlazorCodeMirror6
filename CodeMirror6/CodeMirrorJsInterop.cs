@@ -32,14 +32,7 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     public async Task InitCodeMirror(CodeMirror6Wrapper codeMirror)
     {
         if (_dotnetHelperRef == null)
-            _dotnetHelperRef = DotNetObjectReference.Create(new DotNetHelper(
-                codeMirror,
-                null, // CursorActivity,
-                null, // OnFocus,
-                null, // OnBlur,
-                null, // UploadFileBlob,
-                null  // RequestPasteAction
-            ));
+            _dotnetHelperRef = DotNetObjectReference.Create(new DotNetHelper(codeMirror));
         if (_dotnetHelperRef == null) return;
         var module = await _moduleTask.Value;
         if (module == null) return;
