@@ -1,3 +1,4 @@
+using CodeMirror6.Models;
 using Microsoft.JSInterop;
 
 namespace CodeMirror6;
@@ -34,6 +35,9 @@ public class DotNetHelper
     [JSInvokable]
     public async Task FocusChanged(bool hasFocus) => await codeMirror.FocusChanged(hasFocus);
 
+
+    [JSInvokable]
+    public async Task SelectionSet(IEnumerable<SelectionRange> ranges) => await codeMirror.SelectionSet(ranges?.ToList());
     /* 
     [JSInvokable] public async Task CursorActivity() => await DoCursorActivity();
     [JSInvokable] public async Task OnFocus() => await DoOnFocus();

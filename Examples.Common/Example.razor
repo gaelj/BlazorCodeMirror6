@@ -2,11 +2,24 @@
 
 <CodeMirror6Wrapper
     @bind-Text=@Text
+    TabSize=@TabSize
 />
 <hr />
 Result:
 <pre>@Text</pre>
 <hr />
+
+<label for="#tabSizeInput">TabSize:</label>
+<input id="tabSizeInput" @bind-value=TabSize />
+@TabSize
+
+<button
+    @onclick=@(async () => {
+        Text = code.Replace("\r", "");
+        await InvokeAsync(StateHasChanged);
+    })
+>Reset text</button>
+
 
 <CodeMirror6Wrapper
     @bind-Text=@Text2
@@ -20,6 +33,12 @@ Result:
     @bind-Text=@Text3
     PlaceholderText="Enter some text"
 />
+<hr />
+Result:
+<pre>@Text3</pre>
+<hr />
+
+
 
 @code {
     private const string code = @"## Title
@@ -46,7 +65,8 @@ func main() {
 }
 ```
 ";
-    private string? Text = code;
+    private string? Text = code.Replace("\r", "");
     private string? Text2 = "# Example 2";
     private string? Text3;
+    private int TabSize = 4;
 }
