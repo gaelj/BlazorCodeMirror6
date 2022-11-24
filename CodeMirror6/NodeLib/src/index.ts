@@ -13,15 +13,8 @@ import {xml} from "@codemirror/lang-xml"
 import {indentWithTab} from "@codemirror/commands"
 import {languages} from "@codemirror/language-data"
 import {autocompletion} from "@codemirror/autocomplete"
+import {CmInstance} from "./CmInstance"
 
-class CmInstance
-{
-    public dotNetHelper: any;
-    public language: Compartment = new Compartment
-    public tabSize: Compartment = new Compartment
-    public state: EditorState;
-    public view: EditorView;
-}
 let CMInstances: { [id: string]: CmInstance } = {}
 
 export function initCodeMirror(
@@ -72,15 +65,22 @@ export function initCodeMirror(
     CMInstances[id].language = language
 }
 
-export function setTabSize(id: string,size: number) {
+export function setTabSize(id: string, size: number)
+{
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].tabSize.reconfigure(EditorState.tabSize.of(size))
     })
 }
 
-export function setText(id: string, text: string) {
+export function setText(id: string, text: string)
+{
     const transaction = CMInstances[id].view.state.update({
         changes: {from: 0, to: CMInstances[id].view.state.doc.length, insert: text}
     })
     CMInstances[id].view.dispatch(transaction)
+}
+
+export function dispose(id: string)
+{
+    CMInstances[id] = undefined;
 }
