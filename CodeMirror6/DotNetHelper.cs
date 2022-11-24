@@ -35,7 +35,11 @@ public class DotNetHelper
     [JSInvokable]
     public async Task FocusChanged(bool hasFocus) => await codeMirror.FocusChanged(hasFocus);
 
-
+    /// <summary>
+    /// The cursor position or selections have changed
+    /// </summary>
+    /// <param name="ranges"></param>
+    /// <returns></returns>
     [JSInvokable]
     public async Task SelectionSet(IEnumerable<SelectionRange> ranges) => await codeMirror.SelectionSet(ranges?.ToList());
     /* 

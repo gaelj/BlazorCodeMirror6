@@ -29,6 +29,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0" />
   </ItemGroup>
 
+   <Target Name="NpmInit" BeforeTargets="BeforeBuild;BeforeRebuild;Rollup">
+    <Exec Command="cd NodeLib &amp;&amp; npm install" />
+  </Target>
+
    <Target Name="Rollup" BeforeTargets="BeforeBuild;BeforeRebuild">
     <Exec Command="cd NodeLib &amp;&amp; npx rollup --config" />
   </Target>

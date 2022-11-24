@@ -13,15 +13,9 @@ import {xml} from "@codemirror/lang-xml"
 import {indentWithTab} from "@codemirror/commands"
 import {languages} from "@codemirror/language-data"
 import {autocompletion} from "@codemirror/autocomplete"
+import {CmInstance} from "./CmInstance"
 
-let dotNetHelpers: { [id: string]: any } = {}
-
-let lngs: { [id: string]: Compartment } = {}
-let tabSizes: { [id: string]: Compartment } = {}
-
-let states: { [id: string]: EditorState } = {}
-let views: { [id: string]: EditorView } = {}
-
+let CMInstances: { [id: string]: CmInstance } = {}
 
 export function initCodeMirror(
     dotnetHelper: any,
@@ -30,27 +24,26 @@ export function initCodeMirror(
     placeholderText: string,
     tabulationSize: number
 ) {
-    dotNetHelpers[id] = dotnetHelper
-    lngs[id] = new Compartment
-    tabSizes[id] = new Compartment
-    states[id] = EditorState.create({
+    var language = new Compartment
+    var tabSize = new Compartment
+    var state = EditorState.create({
         doc: initialText,
         extensions: [
             basicSetup,
-            lngs[id].of(markdown({ base: markdownLanguage, codeLanguages: languages })),
-            tabSizes[id].of(EditorState.tabSize.of(tabulationSize)),
+            language.of(markdown({ base: markdownLanguage, codeLanguages: languages })),
+            tabSize.of(EditorState.tabSize.of(tabulationSize)),
             keymap.of([indentWithTab]),
             EditorView.updateListener.of(async (update) => {
                 if (update.docChanged) {
-                    await dotNetHelpers[id].invokeMethodAsync("DocChanged", update.state.doc.toString());
+                    await dotnetHelper.invokeMethodAsync("DocChanged", update.state.doc.toString());
                 }
                 if (update.focusChanged) {
-                    await dotNetHelpers[id].invokeMethodAsync("FocusChanged", update.view.hasFocus);
+                    await dotnetHelper.invokeMethodAsync("FocusChanged", update.view.hasFocus);
                     if (!update.view.hasFocus)
-                        await dotNetHelpers[id].invokeMethodAsync("DocChanged", update.state.doc.toString());
+                        await dotnetHelper.invokeMethodAsync("DocChanged", update.state.doc.toString());
                 }
                 if (update.selectionSet) {
-                    await dotNetHelpers[id].invokeMethodAsync("SelectionSet", update.state.selection.ranges.map(r => {return {from: r.from, to: r.to}}));
+                    await dotnetHelper.invokeMethodAsync("SelectionSet", update.state.selection.ranges.map(r => {return {from: r.from, to: r.to}}));
                 }
             }),
             placeholder(placeholderText),
@@ -58,21 +51,36 @@ export function initCodeMirror(
         ]
     })
 
-    views[id] = new EditorView({
-        state: states[id],
+    var view = new EditorView({
+        state,
         parent: document.getElementById(id),
     })
+
+    CMInstances[id] = new CmInstance();
+
+    CMInstances[id].dotNetHelper = dotnetHelper
+    CMInstances[id].state = state
+    CMInstances[id].view = view
+    CMInstances[id].tabSize = tabSize
+    CMInstances[id].language = language
 }
 
-export function setTabSize(id: string,size: number) {
-    views[id].dispatch({
-        effects: tabSizes[id].reconfigure(EditorState.tabSize.of(size))
+export function setTabSize(id: string, size: number)
+{
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].tabSize.reconfigure(EditorState.tabSize.of(size))
     })
 }
 
-export function setText(id: string, text: string) {
-    const transaction = views[id].state.update({
-        changes: {from: 0, to: views[id].state.doc.length, insert: text}
+export function setText(id: string, text: string)
+{
+    const transaction = CMInstances[id].view.state.update({
+        changes: {from: 0, to: CMInstances[id].view.state.doc.length, insert: text}
     })
-    views[id].dispatch(transaction)
+    CMInstances[id].view.dispatch(transaction)
+}
+
+export function dispose(id: string)
+{
+    CMInstances[id] = undefined;
 }
