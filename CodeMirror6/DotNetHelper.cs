@@ -1,3 +1,4 @@
+using CodeMirror6.Models;
 using Microsoft.JSInterop;
 
 namespace CodeMirror6;
@@ -11,36 +12,32 @@ public class DotNetHelper
     /// Instantiate the function callbacks
     /// </summary>
     /// <param name="codeMirror"></param>
-    /// <param name="cursorActivity"></param>
-    /// <param name="onFocus"></param>
-    /// <param name="onBlur"></param>
-    /// <param name="uploadFileBlob"></param>
-    /// <param name="requestPasteAction"></param>
-    public DotNetHelper(
-        CodeMirror6Wrapper codeMirror,
-        Func<Task> cursorActivity,
-        Func<Task> onFocus,
-        Func<Task> onBlur,
-        Func<string, string, Task<string>> uploadFileBlob,
-        Func<string[], Task<string>> requestPasteAction
-    ) {
+    public DotNetHelper(CodeMirror6Wrapper codeMirror)
+    {
         this.codeMirror = codeMirror;
-        DoCursorActivity = cursorActivity;
-        DoOnFocus = onFocus;
-        DoOnBlur = onBlur;
-        DoUploadFileBlob = uploadFileBlob;
-        DoRequestPasteAction = requestPasteAction;
     }
 
     private CodeMirror6Wrapper codeMirror;
 
-    private Func<Task> DoCursorActivity;
-    private Func<Task> DoOnFocus;
-    private Func<Task> DoOnBlur;
-    private Func<string, string, Task<string>> DoUploadFileBlob;
-    private Func<string[], Task<string>> DoRequestPasteAction;
+    /// <summary>
+    /// The document contents has changed
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    [JSInvokable]
+    public async Task DocChanged(string text) => await codeMirror.DocChanged(text);
 
-    [JSInvokable] public async Task DocChanged(string text) => await codeMirror.DocChanged(text);
+    /// <summary>
+    /// The document focus has changed
+    /// </summary>
+    /// <param name="hasFocus"></param>
+    /// <returns></returns>
+    [JSInvokable]
+    public async Task FocusChanged(bool hasFocus) => await codeMirror.FocusChanged(hasFocus);
+
+
+    [JSInvokable]
+    public async Task SelectionSet(IEnumerable<SelectionRange> ranges) => await codeMirror.SelectionSet(ranges?.ToList());
     /* 
     [JSInvokable] public async Task CursorActivity() => await DoCursorActivity();
     [JSInvokable] public async Task OnFocus() => await DoOnFocus();

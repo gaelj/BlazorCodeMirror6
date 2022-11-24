@@ -5,29 +5,91 @@
 
 <div id=@Id />
 
+@hasFocus
+
+@if (ranges != null) {
+    @foreach(var range in ranges) {
+        <div>
+            From @range.From
+            To @range.To
+        </div>
+    }
+}
 
 @code {
     [Parameter] public string Id { get; set; } = $"CodeMirror6_Editor_{Guid.NewGuid().ToString()}";
+    [Parameter] public int TabSize { get; set; } = 8;
     [Parameter] public string? Text { get; set; }
     [Parameter] public EventCallback<string?> TextChanged { get; set; }
+    [Parameter] public string? PlaceholderText { get; set; }
+    [Parameter] public EventCallback<bool> OnFocusChanged { get; set; }
 
     private CodeMirrorJsInterop? JsInterop = null;
+    private bool hasFocus;
+    private List<SelectionRange>? ranges = null;
+    private bool shouldRender = true;
+    private string? prevText;
+    private int prevTabSize;
+
+
+
+    internal async Task DocChanged(string value)
+    {
+        if (Text?.Replace("\r", "") == value?.Replace("\r", "")) return;
+        Text = value?.Replace("\r", "");
+        prevText = Text;
+        await TextChanged.InvokeAsync(Text);
+    }
+
+    internal async Task FocusChanged(bool value)
+    {
+        if (hasFocus == value) return;
+        hasFocus = value;
+        await OnFocusChanged.InvokeAsync(hasFocus);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    internal async Task SelectionSet(List<SelectionRange>? value)
+    {
+        ranges = value;
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    protected override void OnInitialized()
+    {
+        prevTabSize = TabSize;
+        prevText = Text;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender) {
             if (JsInterop == null) {
-                JsInterop = new CodeMirrorJsInterop(JSRuntime);
-                await JsInterop.InitCodeMirror(this);
+                JsInterop = new CodeMirrorJsInterop(JSRuntime, this);
+                await JsInterop.InitCodeMirror();
             }
         }
     }
 
-    internal async Task DocChanged(string value)
+    protected override async Task OnParametersSetAsync()
     {
-        Text = value;
-        await TextChanged.InvokeAsync(value);
+        shouldRender = true;
+        if (JsInterop == null) return;
+        shouldRender = false;
+        if (prevTabSize != TabSize) {
+            prevTabSize = TabSize;
+            await JsInterop.SetTabSize();
+            shouldRender = true;
+        }
+        if (prevText?.Replace("\r", "") != Text?.Replace("\r", "")) {
+            prevText = Text;
+            await JsInterop.SetText();
+            shouldRender = true;
+        }
     }
+
+    protected override bool ShouldRender() => shouldRender;
 
     public async ValueTask DisposeAsync()
     {
