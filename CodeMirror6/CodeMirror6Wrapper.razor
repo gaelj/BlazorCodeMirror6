@@ -5,9 +5,14 @@
 
 <div id=@Id />
 
-@hasFocus
+<div>
+    @hasFocus
+</div>
 
 @if (ranges != null) {
+    <div>
+        Selection ranges:
+    </div>
     @foreach(var range in ranges) {
         <div>
             From @range.From
@@ -33,7 +38,13 @@
 
 
 
-    internal async Task DocChanged(string value)
+    /// <summary>
+    /// The document contents has changed
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    [JSInvokable]
+    public async Task DocChanged(string value)
     {
         if (Text?.Replace("\r", "") == value?.Replace("\r", "")) return;
         Text = value?.Replace("\r", "");
@@ -41,7 +52,13 @@
         await TextChanged.InvokeAsync(Text);
     }
 
-    internal async Task FocusChanged(bool value)
+    /// <summary>
+    /// The document focus has changed
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    [JSInvokable]
+    public async Task FocusChanged(bool value)
     {
         if (hasFocus == value) return;
         hasFocus = value;
@@ -49,12 +66,26 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    internal async Task SelectionSet(List<SelectionRange>? value)
+    /// <summary>
+    /// The cursor position or selections have changed
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    [JSInvokable]
+    public async Task SelectionSet(IEnumerable<SelectionRange>? value)
     {
-        ranges = value;
+        ranges = value?.ToList();
         await InvokeAsync(StateHasChanged);
     }
 
+
+    /*
+    [JSInvokable] public async Task CursorActivity() => await DoCursorActivity();
+    [JSInvokable] public async Task OnFocus() => await DoOnFocus();
+    [JSInvokable] public async Task OnBlur() => await DoOnBlur();
+    [JSInvokable] public async Task<string> UploadFileBlob(string base64, string fileName) => await DoUploadFileBlob(base64, fileName);
+    [JSInvokable] public async Task<string> RequestPasteAction(string[] options) => await DoRequestPasteAction(options);
+    */
 
     protected override void OnInitialized()
     {
