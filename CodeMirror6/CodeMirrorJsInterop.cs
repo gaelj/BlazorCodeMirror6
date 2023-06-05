@@ -1,3 +1,4 @@
+using CodeMirror6.Models;
 using Microsoft.JSInterop;
 
 namespace CodeMirror6;
@@ -12,7 +13,7 @@ namespace CodeMirror6;
 public class CodeMirrorJsInterop : IAsyncDisposable
 {
     private readonly Lazy<Task<IJSObjectReference>> _moduleTask = new();
-    private DotNetObjectReference<DotNetHelper>? _dotnetHelperRef = null;
+    private DotNetObjectReference<CodeMirror6Wrapper>? _dotnetHelperRef = null;
     private CodeMirror6Wrapper _codeMirror;
 
     /// <summary>
@@ -34,7 +35,7 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     public async Task InitCodeMirror()
     {
         if (_dotnetHelperRef == null)
-            _dotnetHelperRef = DotNetObjectReference.Create(new DotNetHelper(_codeMirror));
+            _dotnetHelperRef = DotNetObjectReference.Create(_codeMirror);
         if (_dotnetHelperRef == null) return;
         var module = await _moduleTask.Value;
         if (module == null) return;

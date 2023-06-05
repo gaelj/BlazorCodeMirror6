@@ -17,5 +17,4 @@ public class SelectionRange
     /// </summary>
     /// <value></value>
     [JsonPropertyName("to")] public int? To { get; set; }
-    //[JsonPropertyName("flags")] public long? Flags { get; set; }
 }
