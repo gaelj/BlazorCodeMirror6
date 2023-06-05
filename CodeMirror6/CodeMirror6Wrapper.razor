@@ -47,7 +47,7 @@
     public async Task DocChanged(string value)
     {
         if (Text?.Replace("\r", "") == value?.Replace("\r", "")) return;
-        Text = value?.Replace("\r", "");
+        Text = value?.Replace("\r", "") ?? "";
         prevText = Text;
         await TextChanged.InvokeAsync(Text);
     }
