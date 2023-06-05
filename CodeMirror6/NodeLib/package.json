@@ -9,7 +9,7 @@
     "build": "webpack --mode production"
   },
   "author": "Gaël James",
-  "license": "GPL v3",
+  "license": "MIT",
   "dependencies": {
     "@codemirror/lang-cpp": "^6.0.2",
     "@codemirror/lang-html": "^6.2.0",
