@@ -5,7 +5,7 @@ namespace CodeMirror6.Models;
 /// <summary>
 /// DotNet port of the CM6 SelectionRange typescript class
 /// </summary>
-public class SelectionRange
+public record SelectionRange
 {
     /// <summary>
     /// The lower boundary of the range.
