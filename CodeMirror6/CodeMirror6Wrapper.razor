@@ -23,7 +23,7 @@
 
 @code {
     [Parameter] public string Id { get; set; } = $"CodeMirror6_Editor_{Guid.NewGuid().ToString()}";
-    [Parameter] public int TabSize { get; set; } = 8;
+    [Parameter] public int TabSize { get; set; } = 4;
     [Parameter] public string? Text { get; set; }
     [Parameter] public EventCallback<string?> TextChanged { get; set; }
     [Parameter] public string? PlaceholderText { get; set; }
@@ -116,6 +116,7 @@
             await JsInterop.SetText();
             shouldRender = true;
         }
+        shouldRender = true;
     }
 
     protected override bool ShouldRender() => shouldRender;
