@@ -1,4 +1,4 @@
-<h1>Code Mirror 6 demo</h1>
+﻿<h1>Code Mirror 6 demo</h1>
 
 <CodeMirror6Wrapper
     @bind-Text=@Text
@@ -42,12 +42,13 @@ Result:
 
 
 @code {
-    private const string code = @"## Title
+    private const string tab = "\t";
+    private const string code = $@"## Title
 
 ```jsx
-function Demo() {
-  return <div>demo</div>
-}
+function Demo() {{
+{tab}return <div>demo</div>
+}}
 ```
 
 ```bash
@@ -61,9 +62,9 @@ npm install @codemirror/language-data --save
 ```go
 package main
 import ""fmt""
-func main() {
-  fmt.Println(""Hello, 世界"")
-}
+func main() {{
+{tab}fmt.Println(""Hello, 世界"")
+}}
 ```
 ";
     private string? Text = code;
