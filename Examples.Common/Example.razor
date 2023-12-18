@@ -1,4 +1,4 @@
-﻿<h1>Code Mirror 6 demo</h1>
+<h1>Code Mirror 6 demo</h1>
 
 <CodeMirror6Wrapper
     @bind-Text=@Text
@@ -13,6 +13,7 @@ Result:
 <input id="tabSizeInput" @bind-value=TabSize />
 @TabSize
 
+<hr />
 <button
     @onclick=@(async () => {
         Text = code.Replace("\r", "");

@@ -1,4 +1,3 @@
-using CodeMirror6.Models;
 using Microsoft.JSInterop;
 
 namespace CodeMirror6;
@@ -14,7 +13,7 @@ public class CodeMirrorJsInterop : IAsyncDisposable
 {
     private readonly Lazy<Task<IJSObjectReference>> _moduleTask = new();
     private DotNetObjectReference<CodeMirror6Wrapper>? _dotnetHelperRef = null;
-    private CodeMirror6Wrapper _codeMirror;
+    private readonly CodeMirror6Wrapper _codeMirror;
 
     /// <summary>
     /// Loads the Javascript modules
@@ -25,7 +24,8 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     {
         _codeMirror = codeMirror;
         _moduleTask = new (() => jsRuntime.InvokeAsync<IJSObjectReference>(
-            "import", "./_content/CodeMirror6/index.js").AsTask());
+            "import", "./_content/CodeMirror6/index.js").AsTask()
+        );
     }
 
     /// <summary>
@@ -34,11 +34,10 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     /// <returns></returns>
     public async Task InitCodeMirror()
     {
-        if (_dotnetHelperRef == null)
-            _dotnetHelperRef = DotNetObjectReference.Create(_codeMirror);
-        if (_dotnetHelperRef == null) return;
+        _dotnetHelperRef ??= DotNetObjectReference.Create(_codeMirror);
+        if (_dotnetHelperRef is null) return;
         var module = await _moduleTask.Value;
-        if (module == null) return;
+        if (module is null) return;
         await module.InvokeVoidAsync(
             "initCodeMirror",
             _dotnetHelperRef,
@@ -56,7 +55,7 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     public async Task SetTabSize()
     {
         var module = await _moduleTask.Value;
-        if (module == null) return;
+        if (module is null) return;
         await module.InvokeVoidAsync(
             "setTabSize",
             _codeMirror.Id,
@@ -71,7 +70,7 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     public async Task SetText()
     {
         var module = await _moduleTask.Value;
-        if (module == null) return;
+        if (module is null) return;
         await module.InvokeVoidAsync(
             "setText",
             _codeMirror.Id,
@@ -89,5 +88,6 @@ public class CodeMirrorJsInterop : IAsyncDisposable
             var module = await _moduleTask.Value;
             await module.DisposeAsync();
         }
+        GC.SuppressFinalize(this);
     }
 }

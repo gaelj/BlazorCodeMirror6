@@ -1,15 +1,13 @@
-﻿@implements IAsyncDisposable
+﻿@namespace CodeMirror6
+
+@implements IAsyncDisposable
 
 @inject IJSRuntime JSRuntime
 
 
 <div id=@Id />
 
-<div>
-    @hasFocus
-</div>
-
-@if (ranges != null) {
+@if (ranges is not null) {
     <div>
         Selection ranges:
     </div>
@@ -76,7 +74,6 @@
         await InvokeAsync(StateHasChanged);
     }
 
-
     /*
     [JSInvokable] public async Task CursorActivity() => await DoCursorActivity();
     [JSInvokable] public async Task OnFocus() => await DoOnFocus();
@@ -94,7 +91,7 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender) {
-            if (JsInterop == null) {
+            if (JsInterop is null) {
                 JsInterop = new CodeMirrorJsInterop(JSRuntime, this);
                 await JsInterop.InitCodeMirror();
             }
@@ -104,17 +101,15 @@
     protected override async Task OnParametersSetAsync()
     {
         shouldRender = true;
-        if (JsInterop == null) return;
+        if (JsInterop is null) return;
         shouldRender = false;
         if (prevTabSize != TabSize) {
             prevTabSize = TabSize;
             await JsInterop.SetTabSize();
-            shouldRender = true;
         }
         if (prevText?.Replace("\r", "") != Text?.Replace("\r", "")) {
             prevText = Text;
             await JsInterop.SetText();
-            shouldRender = true;
         }
         shouldRender = true;
     }
@@ -123,7 +118,7 @@
 
     public async ValueTask DisposeAsync()
     {
-        if (JsInterop != null)
+        if (JsInterop is not null)
             await JsInterop.DisposeAsync();
     }
 }
