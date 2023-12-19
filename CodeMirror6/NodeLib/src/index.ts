@@ -25,7 +25,7 @@ export function initCodeMirror(
     initialText: string,
     placeholderText: string,
     tabulationSize: number,
-    themeName: string
+    themeName: string | null
 ) {
     var languageCompartment = new Compartment
     var tabSizeCompartment = new Compartment
@@ -155,7 +155,7 @@ function getTheme(themeName: string): Extension {
         case "dracula":
             return dracula
         default:
-            return clouds
+            return EditorView.baseTheme({})
     }
 }
 
