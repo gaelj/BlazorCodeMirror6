@@ -3,8 +3,13 @@ using System.Text.Json.Serialization;
 namespace CodeMirror6.Models;
 
 /// <summary>
-/// DotNet port of the CM6 SelectionRange typescript class
+/// A single selection range.
+/// When allowMultipleSelections is enabled, a selection may hold multiple ranges.
+/// By default, selections hold exactly one range.
 /// </summary>
+/// <remarks>
+/// DotNet port of the CM6 EditorSelection typescript class.
+/// </remarks>
 public record SelectionRange
 {
     /// <summary>
