@@ -14,7 +14,7 @@ import {sql} from "@codemirror/lang-sql"
 import {xml} from "@codemirror/lang-xml"
 import {languages} from "@codemirror/language-data"
 import {autocompletion} from "@codemirror/autocomplete"
-import {CmInstance} from "./CmInstance"
+import {CmInstance, CmConfig} from "./CmInstance"
 import {amy, ayuLight, barf, bespin, birdsOfParadise, boysAndGirls, clouds, cobalt, coolGlow, dracula, espresso, noctisLilac, rosePineDawn, smoothy, solarizedLight, tomorrow} from 'thememirror'
 
 let CMInstances: { [id: string]: CmInstance } = {}
@@ -22,10 +22,7 @@ let CMInstances: { [id: string]: CmInstance } = {}
 export function initCodeMirror(
     dotnetHelper: any,
     id: string,
-    initialText: string,
-    placeholderText: string,
-    tabulationSize: number,
-    themeName: string | null
+    config: CmConfig
 ) {
     var languageCompartment = new Compartment
     var tabSizeCompartment = new Compartment
@@ -36,9 +33,10 @@ export function initCodeMirror(
     let extensions = [
         basicSetup,
         languageCompartment.of(markdown({ base: markdownLanguage, codeLanguages: languages })),
-        tabSizeCompartment.of(EditorState.tabSize.of(tabulationSize)),
-        indentUnitCompartment.of(indentUnit.of(" ".repeat(tabulationSize))),
+        tabSizeCompartment.of(EditorState.tabSize.of(config.tabSize)),
+        indentUnitCompartment.of(indentUnit.of(" ".repeat(config.tabSize))),
         keymap.of([indentWithTab]),
+
         EditorView.updateListener.of(async (update) => {
             if (update.docChanged) {
                 await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
@@ -52,13 +50,13 @@ export function initCodeMirror(
                 await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => {return {from: r.from, to: r.to}}))
             }
         }),
-        placeholderCompartment.of(placeholder(placeholderText)),
-        themeCompartment.of(getTheme(themeName)),
+        placeholderCompartment.of(placeholder(config.placeholder)),
+        themeCompartment.of(getTheme(config.themeName)),
         autocompletion()
     ]
 
     var state = EditorState.create({
-        doc: initialText,
+        doc: config.doc,
         extensions: extensions
     })
 
@@ -74,7 +72,7 @@ export function initCodeMirror(
     CMInstances[id].view = view
     CMInstances[id].tabSizeCompartment = tabSizeCompartment
     CMInstances[id].indentUnitCompartment = indentUnitCompartment
-    CMInstances[id].tabSize = tabulationSize
+    CMInstances[id].tabSize = config.tabSize
     CMInstances[id].language = languageCompartment
     CMInstances[id].placeholderCompartment = placeholderCompartment
     CMInstances[id].themeCompartment = themeCompartment

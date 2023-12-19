@@ -25,13 +25,7 @@
     private bool hasFocus;
     private bool shouldRender = true;
 
-#region Previous Parameter Values
-    private string? prevDoc;
-    private int prevTabSize;
-    private int prevIndentationUnit;
-    private string? prevPlaceholder;
-    private ThemeMirrorTheme? prevTheme;
-#endregion
+    public CodeMirrorConfiguration Config = null!;
 
     /// <summary>
     /// The document contents has changed
@@ -43,7 +37,7 @@
     {
         if (Doc?.Replace("\r", "") == value?.Replace("\r", "")) return;
         Doc = value?.Replace("\r", "") ?? "";
-        prevDoc = Doc;
+        Config.Doc = Doc;
         await DocChanged.InvokeAsync(Doc);
     }
 
@@ -83,11 +77,13 @@
 
     protected override void OnInitialized()
     {
-        prevDoc = Doc;
-        prevTabSize = TabSize;
-        prevIndentationUnit = IndentationUnit;
-        prevPlaceholder = Placeholder;
-        prevTheme = Theme;
+        Config = new CodeMirrorConfiguration(
+            Doc,
+            Placeholder,
+            Theme?.ToString(),
+            TabSize,
+            IndentationUnit
+        );
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -105,24 +101,24 @@
         shouldRender = true;
         if (CmJsInterop is null) return;
         shouldRender = false;
-        if (prevTabSize != TabSize) {
-            prevTabSize = TabSize;
+        if (Config.TabSize != TabSize) {
+            Config.TabSize = TabSize;
             await CmJsInterop.SetTabSize();
         }
-        if (prevIndentationUnit != IndentationUnit) {
-            prevIndentationUnit = IndentationUnit;
+        if (Config.IndentationUnit != IndentationUnit) {
+            Config.IndentationUnit = IndentationUnit;
             await CmJsInterop.SetIndentUnit();
         }
-        if (prevDoc?.Replace("\r", "") != Doc?.Replace("\r", "")) {
-            prevDoc = Doc;
+        if (Config.Doc?.Replace("\r", "") != Doc?.Replace("\r", "")) {
+            Config.Doc = Doc;
             await CmJsInterop.SetDoc();
         }
-        if (prevPlaceholder != Placeholder) {
-            prevPlaceholder = Placeholder;
+        if (Config.Placeholder != Placeholder) {
+            Config.Placeholder = Placeholder;
             await CmJsInterop.SetPlaceholderText();
         }
-        if (prevTheme != Theme) {
-            prevTheme = Theme;
+        if (Config.ThemeName != Theme?.ToString()) {
+            Config.ThemeName = Theme?.ToString();
             await CmJsInterop.SetTheme();
         }
         shouldRender = true;

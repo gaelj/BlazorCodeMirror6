@@ -1,3 +1,4 @@
+using CodeMirror6.Models;
 using Microsoft.JSInterop;
 
 namespace CodeMirror6;
@@ -42,10 +43,7 @@ public class CodeMirrorJsInterop : IAsyncDisposable
             "initCodeMirror",
             _dotnetHelperRef,
             _codeMirror.Id,
-            _codeMirror.Doc,
-            _codeMirror.Placeholder,
-            _codeMirror.TabSize,
-            _codeMirror.Theme?.ToString()
+            _codeMirror.Config
         );
     }
 
