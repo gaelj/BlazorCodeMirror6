@@ -12,6 +12,7 @@ A CodeMirror 6 component for Blazor in .Net 7 and .Net 8.
 - setting a placeholder text
 - applying preset [themes](https://github.com/vadimdemedes/thememirror)
 - setting ReadOnly and Editable attributes
+- applying syntax highlighting and auto-completion for 13 different languages
 
 ## Installation
 
