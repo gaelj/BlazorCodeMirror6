@@ -1,4 +1,4 @@
-﻿@namespace CodeMirror6
+@namespace CodeMirror6
 
 @implements IAsyncDisposable
 
@@ -8,7 +8,8 @@
 <div id=@Id />
 
 
-@code {
+@code
+{
     [Parameter] public string Id { get; set; } = $"CodeMirror6_Editor_{Guid.NewGuid().ToString()}";
     [Parameter] public int TabSize { get; set; } = 2;
     [Parameter] public string? Text { get; set; }
