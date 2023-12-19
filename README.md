@@ -17,7 +17,7 @@ Fork / clone the repository and reference it in your `csproj` file:
 
 ## Usage
 
-See `Index.razor` in the Example projects.
+See `Examples.Common/Example.razor`
 
 Resources are loaded automatically (nothing to add in `_Host.cshtml` / `index.html`).
 
