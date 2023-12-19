@@ -61,7 +61,7 @@ export function initCodeMirror(
         parent: document.getElementById(id),
     })
 
-    CMInstances[id] = new CmInstance();
+    CMInstances[id] = new CmInstance()
 
     CMInstances[id].dotNetHelper = dotnetHelper
     CMInstances[id].state = state
@@ -75,7 +75,7 @@ export function initCodeMirror(
 
 export function setTabSize(id: string, size: number)
 {
-    CMInstances[id].tabSize = size;
+    CMInstances[id].tabSize = size
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].tabSizeCompartment.reconfigure(EditorState.tabSize.of(size))
     })
@@ -103,6 +103,6 @@ export function setPlaceholderText(id: string, text: string) {
 
 export function dispose(id: string)
 {
-    CMInstances[id] = undefined;
-    delete CMInstances[id];
+    CMInstances[id] = undefined
+    delete CMInstances[id]
 }
