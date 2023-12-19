@@ -2,9 +2,17 @@
 
 <label>Theme</label>
 <select @bind=@Theme>
-    @foreach (ThemeMirrorTheme theme in Enum.GetValues(typeof(ThemeMirrorTheme)))
+    @foreach (var theme in Enum.GetValues(typeof(ThemeMirrorTheme)))
     {
         <option value="@theme">@theme</option>
+    }
+</select>
+
+<label>Language</label>
+<select @bind=@Language>
+    @foreach (var language in Enum.GetValues(typeof(CodeMirrorLanguage)))
+    {
+        <option value="@language">@language</option>
     }
 </select>
 
@@ -14,6 +22,7 @@
     TabSize=@TabSize
     @bind-Selection=@selectionRanges1
     Theme=@Theme
+    Language=@Language
 />
 <hr />
 Result:
@@ -52,6 +61,8 @@ Result:
     Placeholder="Enter your code.... (2)"
     @bind-Doc=@Text2
     @bind-Selection=@selectionRanges2
+    Theme=@Theme
+    Language=@CodeMirrorLanguage.Markdown
 />
 <hr />
 Result:
@@ -75,6 +86,8 @@ Result:
     @bind-Doc=@Text3
     Placeholder=@PlaceHolderText
     @bind-Selection=@selectionRanges3
+    Theme=@Theme
+    Language=@CodeMirrorLanguage.Markdown
 />
 
 <hr />
@@ -139,5 +152,6 @@ func main() {{
     private List<SelectionRange>? selectionRanges3;
     private string PlaceHolderText = "Enter your code.... (3)";
     private string NewPlaceHolderText = "New placeholder text !";
-    private ThemeMirrorTheme Theme = ThemeMirrorTheme.Dracula;
+    private ThemeMirrorTheme Theme = ThemeMirrorTheme.OneDark;
+    private CodeMirrorLanguage Language = CodeMirrorLanguage.Markdown;
 }

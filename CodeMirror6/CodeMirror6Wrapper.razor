@@ -19,19 +19,16 @@
     [Parameter] public EventCallback<bool> FocusChanged { get; set; }
     [Parameter] public List<SelectionRange>? Selection { get; set; }
     [Parameter] public EventCallback<List<SelectionRange>?> SelectionChanged { get; set; }
-    [Parameter] public ThemeMirrorTheme Theme { get; set; } = ThemeMirrorTheme.Default;
+    [Parameter] public ThemeMirrorTheme? Theme { get; set; }
+    [Parameter] public bool ReadOnly { get; set; }
+    [Parameter] public bool Editable { get; set; } = true;
+    [Parameter] public CodeMirrorLanguage? Language { get; set; } = CodeMirrorLanguage.Markdown;
 
     private CodeMirrorJsInterop? CmJsInterop = null;
     private bool hasFocus;
     private bool shouldRender = true;
 
-#region Previous Parameter Values
-    private string? prevDoc;
-    private int prevTabSize;
-    private int prevIndentationUnit;
-    private string? prevPlaceholder;
-    private ThemeMirrorTheme prevTheme;
-#endregion
+    public CodeMirrorConfiguration Config = null!;
 
     /// <summary>
     /// The document contents has changed
@@ -43,7 +40,7 @@
     {
         if (Doc?.Replace("\r", "") == value?.Replace("\r", "")) return;
         Doc = value?.Replace("\r", "") ?? "";
-        prevDoc = Doc;
+        Config.Doc = Doc;
         await DocChanged.InvokeAsync(Doc);
     }
 
@@ -74,20 +71,22 @@
     }
 
     /*
-    [JSInvokable] public async Task CursorActivity() => await DoCursorActivity();
-    [JSInvokable] public async Task OnFocus() => await DoOnFocus();
-    [JSInvokable] public async Task OnBlur() => await DoOnBlur();
     [JSInvokable] public async Task<string> UploadFileBlob(string base64, string fileName) => await DoUploadFileBlob(base64, fileName);
     [JSInvokable] public async Task<string> RequestPasteAction(string[] options) => await DoRequestPasteAction(options);
     */
 
     protected override void OnInitialized()
     {
-        prevDoc = Doc;
-        prevTabSize = TabSize;
-        prevIndentationUnit = IndentationUnit;
-        prevPlaceholder = Placeholder;
-        prevTheme = Theme;
+        Config = new CodeMirrorConfiguration(
+            Doc,
+            Placeholder,
+            Theme?.ToString(),
+            TabSize,
+            IndentationUnit,
+            ReadOnly,
+            Editable,
+            Language?.ToString()
+        );
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -105,25 +104,37 @@
         shouldRender = true;
         if (CmJsInterop is null) return;
         shouldRender = false;
-        if (prevTabSize != TabSize) {
-            prevTabSize = TabSize;
+        if (Config.TabSize != TabSize) {
+            Config.TabSize = TabSize;
             await CmJsInterop.SetTabSize();
         }
-        if (prevIndentationUnit != IndentationUnit) {
-            prevIndentationUnit = IndentationUnit;
+        if (Config.IndentationUnit != IndentationUnit) {
+            Config.IndentationUnit = IndentationUnit;
             await CmJsInterop.SetIndentUnit();
         }
-        if (prevDoc?.Replace("\r", "") != Doc?.Replace("\r", "")) {
-            prevDoc = Doc;
+        if (Config.Doc?.Replace("\r", "") != Doc?.Replace("\r", "")) {
+            Config.Doc = Doc;
             await CmJsInterop.SetDoc();
         }
-        if (prevPlaceholder != Placeholder) {
-            prevPlaceholder = Placeholder;
+        if (Config.Placeholder != Placeholder) {
+            Config.Placeholder = Placeholder;
             await CmJsInterop.SetPlaceholderText();
         }
-        if (prevTheme != Theme) {
-            prevTheme = Theme;
+        if (Config.ThemeName != Theme?.ToString()) {
+            Config.ThemeName = Theme?.ToString();
             await CmJsInterop.SetTheme();
+        }
+        if (Config.ReadOnly != ReadOnly) {
+            Config.ReadOnly = ReadOnly;
+            await CmJsInterop.SetReadOnly();
+        }
+        if (Config.Editable != Editable) {
+            Config.Editable = Editable;
+            await CmJsInterop.SetEditable();
+        }
+        if (Config.LanguageName != Language?.ToString()) {
+            Config.LanguageName = Language?.ToString();
+            await CmJsInterop.SetLanguage();
         }
         shouldRender = true;
     }

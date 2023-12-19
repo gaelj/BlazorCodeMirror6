@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace CodeMirror6.Models;
 
 /// <summary>
@@ -12,87 +10,92 @@ namespace CodeMirror6.Models;
 public enum ThemeMirrorTheme
 {
     /// <summary>
-    /// Preset theme: default (none)
+    /// Default theme
     /// </summary>
-    [JsonPropertyName("default")] Default,
+    Default,
 
     /// <summary>
     /// Preset theme: amy
     /// </summary>
-    [JsonPropertyName("amy")] Amy,
+    Amy,
 
     /// <summary>
     /// Preset theme: ayuLight
     /// </summary>
-    [JsonPropertyName("ayuLight")] AyuLight,
+    AyuLight,
 
     /// <summary>
     /// Preset theme: barf
     /// </summary>
-    [JsonPropertyName("barf")] Barf,
+    Barf,
 
     /// <summary>
     /// Preset theme: bespin
     /// </summary>
-    [JsonPropertyName("bespin")] Bespin,
+    Bespin,
 
     /// <summary>
     /// Preset theme: birdsOfParadise
     /// </summary>
-    [JsonPropertyName("birdsOfParadise")] BirdsOfParadise,
+    BirdsOfParadise,
 
     /// <summary>
     /// Preset theme: boysAndGirls
     /// </summary>
-    [JsonPropertyName("boysAndGirls")] BoysAndGirls,
+    BoysAndGirls,
 
     /// <summary>
     /// Preset theme: clouds
     /// </summary>
-    [JsonPropertyName("clouds")] Clouds,
+    Clouds,
 
     /// <summary>
     /// Preset theme: cobalt
     /// </summary>
-    [JsonPropertyName("cobalt")] Cobalt,
+    Cobalt,
 
     /// <summary>
     /// Preset theme: coolGlow
     /// </summary>
-    [JsonPropertyName("coolGlow")] CoolGlow,
+    CoolGlow,
 
     /// <summary>
     /// Preset theme: dracula
     /// </summary>
-    [JsonPropertyName("dracula")] Dracula,
+    Dracula,
 
     /// <summary>
     /// Preset theme: espresso
     /// </summary>
-    [JsonPropertyName("espresso")] Espresso,
+    Espresso,
 
     /// <summary>
     /// Preset theme: noctisLilac
     /// </summary>
-    [JsonPropertyName("noctisLilac")] NoctisLilac,
+    NoctisLilac,
+
+    /// <summary>
+    /// Preset theme: oneDark
+    /// </summary>
+    OneDark,
 
     /// <summary>
     /// Preset theme: rosePineDawn
     /// </summary>
-    [JsonPropertyName("rosePineDawn")] RosePineDawn,
+    RosePineDawn,
 
     /// <summary>
     /// Preset theme: smoothy
     /// </summary>
-    [JsonPropertyName("smoothy")] Smoothy,
+    Smoothy,
 
     /// <summary>
     /// Preset theme: solarizedLight
     /// </summary>
-    [JsonPropertyName("solarizedLight")] SolarizedLight,
+    SolarizedLight,
 
     /// <summary>
     /// Preset theme: tomorrow
     /// </summary>
-    [JsonPropertyName("tomorrow")] Tomorrow
+    Tomorrow
 }

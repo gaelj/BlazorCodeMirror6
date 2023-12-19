@@ -1,3 +1,4 @@
+using CodeMirror6.Models;
 using Microsoft.JSInterop;
 
 namespace CodeMirror6;
@@ -42,10 +43,7 @@ public class CodeMirrorJsInterop : IAsyncDisposable
             "initCodeMirror",
             _dotnetHelperRef,
             _codeMirror.Id,
-            _codeMirror.Doc,
-            _codeMirror.Placeholder,
-            _codeMirror.TabSize,
-            _codeMirror.Theme.ToString().ToLowerInvariant()
+            _codeMirror.Config
         );
     }
 
@@ -120,7 +118,51 @@ public class CodeMirrorJsInterop : IAsyncDisposable
         await module.InvokeVoidAsync(
             "setTheme",
             _codeMirror.Id,
-            _codeMirror.Theme.ToString().ToLowerInvariant()
+            _codeMirror.Theme?.ToString()
+        );
+    }
+
+    /// <summary>
+    /// Set the read-only state
+    /// </summary>
+    /// <returns></returns>
+    public async Task SetReadOnly()
+    {
+        var module = await _moduleTask.Value;
+        if (module is null) return;
+        await module.InvokeVoidAsync(
+            "setReadOnly",
+            _codeMirror.Id,
+            _codeMirror.ReadOnly
+        );
+    }
+
+    /// <summary>
+    /// Set the editable state
+    /// </summary>
+    /// <returns></returns>
+    public async Task SetEditable()
+    {
+        var module = await _moduleTask.Value;
+        if (module is null) return;
+        await module.InvokeVoidAsync(
+            "setEditable",
+            _codeMirror.Id,
+            _codeMirror.Editable
+        );
+    }
+
+    /// <summary>
+    /// Set the language
+    /// </summary>
+    public async Task SetLanguage()
+    {
+        var module = await _moduleTask.Value;
+        if (module is null) return;
+        await module.InvokeVoidAsync(
+            "setLanguage",
+            _codeMirror.Id,
+            _codeMirror.Language?.ToString()
         );
     }
 
