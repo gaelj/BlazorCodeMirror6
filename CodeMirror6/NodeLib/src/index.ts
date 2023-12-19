@@ -10,7 +10,6 @@ import {markdown, markdownLanguage} from "@codemirror/lang-markdown"
 import {python} from "@codemirror/lang-python"
 import {sql} from "@codemirror/lang-sql"
 import {xml} from "@codemirror/lang-xml"
-import {indentWithTab} from "@codemirror/commands"
 import {languages} from "@codemirror/language-data"
 import {autocompletion} from "@codemirror/autocomplete"
 import {CmInstance} from "./CmInstance"
@@ -108,4 +107,5 @@ export function setPlaceholderText(id: string, text: string) {
 export function dispose(id: string)
 {
     CMInstances[id] = undefined;
+    delete CMInstances[id];
 }
