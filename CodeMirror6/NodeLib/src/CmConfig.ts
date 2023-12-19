@@ -9,4 +9,5 @@ export class CmConfig {
     public indentationUnit: string;
     public readOnly: boolean;
     public editable: boolean;
+    public languageName: string;
 }

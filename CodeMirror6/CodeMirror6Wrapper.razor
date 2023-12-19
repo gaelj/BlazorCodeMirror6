@@ -22,6 +22,7 @@
     [Parameter] public ThemeMirrorTheme? Theme { get; set; }
     [Parameter] public bool ReadOnly { get; set; }
     [Parameter] public bool Editable { get; set; } = true;
+    [Parameter] public CodeMirrorLanguage? Language { get; set; } = CodeMirrorLanguage.Markdown;
 
     private CodeMirrorJsInterop? CmJsInterop = null;
     private bool hasFocus;
@@ -83,7 +84,8 @@
             TabSize,
             IndentationUnit,
             ReadOnly,
-            Editable
+            Editable,
+            Language?.ToString()
         );
     }
 
@@ -129,6 +131,10 @@
         if (Config.Editable != Editable) {
             Config.Editable = Editable;
             await CmJsInterop.SetEditable();
+        }
+        if (Config.LanguageName != Language?.ToString()) {
+            Config.LanguageName = Language?.ToString();
+            await CmJsInterop.SetLanguage();
         }
         shouldRender = true;
     }

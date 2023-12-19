@@ -153,6 +153,20 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     }
 
     /// <summary>
+    /// Set the language
+    /// </summary>
+    public async Task SetLanguage()
+    {
+        var module = await _moduleTask.Value;
+        if (module is null) return;
+        await module.InvokeVoidAsync(
+            "setLanguage",
+            _codeMirror.Id,
+            _codeMirror.Language?.ToString()
+        );
+    }
+
+    /// <summary>
     /// Dispose Javascript modules
     /// </summary>
     /// <returns></returns>

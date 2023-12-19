@@ -2,19 +2,20 @@ import {basicSetup} from "codemirror"
 import {EditorView, keymap, placeholder} from "@codemirror/view"
 import {EditorState, Compartment, Extension} from "@codemirror/state"
 import {indentWithTab} from "@codemirror/commands"
-import {indentUnit} from "@codemirror/language"
-import {cpp} from "@codemirror/lang-cpp"
-import {css} from "@codemirror/lang-css"
-import {html} from "@codemirror/lang-html"
-import {java} from "@codemirror/lang-java"
-import {javascript} from "@codemirror/lang-javascript"
-import {json} from "@codemirror/lang-json"
+import {indentUnit, LanguageSupport} from "@codemirror/language"
+import {cpp, cppLanguage} from "@codemirror/lang-cpp"
+import {css, cssLanguage} from "@codemirror/lang-css"
+import {html, htmlLanguage} from "@codemirror/lang-html"
+import {java, javaLanguage} from "@codemirror/lang-java"
+import {javascript, javascriptLanguage} from "@codemirror/lang-javascript"
+import {json, jsonLanguage} from "@codemirror/lang-json"
+import {lezer, lezerLanguage} from "@codemirror/lang-lezer"
 import {markdown, markdownLanguage} from "@codemirror/lang-markdown"
-import {python} from "@codemirror/lang-python"
-import {sql} from "@codemirror/lang-sql"
-import {rust} from "@codemirror/lang-rust"
-import {sass} from "@codemirror/lang-sass"
-import {xml} from "@codemirror/lang-xml"
+import {python, pythonLanguage} from "@codemirror/lang-python"
+import {sql, MSSQL} from "@codemirror/lang-sql"
+import {rust, rustLanguage} from "@codemirror/lang-rust"
+import {sass, sassLanguage} from "@codemirror/lang-sass"
+import {xml, xmlLanguage} from "@codemirror/lang-xml"
 import {languages} from "@codemirror/language-data"
 import {autocompletion} from "@codemirror/autocomplete"
 import {CmInstance} from "./CmInstance"
@@ -32,20 +33,12 @@ export function initCodeMirror(
     CMInstances[id] = new CmInstance()
     CMInstances[id].dotNetHelper = dotnetHelper
 
-    CMInstances[id].tabSizeCompartment = new Compartment
-    CMInstances[id].indentUnitCompartment = new Compartment
-    CMInstances[id].languageCompartment = new Compartment
-    CMInstances[id].placeholderCompartment = new Compartment
-    CMInstances[id].themeCompartment = new Compartment
-    CMInstances[id].readonlyCompartment = new Compartment
-    CMInstances[id].editableCompartment = new Compartment
-
     let extensions = [
         basicSetup,
-        CMInstances[id].languageCompartment.of(markdown({ base: markdownLanguage, codeLanguages: languages })),
+        CMInstances[id].languageCompartment.of(getLanguage(config.languageName)),
+        CMInstances[id].keymapCompartment.of(keymap.of([indentWithTab])),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(config.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(config.tabSize))),
-        keymap.of([indentWithTab]),
 
         EditorView.updateListener.of(async (update) => {
             if (update.docChanged) {
@@ -60,6 +53,7 @@ export function initCodeMirror(
                 await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => {return {from: r.from, to: r.to}}))
             }
         }),
+
         CMInstances[id].placeholderCompartment.of(placeholder(config.placeholder)),
         CMInstances[id].themeCompartment.of(getTheme(config.themeName)),
         CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(config.readOnly)),
@@ -109,7 +103,7 @@ export function setTheme(id: string, themeName: string) {
     const theme = getTheme(themeName)
     if (theme !== null) {
         CMInstances[id].view.dispatch({
-            effects: CMInstances[id].themeCompartment.reconfigure(getTheme(themeName))
+            effects: CMInstances[id].themeCompartment.reconfigure(theme)
         })
     }
 }
@@ -123,6 +117,13 @@ export function setReadOnly(id: string, readOnly: boolean) {
 export function setEditable(id: string, editable: boolean) {
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].editableCompartment.reconfigure(EditorView.editable.of(editable))
+    })
+}
+
+export function setLanguage(id: string, languageName: string) {
+    const language = getLanguage(languageName)
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].languageCompartment.reconfigure(language)
     })
 }
 
@@ -169,6 +170,39 @@ function getTheme(themeName: string): Extension {
             return EditorView.baseTheme({})
     }
 }
+
+function getLanguage(languageName: string): LanguageSupport {
+    switch (languageName) {
+        case "Cpp":
+            return cpp()
+        case "Css":
+            return css()
+        case "Html":
+            return html()
+        case "Java":
+            return java()
+        case "Javascript":
+            return javascript()
+        case "Json":
+            return json()
+        case "Lezer":
+            return lezer()
+        case "Python":
+            return python()
+        case "Rust":
+            return rust()
+        case "Sass":
+            return sql()
+        case "Sql":
+            return sass()
+        case "Xml":
+            return xml()
+        case "Markdown":
+        default:
+            return markdown({ base: markdownLanguage, codeLanguages: languages, addKeymap: true })
+    }
+}
+
 
 export function dispose(id: string)
 {

@@ -5,9 +5,6 @@ namespace CodeMirror6.Models;
 /// <summary>
 /// Configuration of the CodeMirror editor
 /// </summary>
-/// <remarks>
-/// Constructor
-/// </remarks>
 /// <param name="doc"></param>
 /// <param name="placeholder"></param>
 /// <param name="themeName"></param>
@@ -15,6 +12,7 @@ namespace CodeMirror6.Models;
 /// <param name="indentationUnit"></param>
 /// <param name="readOnly"></param>
 /// <param name="editable"></param>
+/// <param name="languageName"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -22,7 +20,8 @@ public class CodeMirrorConfiguration(
     int tabSize,
     int indentationUnit,
     bool readOnly = false,
-    bool editable = true)
+    bool editable = true,
+    string? languageName = null)
 {
 
     /// <summary>
@@ -60,4 +59,9 @@ public class CodeMirrorConfiguration(
     /// Controls whether the editor content DOM is editable
     /// </summary>
     [JsonPropertyName("editable")] public bool Editable { get; set; } = editable;
+
+    /// <summary>
+    /// The language to use in the editor
+    /// </summary>
+    [JsonPropertyName("languageName")] public string? LanguageName { get; set; } = languageName;
 }
