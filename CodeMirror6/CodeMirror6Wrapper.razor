@@ -19,6 +19,7 @@
     [Parameter] public EventCallback<bool> FocusChanged { get; set; }
     [Parameter] public List<SelectionRange>? Selection { get; set; }
     [Parameter] public EventCallback<List<SelectionRange>?> SelectionChanged { get; set; }
+    [Parameter] public ThemeMirrorTheme Theme { get; set; } = ThemeMirrorTheme.Default;
 
     private CodeMirrorJsInterop? CmJsInterop = null;
     private bool hasFocus;
@@ -29,6 +30,7 @@
     private int prevTabSize;
     private int prevIndentationUnit;
     private string? prevPlaceholder;
+    private ThemeMirrorTheme prevTheme;
 #endregion
 
     /// <summary>
@@ -85,6 +87,7 @@
         prevTabSize = TabSize;
         prevIndentationUnit = IndentationUnit;
         prevPlaceholder = Placeholder;
+        prevTheme = Theme;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -117,6 +120,10 @@
         if (prevPlaceholder != Placeholder) {
             prevPlaceholder = Placeholder;
             await CmJsInterop.SetPlaceholderText();
+        }
+        if (prevTheme != Theme) {
+            prevTheme = Theme;
+            await CmJsInterop.SetTheme();
         }
         shouldRender = true;
     }

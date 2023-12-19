@@ -8,6 +8,7 @@ A CodeMirror 6 component for Blazor in .Net 7 and .Net 8.
 
 - 2-way-binding of the document contents
 - event handling
+- applying preset [themes](https://github.com/vadimdemedes/thememirror)
 
 ## Installation
 

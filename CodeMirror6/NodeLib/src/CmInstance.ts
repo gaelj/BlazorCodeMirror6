@@ -10,4 +10,5 @@ export class CmInstance {
     public state: EditorState
     public view: EditorView
     public placeholderCompartment: Compartment
+    public themeCompartment: Compartment = new Compartment
 }

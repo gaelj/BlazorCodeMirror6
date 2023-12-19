@@ -44,7 +44,8 @@ public class CodeMirrorJsInterop : IAsyncDisposable
             _codeMirror.Id,
             _codeMirror.Doc,
             _codeMirror.Placeholder,
-            _codeMirror.TabSize
+            _codeMirror.TabSize,
+            _codeMirror.Theme.ToString().ToLowerInvariant()
         );
     }
 
@@ -105,6 +106,21 @@ public class CodeMirrorJsInterop : IAsyncDisposable
             "setPlaceholderText",
             _codeMirror.Id,
             _codeMirror.Placeholder
+        );
+    }
+
+    /// <summary>
+    /// Set the theme
+    /// </summary>
+    /// <returns></returns>
+    public async Task SetTheme()
+    {
+        var module = await _moduleTask.Value;
+        if (module is null) return;
+        await module.InvokeVoidAsync(
+            "setTheme",
+            _codeMirror.Id,
+            _codeMirror.Theme.ToString().ToLowerInvariant()
         );
     }
 
