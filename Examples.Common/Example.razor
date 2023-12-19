@@ -1,12 +1,29 @@
-﻿<h1>Code Mirror 6 demo</h1>
+﻿<h1>Code Mirror 6 Wrapper Demo</h1>
 
 <CodeMirror6Wrapper
     @bind-Text=@Text
+    PlaceholderText="Enter your code.... (1)"
     TabSize=@TabSize
+    @bind-SelectionRanges=@selectionRanges1
 />
 <hr />
 Result:
 <pre>@Text</pre>
+<hr />
+
+
+@if (selectionRanges1 is not null) {
+    <div>
+        Selection ranges:
+    </div>
+    @foreach(var range in selectionRanges1) {
+        <div>
+            From @range.From
+            To @range.To
+        </div>
+    }
+}
+
 <hr />
 
 <label for="#tabSizeInput">TabSize:</label>
@@ -23,25 +40,62 @@ Result:
 
 <hr />
 <CodeMirror6Wrapper
+    PlaceholderText="Enter your code.... (2)"
     @bind-Text=@Text2
+    @bind-SelectionRanges=@selectionRanges2
 />
 <hr />
 Result:
 <pre>@Text2</pre>
 <hr />
 
+@if (selectionRanges2 is not null) {
+    <div>
+        Selection ranges:
+    </div>
+    @foreach(var range in selectionRanges2) {
+        <div>
+            From @range.From
+            To @range.To
+        </div>
+    }
+}
+<hr />
+
 <CodeMirror6Wrapper
     @bind-Text=@Text3
-    PlaceholderText="Enter some text"
+    PlaceholderText=@PlaceHolderText
+    @bind-SelectionRanges=@selectionRanges3
 />
+
+<hr />
+
+@if (selectionRanges3 is not null) {
+    <div>
+        Selection ranges:
+    </div>
+    @foreach(var range in selectionRanges3) {
+        <div>
+            From @range.From
+            To @range.To
+        </div>
+    }
+}
 <hr />
 Result:
 <pre>@Text3</pre>
 <hr />
 
+<button
+    @onclick=@(async () => {
+        PlaceHolderText = NewPlaceHolderText;
+        await InvokeAsync(StateHasChanged);
+    })
+>Change placeholder text</button>
 
 
-@code {
+@code
+{
     private const string tab = "\t";
     private const string code = $@"## Title
 
@@ -71,4 +125,9 @@ func main() {{
     private string? Text2 = "# Example 2";
     private string? Text3;
     private int TabSize = 4;
+    private List<SelectionRange>? selectionRanges1;
+    private List<SelectionRange>? selectionRanges2;
+    private List<SelectionRange>? selectionRanges3;
+    private string PlaceHolderText = "Enter your code.... (3)";
+    private string NewPlaceHolderText = "New placeholder text !";
 }

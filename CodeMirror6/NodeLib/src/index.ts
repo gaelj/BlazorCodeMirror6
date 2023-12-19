@@ -1,6 +1,8 @@
 import {basicSetup} from "codemirror"
-import {EditorView, keymap, placeholder} from "@codemirror/view"
+import {EditorView, keymap, placeholder, KeyBinding} from "@codemirror/view"
 import {EditorState, Compartment} from "@codemirror/state"
+import {indentWithTab} from "@codemirror/commands"
+import { indentUnit } from "@codemirror/language"
 import {cpp} from "@codemirror/lang-cpp"
 import {css} from "@codemirror/lang-css"
 import {html} from "@codemirror/lang-html"
@@ -10,7 +12,6 @@ import {markdown, markdownLanguage} from "@codemirror/lang-markdown"
 import {python} from "@codemirror/lang-python"
 import {sql} from "@codemirror/lang-sql"
 import {xml} from "@codemirror/lang-xml"
-import {indentWithTab} from "@codemirror/commands"
 import {languages} from "@codemirror/language-data"
 import {autocompletion} from "@codemirror/autocomplete"
 import {CmInstance} from "./CmInstance"
@@ -24,14 +25,18 @@ export function initCodeMirror(
     placeholderText: string,
     tabulationSize: number
 ) {
-    var language = new Compartment
-    var tabSize = new Compartment
+    var languageCompartment = new Compartment
+    var tabSizeCompartment = new Compartment
+    var indentUnitCompartment = new Compartment
+    var placeholderCompartment = new Compartment
+
     var state = EditorState.create({
         doc: initialText,
         extensions: [
             basicSetup,
-            language.of(markdown({ base: markdownLanguage, codeLanguages: languages })),
-            tabSize.of(EditorState.tabSize.of(tabulationSize)),
+            languageCompartment.of(markdown({ base: markdownLanguage, codeLanguages: languages })),
+            tabSizeCompartment.of(EditorState.tabSize.of(tabulationSize)),
+            indentUnitCompartment.of(indentUnit.of(" ".repeat(tabulationSize))),
             keymap.of([indentWithTab]),
             EditorView.updateListener.of(async (update) => {
                 if (update.docChanged) {
@@ -46,7 +51,7 @@ export function initCodeMirror(
                     await dotnetHelper.invokeMethodAsync("SelectionSet", update.state.selection.ranges.map(r => {return {from: r.from, to: r.to}}));
                 }
             }),
-            placeholder(placeholderText),
+            placeholderCompartment.of(placeholder(placeholderText)),
             autocompletion(),
         ]
     })
@@ -61,14 +66,24 @@ export function initCodeMirror(
     CMInstances[id].dotNetHelper = dotnetHelper
     CMInstances[id].state = state
     CMInstances[id].view = view
-    CMInstances[id].tabSize = tabSize
-    CMInstances[id].language = language
+    CMInstances[id].tabSizeCompartment = tabSizeCompartment
+    CMInstances[id].indentUnitCompartment = indentUnitCompartment
+    CMInstances[id].tabSize = tabulationSize
+    CMInstances[id].language = languageCompartment
+    CMInstances[id].placeholderCompartment = placeholderCompartment
 }
 
 export function setTabSize(id: string, size: number)
 {
+    CMInstances[id].tabSize = size;
     CMInstances[id].view.dispatch({
-        effects: CMInstances[id].tabSize.reconfigure(EditorState.tabSize.of(size))
+        effects: CMInstances[id].tabSizeCompartment.reconfigure(EditorState.tabSize.of(size))
+    })
+}
+
+export function setIndentUnit(id: string, indentUnitString: string) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].indentUnitCompartment.reconfigure(indentUnit.of(indentUnitString))
     })
 }
 
@@ -80,7 +95,14 @@ export function setText(id: string, text: string)
     CMInstances[id].view.dispatch(transaction)
 }
 
+export function setPlaceholderText(id: string, text: string) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].placeholderCompartment.reconfigure(placeholder(text))
+    })
+}
+
 export function dispose(id: string)
 {
     CMInstances[id] = undefined;
+    delete CMInstances[id];
 }
