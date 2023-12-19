@@ -73,15 +73,13 @@ export function initCodeMirror(
     CMInstances[id].view = view
     CMInstances[id].tabSizeCompartment = tabSizeCompartment
     CMInstances[id].indentUnitCompartment = indentUnitCompartment
-    CMInstances[id].tabSize = config.tabSize
-    CMInstances[id].language = languageCompartment
+    CMInstances[id].languageCompartment = languageCompartment
     CMInstances[id].placeholderCompartment = placeholderCompartment
     CMInstances[id].themeCompartment = themeCompartment
 }
 
 export function setTabSize(id: string, size: number)
 {
-    CMInstances[id].tabSize = size
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].tabSizeCompartment.reconfigure(EditorState.tabSize.of(size))
     })
