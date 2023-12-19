@@ -10,9 +10,9 @@ Result:
 <hr />
 
 <label for="#tabSizeInput">TabSize:</label>
-<input id="tabSizeInput" @bind-value=TabSize />
-@TabSize
+<input id="tabSizeInput" @bind-value=TabSize @bind-value:event="oninput" type="number" min="1" max="8" step="1" />
 
+<hr />
 <button
     @onclick=@(async () => {
         Text = code.Replace("\r", "");
@@ -21,6 +21,7 @@ Result:
 >Reset text</button>
 
 
+<hr />
 <CodeMirror6Wrapper
     @bind-Text=@Text2
 />
@@ -41,12 +42,13 @@ Result:
 
 
 @code {
-    private const string code = @"## Title
+    private const string tab = "\t";
+    private const string code = $@"## Title
 
 ```jsx
-function Demo() {
-  return <div>demo</div>
-}
+function Demo() {{
+{tab}return <div>demo</div>
+}}
 ```
 
 ```bash
@@ -60,9 +62,9 @@ npm install @codemirror/language-data --save
 ```go
 package main
 import ""fmt""
-func main() {
-  fmt.Println(""Hello, 世界"")
-}
+func main() {{
+{tab}fmt.Println(""Hello, 世界"")
+}}
 ```
 ";
     private string? Text = code;

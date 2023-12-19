@@ -6,6 +6,7 @@ export default {
   output: {
     dir: '../wwwroot',
     format: "esm",
+    name: 'CodeMirror',
   },
   plugins: [nodeResolve(), typescript()]
 };
