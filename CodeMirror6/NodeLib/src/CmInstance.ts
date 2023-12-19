@@ -8,4 +8,5 @@ export class CmInstance {
     public tabSizeValue: number;
     public state: EditorState;
     public view: EditorView;
+    public placeholderCompartment: Compartment;
 }

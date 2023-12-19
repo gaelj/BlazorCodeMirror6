@@ -2,6 +2,7 @@
 
 <CodeMirror6Wrapper
     @bind-Text=@Text
+    PlaceholderText="Enter your code.... (1)"
     TabSize=@TabSize
     @bind-SelectionRanges=@selectionRanges1
 />
@@ -39,6 +40,7 @@ Result:
 
 <hr />
 <CodeMirror6Wrapper
+    PlaceholderText="Enter your code.... (2)"
     @bind-Text=@Text2
     @bind-SelectionRanges=@selectionRanges2
 />
@@ -62,7 +64,7 @@ Result:
 
 <CodeMirror6Wrapper
     @bind-Text=@Text3
-    PlaceholderText="Enter some text"
+    PlaceholderText=@PlaceHolderText
     @bind-SelectionRanges=@selectionRanges3
 />
 
@@ -83,6 +85,15 @@ Result:
 Result:
 <pre>@Text3</pre>
 <hr />
+
+<button
+    @onclick=@(async () => {
+        PlaceHolderText = NewPlaceHolderText;
+        await InvokeAsync(StateHasChanged);
+    })
+>Change placeholder text</button>
+
+
 
 
 
@@ -119,4 +130,6 @@ func main() {{
     private List<SelectionRange>? selectionRanges1;
     private List<SelectionRange>? selectionRanges2;
     private List<SelectionRange>? selectionRanges3;
+    private string PlaceHolderText = "Enter your code.... (3)";
+    private string NewPlaceHolderText = "New placeholder text !";
 }

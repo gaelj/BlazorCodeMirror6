@@ -26,6 +26,8 @@ export function initCodeMirror(
 ) {
     var language = new Compartment
     var tabSize = new Compartment
+    var placeholderCompartment = new Compartment
+
     var state = EditorState.create({
         doc: initialText,
         extensions: [
@@ -46,7 +48,7 @@ export function initCodeMirror(
                     await dotnetHelper.invokeMethodAsync("SelectionSet", update.state.selection.ranges.map(r => {return {from: r.from, to: r.to}}));
                 }
             }),
-            placeholder(placeholderText),
+            placeholderCompartment.of(placeholder(placeholderText)),
             autocompletion(),
         ]
     })
@@ -64,6 +66,7 @@ export function initCodeMirror(
     CMInstances[id].tabSize = tabSize
     CMInstances[id].tabSizeValue = tabulationSize
     CMInstances[id].language = language
+    CMInstances[id].placeholderCompartment = placeholderCompartment
 }
 
 export function setTabSize(id: string, size: number)
@@ -94,6 +97,12 @@ export function setText(id: string, text: string)
         changes: {from: 0, to: CMInstances[id].view.state.doc.length, insert: text}
     })
     CMInstances[id].view.dispatch(transaction)
+}
+
+export function setPlaceholderText(id: string, text: string) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].placeholderCompartment.reconfigure(placeholder(text))
+    })
 }
 
 export function dispose(id: string)

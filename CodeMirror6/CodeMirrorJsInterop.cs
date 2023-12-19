@@ -79,6 +79,21 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     }
 
     /// <summary>
+    /// Set the placeholder text
+    /// </summary>
+    /// <returns></returns>
+    public async Task SetPlaceholderText(string? placeholderText)
+    {
+        var module = await _moduleTask.Value;
+        if (module is null) return;
+        await module.InvokeVoidAsync(
+            "setPlaceholderText",
+            _codeMirror.Id,
+            placeholderText
+        );
+    }
+
+    /// <summary>
     /// Dispose Javascript modules
     /// </summary>
     /// <returns></returns>

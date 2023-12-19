@@ -25,6 +25,7 @@
 #region Previous Parameter Values
     private string? prevText;
     private int prevTabSize;
+    private string? prevPlaceholderText;
 #endregion
 
     /// <summary>
@@ -103,6 +104,10 @@
         if (prevText?.Replace("\r", "") != Text?.Replace("\r", "")) {
             prevText = Text;
             await CmJsInterop.SetText();
+        }
+        if (prevPlaceholderText != PlaceholderText) {
+            prevPlaceholderText = PlaceholderText;
+            await CmJsInterop.SetPlaceholderText(PlaceholderText);
         }
         shouldRender = true;
     }
