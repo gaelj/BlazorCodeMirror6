@@ -7,32 +7,25 @@
 
 <div id=@Id />
 
-@if (ranges is not null) {
-    <div>
-        Selection ranges:
-    </div>
-    @foreach(var range in ranges) {
-        <div>
-            From @range.From
-            To @range.To
-        </div>
-    }
-}
 
 @code {
     [Parameter] public string Id { get; set; } = $"CodeMirror6_Editor_{Guid.NewGuid().ToString()}";
-    [Parameter] public int TabSize { get; set; } = 4;
+    [Parameter] public int TabSize { get; set; } = 2;
     [Parameter] public string? Text { get; set; }
     [Parameter] public EventCallback<string?> TextChanged { get; set; }
     [Parameter] public string? PlaceholderText { get; set; }
     [Parameter] public EventCallback<bool> OnFocusChanged { get; set; }
+    [Parameter] public List<SelectionRange>? SelectionRanges { get; set; }
+    [Parameter] public EventCallback<List<SelectionRange>?> SelectionRangesChanged { get; set; }
 
-    private CodeMirrorJsInterop? JsInterop = null;
+    private CodeMirrorJsInterop? CmJsInterop = null;
     private bool hasFocus;
-    private List<SelectionRange>? ranges = null;
     private bool shouldRender = true;
+
+#region Previous Parameter Values
     private string? prevText;
     private int prevTabSize;
+#endregion
 
     /// <summary>
     /// The document contents has changed
@@ -59,7 +52,7 @@
         if (hasFocus == value) return;
         hasFocus = value;
         await OnFocusChanged.InvokeAsync(hasFocus);
-        await InvokeAsync(StateHasChanged);
+        if (!hasFocus) await SelectionRangesChanged.InvokeAsync(null);
     }
 
     /// <summary>
@@ -70,8 +63,8 @@
     [JSInvokable]
     public async Task SelectionSet(IEnumerable<SelectionRange>? value)
     {
-        ranges = value?.ToList();
-        await InvokeAsync(StateHasChanged);
+        SelectionRanges = value?.ToList();
+        await SelectionRangesChanged.InvokeAsync(SelectionRanges);
     }
 
     /*
@@ -91,9 +84,9 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender) {
-            if (JsInterop is null) {
-                JsInterop = new CodeMirrorJsInterop(JSRuntime, this);
-                await JsInterop.InitCodeMirror();
+            if (CmJsInterop is null) {
+                CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
+                await CmJsInterop.InitCodeMirror();
             }
         }
     }
@@ -101,15 +94,15 @@
     protected override async Task OnParametersSetAsync()
     {
         shouldRender = true;
-        if (JsInterop is null) return;
+        if (CmJsInterop is null) return;
         shouldRender = false;
         if (prevTabSize != TabSize) {
             prevTabSize = TabSize;
-            await JsInterop.SetTabSize();
+            await CmJsInterop.SetTabSize();
         }
         if (prevText?.Replace("\r", "") != Text?.Replace("\r", "")) {
             prevText = Text;
-            await JsInterop.SetText();
+            await CmJsInterop.SetText();
         }
         shouldRender = true;
     }
@@ -118,7 +111,7 @@
 
     public async ValueTask DisposeAsync()
     {
-        if (JsInterop is not null)
-            await JsInterop.DisposeAsync();
+        if (CmJsInterop is not null)
+            await CmJsInterop.DisposeAsync();
     }
 }

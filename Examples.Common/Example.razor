@@ -3,10 +3,26 @@
 <CodeMirror6Wrapper
     @bind-Text=@Text
     TabSize=@TabSize
+    @bind-SelectionRanges=@selectionRanges1
 />
 <hr />
 Result:
 <pre>@Text</pre>
+<hr />
+
+
+@if (selectionRanges1 is not null) {
+    <div>
+        Selection ranges:
+    </div>
+    @foreach(var range in selectionRanges1) {
+        <div>
+            From @range.From
+            To @range.To
+        </div>
+    }
+}
+
 <hr />
 
 <label for="#tabSizeInput">TabSize:</label>
@@ -24,16 +40,45 @@ Result:
 <hr />
 <CodeMirror6Wrapper
     @bind-Text=@Text2
+    @bind-SelectionRanges=@selectionRanges2
 />
 <hr />
 Result:
 <pre>@Text2</pre>
 <hr />
 
+@if (selectionRanges2 is not null) {
+    <div>
+        Selection ranges:
+    </div>
+    @foreach(var range in selectionRanges2) {
+        <div>
+            From @range.From
+            To @range.To
+        </div>
+    }
+}
+<hr />
+
 <CodeMirror6Wrapper
     @bind-Text=@Text3
     PlaceholderText="Enter some text"
+    @bind-SelectionRanges=@selectionRanges3
 />
+
+<hr />
+
+@if (selectionRanges3 is not null) {
+    <div>
+        Selection ranges:
+    </div>
+    @foreach(var range in selectionRanges3) {
+        <div>
+            From @range.From
+            To @range.To
+        </div>
+    }
+}
 <hr />
 Result:
 <pre>@Text3</pre>
@@ -71,4 +116,7 @@ func main() {{
     private string? Text2 = "# Example 2";
     private string? Text3;
     private int TabSize = 4;
+    private List<SelectionRange>? selectionRanges1;
+    private List<SelectionRange>? selectionRanges2;
+    private List<SelectionRange>? selectionRanges3;
 }
