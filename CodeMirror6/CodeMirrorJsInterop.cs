@@ -64,6 +64,21 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     }
 
     /// <summary>
+    /// Modify the indentation unit
+    /// </summary>
+    /// <returns></returns>
+    public async Task SetIndentUnit()
+    {
+        var module = await _moduleTask.Value;
+        if (module is null) return;
+        await module.InvokeVoidAsync(
+            "setIndentUnit",
+            _codeMirror.Id,
+            new string(' ', _codeMirror.TabSize) // repeat space character by _codeMirror.TabSize
+        );
+    }
+
+    /// <summary>
     /// Modify the text
     /// </summary>
     /// <returns></returns>
@@ -82,14 +97,14 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     /// Set the placeholder text
     /// </summary>
     /// <returns></returns>
-    public async Task SetPlaceholderText(string? placeholderText)
+    public async Task SetPlaceholderText()
     {
         var module = await _moduleTask.Value;
         if (module is null) return;
         await module.InvokeVoidAsync(
             "setPlaceholderText",
             _codeMirror.Id,
-            placeholderText
+            _codeMirror.PlaceholderText
         );
     }
 

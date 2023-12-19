@@ -1,4 +1,4 @@
-@namespace CodeMirror6
+﻿@namespace CodeMirror6
 
 @implements IAsyncDisposable
 
@@ -12,10 +12,11 @@
 {
     [Parameter] public string Id { get; set; } = $"CodeMirror6_Editor_{Guid.NewGuid().ToString()}";
     [Parameter] public int TabSize { get; set; } = 2;
+    [Parameter] public int IndentationUnit { get; set; } = 2;
     [Parameter] public string? Text { get; set; }
     [Parameter] public EventCallback<string?> TextChanged { get; set; }
     [Parameter] public string? PlaceholderText { get; set; }
-    [Parameter] public EventCallback<bool> OnFocusChanged { get; set; }
+    [Parameter] public EventCallback<bool> FocusChanged { get; set; }
     [Parameter] public List<SelectionRange>? SelectionRanges { get; set; }
     [Parameter] public EventCallback<List<SelectionRange>?> SelectionRangesChanged { get; set; }
 
@@ -26,6 +27,7 @@
 #region Previous Parameter Values
     private string? prevText;
     private int prevTabSize;
+    private int prevIndentationUnit;
     private string? prevPlaceholderText;
 #endregion
 
@@ -53,7 +55,7 @@
     {
         if (hasFocus == value) return;
         hasFocus = value;
-        await OnFocusChanged.InvokeAsync(hasFocus);
+        await FocusChanged.InvokeAsync(hasFocus);
         if (!hasFocus) await SelectionRangesChanged.InvokeAsync(null);
     }
 
@@ -79,8 +81,10 @@
 
     protected override void OnInitialized()
     {
-        prevTabSize = TabSize;
         prevText = Text;
+        prevTabSize = TabSize;
+        prevIndentationUnit = IndentationUnit;
+        prevPlaceholderText = PlaceholderText;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -102,13 +106,17 @@
             prevTabSize = TabSize;
             await CmJsInterop.SetTabSize();
         }
+        if (prevIndentationUnit != IndentationUnit) {
+            prevIndentationUnit = IndentationUnit;
+            await CmJsInterop.SetIndentUnit();
+        }
         if (prevText?.Replace("\r", "") != Text?.Replace("\r", "")) {
             prevText = Text;
             await CmJsInterop.SetText();
         }
         if (prevPlaceholderText != PlaceholderText) {
             prevPlaceholderText = PlaceholderText;
-            await CmJsInterop.SetPlaceholderText(PlaceholderText);
+            await CmJsInterop.SetPlaceholderText();
         }
         shouldRender = true;
     }
