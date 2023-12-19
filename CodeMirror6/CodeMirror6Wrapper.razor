@@ -13,22 +13,24 @@
     [Parameter] public string Id { get; set; } = $"CodeMirror6_Editor_{Guid.NewGuid().ToString()}";
     [Parameter] public int TabSize { get; set; } = 2;
     [Parameter] public int IndentationUnit { get; set; } = 2;
-    [Parameter] public string? Text { get; set; }
-    [Parameter] public EventCallback<string?> TextChanged { get; set; }
-    [Parameter] public string? PlaceholderText { get; set; }
+    [Parameter] public string? Doc { get; set; }
+    [Parameter] public EventCallback<string?> DocChanged { get; set; }
+    [Parameter] public string? Placeholder { get; set; }
     [Parameter] public EventCallback<bool> FocusChanged { get; set; }
-    [Parameter] public List<SelectionRange>? SelectionRanges { get; set; }
-    [Parameter] public EventCallback<List<SelectionRange>?> SelectionRangesChanged { get; set; }
+    [Parameter] public List<SelectionRange>? Selection { get; set; }
+    [Parameter] public EventCallback<List<SelectionRange>?> SelectionChanged { get; set; }
+    [Parameter] public ThemeMirrorTheme Theme { get; set; } = ThemeMirrorTheme.Default;
 
     private CodeMirrorJsInterop? CmJsInterop = null;
     private bool hasFocus;
     private bool shouldRender = true;
 
 #region Previous Parameter Values
-    private string? prevText;
+    private string? prevDoc;
     private int prevTabSize;
     private int prevIndentationUnit;
-    private string? prevPlaceholderText;
+    private string? prevPlaceholder;
+    private ThemeMirrorTheme prevTheme;
 #endregion
 
     /// <summary>
@@ -37,12 +39,12 @@
     /// <param name="value"></param>
     /// <returns></returns>
     [JSInvokable]
-    public async Task DocChanged(string value)
+    public async Task DocChangedFromJS(string value)
     {
-        if (Text?.Replace("\r", "") == value?.Replace("\r", "")) return;
-        Text = value?.Replace("\r", "") ?? "";
-        prevText = Text;
-        await TextChanged.InvokeAsync(Text);
+        if (Doc?.Replace("\r", "") == value?.Replace("\r", "")) return;
+        Doc = value?.Replace("\r", "") ?? "";
+        prevDoc = Doc;
+        await DocChanged.InvokeAsync(Doc);
     }
 
     /// <summary>
@@ -51,12 +53,12 @@
     /// <param name="value"></param>
     /// <returns></returns>
     [JSInvokable]
-    public async Task FocusChanged(bool value)
+    public async Task FocusChangedFromJS(bool value)
     {
         if (hasFocus == value) return;
         hasFocus = value;
         await FocusChanged.InvokeAsync(hasFocus);
-        if (!hasFocus) await SelectionRangesChanged.InvokeAsync(null);
+        if (!hasFocus) await SelectionChanged.InvokeAsync(null);
     }
 
     /// <summary>
@@ -65,10 +67,10 @@
     /// <param name="value"></param>
     /// <returns></returns>
     [JSInvokable]
-    public async Task SelectionSet(IEnumerable<SelectionRange>? value)
+    public async Task SelectionSetFromJS(IEnumerable<SelectionRange>? value)
     {
-        SelectionRanges = value?.ToList();
-        await SelectionRangesChanged.InvokeAsync(SelectionRanges);
+        Selection = value?.ToList();
+        await SelectionChanged.InvokeAsync(Selection);
     }
 
     /*
@@ -81,10 +83,11 @@
 
     protected override void OnInitialized()
     {
-        prevText = Text;
+        prevDoc = Doc;
         prevTabSize = TabSize;
         prevIndentationUnit = IndentationUnit;
-        prevPlaceholderText = PlaceholderText;
+        prevPlaceholder = Placeholder;
+        prevTheme = Theme;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -110,13 +113,17 @@
             prevIndentationUnit = IndentationUnit;
             await CmJsInterop.SetIndentUnit();
         }
-        if (prevText?.Replace("\r", "") != Text?.Replace("\r", "")) {
-            prevText = Text;
-            await CmJsInterop.SetText();
+        if (prevDoc?.Replace("\r", "") != Doc?.Replace("\r", "")) {
+            prevDoc = Doc;
+            await CmJsInterop.SetDoc();
         }
-        if (prevPlaceholderText != PlaceholderText) {
-            prevPlaceholderText = PlaceholderText;
+        if (prevPlaceholder != Placeholder) {
+            prevPlaceholder = Placeholder;
             await CmJsInterop.SetPlaceholderText();
+        }
+        if (prevTheme != Theme) {
+            prevTheme = Theme;
+            await CmJsInterop.SetTheme();
         }
         shouldRender = true;
     }

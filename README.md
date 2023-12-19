@@ -2,12 +2,13 @@
 
 ![codemirror.svg](codemirror.svg)
 
-A CodeMirror 6 component for Blazor in .Net 7.
+A CodeMirror 6 component for Blazor in .Net 7 and .Net 8.
 
 ## Features
 
-- 2-way-binding of the text content
+- 2-way-binding of the document contents
 - event handling
+- applying preset [themes](https://github.com/vadimdemedes/thememirror)
 
 ## Installation
 
@@ -17,7 +18,7 @@ Fork / clone the repository and reference it in your `csproj` file:
 
 ## Usage
 
-See `Index.razor` in the Example projects.
+See `Examples.Common/Example.razor`
 
 Resources are loaded automatically (nothing to add in `_Host.cshtml` / `index.html`).
 
@@ -36,3 +37,7 @@ The blazor component is in `CodeMirror6Wrapper.razor`
 The example component is in `Examples.Common/Example.razor`
 
 > The Node project is automatically built with the .Net project
+
+## Task list
+
+- [ ] [Starting selection](https://codemirror.net/docs/ref/#state.EditorStateConfig.selection)
