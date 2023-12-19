@@ -25,17 +25,22 @@ export function initCodeMirror(
     id: string,
     config: CmConfig
 ) {
-    var languageCompartment = new Compartment
-    var tabSizeCompartment = new Compartment
-    var indentUnitCompartment = new Compartment
-    var placeholderCompartment = new Compartment
-    var themeCompartment = new Compartment
+    CMInstances[id] = new CmInstance()
+    CMInstances[id].dotNetHelper = dotnetHelper
+
+    CMInstances[id].tabSizeCompartment = new Compartment
+    CMInstances[id].indentUnitCompartment = new Compartment
+    CMInstances[id].languageCompartment = new Compartment
+    CMInstances[id].placeholderCompartment = new Compartment
+    CMInstances[id].themeCompartment = new Compartment
+    CMInstances[id].readonlyCompartment = new Compartment
+    CMInstances[id].editableCompartment = new Compartment
 
     let extensions = [
         basicSetup,
-        languageCompartment.of(markdown({ base: markdownLanguage, codeLanguages: languages })),
-        tabSizeCompartment.of(EditorState.tabSize.of(config.tabSize)),
-        indentUnitCompartment.of(indentUnit.of(" ".repeat(config.tabSize))),
+        CMInstances[id].languageCompartment.of(markdown({ base: markdownLanguage, codeLanguages: languages })),
+        CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(config.tabSize)),
+        CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(config.tabSize))),
         keymap.of([indentWithTab]),
 
         EditorView.updateListener.of(async (update) => {
@@ -51,31 +56,22 @@ export function initCodeMirror(
                 await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => {return {from: r.from, to: r.to}}))
             }
         }),
-        placeholderCompartment.of(placeholder(config.placeholder)),
-        themeCompartment.of(getTheme(config.themeName)),
+        CMInstances[id].placeholderCompartment.of(placeholder(config.placeholder)),
+        CMInstances[id].themeCompartment.of(getTheme(config.themeName)),
+        CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(config.readOnly)),
+        CMInstances[id].editableCompartment.of(EditorView.editable.of(config.editable)),
         autocompletion()
     ]
 
-    var state = EditorState.create({
+    CMInstances[id].state = EditorState.create({
         doc: config.doc,
         extensions: extensions
     })
 
-    var view = new EditorView({
-        state,
+    CMInstances[id].view = new EditorView({
+        state: CMInstances[id].state,
         parent: document.getElementById(id),
     })
-
-    CMInstances[id] = new CmInstance()
-
-    CMInstances[id].dotNetHelper = dotnetHelper
-    CMInstances[id].state = state
-    CMInstances[id].view = view
-    CMInstances[id].tabSizeCompartment = tabSizeCompartment
-    CMInstances[id].indentUnitCompartment = indentUnitCompartment
-    CMInstances[id].languageCompartment = languageCompartment
-    CMInstances[id].placeholderCompartment = placeholderCompartment
-    CMInstances[id].themeCompartment = themeCompartment
 }
 
 export function setTabSize(id: string, size: number)
@@ -112,6 +108,18 @@ export function setTheme(id: string, themeName: string) {
             effects: CMInstances[id].themeCompartment.reconfigure(getTheme(themeName))
         })
     }
+}
+
+export function setReadOnly(id: string, readOnly: boolean) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].readonlyCompartment.reconfigure(EditorState.readOnly.of(readOnly))
+    })
+}
+
+export function setEditable(id: string, editable: boolean) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].editableCompartment.reconfigure(EditorView.editable.of(editable))
+    })
 }
 
 // Return the thememirror theme Extension matching the supplied string

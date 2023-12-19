@@ -13,12 +13,16 @@ namespace CodeMirror6.Models;
 /// <param name="themeName"></param>
 /// <param name="tabSize"></param>
 /// <param name="indentationUnit"></param>
+/// <param name="readOnly"></param>
+/// <param name="editable"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
     string? themeName,
     int tabSize,
-    int indentationUnit)
+    int indentationUnit,
+    bool readOnly = false,
+    bool editable = true)
 {
 
     /// <summary>
@@ -45,4 +49,15 @@ public class CodeMirrorConfiguration(
     /// The indent unit to use for the editor
     /// </summary>
     [JsonPropertyName("indentationUnit")] public int IndentationUnit { get; set; } = indentationUnit;
+
+    /// <summary>
+    /// Determine whether editing functionality should apply.
+    /// Not to be confused with editable, which controls whether the editor's DOM is set to be editable (and thus focusable).
+    /// </summary>
+    [JsonPropertyName("readOnly")] public bool ReadOnly { get; set; } = readOnly;
+
+    /// <summary>
+    /// Controls whether the editor content DOM is editable
+    /// </summary>
+    [JsonPropertyName("editable")] public bool Editable { get; set; } = editable;
 }

@@ -7,8 +7,11 @@ A CodeMirror 6 component for Blazor in .Net 7 and .Net 8.
 ## Features
 
 - 2-way-binding of the document contents
-- event handling
+- setting tab size
+- setting indentation unit
+- setting a placeholder text
 - applying preset [themes](https://github.com/vadimdemedes/thememirror)
+- setting ReadOnly and Editable attributes
 
 ## Installation
 

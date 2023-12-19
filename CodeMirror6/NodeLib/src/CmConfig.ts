@@ -7,4 +7,6 @@ export class CmConfig {
     public themeName: string | null;
     public tabSize: number;
     public indentationUnit: string;
+    public readOnly: boolean;
+    public editable: boolean;
 }

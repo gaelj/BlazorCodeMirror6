@@ -123,6 +123,36 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     }
 
     /// <summary>
+    /// Set the read-only state
+    /// </summary>
+    /// <returns></returns>
+    public async Task SetReadOnly()
+    {
+        var module = await _moduleTask.Value;
+        if (module is null) return;
+        await module.InvokeVoidAsync(
+            "setReadOnly",
+            _codeMirror.Id,
+            _codeMirror.ReadOnly
+        );
+    }
+
+    /// <summary>
+    /// Set the editable state
+    /// </summary>
+    /// <returns></returns>
+    public async Task SetEditable()
+    {
+        var module = await _moduleTask.Value;
+        if (module is null) return;
+        await module.InvokeVoidAsync(
+            "setEditable",
+            _codeMirror.Id,
+            _codeMirror.Editable
+        );
+    }
+
+    /// <summary>
     /// Dispose Javascript modules
     /// </summary>
     /// <returns></returns>

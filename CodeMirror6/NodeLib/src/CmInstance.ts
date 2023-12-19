@@ -15,4 +15,6 @@ export class CmInstance
     public indentUnitCompartment: Compartment = new Compartment
     public placeholderCompartment: Compartment = new Compartment
     public themeCompartment: Compartment = new Compartment
+    public readonlyCompartment: Compartment = new Compartment
+    public editableCompartment: Compartment = new Compartment
 }

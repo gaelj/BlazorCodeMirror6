@@ -20,6 +20,8 @@
     [Parameter] public List<SelectionRange>? Selection { get; set; }
     [Parameter] public EventCallback<List<SelectionRange>?> SelectionChanged { get; set; }
     [Parameter] public ThemeMirrorTheme? Theme { get; set; }
+    [Parameter] public bool ReadOnly { get; set; }
+    [Parameter] public bool Editable { get; set; } = true;
 
     private CodeMirrorJsInterop? CmJsInterop = null;
     private bool hasFocus;
@@ -68,9 +70,6 @@
     }
 
     /*
-    [JSInvokable] public async Task CursorActivity() => await DoCursorActivity();
-    [JSInvokable] public async Task OnFocus() => await DoOnFocus();
-    [JSInvokable] public async Task OnBlur() => await DoOnBlur();
     [JSInvokable] public async Task<string> UploadFileBlob(string base64, string fileName) => await DoUploadFileBlob(base64, fileName);
     [JSInvokable] public async Task<string> RequestPasteAction(string[] options) => await DoRequestPasteAction(options);
     */
@@ -82,7 +81,9 @@
             Placeholder,
             Theme?.ToString(),
             TabSize,
-            IndentationUnit
+            IndentationUnit,
+            ReadOnly,
+            Editable
         );
     }
 
@@ -120,6 +121,14 @@
         if (Config.ThemeName != Theme?.ToString()) {
             Config.ThemeName = Theme?.ToString();
             await CmJsInterop.SetTheme();
+        }
+        if (Config.ReadOnly != ReadOnly) {
+            Config.ReadOnly = ReadOnly;
+            await CmJsInterop.SetReadOnly();
+        }
+        if (Config.Editable != Editable) {
+            Config.Editable = Editable;
+            await CmJsInterop.SetEditable();
         }
         shouldRender = true;
     }
