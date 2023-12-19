@@ -75,6 +75,11 @@ public enum ThemeMirrorTheme
     NoctisLilac,
 
     /// <summary>
+    /// Preset theme: oneDark
+    /// </summary>
+    OneDark,
+
+    /// <summary>
     /// Preset theme: rosePineDawn
     /// </summary>
     RosePineDawn,

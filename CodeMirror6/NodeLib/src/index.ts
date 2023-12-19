@@ -2,21 +2,25 @@ import {basicSetup} from "codemirror"
 import {EditorView, keymap, placeholder} from "@codemirror/view"
 import {EditorState, Compartment, Extension} from "@codemirror/state"
 import {indentWithTab} from "@codemirror/commands"
-import { indentUnit } from "@codemirror/language"
+import {indentUnit} from "@codemirror/language"
 import {cpp} from "@codemirror/lang-cpp"
 import {css} from "@codemirror/lang-css"
 import {html} from "@codemirror/lang-html"
+import {java} from "@codemirror/lang-java"
 import {javascript} from "@codemirror/lang-javascript"
 import {json} from "@codemirror/lang-json"
 import {markdown, markdownLanguage} from "@codemirror/lang-markdown"
 import {python} from "@codemirror/lang-python"
 import {sql} from "@codemirror/lang-sql"
+import {rust} from "@codemirror/lang-rust"
+import {sass} from "@codemirror/lang-sass"
 import {xml} from "@codemirror/lang-xml"
 import {languages} from "@codemirror/language-data"
 import {autocompletion} from "@codemirror/autocomplete"
 import {CmInstance} from "./CmInstance"
 import {CmConfig} from "./CmConfig"
 import {amy, ayuLight, barf, bespin, birdsOfParadise, boysAndGirls, clouds, cobalt, coolGlow, dracula, espresso, noctisLilac, rosePineDawn, smoothy, solarizedLight, tomorrow} from 'thememirror'
+import {oneDark} from "@codemirror/theme-one-dark"
 
 let CMInstances: { [id: string]: CmInstance } = {}
 
@@ -159,6 +163,8 @@ function getTheme(themeName: string): Extension {
             return tomorrow
         case "Dracula":
             return dracula
+        case "OneDark":
+            return oneDark
         default:
             return EditorView.baseTheme({})
     }
