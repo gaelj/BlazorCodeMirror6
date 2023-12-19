@@ -42,8 +42,8 @@ public class CodeMirrorJsInterop : IAsyncDisposable
             "initCodeMirror",
             _dotnetHelperRef,
             _codeMirror.Id,
-            _codeMirror.Text,
-            _codeMirror.PlaceholderText,
+            _codeMirror.Doc,
+            _codeMirror.Placeholder,
             _codeMirror.TabSize
         );
     }
@@ -82,14 +82,14 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     /// Modify the text
     /// </summary>
     /// <returns></returns>
-    public async Task SetText()
+    public async Task SetDoc()
     {
         var module = await _moduleTask.Value;
         if (module is null) return;
         await module.InvokeVoidAsync(
-            "setText",
+            "setDoc",
             _codeMirror.Id,
-            _codeMirror.Text?.Replace("\r", "")
+            _codeMirror.Doc?.Replace("\r", "")
         );
     }
 
@@ -104,7 +104,7 @@ public class CodeMirrorJsInterop : IAsyncDisposable
         await module.InvokeVoidAsync(
             "setPlaceholderText",
             _codeMirror.Id,
-            _codeMirror.PlaceholderText
+            _codeMirror.Placeholder
         );
     }
 

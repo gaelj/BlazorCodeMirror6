@@ -1,10 +1,10 @@
 ﻿<h1>Code Mirror 6 Wrapper Demo</h1>
 
 <CodeMirror6Wrapper
-    @bind-Text=@Text
-    PlaceholderText="Enter your code.... (1)"
+    @bind-Doc=@Text
+    Placeholder="Enter your code.... (1)"
     TabSize=@TabSize
-    @bind-SelectionRanges=@selectionRanges1
+    @bind-Selection=@selectionRanges1
 />
 <hr />
 Result:
@@ -40,9 +40,9 @@ Result:
 
 <hr />
 <CodeMirror6Wrapper
-    PlaceholderText="Enter your code.... (2)"
-    @bind-Text=@Text2
-    @bind-SelectionRanges=@selectionRanges2
+    Placeholder="Enter your code.... (2)"
+    @bind-Doc=@Text2
+    @bind-Selection=@selectionRanges2
 />
 <hr />
 Result:
@@ -63,9 +63,9 @@ Result:
 <hr />
 
 <CodeMirror6Wrapper
-    @bind-Text=@Text3
-    PlaceholderText=@PlaceHolderText
-    @bind-SelectionRanges=@selectionRanges3
+    @bind-Doc=@Text3
+    Placeholder=@PlaceHolderText
+    @bind-Selection=@selectionRanges3
 />
 
 <hr />

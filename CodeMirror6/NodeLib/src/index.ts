@@ -40,15 +40,15 @@ export function initCodeMirror(
             keymap.of([indentWithTab]),
             EditorView.updateListener.of(async (update) => {
                 if (update.docChanged) {
-                    await dotnetHelper.invokeMethodAsync("DocChanged", update.state.doc.toString());
+                    await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString());
                 }
                 if (update.focusChanged) {
-                    await dotnetHelper.invokeMethodAsync("FocusChanged", update.view.hasFocus);
+                    await dotnetHelper.invokeMethodAsync("FocusChangedFromJS", update.view.hasFocus);
                     if (!update.view.hasFocus)
-                        await dotnetHelper.invokeMethodAsync("DocChanged", update.state.doc.toString());
+                        await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString());
                 }
                 if (update.selectionSet) {
-                    await dotnetHelper.invokeMethodAsync("SelectionSet", update.state.selection.ranges.map(r => {return {from: r.from, to: r.to}}));
+                    await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => {return {from: r.from, to: r.to}}));
                 }
             }),
             placeholderCompartment.of(placeholder(placeholderText)),
@@ -87,7 +87,7 @@ export function setIndentUnit(id: string, indentUnitString: string) {
     })
 }
 
-export function setText(id: string, text: string)
+export function setDoc(id: string, text: string)
 {
     const transaction = CMInstances[id].view.state.update({
         changes: {from: 0, to: CMInstances[id].view.state.doc.length, insert: text}
