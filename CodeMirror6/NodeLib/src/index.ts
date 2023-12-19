@@ -14,7 +14,8 @@ import {sql} from "@codemirror/lang-sql"
 import {xml} from "@codemirror/lang-xml"
 import {languages} from "@codemirror/language-data"
 import {autocompletion} from "@codemirror/autocomplete"
-import {CmInstance, CmConfig} from "./CmInstance"
+import {CmInstance} from "./CmInstance"
+import {CmConfig} from "./CmConfig"
 import {amy, ayuLight, barf, bespin, birdsOfParadise, boysAndGirls, clouds, cobalt, coolGlow, dracula, espresso, noctisLilac, rosePineDawn, smoothy, solarizedLight, tomorrow} from 'thememirror'
 
 let CMInstances: { [id: string]: CmInstance } = {}

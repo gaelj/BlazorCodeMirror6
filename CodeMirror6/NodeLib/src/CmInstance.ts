@@ -17,13 +17,3 @@ export class CmInstance
     public placeholderCompartment: Compartment = new Compartment
     public themeCompartment: Compartment = new Compartment
 }
-
-export class CmConfig
-{
-    public doc: string | null
-    public placeholder: string
-    public themeName: string | null
-    public tabSize: number
-    public indentationUnit: string
-    //public language: string
-}
