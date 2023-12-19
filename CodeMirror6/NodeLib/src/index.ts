@@ -120,39 +120,39 @@ export function setTheme(id: string, themeName: string) {
 // Return the thememirror theme Extension matching the supplied string
 function getTheme(themeName: string): Extension {
     switch (themeName) {
-        case "amy":
+        case "Amy":
             return amy
-        case "ayuLight":
+        case "AyuLight":
             return ayuLight
-        case "barf":
+        case "Barf":
             return barf
-        case "bespin":
+        case "Bespin":
             return bespin
-        case "birdsOfParadise":
+        case "BirdsOfParadise":
             return birdsOfParadise
-        case "boysAndGirls":
+        case "BoysAndGirls":
             return boysAndGirls
-        case "clouds":
+        case "Clouds":
             return clouds
-        case "cobalt":
+        case "Cobalt":
             return cobalt
-        case "coolGlow":
+        case "CoolGlow":
             return coolGlow
-        case "dracula":
+        case "Dracula":
             return dracula
-        case "espresso":
+        case "Espresso":
             return espresso
-        case "noctisLilac":
+        case "NoctisLilac":
             return noctisLilac
-        case "rosePineDawn":
+        case "RosePineDawn":
             return rosePineDawn
-        case "smoothy":
+        case "Smoothy":
             return smoothy
-        case "solarizedLight":
+        case "SolarizedLight":
             return solarizedLight
-        case "tomorrow":
+        case "Tomorrow":
             return tomorrow
-        case "dracula":
+        case "Dracula":
             return dracula
         default:
             return EditorView.baseTheme({})
