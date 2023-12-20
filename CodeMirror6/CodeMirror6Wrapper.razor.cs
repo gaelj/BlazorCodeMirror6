@@ -83,6 +83,12 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <value></value>
     [Parameter] public bool AutoFormatMarkdownHeaders { get; set; }
 
+    /// <summary>
+    /// Additional attributes to be applied to the container element
+    /// </summary>
+    /// <value></value>
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
     private CodeMirrorJsInterop? CmJsInterop = null;
     private bool hasFocus;
     private bool shouldRender = true;
