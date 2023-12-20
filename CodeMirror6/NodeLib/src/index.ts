@@ -22,6 +22,7 @@ import { CmConfig } from "./CmConfig"
 import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
 import { getTheme } from "./CmTheme"
 import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLanguage"
+import { toggleMarkdownBoldCommand, toggleMarkdownItalicCommand as toggleMarkdownItalicCommand } from "./CmKeymap"
 
 /**
  * Initialize a new CodeMirror instance
@@ -30,8 +31,8 @@ import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLangu
  * @param config
  */
 export function initCodeMirror(
-    dotnetHelper: any,
     id: string,
+    dotnetHelper: any,
     config: CmConfig
 ) {
     CMInstances[id] = new CmInstance()
@@ -43,6 +44,10 @@ export function initCodeMirror(
         CMInstances[id].markdownStylingCompartment.of(getDynamicHeaderStyling(config.autoFormatMarkdownHeaders)),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(config.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(config.tabSize))),
+        CMInstances[id].placeholderCompartment.of(placeholder(config.placeholder)),
+        CMInstances[id].themeCompartment.of(getTheme(config.themeName)),
+        CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(config.readOnly)),
+        CMInstances[id].editableCompartment.of(EditorView.editable.of(config.editable)),
 
         EditorView.updateListener.of(async (update) => {
             if (update.docChanged) {
@@ -58,11 +63,6 @@ export function initCodeMirror(
             }
         }),
 
-        CMInstances[id].placeholderCompartment.of(placeholder(config.placeholder)),
-        CMInstances[id].themeCompartment.of(getTheme(config.themeName)),
-        CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(config.readOnly)),
-        CMInstances[id].editableCompartment.of(EditorView.editable.of(config.editable)),
-
         // Basic Setup
         lineNumbers(),
         highlightActiveLineGutter(),
@@ -76,7 +76,7 @@ export function initCodeMirror(
         syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
         bracketMatching(),
         closeBrackets(),
-        autocompletion(),
+        autocompletion({  }),
         rectangularSelection(),
         crosshairCursor(),
         highlightActiveLine(),
@@ -195,6 +195,15 @@ export function setAutoFormatMarkdownHeaders(id: string, autoFormatMarkdownHeade
         effects: CMInstances[id].markdownStylingCompartment.reconfigure(getDynamicHeaderStyling(autoFormatMarkdownHeaders))
     })
 }
+
+export function toggleMarkdownBold(id: string) {
+    toggleMarkdownBoldCommand(CMInstances[id].view)
+}
+
+export function toggleMarkdownItalic(id: string) {
+    toggleMarkdownItalicCommand(CMInstances[id].view)
+}
+
 
 /**
  * Dispose of a CodeMirror instance

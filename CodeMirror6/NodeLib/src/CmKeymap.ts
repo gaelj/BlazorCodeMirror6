@@ -3,7 +3,7 @@ import { Transaction, SelectionRange } from "@codemirror/state"
 import { markdownLanguage } from "@codemirror/lang-markdown"
 import { toggleCharactersAroundRange } from "./CmFormatting"
 
-const toggleMarkdownBold: Command = ({ state, dispatch }) => {
+export const toggleMarkdownBoldCommand: Command = ({ state, dispatch }) => {
     const changes = state.changeByRange((range: SelectionRange) => {
         if (!markdownLanguage.isActiveAt(state, range.from)) {
             return { range };
@@ -14,7 +14,7 @@ const toggleMarkdownBold: Command = ({ state, dispatch }) => {
     return true
 }
 
-const toggleMarkdownItalics: Command = ({ state, dispatch }) => {
+export const toggleMarkdownItalicCommand: Command = ({ state, dispatch }) => {
     const changes = state.changeByRange((range: SelectionRange) => {
         if (!markdownLanguage.isActiveAt(state, range.from)) {
             return { range }
@@ -26,6 +26,6 @@ const toggleMarkdownItalics: Command = ({ state, dispatch }) => {
 }
 
 export const customMarkdownKeymap = [
-    { key: 'Mod-b', run: toggleMarkdownBold },    // Cmd/Ctrl + B for bold
-    { key: 'Mod-i', run: toggleMarkdownItalics }, // Cmd/Ctrl + I for italics
+    { key: 'Mod-b', run: toggleMarkdownBoldCommand },    // Cmd/Ctrl + B for bold
+    { key: 'Mod-i', run: toggleMarkdownItalicCommand }, // Cmd/Ctrl + I for italics
 ]

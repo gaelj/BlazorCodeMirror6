@@ -1,1 +1,9 @@
-﻿<div id=@Id @attributes=@AdditionalAttributes></div>
+﻿@if(ContentBefore is not null && CmJsInterop is not null && Config is not null) {
+    @ContentBefore((CmJsInterop, Config))
+}
+
+<div id=@Id @attributes=@AdditionalAttributes></div>
+
+@if(ContentAfter is not null && CmJsInterop is not null && Config is not null) {
+    @ContentAfter((CmJsInterop, Config))
+}

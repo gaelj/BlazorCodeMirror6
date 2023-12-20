@@ -25,155 +25,115 @@ public class CodeMirrorJsInterop(
         );
     private readonly DotNetObjectReference<CodeMirror6Wrapper> _dotnetHelperRef = DotNetObjectReference.Create(cm6WrapperComponent);
 
+    private async Task ModuleInvokeVoidAsync(string method, params object?[] args)
+    {
+        var module = await _moduleTask.Value;
+        if (module is null) return;
+        args = args.Prepend(cm6WrapperComponent.Id).ToArray();
+        await module.InvokeVoidAsync(method, args);
+    }
+
     /// <summary>
     /// Call the Javascript initialization
     /// </summary>
     /// <returns></returns>
-    public async Task InitCodeMirror()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "initCodeMirror",
-            _dotnetHelperRef,
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.Config
-        );
-    }
+    public Task InitCodeMirror() => ModuleInvokeVoidAsync(
+        "initCodeMirror",
+        _dotnetHelperRef,
+        cm6WrapperComponent.Config
+    );
 
     /// <summary>
     /// Modify the indentation tab size
     /// </summary>
     /// <returns></returns>
-    public async Task SetTabSize()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setTabSize",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.TabSize
-        );
-    }
+    public Task SetTabSize() => ModuleInvokeVoidAsync(
+        "setTabSize",
+        cm6WrapperComponent.TabSize
+    );
 
     /// <summary>
     /// Modify the indentation unit
     /// </summary>
     /// <returns></returns>
-    public async Task SetIndentUnit()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setIndentUnit",
-            cm6WrapperComponent.Id,
-            new string(' ', cm6WrapperComponent.TabSize) // repeat space character by _codeMirror.TabSize
-        );
-    }
+    public Task SetIndentUnit() => ModuleInvokeVoidAsync(
+        "setIndentUnit",
+        new string(' ', cm6WrapperComponent.TabSize) // repeat space character by _codeMirror.TabSize
+    );
 
     /// <summary>
     /// Modify the text
     /// </summary>
     /// <returns></returns>
-    public async Task SetDoc()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setDoc",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.Doc?.Replace("\r", "")
-        );
-    }
+    public Task SetDoc() => ModuleInvokeVoidAsync(
+        "setDoc",
+        cm6WrapperComponent.Doc?.Replace("\r", "")
+    );
 
     /// <summary>
     /// Set the placeholder text
     /// </summary>
     /// <returns></returns>
-    public async Task SetPlaceholderText()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setPlaceholderText",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.Placeholder
-        );
-    }
+    public Task SetPlaceholderText() => ModuleInvokeVoidAsync(
+        "setPlaceholderText",
+        cm6WrapperComponent.Placeholder
+    );
 
     /// <summary>
     /// Set the theme
     /// </summary>
     /// <returns></returns>
-    public async Task SetTheme()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setTheme",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.Theme?.ToString()
-        );
-    }
+    public Task SetTheme() => ModuleInvokeVoidAsync(
+        "setTheme",
+        cm6WrapperComponent.Theme?.ToString()
+    );
 
     /// <summary>
     /// Set the read-only state
     /// </summary>
     /// <returns></returns>
-    public async Task SetReadOnly()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setReadOnly",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.ReadOnly
-        );
-    }
+    public Task SetReadOnly() => ModuleInvokeVoidAsync(
+        "setReadOnly",
+        cm6WrapperComponent.ReadOnly
+    );
 
     /// <summary>
     /// Set the editable state
     /// </summary>
     /// <returns></returns>
-    public async Task SetEditable()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setEditable",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.Editable
-        );
-    }
+    public Task SetEditable() => ModuleInvokeVoidAsync(
+        "setEditable",
+        cm6WrapperComponent.Editable
+    );
 
     /// <summary>
     /// Set the language
     /// </summary>
-    public async Task SetLanguage()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setLanguage",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.Language?.ToString()
-        );
-    }
+    public Task SetLanguage() => ModuleInvokeVoidAsync(
+        "setLanguage",
+        cm6WrapperComponent.Language?.ToString()
+    );
 
     /// <summary>
     /// Set the auto format markdown headers state
     /// </summary>
     /// <returns></returns>
-    public async Task SetAutoFormatMarkdownHeaders()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setAutoFormatMarkdownHeaders",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.AutoFormatMarkdownHeaders
-        );
-    }
+    public Task SetAutoFormatMarkdownHeaders() => ModuleInvokeVoidAsync(
+        "setAutoFormatMarkdownHeaders",
+        cm6WrapperComponent.AutoFormatMarkdownHeaders
+    );
+
+    /// <summary>
+    /// Toggle markdown bold formatting around the selected text
+    /// </summary>
+    /// <returns></returns>
+    public Task ToggleMarkdownBold() => ModuleInvokeVoidAsync("toggleMarkdownBold");
+
+    /// <summary>
+    /// Toggle markdown italic formatting around the selected text
+    /// </summary>
+    /// <returns></returns>
+    public Task ToggleMarkdownItalic() => ModuleInvokeVoidAsync("toggleMarkdownItalic");
 
     /// <summary>
     /// Dispose Javascript modules

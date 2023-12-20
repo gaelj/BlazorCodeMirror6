@@ -10,7 +10,6 @@ namespace CodeMirror6;
 public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
 {
     [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
-
     /// <summary>
     /// /// Gets or sets the unique identifier for the CodeMirror6 editor.
     /// Defaults to CodeMirror6_Editor_{NewGuid}.
@@ -82,14 +81,26 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// </summary>
     /// <value></value>
     [Parameter] public bool AutoFormatMarkdownHeaders { get; set; }
-
+    /// <summary>
+    /// Content to be rendered before the editor
+    /// </summary>
+    /// <value></value>
+    [Parameter] public RenderFragment<(CodeMirrorJsInterop CmJsInterop, CodeMirrorConfiguration Config)>? ContentBefore { get; set; }
+    /// <summary>
+    /// Content to be rendered after the editor
+    /// </summary>
+    /// <value></value>
+    [Parameter] public RenderFragment<(CodeMirrorJsInterop CmJsInterop, CodeMirrorConfiguration Config)>? ContentAfter { get; set; }
     /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     /// <value></value>
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+    /// <summary>
+    /// JavaScript interop instance
+    /// </summary>
+    public CodeMirrorJsInterop? CmJsInterop = null;
 
-    private CodeMirrorJsInterop? CmJsInterop = null;
     private bool hasFocus;
     private bool shouldRender = true;
 
