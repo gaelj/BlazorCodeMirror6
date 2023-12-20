@@ -1,8 +1,8 @@
 import { basicSetup } from "codemirror"
-import {EditorView, keymap, placeholder} from "@codemirror/view"
-import {EditorState, Compartment, Extension} from "@codemirror/state"
+import { EditorView, ViewUpdate, Decoration, DecorationSet, ViewPlugin, keymap, placeholder } from "@codemirror/view"
+import { EditorState, StateEffect, StateEffectType, Extension, Range } from "@codemirror/state"
 import { indentWithTab } from "@codemirror/commands"
-import {indentUnit, LanguageSupport} from "@codemirror/language"
+import { indentUnit, LanguageSupport, syntaxTree, Language } from "@codemirror/language"
 import { cpp, cppLanguage } from "@codemirror/lang-cpp"
 import { css, cssLanguage } from "@codemirror/lang-css"
 import { html, htmlLanguage } from "@codemirror/lang-html"
@@ -25,6 +25,53 @@ import { oneDark } from "@codemirror/theme-one-dark"
 
 let CMInstances: { [id: string]: CmInstance } = {}
 
+function dynamicMarkdownHeaderStyling(markdownLang: Language, languageChangeEffect: StateEffectType<any>) {
+    return ViewPlugin.fromClass(class {
+        decorations: DecorationSet;
+
+        constructor(view: EditorView) {
+            this.decorations = this.getDecorations(view);
+        }
+
+        update(update: ViewUpdate) {
+            if (update.docChanged || update.viewportChanged || update.transactions.some(tr => tr.effects.some(e => e.is(languageChangeEffect)))) {
+                this.decorations = this.getDecorations(update.view);
+            }
+        }
+
+        getDecorations(view: EditorView): DecorationSet {
+            const decorations: Range<Decoration>[] = [];
+            const doc = view.state.doc;
+
+            syntaxTree(view.state).iterate({
+                from: view.viewport.from,
+                to: view.viewport.to,
+                enter: (node) => {
+                    if (node.name.startsWith('ATXHeading')) {
+                        const line = doc.lineAt(node.from).text.trimStart()
+
+                        if (markdownLang.isActiveAt(view.state, node.from) && line.startsWith('#')) {
+                            let headerLevel = line.indexOf(' ');
+                            if (headerLevel === -1)
+                                headerLevel = line.length;
+                            const fontSize = `${1 + 0.7 * (7 - headerLevel)}em`;
+                            decorations.push(Decoration.line({
+                                attributes: { style: `font-size: ${fontSize};` }
+                            }).range(node.from, node.from));
+                        }
+                    }
+                }
+            });
+
+            return Decoration.set(decorations);
+        }
+    }, {
+        decorations: v => v.decorations
+    });
+}
+
+const languageChangeEffect = StateEffect.define<Language>();
+
 export function initCodeMirror(
     dotnetHelper: any,
     id: string,
@@ -36,6 +83,7 @@ export function initCodeMirror(
     let extensions = [
         basicSetup,
         CMInstances[id].languageCompartment.of(getLanguage(config.languageName)),
+        dynamicMarkdownHeaderStyling(markdownLanguage, languageChangeEffect),
         CMInstances[id].keymapCompartment.of(keymap.of([indentWithTab])),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(config.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(config.tabSize))),
@@ -121,7 +169,10 @@ export function setEditable(id: string, editable: boolean) {
 export function setLanguage(id: string, languageName: string) {
     const language = getLanguage(languageName)
     CMInstances[id].view.dispatch({
-        effects: CMInstances[id].languageCompartment.reconfigure(language)
+        effects: [
+            CMInstances[id].languageCompartment.reconfigure(language),
+            languageChangeEffect.of(language.language)
+        ]
     })
 }
 
