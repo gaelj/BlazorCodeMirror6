@@ -7,7 +7,7 @@ import { EditorState } from "@codemirror/state"
 import { indentWithTab, history, historyKeymap, cursorSyntaxLeft, moveLineDown, moveLineUp,
     selectSyntaxLeft, selectSyntaxRight, cursorSyntaxRight, selectParentSyntax, indentLess, indentMore,
     copyLineUp, copyLineDown, indentSelection, deleteLine, cursorMatchingBracket, toggleComment, toggleBlockComment,
-    simplifySelection, insertBlankLine, selectLine
+    simplifySelection, insertBlankLine, selectLine, undo, redo, redoSelection, undoSelection
 } from "@codemirror/commands"
 import {
     indentUnit, defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
@@ -22,7 +22,9 @@ import { CmConfig } from "./CmConfig"
 import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
 import { getTheme } from "./CmTheme"
 import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLanguage"
-import { toggleMarkdownBoldCommand, toggleMarkdownItalicCommand as toggleMarkdownItalicCommand } from "./CmKeymap"
+import { toggleMarkdownBoldCommand, toggleMarkdownCodeBlockCommand, toggleMarkdownCodeCommand, toggleMarkdownItalicCommand,
+    toggleMarkdownStrikethroughCommand
+} from "./CmCommands"
 
 /**
  * Initialize a new CodeMirror instance
@@ -196,14 +198,16 @@ export function setAutoFormatMarkdownHeaders(id: string, autoFormatMarkdownHeade
     })
 }
 
-export function toggleMarkdownBold(id: string) {
-    toggleMarkdownBoldCommand(CMInstances[id].view)
-}
+export const toggleMarkdownBold = (id: string) => toggleMarkdownBoldCommand(CMInstances[id].view)
+export const toggleMarkdownItalic = (id: string) => toggleMarkdownItalicCommand(CMInstances[id].view)
+export const toggleMarkdownStrikethrough = (id: string) => toggleMarkdownStrikethroughCommand(CMInstances[id].view)
+export const toggleMarkdownCode = (id: string) => toggleMarkdownCodeCommand(CMInstances[id].view)
+export const toggleMarkdownCodeBlock = (id: string) => toggleMarkdownCodeBlockCommand(CMInstances[id].view)
 
-export function toggleMarkdownItalic(id: string) {
-    toggleMarkdownItalicCommand(CMInstances[id].view)
-}
-
+export const performUndo = (id: string) => undo(CMInstances[id].view)
+export const performRedo = (id: string) => redo(CMInstances[id].view)
+export const performUndoSelection = (id: string) => undoSelection(CMInstances[id].view)
+export const performRedoSelection = (id: string) => redoSelection(CMInstances[id].view)
 
 /**
  * Dispose of a CodeMirror instance

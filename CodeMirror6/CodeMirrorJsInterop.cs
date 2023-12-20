@@ -134,6 +134,41 @@ public class CodeMirrorJsInterop(
     /// </summary>
     /// <returns></returns>
     public Task ToggleMarkdownItalic() => ModuleInvokeVoidAsync("toggleMarkdownItalic");
+    /// <summary>
+    /// Toggle markdown strikethrough formatting around the selected text
+    /// </summary>
+    /// <returns></returns>
+    public Task ToggleMarkdownStrikethrough() => ModuleInvokeVoidAsync("toggleMarkdownStrikethrough");
+    /// <summary>
+    /// Toggle markdown code formatting around the selected text
+    /// </summary>
+    /// <returns></returns>
+    public Task ToggleMarkdownCode() => ModuleInvokeVoidAsync("toggleMarkdownCode");
+    /// <summary>
+    /// Toggle markdown code block formatting around the selected text
+    /// </summary>
+    /// <returns></returns>
+    public Task ToggleMarkdownCodeBlock() => ModuleInvokeVoidAsync("toggleMarkdownCodeBlock");
+    /// <summary>
+    /// Undo the last change
+    /// </summary>
+    /// <returns></returns>
+    public Task PerformUndo() => ModuleInvokeVoidAsync("performUndo");
+    /// <summary>
+    /// Redo the last change
+    /// </summary>
+    /// <returns></returns>
+    public Task PerformRedo() => ModuleInvokeVoidAsync("performRedo");
+    /// <summary>
+    /// Undo the last selection change
+    /// </summary>
+    /// <returns></returns>
+    public Task PerformUndoSelection() => ModuleInvokeVoidAsync("performUndoSelection");
+    /// <summary>
+    /// Redo the last selection change
+    /// </summary>
+    /// <returns></returns>
+    public Task PerformRedoSelection() => ModuleInvokeVoidAsync("performRedoSelection");
 
     /// <summary>
     /// Dispose Javascript modules
