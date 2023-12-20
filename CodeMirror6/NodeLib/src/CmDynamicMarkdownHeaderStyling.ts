@@ -1,9 +1,10 @@
 import { EditorView, ViewUpdate, Decoration, DecorationSet, ViewPlugin } from "@codemirror/view";
 import { StateEffectType, Range } from "@codemirror/state";
 import { syntaxTree, Language } from "@codemirror/language";
-import { StateEffect } from "@codemirror/state";
 import { markdownLanguage } from "@codemirror/lang-markdown";
 import { Extension } from "@codemirror/state";
+
+import { languageChangeEffect } from "./CmLanguage";
 
 /**
  * Return a ViewPlugin that dynamically styles markdown headers based on the header level
@@ -11,7 +12,7 @@ import { Extension } from "@codemirror/state";
  * @param languageChangeEffect
  * @returns
  */
-function dynamicMarkdownHeaderStyling(markdownLang: Language, languageChangeEffect: StateEffectType<any>) {
+function dynamicMarkdownHeaderStyling() {
     return ViewPlugin.fromClass(class {
         decorations: DecorationSet;
 
@@ -20,7 +21,9 @@ function dynamicMarkdownHeaderStyling(markdownLang: Language, languageChangeEffe
         }
 
         update(update: ViewUpdate) {
-            if (update.docChanged || update.viewportChanged || update.transactions.some(tr => tr.effects.some(e => e.is(languageChangeEffect)))) {
+            if (update.docChanged || update.viewportChanged ||
+                update.transactions.some(tr => tr.effects.some(e => e.is(languageChangeEffect)))
+            ) {
                 this.decorations = this.getDecorations(update.view);
             }
         }
@@ -36,7 +39,7 @@ function dynamicMarkdownHeaderStyling(markdownLang: Language, languageChangeEffe
                     if (node.name.startsWith('ATXHeading')) {
                         const line = doc.lineAt(node.from).text.trimStart();
 
-                        if (markdownLang.isActiveAt(view.state, node.from) && line.startsWith('#')) {
+                        if (markdownLanguage.isActiveAt(view.state, node.from) && line.startsWith('#')) {
                             let headerLevel = line.indexOf(' ');
                             if (headerLevel === -1)
                                 headerLevel = line.length;
@@ -71,18 +74,13 @@ function noMarkdownHeaderStyling() {
 }
 
 /**
- * StateEffect that is triggered when the language changes
- */
-export const languageChangeEffect = StateEffect.define<Language>()
-
-/**
  * Return the header styling Extension matching the supplied parameter
  * @param autoFormatMarkdownHeaders
  * @returns
  */
 export function getDynamicHeaderStyling(autoFormatMarkdownHeaders: boolean): Extension {
     if (autoFormatMarkdownHeaders)
-        return dynamicMarkdownHeaderStyling(markdownLanguage, languageChangeEffect)
+        return dynamicMarkdownHeaderStyling()
 
     else
         return noMarkdownHeaderStyling()
