@@ -23,6 +23,7 @@
     [Parameter] public bool ReadOnly { get; set; }
     [Parameter] public bool Editable { get; set; } = true;
     [Parameter] public CodeMirrorLanguage? Language { get; set; } = CodeMirrorLanguage.Markdown;
+    [Parameter] public bool AutoFormatMarkdownHeaders { get; set; }
 
     private CodeMirrorJsInterop? CmJsInterop = null;
     private bool hasFocus;
@@ -85,7 +86,8 @@
             IndentationUnit,
             ReadOnly,
             Editable,
-            Language?.ToString()
+            Language?.ToString(),
+            AutoFormatMarkdownHeaders
         );
     }
 
@@ -135,6 +137,10 @@
         if (Config.LanguageName != Language?.ToString()) {
             Config.LanguageName = Language?.ToString();
             await CmJsInterop.SetLanguage();
+        }
+        if (Config.AutoFormatMarkdownHeaders != AutoFormatMarkdownHeaders) {
+            Config.AutoFormatMarkdownHeaders = AutoFormatMarkdownHeaders;
+            await CmJsInterop.SetAutoFormatMarkdownHeaders();
         }
         shouldRender = true;
     }

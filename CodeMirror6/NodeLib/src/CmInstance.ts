@@ -11,6 +11,7 @@ export class CmInstance
     public state: EditorState
     public view: EditorView
     public languageCompartment: Compartment = new Compartment
+    public markdownStylingCompartment: Compartment = new Compartment
     public tabSizeCompartment: Compartment = new Compartment
     public indentUnitCompartment: Compartment = new Compartment
     public placeholderCompartment: Compartment = new Compartment

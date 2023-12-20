@@ -1,20 +1,23 @@
 ﻿<h1>Code Mirror 6 Wrapper Demo</h1>
 
-<label>Theme</label>
-<select @bind=@Theme>
+<label for="Theme">Theme</label>
+<select @bind=@Theme id="Theme">
     @foreach (var theme in Enum.GetValues(typeof(ThemeMirrorTheme)))
     {
         <option value="@theme">@theme</option>
     }
 </select>
 
-<label>Language</label>
-<select @bind=@Language>
+<label for="Language">Language</label>
+<select @bind=@Language id="Language">
     @foreach (var language in Enum.GetValues(typeof(CodeMirrorLanguage)))
     {
         <option value="@language">@language</option>
     }
 </select>
+
+<label for="AutoFormatMarkdownHeaders">Auto-Format Markdown Headers</label>
+<input id="AutoFormatMarkdownHeaders" type="checkbox" @bind=@AutoFormatMarkdownHeaders />
 
 <CodeMirror6Wrapper
     @bind-Doc=@Text
@@ -23,6 +26,7 @@
     @bind-Selection=@selectionRanges1
     Theme=@Theme
     Language=@Language
+    AutoFormatMarkdownHeaders=@AutoFormatMarkdownHeaders
 />
 <hr />
 Result:
@@ -63,6 +67,7 @@ Result:
     @bind-Selection=@selectionRanges2
     Theme=@Theme
     Language=@CodeMirrorLanguage.Markdown
+    AutoFormatMarkdownHeaders=@AutoFormatMarkdownHeaders
 />
 <hr />
 Result:
@@ -88,6 +93,7 @@ Result:
     @bind-Selection=@selectionRanges3
     Theme=@Theme
     Language=@CodeMirrorLanguage.Markdown
+    AutoFormatMarkdownHeaders=@AutoFormatMarkdownHeaders
 />
 
 <hr />
@@ -154,4 +160,5 @@ func main() {{
     private string NewPlaceHolderText = "New placeholder text !";
     private ThemeMirrorTheme Theme = ThemeMirrorTheme.OneDark;
     private CodeMirrorLanguage Language = CodeMirrorLanguage.Markdown;
+    private bool AutoFormatMarkdownHeaders = true;
 }

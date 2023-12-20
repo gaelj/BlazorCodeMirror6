@@ -13,15 +13,17 @@ namespace CodeMirror6.Models;
 /// <param name="readOnly"></param>
 /// <param name="editable"></param>
 /// <param name="languageName"></param>
+/// <param name="autoFormatMarkdownHeaders"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
     string? themeName,
     int tabSize,
     int indentationUnit,
-    bool readOnly = false,
-    bool editable = true,
-    string? languageName = null)
+    bool readOnly,
+    bool editable,
+    string? languageName,
+    bool autoFormatMarkdownHeaders)
 {
 
     /// <summary>
@@ -64,4 +66,9 @@ public class CodeMirrorConfiguration(
     /// The language to use in the editor
     /// </summary>
     [JsonPropertyName("languageName")] public string? LanguageName { get; set; } = languageName;
+
+    /// <summary>
+    /// Whether to automatically format (resize) markdown headers
+    /// </summary>
+    [JsonPropertyName("autoFormatMarkdownHeaders")] public bool AutoFormatMarkdownHeaders { get; set; } = autoFormatMarkdownHeaders;
 }

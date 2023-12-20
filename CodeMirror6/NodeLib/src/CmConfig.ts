@@ -10,4 +10,5 @@ export class CmConfig {
     public readOnly: boolean;
     public editable: boolean;
     public languageName: string;
+    public autoFormatMarkdownHeaders: boolean;
 }

@@ -70,6 +70,37 @@ function dynamicMarkdownHeaderStyling(markdownLang: Language, languageChangeEffe
     });
 }
 
+function noMarkdownHeaderStyling() {
+    return ViewPlugin.fromClass(class {
+        decorations: DecorationSet;
+
+        constructor(view: EditorView) {
+            this.decorations = this.getDecorations(view);
+        }
+
+        update(update: ViewUpdate) {
+            if (update.docChanged || update.viewportChanged) {
+                this.decorations = this.getDecorations(update.view);
+            }
+        }
+
+        getDecorations(view: EditorView): DecorationSet {
+            const decorations: Range<Decoration>[] = [];
+            const doc = view.state.doc;
+
+            syntaxTree(view.state).iterate({
+                from: view.viewport.from,
+                to: view.viewport.to,
+                enter: (node) => {}
+            });
+
+            return Decoration.set(decorations);
+        }
+    }, {
+        decorations: v => v.decorations
+    });
+}
+
 const languageChangeEffect = StateEffect.define<Language>();
 
 export function initCodeMirror(
@@ -83,7 +114,7 @@ export function initCodeMirror(
     let extensions = [
         basicSetup,
         CMInstances[id].languageCompartment.of(getLanguage(config.languageName)),
-        dynamicMarkdownHeaderStyling(markdownLanguage, languageChangeEffect),
+        CMInstances[id].markdownStylingCompartment.of(getDynamicHeaderStyling(config.autoFormatMarkdownHeaders)),
         CMInstances[id].keymapCompartment.of(keymap.of([indentWithTab])),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(config.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(config.tabSize))),
@@ -176,6 +207,12 @@ export function setLanguage(id: string, languageName: string) {
     })
 }
 
+export function setAutoFormatMarkdownHeaders(id: string, autoFormatMarkdownHeaders: boolean) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].markdownStylingCompartment.reconfigure(getDynamicHeaderStyling(autoFormatMarkdownHeaders))
+    })
+}
+
 // Return the thememirror theme Extension matching the supplied string
 function getTheme(themeName: string): Extension {
     switch (themeName) {
@@ -250,6 +287,13 @@ function getLanguage(languageName: string): LanguageSupport {
         default:
             return markdown({ base: markdownLanguage, codeLanguages: languages, addKeymap: true })
     }
+}
+
+function getDynamicHeaderStyling(autoFormatMarkdownHeaders: boolean): Extension {
+    if (autoFormatMarkdownHeaders)
+        return dynamicMarkdownHeaderStyling(markdownLanguage, languageChangeEffect)
+    else
+        return noMarkdownHeaderStyling()
 }
 
 

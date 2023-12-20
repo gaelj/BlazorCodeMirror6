@@ -162,6 +162,21 @@ public class CodeMirrorJsInterop(
     }
 
     /// <summary>
+    /// Set the auto format markdown headers state
+    /// </summary>
+    /// <returns></returns>
+    public async Task SetAutoFormatMarkdownHeaders()
+    {
+        var module = await _moduleTask.Value;
+        if (module is null) return;
+        await module.InvokeVoidAsync(
+            "setAutoFormatMarkdownHeaders",
+            codeMirror.Id,
+            codeMirror.AutoFormatMarkdownHeaders
+        );
+    }
+
+    /// <summary>
     /// Dispose Javascript modules
     /// </summary>
     /// <returns></returns>
