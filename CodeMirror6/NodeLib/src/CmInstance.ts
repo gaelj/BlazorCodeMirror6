@@ -1,10 +1,9 @@
 import { EditorView } from "@codemirror/view"
 import { EditorState, Compartment } from "@codemirror/state"
 
-
-/// <summary>
-/// Stores the state of a CodeMirror instance.
-/// </summary>
+/**
+ * Stores the state of a CodeMirror instance and allow dynamic changes to the state
+ */
 export class CmInstance
 {
     public dotNetHelper: any

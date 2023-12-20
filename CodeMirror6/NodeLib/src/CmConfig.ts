@@ -1,6 +1,6 @@
-/// <summary>
-/// Stores the initial configuration of a CodeMirror instance.
-/// </summary>
+/**
+ * Stores the initial configuration of a CodeMirror instance.
+ */
 export class CmConfig {
     public doc: string | null;
     public placeholder: string;

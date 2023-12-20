@@ -14,6 +14,11 @@ import { sass, sassLanguage } from "@codemirror/lang-sass"
 import { xml, xmlLanguage } from "@codemirror/lang-xml"
 import { languages } from "@codemirror/language-data";
 
+/**
+ * Return the LanguageSupport matching the supplied language name string
+ * @param languageName
+ * @returns
+ */
 export function getLanguage(languageName: string): LanguageSupport {
     switch (languageName) {
         case "Cpp":

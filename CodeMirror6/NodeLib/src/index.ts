@@ -12,6 +12,12 @@ import { getLanguage } from "./CmLanguage"
 
 let CMInstances: { [id: string]: CmInstance } = {}
 
+/**
+ * Initialize a new CodeMirror instance
+ * @param dotnetHelper
+ * @param id
+ * @param config
+ */
 export function initCodeMirror(
     dotnetHelper: any,
     id: string,
@@ -122,6 +128,10 @@ export function setAutoFormatMarkdownHeaders(id: string, autoFormatMarkdownHeade
     })
 }
 
+/**
+ * Dispose of a CodeMirror instance
+ * @param id
+ */
 export function dispose(id: string) {
     CMInstances[id].view.destroy()
     CMInstances[id] = undefined

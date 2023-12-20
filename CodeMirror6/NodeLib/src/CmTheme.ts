@@ -4,7 +4,9 @@ import { amy, ayuLight, barf, bespin, birdsOfParadise, boysAndGirls, clouds, cob
 import { oneDark } from "@codemirror/theme-one-dark";
 
 /**
-Return the thememirror theme Extension matching the supplied string
+ * Return the thememirror theme Extension matching the supplied string
+ * @param themeName
+ * @returns
  */
 export function getTheme(themeName: string): Extension {
     switch (themeName) {

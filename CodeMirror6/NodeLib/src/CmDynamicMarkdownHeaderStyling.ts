@@ -5,6 +5,12 @@ import { StateEffect } from "@codemirror/state";
 import { markdownLanguage } from "@codemirror/lang-markdown";
 import { Extension } from "@codemirror/state";
 
+/**
+ * Return a ViewPlugin that dynamically styles markdown headers based on the header level
+ * @param markdownLang
+ * @param languageChangeEffect
+ * @returns
+ */
 function dynamicMarkdownHeaderStyling(markdownLang: Language, languageChangeEffect: StateEffectType<any>) {
     return ViewPlugin.fromClass(class {
         decorations: DecorationSet;
@@ -50,6 +56,10 @@ function dynamicMarkdownHeaderStyling(markdownLang: Language, languageChangeEffe
     });
 }
 
+/**
+ * Return a ViewPlugin that does nothing
+ * @returns
+ */
 function noMarkdownHeaderStyling() {
     return ViewPlugin.fromClass(class {
         decorations: DecorationSet;
@@ -60,8 +70,16 @@ function noMarkdownHeaderStyling() {
     });
 }
 
+/**
+ * StateEffect that is triggered when the language changes
+ */
 export const languageChangeEffect = StateEffect.define<Language>()
 
+/**
+ * Return the header styling Extension matching the supplied parameter
+ * @param autoFormatMarkdownHeaders
+ * @returns
+ */
 export function getDynamicHeaderStyling(autoFormatMarkdownHeaders: boolean): Extension {
     if (autoFormatMarkdownHeaders)
         return dynamicMarkdownHeaderStyling(markdownLanguage, languageChangeEffect)
@@ -69,4 +87,3 @@ export function getDynamicHeaderStyling(autoFormatMarkdownHeaders: boolean): Ext
     else
         return noMarkdownHeaderStyling()
 }
-
