@@ -123,6 +123,7 @@ export function setAutoFormatMarkdownHeaders(id: string, autoFormatMarkdownHeade
 }
 
 export function dispose(id: string) {
+    CMInstances[id].view.destroy()
     CMInstances[id] = undefined
     delete CMInstances[id]
 }
