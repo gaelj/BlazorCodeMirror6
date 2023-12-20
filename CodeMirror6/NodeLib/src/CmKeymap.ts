@@ -1,7 +1,8 @@
 import { Command } from "@codemirror/view"
 import { Transaction, SelectionRange } from "@codemirror/state"
 import { markdownLanguage } from "@codemirror/lang-markdown"
-import { toggleCharactersAroundRange } from "./CmFormatting"
+import { toggleCharactersAroundRange } from "./CmCommands"
+
 
 export const toggleMarkdownBoldCommand: Command = ({ state, dispatch }) => {
     const changes = state.changeByRange((range: SelectionRange) => {
