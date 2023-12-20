@@ -1,8 +1,8 @@
 import { basicSetup } from "codemirror"
-import { EditorView, ViewUpdate, Decoration, DecorationSet, ViewPlugin, keymap, placeholder } from "@codemirror/view"
-import { EditorState, StateEffect, StateEffectType, Extension, Range } from "@codemirror/state"
+import { EditorView, keymap, placeholder } from "@codemirror/view"
+import { EditorState, Extension } from "@codemirror/state"
 import { indentWithTab } from "@codemirror/commands"
-import { indentUnit, LanguageSupport, syntaxTree, Language } from "@codemirror/language"
+import { indentUnit, LanguageSupport } from "@codemirror/language"
 import { cpp, cppLanguage } from "@codemirror/lang-cpp"
 import { css, cssLanguage } from "@codemirror/lang-css"
 import { html, htmlLanguage } from "@codemirror/lang-html"
@@ -22,86 +22,9 @@ import { CmInstance } from "./CmInstance"
 import { CmConfig } from "./CmConfig"
 import { amy, ayuLight, barf, bespin, birdsOfParadise, boysAndGirls, clouds, cobalt, coolGlow, dracula, espresso, noctisLilac, rosePineDawn, smoothy, solarizedLight, tomorrow } from 'thememirror'
 import { oneDark } from "@codemirror/theme-one-dark"
+import { languageChangeEffect, getDynamicHeaderStyling } from "./DynamicMarkdownHeaderStyling"
 
 let CMInstances: { [id: string]: CmInstance } = {}
-
-function dynamicMarkdownHeaderStyling(markdownLang: Language, languageChangeEffect: StateEffectType<any>) {
-    return ViewPlugin.fromClass(class {
-        decorations: DecorationSet;
-
-        constructor(view: EditorView) {
-            this.decorations = this.getDecorations(view);
-        }
-
-        update(update: ViewUpdate) {
-            if (update.docChanged || update.viewportChanged || update.transactions.some(tr => tr.effects.some(e => e.is(languageChangeEffect)))) {
-                this.decorations = this.getDecorations(update.view);
-            }
-        }
-
-        getDecorations(view: EditorView): DecorationSet {
-            const decorations: Range<Decoration>[] = [];
-            const doc = view.state.doc;
-
-            syntaxTree(view.state).iterate({
-                from: view.viewport.from,
-                to: view.viewport.to,
-                enter: (node) => {
-                    if (node.name.startsWith('ATXHeading')) {
-                        const line = doc.lineAt(node.from).text.trimStart()
-
-                        if (markdownLang.isActiveAt(view.state, node.from) && line.startsWith('#')) {
-                            let headerLevel = line.indexOf(' ');
-                            if (headerLevel === -1)
-                                headerLevel = line.length;
-                            const fontSize = `${1 + 0.7 * (7 - headerLevel)}em`;
-                            decorations.push(Decoration.line({
-                                attributes: { style: `font-size: ${fontSize};` }
-                            }).range(node.from, node.from));
-                        }
-                    }
-                }
-            });
-
-            return Decoration.set(decorations);
-        }
-    }, {
-        decorations: v => v.decorations
-    });
-}
-
-function noMarkdownHeaderStyling() {
-    return ViewPlugin.fromClass(class {
-        decorations: DecorationSet;
-
-        constructor(view: EditorView) {
-            this.decorations = this.getDecorations(view);
-        }
-
-        update(update: ViewUpdate) {
-            if (update.docChanged || update.viewportChanged) {
-                this.decorations = this.getDecorations(update.view);
-            }
-        }
-
-        getDecorations(view: EditorView): DecorationSet {
-            const decorations: Range<Decoration>[] = [];
-            const doc = view.state.doc;
-
-            syntaxTree(view.state).iterate({
-                from: view.viewport.from,
-                to: view.viewport.to,
-                enter: (node) => {}
-            });
-
-            return Decoration.set(decorations);
-        }
-    }, {
-        decorations: v => v.decorations
-    });
-}
-
-const languageChangeEffect = StateEffect.define<Language>();
 
 export function initCodeMirror(
     dotnetHelper: any,
@@ -213,7 +136,9 @@ export function setAutoFormatMarkdownHeaders(id: string, autoFormatMarkdownHeade
     })
 }
 
-// Return the thememirror theme Extension matching the supplied string
+/**
+Return the thememirror theme Extension matching the supplied string
+ */
 function getTheme(themeName: string): Extension {
     switch (themeName) {
         case "Amy":
@@ -288,14 +213,6 @@ function getLanguage(languageName: string): LanguageSupport {
             return markdown({ base: markdownLanguage, codeLanguages: languages, addKeymap: true })
     }
 }
-
-function getDynamicHeaderStyling(autoFormatMarkdownHeaders: boolean): Extension {
-    if (autoFormatMarkdownHeaders)
-        return dynamicMarkdownHeaderStyling(markdownLanguage, languageChangeEffect)
-    else
-        return noMarkdownHeaderStyling()
-}
-
 
 export function dispose(id: string) {
     CMInstances[id] = undefined
