@@ -14,6 +14,11 @@ A CodeMirror 6 component for Blazor in .Net 7 and .Net 8.
 - setting ReadOnly and Editable attributes
 - applying syntax highlighting and auto-completion for 13 different languages
 
+### Markdown language
+
+- Resized header text proportional to header #
+- keybindings to set text in **bold** (`Ctrl-B`) or *italics* (`Ctrl-I`)
+
 ## Installation
 
 Fork / clone the repository and reference it in your `csproj` file:
