@@ -1,4 +1,3 @@
-using CodeMirror6.Models;
 using Microsoft.JSInterop;
 
 namespace CodeMirror6;
