@@ -16,8 +16,18 @@
     }
 </select>
 
+<label for="tabSizeInput">TabSize:</label>
+<input id="tabSizeInput" @bind-value=TabSize @bind-value:event="oninput" type="number" min="1" max="8" step="1" />
+
 <label for="AutoFormatMarkdownHeaders">Auto-Format Markdown Headers</label>
 <input id="AutoFormatMarkdownHeaders" type="checkbox" @bind=@AutoFormatMarkdownHeaders />
+
+<button
+    @onclick=@(async () => {
+        Text = code.Replace("\r", "");
+        await InvokeAsync(StateHasChanged);
+    })
+>Reset text</button>
 
 <CodeMirror6Wrapper
     @bind-Doc=@Text
@@ -45,19 +55,6 @@ Result:
         </div>
     }
 }
-
-<hr />
-
-<label for="#tabSizeInput">TabSize:</label>
-<input id="tabSizeInput" @bind-value=TabSize @bind-value:event="oninput" type="number" min="1" max="8" step="1" />
-
-<hr />
-<button
-    @onclick=@(async () => {
-        Text = code.Replace("\r", "");
-        await InvokeAsync(StateHasChanged);
-    })
->Reset text</button>
 
 
 <hr />
