@@ -1,27 +1,27 @@
-import {basicSetup} from "codemirror"
+import { basicSetup } from "codemirror"
 import {EditorView, keymap, placeholder} from "@codemirror/view"
 import {EditorState, Compartment, Extension} from "@codemirror/state"
-import {indentWithTab} from "@codemirror/commands"
+import { indentWithTab } from "@codemirror/commands"
 import {indentUnit, LanguageSupport} from "@codemirror/language"
-import {cpp, cppLanguage} from "@codemirror/lang-cpp"
-import {css, cssLanguage} from "@codemirror/lang-css"
-import {html, htmlLanguage} from "@codemirror/lang-html"
-import {java, javaLanguage} from "@codemirror/lang-java"
-import {javascript, javascriptLanguage} from "@codemirror/lang-javascript"
-import {json, jsonLanguage} from "@codemirror/lang-json"
-import {lezer, lezerLanguage} from "@codemirror/lang-lezer"
-import {markdown, markdownLanguage} from "@codemirror/lang-markdown"
-import {python, pythonLanguage} from "@codemirror/lang-python"
-import {sql, MSSQL} from "@codemirror/lang-sql"
-import {rust, rustLanguage} from "@codemirror/lang-rust"
-import {sass, sassLanguage} from "@codemirror/lang-sass"
-import {xml, xmlLanguage} from "@codemirror/lang-xml"
-import {languages} from "@codemirror/language-data"
-import {autocompletion} from "@codemirror/autocomplete"
-import {CmInstance} from "./CmInstance"
-import {CmConfig} from "./CmConfig"
-import {amy, ayuLight, barf, bespin, birdsOfParadise, boysAndGirls, clouds, cobalt, coolGlow, dracula, espresso, noctisLilac, rosePineDawn, smoothy, solarizedLight, tomorrow} from 'thememirror'
-import {oneDark} from "@codemirror/theme-one-dark"
+import { cpp, cppLanguage } from "@codemirror/lang-cpp"
+import { css, cssLanguage } from "@codemirror/lang-css"
+import { html, htmlLanguage } from "@codemirror/lang-html"
+import { java, javaLanguage } from "@codemirror/lang-java"
+import { javascript, javascriptLanguage } from "@codemirror/lang-javascript"
+import { json, jsonLanguage } from "@codemirror/lang-json"
+import { lezer, lezerLanguage } from "@codemirror/lang-lezer"
+import { markdown, markdownLanguage } from "@codemirror/lang-markdown"
+import { python, pythonLanguage } from "@codemirror/lang-python"
+import { sql, MSSQL } from "@codemirror/lang-sql"
+import { rust, rustLanguage } from "@codemirror/lang-rust"
+import { sass, sassLanguage } from "@codemirror/lang-sass"
+import { xml, xmlLanguage } from "@codemirror/lang-xml"
+import { languages } from "@codemirror/language-data"
+import { autocompletion } from "@codemirror/autocomplete"
+import { CmInstance } from "./CmInstance"
+import { CmConfig } from "./CmConfig"
+import { amy, ayuLight, barf, bespin, birdsOfParadise, boysAndGirls, clouds, cobalt, coolGlow, dracula, espresso, noctisLilac, rosePineDawn, smoothy, solarizedLight, tomorrow } from 'thememirror'
+import { oneDark } from "@codemirror/theme-one-dark"
 
 let CMInstances: { [id: string]: CmInstance } = {}
 
@@ -50,7 +50,7 @@ export function initCodeMirror(
                     await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
             }
             if (update.selectionSet) {
-                await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => {return {from: r.from, to: r.to}}))
+                await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
             }
         }),
 
@@ -72,8 +72,7 @@ export function initCodeMirror(
     })
 }
 
-export function setTabSize(id: string, size: number)
-{
+export function setTabSize(id: string, size: number) {
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].tabSizeCompartment.reconfigure(EditorState.tabSize.of(size))
     })
@@ -85,10 +84,9 @@ export function setIndentUnit(id: string, indentUnitString: string) {
     })
 }
 
-export function setDoc(id: string, text: string)
-{
+export function setDoc(id: string, text: string) {
     const transaction = CMInstances[id].view.state.update({
-        changes: {from: 0, to: CMInstances[id].view.state.doc.length, insert: text}
+        changes: { from: 0, to: CMInstances[id].view.state.doc.length, insert: text }
     })
     CMInstances[id].view.dispatch(transaction)
 }
@@ -204,8 +202,7 @@ function getLanguage(languageName: string): LanguageSupport {
 }
 
 
-export function dispose(id: string)
-{
+export function dispose(id: string) {
     CMInstances[id] = undefined
     delete CMInstances[id]
 }
