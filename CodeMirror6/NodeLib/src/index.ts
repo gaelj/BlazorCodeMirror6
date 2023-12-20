@@ -1,28 +1,14 @@
 import { basicSetup } from "codemirror"
 import { EditorView, keymap, placeholder } from "@codemirror/view"
-import { EditorState, Extension } from "@codemirror/state"
+import { EditorState } from "@codemirror/state"
 import { indentWithTab } from "@codemirror/commands"
-import { indentUnit, LanguageSupport } from "@codemirror/language"
-import { cpp, cppLanguage } from "@codemirror/lang-cpp"
-import { css, cssLanguage } from "@codemirror/lang-css"
-import { html, htmlLanguage } from "@codemirror/lang-html"
-import { java, javaLanguage } from "@codemirror/lang-java"
-import { javascript, javascriptLanguage } from "@codemirror/lang-javascript"
-import { json, jsonLanguage } from "@codemirror/lang-json"
-import { lezer, lezerLanguage } from "@codemirror/lang-lezer"
-import { markdown, markdownLanguage } from "@codemirror/lang-markdown"
-import { python, pythonLanguage } from "@codemirror/lang-python"
-import { sql, MSSQL } from "@codemirror/lang-sql"
-import { rust, rustLanguage } from "@codemirror/lang-rust"
-import { sass, sassLanguage } from "@codemirror/lang-sass"
-import { xml, xmlLanguage } from "@codemirror/lang-xml"
-import { languages } from "@codemirror/language-data"
+import { indentUnit } from "@codemirror/language"
 import { autocompletion } from "@codemirror/autocomplete"
 import { CmInstance } from "./CmInstance"
 import { CmConfig } from "./CmConfig"
-import { amy, ayuLight, barf, bespin, birdsOfParadise, boysAndGirls, clouds, cobalt, coolGlow, dracula, espresso, noctisLilac, rosePineDawn, smoothy, solarizedLight, tomorrow } from 'thememirror'
-import { oneDark } from "@codemirror/theme-one-dark"
-import { languageChangeEffect, getDynamicHeaderStyling } from "./DynamicMarkdownHeaderStyling"
+import { languageChangeEffect, getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
+import { getTheme } from "./CmTheme"
+import { getLanguage } from "./CmLanguage"
 
 let CMInstances: { [id: string]: CmInstance } = {}
 
@@ -134,84 +120,6 @@ export function setAutoFormatMarkdownHeaders(id: string, autoFormatMarkdownHeade
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].markdownStylingCompartment.reconfigure(getDynamicHeaderStyling(autoFormatMarkdownHeaders))
     })
-}
-
-/**
-Return the thememirror theme Extension matching the supplied string
- */
-function getTheme(themeName: string): Extension {
-    switch (themeName) {
-        case "Amy":
-            return amy
-        case "AyuLight":
-            return ayuLight
-        case "Barf":
-            return barf
-        case "Bespin":
-            return bespin
-        case "BirdsOfParadise":
-            return birdsOfParadise
-        case "BoysAndGirls":
-            return boysAndGirls
-        case "Clouds":
-            return clouds
-        case "Cobalt":
-            return cobalt
-        case "CoolGlow":
-            return coolGlow
-        case "Dracula":
-            return dracula
-        case "Espresso":
-            return espresso
-        case "NoctisLilac":
-            return noctisLilac
-        case "RosePineDawn":
-            return rosePineDawn
-        case "Smoothy":
-            return smoothy
-        case "SolarizedLight":
-            return solarizedLight
-        case "Tomorrow":
-            return tomorrow
-        case "Dracula":
-            return dracula
-        case "OneDark":
-            return oneDark
-        default:
-            return EditorView.baseTheme({})
-    }
-}
-
-function getLanguage(languageName: string): LanguageSupport {
-    switch (languageName) {
-        case "Cpp":
-            return cpp()
-        case "Css":
-            return css()
-        case "Html":
-            return html()
-        case "Java":
-            return java()
-        case "Javascript":
-            return javascript()
-        case "Json":
-            return json()
-        case "Lezer":
-            return lezer()
-        case "Python":
-            return python()
-        case "Rust":
-            return rust()
-        case "Sass":
-            return sql()
-        case "Sql":
-            return sass()
-        case "Xml":
-            return xml()
-        case "Markdown":
-        default:
-            return markdown({ base: markdownLanguage, codeLanguages: languages, addKeymap: true })
-    }
 }
 
 export function dispose(id: string) {
