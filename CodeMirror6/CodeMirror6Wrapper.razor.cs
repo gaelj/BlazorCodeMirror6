@@ -87,7 +87,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     private bool hasFocus;
     private bool shouldRender = true;
 
-    public CodeMirrorConfiguration Config = null!;
+    internal CodeMirrorConfiguration Config = null!;
 
     /// <summary>
     /// The document contents has changed
