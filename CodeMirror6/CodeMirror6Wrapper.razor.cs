@@ -1,4 +1,4 @@
-﻿using CodeMirror6.Models;
+using CodeMirror6.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -7,7 +7,7 @@ namespace CodeMirror6;
 /// <summary>
 /// Code-behind for the CodeMirror6Wrapper component
 /// </summary>
-public partial class CodeMirror6Wrapper : IAsyncDisposable
+public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
 {
     [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
 
