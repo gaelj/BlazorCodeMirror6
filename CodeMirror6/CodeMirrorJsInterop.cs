@@ -1,4 +1,3 @@
-using CodeMirror6.Models;
 using Microsoft.JSInterop;
 
 namespace CodeMirror6;
@@ -10,24 +9,21 @@ namespace CodeMirror6;
 /// This class can be registered as scoped DI service and then injected into Blazor
 /// components for use.
 /// </summary>
-public class CodeMirrorJsInterop : IAsyncDisposable
+/// <remarks>
+/// Loads the Javascript modules
+/// </remarks>
+/// <param name="jsRuntime"></param>
+/// <param name="cm6WrapperComponent"></param>
+public class CodeMirrorJsInterop(
+    IJSRuntime jsRuntime,
+    CodeMirror6Wrapper cm6WrapperComponent
+) : IAsyncDisposable
 {
-    private readonly Lazy<Task<IJSObjectReference>> _moduleTask = new();
-    private DotNetObjectReference<CodeMirror6Wrapper>? _dotnetHelperRef = null;
-    private readonly CodeMirror6Wrapper _codeMirror;
-
-    /// <summary>
-    /// Loads the Javascript modules
-    /// </summary>
-    /// <param name="jsRuntime"></param>
-    /// <param name="codeMirror"></param>
-    public CodeMirrorJsInterop(IJSRuntime jsRuntime, CodeMirror6Wrapper codeMirror)
-    {
-        _codeMirror = codeMirror;
-        _moduleTask = new (() => jsRuntime.InvokeAsync<IJSObjectReference>(
+    private readonly Lazy<Task<IJSObjectReference>> _moduleTask =
+        new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
             "import", "./_content/CodeMirror6/index.js").AsTask()
         );
-    }
+    private readonly DotNetObjectReference<CodeMirror6Wrapper> _dotnetHelperRef = DotNetObjectReference.Create(cm6WrapperComponent);
 
     /// <summary>
     /// Call the Javascript initialization
@@ -35,15 +31,13 @@ public class CodeMirrorJsInterop : IAsyncDisposable
     /// <returns></returns>
     public async Task InitCodeMirror()
     {
-        _dotnetHelperRef ??= DotNetObjectReference.Create(_codeMirror);
-        if (_dotnetHelperRef is null) return;
         var module = await _moduleTask.Value;
         if (module is null) return;
         await module.InvokeVoidAsync(
             "initCodeMirror",
             _dotnetHelperRef,
-            _codeMirror.Id,
-            _codeMirror.Config
+            cm6WrapperComponent.Id,
+            cm6WrapperComponent.Config
         );
     }
 
@@ -57,8 +51,8 @@ public class CodeMirrorJsInterop : IAsyncDisposable
         if (module is null) return;
         await module.InvokeVoidAsync(
             "setTabSize",
-            _codeMirror.Id,
-            _codeMirror.TabSize
+            cm6WrapperComponent.Id,
+            cm6WrapperComponent.TabSize
         );
     }
 
@@ -72,8 +66,8 @@ public class CodeMirrorJsInterop : IAsyncDisposable
         if (module is null) return;
         await module.InvokeVoidAsync(
             "setIndentUnit",
-            _codeMirror.Id,
-            new string(' ', _codeMirror.TabSize) // repeat space character by _codeMirror.TabSize
+            cm6WrapperComponent.Id,
+            new string(' ', cm6WrapperComponent.TabSize) // repeat space character by _codeMirror.TabSize
         );
     }
 
@@ -87,8 +81,8 @@ public class CodeMirrorJsInterop : IAsyncDisposable
         if (module is null) return;
         await module.InvokeVoidAsync(
             "setDoc",
-            _codeMirror.Id,
-            _codeMirror.Doc?.Replace("\r", "")
+            cm6WrapperComponent.Id,
+            cm6WrapperComponent.Doc?.Replace("\r", "")
         );
     }
 
@@ -102,8 +96,8 @@ public class CodeMirrorJsInterop : IAsyncDisposable
         if (module is null) return;
         await module.InvokeVoidAsync(
             "setPlaceholderText",
-            _codeMirror.Id,
-            _codeMirror.Placeholder
+            cm6WrapperComponent.Id,
+            cm6WrapperComponent.Placeholder
         );
     }
 
@@ -117,8 +111,8 @@ public class CodeMirrorJsInterop : IAsyncDisposable
         if (module is null) return;
         await module.InvokeVoidAsync(
             "setTheme",
-            _codeMirror.Id,
-            _codeMirror.Theme?.ToString()
+            cm6WrapperComponent.Id,
+            cm6WrapperComponent.Theme?.ToString()
         );
     }
 
@@ -132,8 +126,8 @@ public class CodeMirrorJsInterop : IAsyncDisposable
         if (module is null) return;
         await module.InvokeVoidAsync(
             "setReadOnly",
-            _codeMirror.Id,
-            _codeMirror.ReadOnly
+            cm6WrapperComponent.Id,
+            cm6WrapperComponent.ReadOnly
         );
     }
 
@@ -147,8 +141,8 @@ public class CodeMirrorJsInterop : IAsyncDisposable
         if (module is null) return;
         await module.InvokeVoidAsync(
             "setEditable",
-            _codeMirror.Id,
-            _codeMirror.Editable
+            cm6WrapperComponent.Id,
+            cm6WrapperComponent.Editable
         );
     }
 
@@ -161,8 +155,23 @@ public class CodeMirrorJsInterop : IAsyncDisposable
         if (module is null) return;
         await module.InvokeVoidAsync(
             "setLanguage",
-            _codeMirror.Id,
-            _codeMirror.Language?.ToString()
+            cm6WrapperComponent.Id,
+            cm6WrapperComponent.Language?.ToString()
+        );
+    }
+
+    /// <summary>
+    /// Set the auto format markdown headers state
+    /// </summary>
+    /// <returns></returns>
+    public async Task SetAutoFormatMarkdownHeaders()
+    {
+        var module = await _moduleTask.Value;
+        if (module is null) return;
+        await module.InvokeVoidAsync(
+            "setAutoFormatMarkdownHeaders",
+            cm6WrapperComponent.Id,
+            cm6WrapperComponent.AutoFormatMarkdownHeaders
         );
     }
 

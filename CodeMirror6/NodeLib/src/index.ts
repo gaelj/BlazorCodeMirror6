@@ -1,30 +1,34 @@
-import {basicSetup} from "codemirror"
-import {EditorView, keymap, placeholder} from "@codemirror/view"
-import {EditorState, Compartment, Extension} from "@codemirror/state"
-import {indentWithTab} from "@codemirror/commands"
-import {indentUnit, LanguageSupport} from "@codemirror/language"
-import {cpp, cppLanguage} from "@codemirror/lang-cpp"
-import {css, cssLanguage} from "@codemirror/lang-css"
-import {html, htmlLanguage} from "@codemirror/lang-html"
-import {java, javaLanguage} from "@codemirror/lang-java"
-import {javascript, javascriptLanguage} from "@codemirror/lang-javascript"
-import {json, jsonLanguage} from "@codemirror/lang-json"
-import {lezer, lezerLanguage} from "@codemirror/lang-lezer"
-import {markdown, markdownLanguage} from "@codemirror/lang-markdown"
-import {python, pythonLanguage} from "@codemirror/lang-python"
-import {sql, MSSQL} from "@codemirror/lang-sql"
-import {rust, rustLanguage} from "@codemirror/lang-rust"
-import {sass, sassLanguage} from "@codemirror/lang-sass"
-import {xml, xmlLanguage} from "@codemirror/lang-xml"
-import {languages} from "@codemirror/language-data"
-import {autocompletion} from "@codemirror/autocomplete"
-import {CmInstance} from "./CmInstance"
-import {CmConfig} from "./CmConfig"
-import {amy, ayuLight, barf, bespin, birdsOfParadise, boysAndGirls, clouds, cobalt, coolGlow, dracula, espresso, noctisLilac, rosePineDawn, smoothy, solarizedLight, tomorrow} from 'thememirror'
-import {oneDark} from "@codemirror/theme-one-dark"
+import {
+    EditorView, keymap, highlightSpecialChars, drawSelection, highlightActiveLine, dropCursor,
+    rectangularSelection, crosshairCursor,
+    lineNumbers, highlightActiveLineGutter, placeholder
+} from "@codemirror/view"
+import { EditorState } from "@codemirror/state"
+import { indentWithTab, history, historyKeymap, cursorSyntaxLeft, moveLineDown, moveLineUp,
+    selectSyntaxLeft, selectSyntaxRight, cursorSyntaxRight, selectParentSyntax, indentLess, indentMore,
+    copyLineUp, copyLineDown, indentSelection, deleteLine, cursorMatchingBracket, toggleComment, toggleBlockComment,
+    simplifySelection, insertBlankLine, selectLine
+} from "@codemirror/commands"
+import {
+    indentUnit, defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
+    foldGutter, foldKeymap
+} from "@codemirror/language"
+import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete"
+import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
+import { lintKeymap } from "@codemirror/lint"
 
-let CMInstances: { [id: string]: CmInstance } = {}
+import { CmInstance, CMInstances } from "./CmInstance"
+import { CmConfig } from "./CmConfig"
+import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
+import { getTheme } from "./CmTheme"
+import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLanguage"
 
+/**
+ * Initialize a new CodeMirror instance
+ * @param dotnetHelper
+ * @param id
+ * @param config
+ */
 export function initCodeMirror(
     dotnetHelper: any,
     id: string,
@@ -34,9 +38,9 @@ export function initCodeMirror(
     CMInstances[id].dotNetHelper = dotnetHelper
 
     let extensions = [
-        basicSetup,
+        CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(config.languageName))),
         CMInstances[id].languageCompartment.of(getLanguage(config.languageName)),
-        CMInstances[id].keymapCompartment.of(keymap.of([indentWithTab])),
+        CMInstances[id].markdownStylingCompartment.of(getDynamicHeaderStyling(config.autoFormatMarkdownHeaders)),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(config.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(config.tabSize))),
 
@@ -50,7 +54,7 @@ export function initCodeMirror(
                     await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
             }
             if (update.selectionSet) {
-                await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => {return {from: r.from, to: r.to}}))
+                await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
             }
         }),
 
@@ -58,7 +62,63 @@ export function initCodeMirror(
         CMInstances[id].themeCompartment.of(getTheme(config.themeName)),
         CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(config.readOnly)),
         CMInstances[id].editableCompartment.of(EditorView.editable.of(config.editable)),
-        autocompletion()
+
+        // Basic Setup
+        lineNumbers(),
+        highlightActiveLineGutter(),
+        highlightSpecialChars(),
+        history(),
+        foldGutter(),
+        drawSelection(),
+        dropCursor(),
+        EditorState.allowMultipleSelections.of(true),
+        indentOnInput(),
+        syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+        bracketMatching(),
+        closeBrackets(),
+        autocompletion(),
+        rectangularSelection(),
+        crosshairCursor(),
+        highlightActiveLine(),
+        highlightSelectionMatches(),
+        keymap.of([
+            ...closeBracketsKeymap,
+
+            //...defaultKeymap,
+            {key: "Alt-ArrowLeft", mac: "Ctrl-ArrowLeft", run: cursorSyntaxLeft, shift: selectSyntaxLeft},
+            {key: "Alt-ArrowRight", mac: "Ctrl-ArrowRight", run: cursorSyntaxRight, shift: selectSyntaxRight},
+
+            {key: "Alt-ArrowUp", run: moveLineUp},
+            {key: "Shift-Alt-ArrowUp", run: copyLineUp},
+
+            {key: "Alt-ArrowDown", run: moveLineDown},
+            {key: "Shift-Alt-ArrowDown", run: copyLineDown},
+
+            {key: "Escape", run: simplifySelection},
+            {key: "Mod-Enter", run: insertBlankLine},
+
+            {key: "Alt-l", mac: "Ctrl-l", run: selectLine},
+            {key: "Mod-i", run: selectParentSyntax, preventDefault: true},
+
+            {key: "Mod-[", run: indentLess},
+            {key: "Mod-]", run: indentMore},
+            {key: "Mod-Alt-\\", run: indentSelection},
+
+            {key: "Shift-Mod-k", run: deleteLine},
+
+            {key: "Shift-Mod-\\", run: cursorMatchingBracket},
+
+            {key: "Mod-/", run: toggleComment},
+            {key: "Alt-A", run: toggleBlockComment},
+
+            ...searchKeymap,
+            ...historyKeymap,
+            ...foldKeymap,
+            ...completionKeymap,
+            ...lintKeymap,
+
+            indentWithTab,
+        ])
     ]
 
     CMInstances[id].state = EditorState.create({
@@ -72,8 +132,7 @@ export function initCodeMirror(
     })
 }
 
-export function setTabSize(id: string, size: number)
-{
+export function setTabSize(id: string, size: number) {
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].tabSizeCompartment.reconfigure(EditorState.tabSize.of(size))
     })
@@ -85,10 +144,9 @@ export function setIndentUnit(id: string, indentUnitString: string) {
     })
 }
 
-export function setDoc(id: string, text: string)
-{
+export function setDoc(id: string, text: string) {
     const transaction = CMInstances[id].view.state.update({
-        changes: {from: 0, to: CMInstances[id].view.state.doc.length, insert: text}
+        changes: { from: 0, to: CMInstances[id].view.state.doc.length, insert: text }
     })
     CMInstances[id].view.dispatch(transaction)
 }
@@ -122,90 +180,28 @@ export function setEditable(id: string, editable: boolean) {
 
 export function setLanguage(id: string, languageName: string) {
     const language = getLanguage(languageName)
+    const customKeyMap = getLanguageKeyMaps(languageName)
     CMInstances[id].view.dispatch({
-        effects: CMInstances[id].languageCompartment.reconfigure(language)
+        effects: [
+            CMInstances[id].languageCompartment.reconfigure(language),
+            CMInstances[id].keymapCompartment.reconfigure(keymap.of(customKeyMap)),
+            languageChangeEffect.of(language.language)
+        ]
     })
 }
 
-// Return the thememirror theme Extension matching the supplied string
-function getTheme(themeName: string): Extension {
-    switch (themeName) {
-        case "Amy":
-            return amy
-        case "AyuLight":
-            return ayuLight
-        case "Barf":
-            return barf
-        case "Bespin":
-            return bespin
-        case "BirdsOfParadise":
-            return birdsOfParadise
-        case "BoysAndGirls":
-            return boysAndGirls
-        case "Clouds":
-            return clouds
-        case "Cobalt":
-            return cobalt
-        case "CoolGlow":
-            return coolGlow
-        case "Dracula":
-            return dracula
-        case "Espresso":
-            return espresso
-        case "NoctisLilac":
-            return noctisLilac
-        case "RosePineDawn":
-            return rosePineDawn
-        case "Smoothy":
-            return smoothy
-        case "SolarizedLight":
-            return solarizedLight
-        case "Tomorrow":
-            return tomorrow
-        case "Dracula":
-            return dracula
-        case "OneDark":
-            return oneDark
-        default:
-            return EditorView.baseTheme({})
-    }
+export function setAutoFormatMarkdownHeaders(id: string, autoFormatMarkdownHeaders: boolean) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].markdownStylingCompartment.reconfigure(getDynamicHeaderStyling(autoFormatMarkdownHeaders))
+    })
 }
 
-function getLanguage(languageName: string): LanguageSupport {
-    switch (languageName) {
-        case "Cpp":
-            return cpp()
-        case "Css":
-            return css()
-        case "Html":
-            return html()
-        case "Java":
-            return java()
-        case "Javascript":
-            return javascript()
-        case "Json":
-            return json()
-        case "Lezer":
-            return lezer()
-        case "Python":
-            return python()
-        case "Rust":
-            return rust()
-        case "Sass":
-            return sql()
-        case "Sql":
-            return sass()
-        case "Xml":
-            return xml()
-        case "Markdown":
-        default:
-            return markdown({ base: markdownLanguage, codeLanguages: languages, addKeymap: true })
-    }
-}
-
-
-export function dispose(id: string)
-{
+/**
+ * Dispose of a CodeMirror instance
+ * @param id
+ */
+export function dispose(id: string) {
+    CMInstances[id].view.destroy()
     CMInstances[id] = undefined
     delete CMInstances[id]
 }
