@@ -16,12 +16,12 @@ import {
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
 import { lintKeymap } from "@codemirror/lint"
-import { CmConfig } from "./CmConfig"
-import { languageChangeEffect, getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
-import { getTheme } from "./CmTheme"
-import { getLanguage } from "./CmLanguage"
 
-let CMInstances: { [id: string]: CmInstance } = {}
+import { CmInstance, CMInstances } from "./CmInstance"
+import { CmConfig } from "./CmConfig"
+import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
+import { getTheme } from "./CmTheme"
+import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLanguage"
 
 /**
  * Initialize a new CodeMirror instance
@@ -38,10 +38,9 @@ export function initCodeMirror(
     CMInstances[id].dotNetHelper = dotnetHelper
 
     let extensions = [
-        basicSetup,
+        CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(config.languageName))),
         CMInstances[id].languageCompartment.of(getLanguage(config.languageName)),
         CMInstances[id].markdownStylingCompartment.of(getDynamicHeaderStyling(config.autoFormatMarkdownHeaders)),
-        CMInstances[id].keymapCompartment.of(keymap.of([indentWithTab])),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(config.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(config.tabSize))),
 
@@ -181,9 +180,11 @@ export function setEditable(id: string, editable: boolean) {
 
 export function setLanguage(id: string, languageName: string) {
     const language = getLanguage(languageName)
+    const customKeyMap = getLanguageKeyMaps(languageName)
     CMInstances[id].view.dispatch({
         effects: [
             CMInstances[id].languageCompartment.reconfigure(language),
+            CMInstances[id].keymapCompartment.reconfigure(keymap.of(customKeyMap)),
             languageChangeEffect.of(language.language)
         ]
     })

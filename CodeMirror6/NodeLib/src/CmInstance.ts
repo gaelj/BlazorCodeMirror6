@@ -19,3 +19,5 @@ export class CmInstance
     public editableCompartment: Compartment = new Compartment
     public keymapCompartment: Compartment = new Compartment
 }
+
+export const CMInstances: { [id: string]: CmInstance}  = {}

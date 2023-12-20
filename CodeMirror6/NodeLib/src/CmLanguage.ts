@@ -13,6 +13,14 @@ import { rust, rustLanguage } from "@codemirror/lang-rust"
 import { sass, sassLanguage } from "@codemirror/lang-sass"
 import { xml, xmlLanguage } from "@codemirror/lang-xml"
 import { languages } from "@codemirror/language-data";
+import { Language } from "@codemirror/language";
+import { StateEffect } from "@codemirror/state";
+import { customMarkdownKeymap } from "./CmKeymap";
+
+/**
+ * StateEffect that is triggered when the language changes
+ */
+export const languageChangeEffect = StateEffect.define<Language>()
 
 /**
  * Return the LanguageSupport matching the supplied language name string
@@ -22,31 +30,63 @@ import { languages } from "@codemirror/language-data";
 export function getLanguage(languageName: string): LanguageSupport {
     switch (languageName) {
         case "Cpp":
-            return cpp();
+            return cpp()
         case "Css":
-            return css();
+            return css()
         case "Html":
-            return html();
+            return html()
         case "Java":
-            return java();
+            return java()
         case "Javascript":
-            return javascript();
+            return javascript()
         case "Json":
-            return json();
+            return json()
         case "Lezer":
-            return lezer();
+            return lezer()
         case "Python":
-            return python();
+            return python()
         case "Rust":
-            return rust();
+            return rust()
         case "Sass":
-            return sql();
+            return sql()
         case "Sql":
-            return sass();
+            return sass()
         case "Xml":
-            return xml();
+            return xml()
         case "Markdown":
         default:
-            return markdown({ base: markdownLanguage, codeLanguages: languages, addKeymap: true });
+            return markdown({ base: markdownLanguage, codeLanguages: languages, addKeymap: true })
+    }
+}
+
+export function getLanguageKeyMaps(languageName: string) {
+    switch (languageName) {
+        case "Cpp":
+            return []
+        case "Css":
+            return []
+        case "Html":
+            return []
+        case "Java":
+            return []
+        case "Javascript":
+            return []
+        case "Json":
+            return []
+        case "Lezer":
+            return []
+        case "Python":
+            return []
+        case "Rust":
+            return []
+        case "Sass":
+            return []
+        case "Sql":
+            return []
+        case "Xml":
+            return []
+        case "Markdown":
+        default:
+            return customMarkdownKeymap
     }
 }
