@@ -60,7 +60,8 @@
                 Quote
             </button>
             @for (var i = 1; i <= 6; i++) {
-                <button class=@ButtonClass(c.State, $"ATXHeading{i}") @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownHeading(i)) title="Toggle heading text">
+                var headingLevel = i; // Capture the current value of i in a local variable
+                <button class=@ButtonClass(c.State, $"ATXHeading{i}") @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownHeading(headingLevel)) title="Toggle heading text">
                     @($"H{i}")
                 </button>
             }
