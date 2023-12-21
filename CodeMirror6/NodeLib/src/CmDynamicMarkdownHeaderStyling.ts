@@ -24,7 +24,7 @@ function dynamicMarkdownHeaderStyling() {
             if (update.docChanged || update.viewportChanged ||
                 update.transactions.some(tr => tr.effects.some(e => e.is(languageChangeEffect)))
             ) {
-                this.decorations = this.getDecorations(update.view);
+                this.decorations = this.getDecorations(update.view)
             }
         }
 
@@ -37,7 +37,7 @@ function dynamicMarkdownHeaderStyling() {
                 to: view.viewport.to,
                 enter: (node) => {
                     if (node.name.startsWith('ATXHeading')) {
-                        const line = doc.lineAt(node.from).text.trimStart();
+                        const line = doc.lineAt(node.from).text.trimStart()
 
                         if (markdownLanguage.isActiveAt(view.state, node.from) && line.startsWith('#')) {
                             let headerLevel = line.indexOf(' ')
@@ -46,11 +46,11 @@ function dynamicMarkdownHeaderStyling() {
                             const fontSize = `${1 + 0.7 * (7 - headerLevel)}em`
                             decorations.push(Decoration.line({
                                 attributes: { style: `font-size: ${fontSize};` }
-                            }).range(node.from, node.from));
+                            }).range(node.from, node.from))
                         }
                     }
                 }
-            });
+            })
 
             return Decoration.set(decorations)
         }

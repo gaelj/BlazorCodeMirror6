@@ -7,7 +7,7 @@ function toggleCharactersAroundRange(controlChar: string, state: EditorState, ra
     const controlCharLength = controlChar.length;
     const isStyledBefore = state.sliceDoc(range.from - controlCharLength, range.from) === controlChar;
     const isStyledAfter = state.sliceDoc(range.to, range.to + controlCharLength) === controlChar;
-    const changes = [];
+    const changes = []
 
     changes.push(isStyledBefore ? {
         from: range.from - controlCharLength,
@@ -16,7 +16,7 @@ function toggleCharactersAroundRange(controlChar: string, state: EditorState, ra
     } : {
         from: range.from,
         insert: Text.of([controlChar]),
-    });
+    })
 
     changes.push(isStyledAfter ? {
         from: range.to,
@@ -25,7 +25,7 @@ function toggleCharactersAroundRange(controlChar: string, state: EditorState, ra
     } : {
         from: range.to,
         insert: Text.of([controlChar]),
-    });
+    })
 
     const extendBefore = isStyledBefore ? -controlCharLength : controlCharLength;
     const extendAfter = isStyledAfter ? -controlCharLength : controlCharLength;
@@ -33,7 +33,7 @@ function toggleCharactersAroundRange(controlChar: string, state: EditorState, ra
     return {
         changes,
         range: EditorSelection.range(range.from + extendBefore, range.to + extendAfter),
-    };
+    }
 }
 
 function toggleCharactersAroundRanges(state: EditorState, dispatch: (tr: Transaction) => void, controlChar: string): boolean{
@@ -64,7 +64,7 @@ function toggleCharactersAtStartOfLine(state: EditorState, dispatch: (tr: Transa
         } : {
             from: line.from,
             insert: Text.of([fullControlChar]),
-        });
+        })
 
         return {
             changes,
@@ -72,7 +72,7 @@ function toggleCharactersAtStartOfLine(state: EditorState, dispatch: (tr: Transa
                 range.from + ((wasStyled ? -1 : 1) * fullControlChar.length),
                 range.to + ((wasStyled ? -1 : 1) * fullControlChar.length)
             ),
-        };
+        }
     })
     dispatch(state.update(changes, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), }))
     return true
