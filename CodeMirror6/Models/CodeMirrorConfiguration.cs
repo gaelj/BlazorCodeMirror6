@@ -29,46 +29,46 @@ public class CodeMirrorConfiguration(
     /// <summary>
     /// The text to display in the editor
     /// </summary>
-    [JsonPropertyName("doc")] public string? Doc { get; set; } = doc;
+    [JsonPropertyName("doc")] public string? Doc { get; internal set; } = doc;
 
     /// <summary>
     /// The placeholder to display in the editor
     /// </summary>
-    [JsonPropertyName("placeholder")] public string? Placeholder { get; set; } = placeholder;
+    [JsonPropertyName("placeholder")] public string? Placeholder { get; internal set; } = placeholder;
 
     /// <summary>
     /// The theme to use for the editor
     /// </summary>
-    [JsonPropertyName("themeName")] public string? ThemeName { get; set; } = themeName;
+    [JsonPropertyName("themeName")] public string? ThemeName { get; internal set; } = themeName;
 
     /// <summary>
     /// The tab size to use for the editor
     /// </summary>
-    [JsonPropertyName("tabSize")] public int TabSize { get; set; } = tabSize;
+    [JsonPropertyName("tabSize")] public int TabSize { get; internal set; } = tabSize;
 
     /// <summary>
     /// The indent unit to use for the editor
     /// </summary>
-    [JsonPropertyName("indentationUnit")] public int IndentationUnit { get; set; } = indentationUnit;
+    [JsonPropertyName("indentationUnit")] public int IndentationUnit { get; internal set; } = indentationUnit;
 
     /// <summary>
     /// Determine whether editing functionality should apply.
-    /// Not to be confused with editable, which controls whether the editor's DOM is set to be editable (and thus focusable).
+    /// Not to be confused with editable, which controls whether the editor's DOM is internal set to be editable (and thus focusable).
     /// </summary>
-    [JsonPropertyName("readOnly")] public bool ReadOnly { get; set; } = readOnly;
+    [JsonPropertyName("readOnly")] public bool ReadOnly { get; internal set; } = readOnly;
 
     /// <summary>
     /// Controls whether the editor content DOM is editable
     /// </summary>
-    [JsonPropertyName("editable")] public bool Editable { get; set; } = editable;
+    [JsonPropertyName("editable")] public bool Editable { get; internal set; } = editable;
 
     /// <summary>
     /// The language to use in the editor
     /// </summary>
-    [JsonPropertyName("languageName")] public string? LanguageName { get; set; } = languageName;
+    [JsonPropertyName("languageName")] public string? LanguageName { get; internal set; } = languageName;
 
     /// <summary>
     /// Whether to automatically format (resize) markdown headers
     /// </summary>
-    [JsonPropertyName("autoFormatMarkdownHeaders")] public bool AutoFormatMarkdownHeaders { get; set; } = autoFormatMarkdownHeaders;
+    [JsonPropertyName("autoFormatMarkdownHeaders")] public bool AutoFormatMarkdownHeaders { get; internal set; } = autoFormatMarkdownHeaders;
 }
