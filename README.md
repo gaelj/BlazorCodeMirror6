@@ -58,3 +58,7 @@ The example component is in `Examples.Common/Example.razor`
 ## Task list
 
 - [ ] [Starting selection](https://codemirror.net/docs/ref/#state.EditorStateConfig.selection)
+
+## Screenshots
+
+![image](https://github.com/gaelj/BlazorCodeMirror6/assets/8884632/141f6b9e-82c4-433a-94d9-a02aba6ac336)
