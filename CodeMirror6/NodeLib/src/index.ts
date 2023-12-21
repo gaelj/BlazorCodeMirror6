@@ -16,7 +16,7 @@ import {
 } from "@codemirror/language"
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
-import { lintKeymap } from "@codemirror/lint"
+import { linter, lintKeymap } from "@codemirror/lint"
 
 import { CmInstance, CMInstances } from "./CmInstance"
 import { CmConfig } from "./CmConfig"
@@ -30,6 +30,7 @@ import {
     toggleMarkdownUnorderedListCommand, toggleMarkdownOrderedListCommand, toggleMarkdownTaskListCommand, getMarkdownStyleAtRange,
 } from "./CmCommands"
 import { images } from "./CmImages"
+import { externalLintSource, getExternalLinterConfig } from "./CmLint"
 
 async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
     if (update.docChanged) {
@@ -74,6 +75,7 @@ export function initCodeMirror(
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
 
         images(),
+        linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()),
 
         // Basic Setup
         lineNumbers(),

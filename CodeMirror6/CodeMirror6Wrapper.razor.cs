@@ -106,6 +106,11 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <value></value>
     [Parameter] public bool AllowHorizontalResize { get; set; }
     /// <summary>
+    /// Find any errors in the document
+    /// </summary>
+    /// <value></value>
+    [Parameter] public Func<string, CancellationToken, Task<List<CodeMirrorDiagnostic>>> LintDocument { get; set; } = (_, _) => Task.FromResult(new List<CodeMirrorDiagnostic>());
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     /// <value></value>
@@ -174,6 +179,30 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
         State.MarkdownStylesAtSelections = values?.ToList() ?? [];
         await MarkdownStylesAtSelectionsChanged.InvokeAsync(State.MarkdownStylesAtSelections);
     }
+
+    /// <summary>
+    /// codeMirror requested linting of the document
+    /// </summary>
+    /// <param name="code"></param>
+    /// <returns></returns>
+    [JSInvokable]
+    public async Task<List<CodeMirrorDiagnostic>> LintingRequestedFromJS(string code)
+    {
+        try {
+            LinterCancellationTokenSource.Cancel();
+        }
+        catch (ObjectDisposedException) {}
+        LinterCancellationTokenSource = new();
+        var token = LinterCancellationTokenSource.Token;
+        try {
+            return await LintDocument(code, token);
+        }
+        catch (OperationCanceledException) {
+            return [];
+        }
+    }
+
+    private CancellationTokenSource LinterCancellationTokenSource = new();
 
     /*
     [JSInvokable] public async Task<string> UploadFileBlob(string base64, string fileName) => await DoUploadFileBlob(base64, fileName);
@@ -276,6 +305,11 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     {
         if (CmJsInterop is not null)
             await CmJsInterop.DisposeAsync();
+        try {
+            LinterCancellationTokenSource.Cancel();
+            LinterCancellationTokenSource.Dispose();
+        }
+        catch (ObjectDisposedException) {}
         GC.SuppressFinalize(this);
     }
 }

@@ -16,6 +16,7 @@ A CodeMirror 6 component for Blazor in .Net 7 and .Net 8.
 - report Markdown syntax at selection(s)
 - manual resizing of the editor
 - image preview
+- linting
 
 ### Markdown language
 
