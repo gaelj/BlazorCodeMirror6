@@ -23,7 +23,9 @@ import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
 import { getTheme } from "./CmTheme"
 import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLanguage"
 import { toggleMarkdownBoldCommand, toggleMarkdownCodeBlockCommand, toggleMarkdownCodeCommand, toggleMarkdownItalicCommand,
-    toggleMarkdownStrikethroughCommand
+    toggleMarkdownStrikethroughCommand, toggleMarkdownQuoteCommand, toggleMarkdownHeading1Command, toggleMarkdownHeading2Command,
+    toggleMarkdownHeading3Command, toggleMarkdownHeading4Command, toggleMarkdownHeading5Command, toggleMarkdownHeading6Command,
+    toggleMarkdownUnorderedListCommand, toggleMarkdownOrderedListCommand, toggleMarkdownTaskListCommand,
 } from "./CmCommands"
 
 /**
@@ -203,6 +205,16 @@ export const toggleMarkdownItalic = (id: string) => toggleMarkdownItalicCommand(
 export const toggleMarkdownStrikethrough = (id: string) => toggleMarkdownStrikethroughCommand(CMInstances[id].view)
 export const toggleMarkdownCode = (id: string) => toggleMarkdownCodeCommand(CMInstances[id].view)
 export const toggleMarkdownCodeBlock = (id: string) => toggleMarkdownCodeBlockCommand(CMInstances[id].view)
+export const toggleMarkdownQuote = (id: string) => toggleMarkdownQuoteCommand(CMInstances[id].view)
+export const toggleMarkdownHeading1 = (id: string) => toggleMarkdownHeading1Command(CMInstances[id].view)
+export const toggleMarkdownHeading2 = (id: string) => toggleMarkdownHeading2Command(CMInstances[id].view)
+export const toggleMarkdownHeading3 = (id: string) => toggleMarkdownHeading3Command(CMInstances[id].view)
+export const toggleMarkdownHeading4 = (id: string) => toggleMarkdownHeading4Command(CMInstances[id].view)
+export const toggleMarkdownHeading5 = (id: string) => toggleMarkdownHeading5Command(CMInstances[id].view)
+export const toggleMarkdownHeading6 = (id: string) => toggleMarkdownHeading6Command(CMInstances[id].view)
+export const toggleMarkdownUnorderedList = (id: string) => toggleMarkdownUnorderedListCommand(CMInstances[id].view)
+export const toggleMarkdownOrderedList = (id: string) => toggleMarkdownOrderedListCommand(CMInstances[id].view)
+export const toggleMarkdownTaskList = (id: string) => toggleMarkdownTaskListCommand(CMInstances[id].view)
 
 export const performUndo = (id: string) => undo(CMInstances[id].view)
 export const performRedo = (id: string) => redo(CMInstances[id].view)

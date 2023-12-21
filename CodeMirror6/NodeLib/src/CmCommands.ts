@@ -47,8 +47,48 @@ function toggleCharactersAroundRanges(state: EditorState, dispatch: (tr: Transac
     return true
 }
 
+function toggleCharactersAtStartOfLine(state: EditorState, dispatch: (tr: Transaction) => void, controlChar: string): boolean {
+    const changes = state.changeByRange((range: SelectionRange) => {
+        if (!markdownLanguage.isActiveAt(state, range.from)) {
+            return { range }
+        }
+        const fullControlChar = `${controlChar} `
+        const line = state.doc.lineAt(range.from)
+        const isStyled = line.text.trimStart().startsWith(fullControlChar);
+        const changes = [];
+
+        changes.push(isStyled ? {
+            from: line.from,
+            to: line.from + fullControlChar.length,
+            insert: Text.of([''])
+        } : {
+            from: line.from,
+            insert: Text.of([fullControlChar]),
+        });
+
+        return {
+            changes,
+            range: EditorSelection.range(range.from, range.to),
+        };
+    })
+    dispatch(state.update(changes, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), }))
+    return true
+}
+
 export const toggleMarkdownBoldCommand: Command = ({ state, dispatch }) => toggleCharactersAroundRanges(state, dispatch, "**")
 export const toggleMarkdownItalicCommand: Command = ({ state, dispatch }) => toggleCharactersAroundRanges(state, dispatch, "*")
 export const toggleMarkdownStrikethroughCommand: Command = ({ state, dispatch }) => toggleCharactersAroundRanges(state, dispatch, "~~")
 export const toggleMarkdownCodeCommand: Command = ({ state, dispatch }) => toggleCharactersAroundRanges(state, dispatch, "`")
 export const toggleMarkdownCodeBlockCommand: Command = ({ state, dispatch }) => toggleCharactersAroundRanges(state, dispatch, "```")
+
+export const toggleMarkdownQuoteCommand: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, ">")
+export const toggleMarkdownHeading1Command: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "#")
+export const toggleMarkdownHeading2Command: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "##")
+export const toggleMarkdownHeading3Command: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "###")
+export const toggleMarkdownHeading4Command: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "####")
+export const toggleMarkdownHeading5Command: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "#####")
+export const toggleMarkdownHeading6Command: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "######")
+export const toggleMarkdownUnorderedListCommand: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "-")
+export const toggleMarkdownOrderedListCommand: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "1.")
+export const toggleMarkdownTaskListCommand: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "- [ ]")
+

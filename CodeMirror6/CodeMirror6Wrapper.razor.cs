@@ -179,7 +179,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
         if (firstRender) {
             if (CmJsInterop is null) {
                 CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
-                await CmJsInterop.InitCodeMirror();
+                await CmJsInterop.PropertySetters.InitCodeMirror();
             }
         }
     }
@@ -195,39 +195,39 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
         shouldRender = false;
         if (Config.TabSize != TabSize) {
             Config.TabSize = TabSize;
-            await CmJsInterop.SetTabSize();
+            await CmJsInterop.PropertySetters.SetTabSize();
         }
         if (Config.IndentationUnit != IndentationUnit) {
             Config.IndentationUnit = IndentationUnit;
-            await CmJsInterop.SetIndentUnit();
+            await CmJsInterop.PropertySetters.SetIndentUnit();
         }
         if (Config.Doc?.Replace("\r", "") != Doc?.Replace("\r", "")) {
             Config.Doc = Doc;
-            await CmJsInterop.SetDoc();
+            await CmJsInterop.PropertySetters.SetDoc();
         }
         if (Config.Placeholder != Placeholder) {
             Config.Placeholder = Placeholder;
-            await CmJsInterop.SetPlaceholderText();
+            await CmJsInterop.PropertySetters.SetPlaceholderText();
         }
         if (Config.ThemeName != Theme?.ToString()) {
             Config.ThemeName = Theme?.ToString();
-            await CmJsInterop.SetTheme();
+            await CmJsInterop.PropertySetters.SetTheme();
         }
         if (Config.ReadOnly != ReadOnly) {
             Config.ReadOnly = ReadOnly;
-            await CmJsInterop.SetReadOnly();
+            await CmJsInterop.PropertySetters.SetReadOnly();
         }
         if (Config.Editable != Editable) {
             Config.Editable = Editable;
-            await CmJsInterop.SetEditable();
+            await CmJsInterop.PropertySetters.SetEditable();
         }
         if (Config.LanguageName != Language?.ToString()) {
             Config.LanguageName = Language?.ToString();
-            await CmJsInterop.SetLanguage();
+            await CmJsInterop.PropertySetters.SetLanguage();
         }
         if (Config.AutoFormatMarkdownHeaders != AutoFormatMarkdownHeaders) {
             Config.AutoFormatMarkdownHeaders = AutoFormatMarkdownHeaders;
-            await CmJsInterop.SetAutoFormatMarkdownHeaders();
+            await CmJsInterop.PropertySetters.SetAutoFormatMarkdownHeaders();
         }
         shouldRender = true;
     }

@@ -41,17 +41,29 @@
 >
     <ContentBefore Context="c">
         <div>
-            <button
-                @onclick=@(() => c.CmJsInterop.ToggleMarkdownBold())
-                title="Toggle bold text (Ctrl-B)"
-            >
+            <button @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownBold()) title="Toggle bold text (Ctrl-B)">
                 Bold
             </button>
-            <button
-                @onclick=@(() => c.CmJsInterop.ToggleMarkdownBold())
-                title="Toggle italic text (Ctrl-I)"
-            >
+            <button @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownBold()) title="Toggle italic text (Ctrl-I)">
                 Italic
+            </button>
+            <button @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownStrikethrough()) title="Toggle strike-through text">
+                Strikethrough
+            </button>
+            <button @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownCode()) title="Toggle inline code text">
+                Code
+            </button>
+            <button @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownCodeBlock()) title="Toggle code block text">
+                Code block
+            </button>
+            <button @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownQuote()) title="Toggle quoted text">
+                Quote
+            </button>
+            <button @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownHeading1()) title="Toggle heading text">
+                H1
+            </button>
+            <button @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownHeading2()) title="Toggle heading text">
+                H2
             </button>
         </div>
     </ContentBefore>
