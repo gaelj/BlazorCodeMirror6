@@ -29,6 +29,7 @@ import {
     toggleMarkdownHeading3Command, toggleMarkdownHeading4Command, toggleMarkdownHeading5Command, toggleMarkdownHeading6Command,
     toggleMarkdownUnorderedListCommand, toggleMarkdownOrderedListCommand, toggleMarkdownTaskListCommand, getMarkdownStyleAtRange,
 } from "./CmCommands"
+import { images } from "./CmImages"
 
 async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
     if (update.docChanged) {
@@ -71,6 +72,8 @@ export function initCodeMirror(
         CMInstances[id].editableCompartment.of(EditorView.editable.of(config.editable)),
 
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
+
+        images(),
 
         // Basic Setup
         lineNumbers(),
