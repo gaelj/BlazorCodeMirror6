@@ -37,7 +37,8 @@
     Theme=@Theme
     Language=@Language
     AutoFormatMarkdownHeaders=@AutoFormatMarkdownHeaders
-    style="max-width: 100%; max-height: 40em; "
+    LintDocument=@LintDocument
+    style="max-width: 100%; min-height: 40em; "
 >
     <ContentBefore Context="c">
         <div class="alert alert-info mt-3">
@@ -77,11 +78,10 @@
         </div>
     </ContentBefore>
 </CodeMirror6Wrapper>
-<hr />
+
 Result:
 <pre>@Text</pre>
 <hr />
-
 
 @if (selectionRanges1 is not null) {
     <div>
@@ -103,8 +103,9 @@ Result:
     Theme=@Theme
     Language=@CodeMirrorLanguage.Markdown
     AutoFormatMarkdownHeaders=@AutoFormatMarkdownHeaders
+    LintDocument=@LintDocument
 />
-<hr />
+
 Result:
 <pre>@Text2</pre>
 <hr />
@@ -129,8 +130,11 @@ Result:
     Theme=@Theme
     Language=@CodeMirrorLanguage.Markdown
     AutoFormatMarkdownHeaders=@AutoFormatMarkdownHeaders
+    LintDocument=@LintDocument
 />
 
+Result:
+<pre>@Text3</pre>
 <hr />
 
 @if (selectionRanges3 is not null) {
@@ -145,9 +149,6 @@ Result:
     }
     <hr />
 }
-Result:
-<pre>@Text3</pre>
-<hr />
 
 <button class="btn"
     @onclick=@(async () => {
@@ -167,6 +168,15 @@ function Demo() {{
 {tab}return <div>demo</div>
 }}
 ```
+
+there is an error here
+
+**bold text** *italic text*
+~~strikethrough text~~ `inline code` ***bold italic text***
+***~~bold italic strikethrough text~~***
+~~***bold italic strikethrough text***~~
+
+![an image](https://thumbs.dreamstime.com/b/moma-cat-cute-random-218934899.jpg)
 
 ```bash
 # Not dependent on uiw.
@@ -199,4 +209,25 @@ func main() {{
     private string ButtonClass(CodeMirrorState state, string docStyleTag) => state.MarkdownStylesAtSelections?.Contains(docStyleTag) == true
         ? "btn btn-primary"
         : "btn";
+    private Task<List<CodeMirrorDiagnostic>> LintDocument(string code, CancellationToken cancellationToken)
+    {
+        var result = new List<CodeMirrorDiagnostic>();
+        var position = 0;
+        foreach (var line in code.Split('\n')) {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (line.Contains("error")) {
+                result.Add(
+                    new CodeMirrorDiagnostic {
+                        From = position + line.IndexOf("error"),
+                        To = position + line.IndexOf("error") + "error".Length,
+                        Severity = "error",
+                        Message = "Error message",
+                        Source = "Custom linter"
+                    }
+                );
+            }
+            position += line.Length + 1;
+        }
+        return Task.FromResult(result);
+    }
 }
