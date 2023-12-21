@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace CodeMirror6.Models;
 
 /// <summary>
-/// Configuration of the CodeMirror editor
+/// Represents the configuration of the CodeMirror editor
 /// </summary>
 /// <param name="doc"></param>
 /// <param name="placeholder"></param>

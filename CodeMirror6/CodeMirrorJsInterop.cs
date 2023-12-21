@@ -189,12 +189,7 @@ public class CMCommands(CodeMirrorJsInterop cmJsInterop)
     /// <returns></returns>
     public Task ToggleMarkdownCodeBlock() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownCodeBlock");
     public Task ToggleMarkdownQuote() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownQuote");
-    public Task ToggleMarkdownHeading1() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownHeading1");
-    public Task ToggleMarkdownHeading2() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownHeading2");
-    public Task ToggleMarkdownHeading3() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownHeading3");
-    public Task ToggleMarkdownHeading4() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownHeading4");
-    public Task ToggleMarkdownHeading5() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownHeading5");
-    public Task ToggleMarkdownHeading6() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownHeading6");
+    public Task ToggleMarkdownHeading(int headerLevel) => cmJsInterop.ModuleInvokeVoidAsync($"toggleMarkdownHeading{headerLevel}");
     public Task ToggleMarkdownUnorderedList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownUnorderedList");
     public Task ToggleMarkdownOrderedList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownOrderedList");
     public Task ToggleMarkdownTaskList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownTaskList");

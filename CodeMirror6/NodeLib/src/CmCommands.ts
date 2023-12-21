@@ -1,7 +1,29 @@
-import { markdownLanguage } from "@codemirror/lang-markdown";
-import { Transaction } from "@codemirror/state";
-import { EditorState, EditorSelection, Text, SelectionRange } from "@codemirror/state";
-import { Command } from "@codemirror/view";
+import { markdownLanguage } from "@codemirror/lang-markdown"
+import { syntaxTree } from "@codemirror/language"
+import { SyntaxNodeRef } from "@lezer/common"
+import { ViewUpdate } from "@codemirror/view"
+import { Transaction } from "@codemirror/state"
+import { EditorState, EditorSelection, Text, SelectionRange } from "@codemirror/state"
+import { Command } from "@codemirror/view"
+
+export function getMarkdownStyleAtRange(update: ViewUpdate): string[] {
+    let styles: string[] = [];
+    for (let range of update.state.selection.ranges) {
+        let tree = syntaxTree(update.state);
+        tree.iterate({
+            from: range.from,
+            to: range.to,
+            enter: (node: SyntaxNodeRef) => {
+                const style = node.name;
+                if (style && !styles.includes(style)) {
+                    styles.push(style);
+                }
+            }
+        })
+    }
+    console.log("Active Markdown styles in selection:", styles)
+    return styles
+}
 
 function toggleCharactersAroundRange(controlChar: string, state: EditorState, range: SelectionRange) {
     const controlCharLength = controlChar.length;

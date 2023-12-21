@@ -85,17 +85,23 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// Content to be rendered before the editor
     /// </summary>
     /// <value></value>
-    [Parameter] public RenderFragment<(CodeMirrorJsInterop CmJsInterop, CodeMirrorConfiguration Config)>? ContentBefore { get; set; }
+    [Parameter] public RenderFragment<(CodeMirrorJsInterop CmJsInterop, CodeMirrorConfiguration Config, CodeMirrorState State)>? ContentBefore { get; set; }
     /// <summary>
     /// Content to be rendered after the editor
     /// </summary>
     /// <value></value>
-    [Parameter] public RenderFragment<(CodeMirrorJsInterop CmJsInterop, CodeMirrorConfiguration Config)>? ContentAfter { get; set; }
+    [Parameter] public RenderFragment<(CodeMirrorJsInterop CmJsInterop, CodeMirrorConfiguration Config, CodeMirrorState State)>? ContentAfter { get; set; }
+    /// <summary>
+    /// The active markdown styles at the current selection(s)
+    /// </summary>
+    /// <value></value>
+    [Parameter] public EventCallback<List<string>> MarkdownStylesAtSelectionsChanged { get; set; }
     /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     /// <value></value>
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
     /// <summary>
     /// JavaScript interop instance
     /// </summary>
@@ -105,14 +111,14 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     private bool shouldRender = true;
 
     internal CodeMirrorConfiguration Config = null!;
+    internal CodeMirrorState State = new();
 
     /// <summary>
     /// The document contents has changed
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    [JSInvokable]
-    public async Task DocChangedFromJS(string value)
+    [JSInvokable] public async Task DocChangedFromJS(string value)
     {
         if (Doc?.Replace("\r", "") == value?.Replace("\r", "")) return;
         Doc = value?.Replace("\r", "") ?? "";
@@ -125,8 +131,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    [JSInvokable]
-    public async Task FocusChangedFromJS(bool value)
+    [JSInvokable] public async Task FocusChangedFromJS(bool value)
     {
         if (hasFocus == value) return;
         hasFocus = value;
@@ -137,13 +142,23 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <summary>
     /// The cursor position or selections have changed
     /// </summary>
-    /// <param name="value"></param>
+    /// <param name="values"></param>
     /// <returns></returns>
-    [JSInvokable]
-    public async Task SelectionSetFromJS(IEnumerable<SelectionRange>? value)
+    [JSInvokable] public async Task SelectionSetFromJS(IEnumerable<SelectionRange>? values)
     {
-        Selection = value?.ToList();
+        Selection = values?.ToList();
         await SelectionChanged.InvokeAsync(Selection);
+    }
+
+    /// <summary>
+    /// The active markdown styles at the current selection(s) have changed
+    /// </summary>
+    /// <param name="values"></param>
+    /// <returns></returns>
+    [JSInvokable] public async Task MarkdownStyleChangedFromJS(IEnumerable<string>? values)
+    {
+        State.MarkdownStylesAtSelections = values?.ToList() ?? [];
+        await MarkdownStylesAtSelectionsChanged.InvokeAsync(State.MarkdownStylesAtSelections);
     }
 
     /*

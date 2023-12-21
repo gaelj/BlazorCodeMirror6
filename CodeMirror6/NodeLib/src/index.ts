@@ -27,7 +27,7 @@ import {
     toggleMarkdownBoldCommand, toggleMarkdownCodeBlockCommand, toggleMarkdownCodeCommand, toggleMarkdownItalicCommand,
     toggleMarkdownStrikethroughCommand, toggleMarkdownQuoteCommand, toggleMarkdownHeading1Command, toggleMarkdownHeading2Command,
     toggleMarkdownHeading3Command, toggleMarkdownHeading4Command, toggleMarkdownHeading5Command, toggleMarkdownHeading6Command,
-    toggleMarkdownUnorderedListCommand, toggleMarkdownOrderedListCommand, toggleMarkdownTaskListCommand,
+    toggleMarkdownUnorderedListCommand, toggleMarkdownOrderedListCommand, toggleMarkdownTaskListCommand, getMarkdownStyleAtRange,
 } from "./CmCommands"
 
 async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
@@ -40,7 +40,7 @@ async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
             await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
     }
     if (update.selectionSet) {
-        getMarkdownStyleAtRange('', update.state, update.state.selection.ranges[0])
+        await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtRange(update))
         await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
     }
 }
