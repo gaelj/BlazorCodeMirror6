@@ -35,8 +35,8 @@ function toggleCharactersAroundRange(controlChar: string, state: EditorState, ra
     const controlCharLength = controlChar.length
     const lineWithRangeFrom = state.doc.lineAt(range.from)
     const lineWithRangeTo = state.doc.lineAt(range.to)
-    const fromWithChars = range.from - controlCharLength < lineWithRangeFrom.from ? lineWithRangeFrom.from : range.from - controlCharLength
-    const toWithChars = range.to + controlCharLength > lineWithRangeTo.to ? lineWithRangeTo.to : range.to + controlCharLength
+    const fromWithChars = Math.max(range.from - controlCharLength, lineWithRangeFrom.from);
+    const toWithChars = Math.min(range.to + controlCharLength, lineWithRangeTo.to)
     const isStyledBefore = state.sliceDoc(fromWithChars, range.from) === controlChar
     const isStyledAfter = state.sliceDoc(range.to, toWithChars) === controlChar
     const changes = []
@@ -64,8 +64,8 @@ function toggleCharactersAroundRange(controlChar: string, state: EditorState, ra
 
     const newLineWithRangeFrom = state.doc.lineAt(range.from)
     const newLineWithRangeTo = state.doc.lineAt(range.to)
-    const extendedFrom = range.from + extendBefore < newLineWithRangeFrom.from ? newLineWithRangeFrom.from : range.from + extendBefore
-    const extendedTo = (range.to + extendAfter > newLineWithRangeTo.to ? newLineWithRangeTo.to : range.to) + extendAfter
+    const extendedFrom = Math.max(range.from, newLineWithRangeFrom.from) + extendBefore
+    const extendedTo = Math.min(range.to, newLineWithRangeTo.to) + extendAfter
 
     return {
         changes,
