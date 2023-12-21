@@ -124,10 +124,11 @@ function toggleCharactersAtStartOfLines(view: EditorView, controlChar: string): 
             newTo += fullControlChar.length
         }
 
-        if (newFrom < lineAtFrom.from) newFrom = lineAtFrom.from
-        if (newTo < lineAtFrom.from) newTo = lineAtFrom.from
-        if (newFrom > lineAtTo.to) newFrom = lineAtTo.to
-        if (newTo > lineAtTo.to) newTo = lineAtTo.to
+        const newLineAtFrom = view.state.doc.lineAt(range.from)
+        const newLineAtTo = view.state.doc.lineAt(range.to)
+        if (newFrom < newLineAtFrom.from) newFrom = newLineAtFrom.from
+        if (newTo < newLineAtFrom.from) newTo = newLineAtFrom.from
+        if (newFrom > newLineAtTo.to) newFrom = newLineAtTo.to
 
         return {
             changes,
