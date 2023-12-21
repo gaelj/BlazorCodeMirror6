@@ -22,7 +22,7 @@
 <label for="AutoFormatMarkdownHeaders">Auto-Format Markdown Headers</label>
 <input id="AutoFormatMarkdownHeaders" type="checkbox" @bind=@AutoFormatMarkdownHeaders />
 
-<button
+<button class="btn btn-danger"
     @onclick=@(async () => {
         Text = code.Replace("\r", "");
         await InvokeAsync(StateHasChanged);
@@ -37,8 +37,46 @@
     Theme=@Theme
     Language=@Language
     AutoFormatMarkdownHeaders=@AutoFormatMarkdownHeaders
-    style="max-width: 100%; max-height: 40em; overflow: auto;"
-/>
+    style="max-width: 100%; max-height: 40em; "
+>
+    <ContentBefore Context="c">
+        <div class="alert alert-info mt-3">
+            <button class=@ButtonClass(c.State, "StrongEmphasis") @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownBold()) title="Toggle bold text (Ctrl-B)">
+                Bold
+            </button>
+            <button class=@ButtonClass(c.State, "Emphasis") @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownItalic()) title="Toggle italic text (Ctrl-I)">
+                Italic
+            </button>
+            <button class=@ButtonClass(c.State, "Strikethrough") @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownStrikethrough()) title="Toggle strike-through text">
+                Strikethrough
+            </button>
+            <button class="btn" @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownCode()) title="Toggle inline code text">
+                Code
+            </button>
+            <button class="btn" @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownCodeBlock()) title="Toggle code block text">
+                Code block
+            </button>
+            <button class="btn" @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownQuote()) title="Toggle quoted text">
+                Quote
+            </button>
+            @for (var i = 1; i <= 6; i++) {
+                var headingLevel = i; // Capture the current value of i in a local variable
+                <button class=@ButtonClass(c.State, $"ATXHeading{i}") @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownHeading(headingLevel)) title="Toggle heading text">
+                    @($"H{i}")
+                </button>
+            }
+            <button class="btn" @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownOrderedList()) title="Toggle ordered list">
+                Ordered list
+            </button>
+            <button class="btn" @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownUnorderedList()) title="Toggle unordered list">
+                Bullet list
+            </button>
+            <button class="btn" @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownTaskList()) title="Toggle task list">
+                Task list
+            </button>
+        </div>
+    </ContentBefore>
+</CodeMirror6Wrapper>
 <hr />
 Result:
 <pre>@Text</pre>
@@ -111,7 +149,7 @@ Result:
 <pre>@Text3</pre>
 <hr />
 
-<button
+<button class="btn"
     @onclick=@(async () => {
         PlaceHolderText = NewPlaceHolderText;
         await InvokeAsync(StateHasChanged);
@@ -158,4 +196,7 @@ func main() {{
     private ThemeMirrorTheme Theme = ThemeMirrorTheme.OneDark;
     private CodeMirrorLanguage Language = CodeMirrorLanguage.Markdown;
     private bool AutoFormatMarkdownHeaders = true;
+    private string ButtonClass(CodeMirrorState state, string docStyleTag) => state.MarkdownStylesAtSelections?.Contains(docStyleTag) == true
+        ? "btn btn-primary"
+        : "btn";
 }

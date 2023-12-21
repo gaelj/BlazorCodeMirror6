@@ -10,7 +10,6 @@ namespace CodeMirror6;
 public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
 {
     [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
-
     /// <summary>
     /// /// Gets or sets the unique identifier for the CodeMirror6 editor.
     /// Defaults to CodeMirror6_Editor_{NewGuid}.
@@ -82,26 +81,58 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// </summary>
     /// <value></value>
     [Parameter] public bool AutoFormatMarkdownHeaders { get; set; }
-
+    /// <summary>
+    /// Content to be rendered before the editor
+    /// </summary>
+    /// <value></value>
+    [Parameter] public RenderFragment<(CodeMirrorJsInterop CmJsInterop, CodeMirrorConfiguration Config, CodeMirrorState State)>? ContentBefore { get; set; }
+    /// <summary>
+    /// Content to be rendered after the editor
+    /// </summary>
+    /// <value></value>
+    [Parameter] public RenderFragment<(CodeMirrorJsInterop CmJsInterop, CodeMirrorConfiguration Config, CodeMirrorState State)>? ContentAfter { get; set; }
+    /// <summary>
+    /// The active markdown styles at the current selection(s)
+    /// </summary>
+    /// <value></value>
+    [Parameter] public EventCallback<List<string>> MarkdownStylesAtSelectionsChanged { get; set; }
+    /// <summary>
+    /// Whether to allow vertical resizing
+    /// </summary>
+    [Parameter] public bool AllowVerticalResize { get; set; } = true;
+    /// <summary>
+    /// Whether to allow horizontal resizing
+    /// </summary>
+    /// <value></value>
+    [Parameter] public bool AllowHorizontalResize { get; set; }
     /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     /// <value></value>
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
-    private CodeMirrorJsInterop? CmJsInterop = null;
-    private bool hasFocus;
-    private bool shouldRender = true;
+    /// <summary>
+    /// JavaScript interop instance
+    /// </summary>
+    public CodeMirrorJsInterop? CmJsInterop = null;
 
     internal CodeMirrorConfiguration Config = null!;
+    internal CodeMirrorState State = new();
+
+    private bool hasFocus;
+    private bool shouldRender = true;
+    private string ResizeStyle => AllowVerticalResize && AllowHorizontalResize
+        ? "both"
+        : AllowVerticalResize ? "vertical"
+        : AllowHorizontalResize ? "horizontal"
+        : "none";
 
     /// <summary>
     /// The document contents has changed
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    [JSInvokable]
-    public async Task DocChangedFromJS(string value)
+    [JSInvokable] public async Task DocChangedFromJS(string value)
     {
         if (Doc?.Replace("\r", "") == value?.Replace("\r", "")) return;
         Doc = value?.Replace("\r", "") ?? "";
@@ -114,8 +145,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    [JSInvokable]
-    public async Task FocusChangedFromJS(bool value)
+    [JSInvokable] public async Task FocusChangedFromJS(bool value)
     {
         if (hasFocus == value) return;
         hasFocus = value;
@@ -126,13 +156,23 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <summary>
     /// The cursor position or selections have changed
     /// </summary>
-    /// <param name="value"></param>
+    /// <param name="values"></param>
     /// <returns></returns>
-    [JSInvokable]
-    public async Task SelectionSetFromJS(IEnumerable<SelectionRange>? value)
+    [JSInvokable] public async Task SelectionSetFromJS(IEnumerable<SelectionRange>? values)
     {
-        Selection = value?.ToList();
+        Selection = values?.ToList();
         await SelectionChanged.InvokeAsync(Selection);
+    }
+
+    /// <summary>
+    /// The active markdown styles at the current selection(s) have changed
+    /// </summary>
+    /// <param name="values"></param>
+    /// <returns></returns>
+    [JSInvokable] public async Task MarkdownStyleChangedFromJS(IEnumerable<string>? values)
+    {
+        State.MarkdownStylesAtSelections = values?.ToList() ?? [];
+        await MarkdownStylesAtSelectionsChanged.InvokeAsync(State.MarkdownStylesAtSelections);
     }
 
     /*
@@ -168,7 +208,8 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
         if (firstRender) {
             if (CmJsInterop is null) {
                 CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
-                await CmJsInterop.InitCodeMirror();
+                await CmJsInterop.PropertySetters.InitCodeMirror();
+                await InvokeAsync(StateHasChanged);
             }
         }
     }
@@ -184,39 +225,39 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
         shouldRender = false;
         if (Config.TabSize != TabSize) {
             Config.TabSize = TabSize;
-            await CmJsInterop.SetTabSize();
+            await CmJsInterop.PropertySetters.SetTabSize();
         }
         if (Config.IndentationUnit != IndentationUnit) {
             Config.IndentationUnit = IndentationUnit;
-            await CmJsInterop.SetIndentUnit();
+            await CmJsInterop.PropertySetters.SetIndentUnit();
         }
         if (Config.Doc?.Replace("\r", "") != Doc?.Replace("\r", "")) {
             Config.Doc = Doc;
-            await CmJsInterop.SetDoc();
+            await CmJsInterop.PropertySetters.SetDoc();
         }
         if (Config.Placeholder != Placeholder) {
             Config.Placeholder = Placeholder;
-            await CmJsInterop.SetPlaceholderText();
+            await CmJsInterop.PropertySetters.SetPlaceholderText();
         }
         if (Config.ThemeName != Theme?.ToString()) {
             Config.ThemeName = Theme?.ToString();
-            await CmJsInterop.SetTheme();
+            await CmJsInterop.PropertySetters.SetTheme();
         }
         if (Config.ReadOnly != ReadOnly) {
             Config.ReadOnly = ReadOnly;
-            await CmJsInterop.SetReadOnly();
+            await CmJsInterop.PropertySetters.SetReadOnly();
         }
         if (Config.Editable != Editable) {
             Config.Editable = Editable;
-            await CmJsInterop.SetEditable();
+            await CmJsInterop.PropertySetters.SetEditable();
         }
         if (Config.LanguageName != Language?.ToString()) {
             Config.LanguageName = Language?.ToString();
-            await CmJsInterop.SetLanguage();
+            await CmJsInterop.PropertySetters.SetLanguage();
         }
         if (Config.AutoFormatMarkdownHeaders != AutoFormatMarkdownHeaders) {
             Config.AutoFormatMarkdownHeaders = AutoFormatMarkdownHeaders;
-            await CmJsInterop.SetAutoFormatMarkdownHeaders();
+            await CmJsInterop.PropertySetters.SetAutoFormatMarkdownHeaders();
         }
         shouldRender = true;
     }

@@ -7,17 +7,20 @@ A CodeMirror 6 component for Blazor in .Net 7 and .Net 8.
 ## Features
 
 - 2-way-binding of the document contents
-- setting tab size
-- setting indentation unit
+- setting tab size & indentation unit
 - setting a placeholder text
 - applying preset [themes](https://github.com/vadimdemedes/thememirror)
 - setting ReadOnly and Editable attributes
 - applying syntax highlighting and auto-completion for 13 different languages
+- apply Markdown syntax
+- report Markdown syntax at selection(s)
+- manual resizing of the editor
+- image preview
 
 ### Markdown language
 
 - Resized header text proportional to header #
-- keybindings to set text in **bold** (`Ctrl-B`) or *italics* (`Ctrl-I`)
+- keybindings to set text in **bold** (`Ctrl-B`) or *italic* (`Ctrl-I`)
 
 ## Installation
 

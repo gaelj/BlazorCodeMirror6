@@ -12,10 +12,10 @@ import { sql, MSSQL } from "@codemirror/lang-sql"
 import { rust, rustLanguage } from "@codemirror/lang-rust"
 import { sass, sassLanguage } from "@codemirror/lang-sass"
 import { xml, xmlLanguage } from "@codemirror/lang-xml"
-import { languages } from "@codemirror/language-data";
-import { Language } from "@codemirror/language";
-import { StateEffect } from "@codemirror/state";
-import { customMarkdownKeymap } from "./CmKeymap";
+import { languages } from "@codemirror/language-data"
+import { Language } from "@codemirror/language"
+import { StateEffect } from "@codemirror/state"
+import { customMarkdownKeymap } from "./CmKeymap"
 
 /**
  * StateEffect that is triggered when the language changes
@@ -59,6 +59,11 @@ export function getLanguage(languageName: string): LanguageSupport {
     }
 }
 
+/**
+ * Return the custom keymap matching the supplied language name string
+ * @param languageName
+ * @returns
+ */
 export function getLanguageKeyMaps(languageName: string) {
     switch (languageName) {
         case "Cpp":

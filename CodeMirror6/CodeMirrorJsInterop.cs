@@ -1,3 +1,4 @@
+using CodeMirror6.Models;
 using Microsoft.JSInterop;
 
 namespace CodeMirror6;
@@ -24,156 +25,27 @@ public class CodeMirrorJsInterop(
             "import", "./_content/CodeMirror6/index.js").AsTask()
         );
     private readonly DotNetObjectReference<CodeMirror6Wrapper> _dotnetHelperRef = DotNetObjectReference.Create(cm6WrapperComponent);
+    private CMSetters _setters = null!;
+    private CMCommands _commands = null!;
+
+    internal async Task ModuleInvokeVoidAsync(string method, params object?[] args)
+    {
+        var module = await _moduleTask.Value;
+        if (module is null) return;
+        args = args.Prepend(cm6WrapperComponent.Id).ToArray();
+        await module.InvokeVoidAsync(method, args);
+    }
 
     /// <summary>
-    /// Call the Javascript initialization
+    /// Methods to set JS CodeMirror properties to reflect the values of the blazor wrapper parameters. Internal use only.
     /// </summary>
     /// <returns></returns>
-    public async Task InitCodeMirror()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "initCodeMirror",
-            _dotnetHelperRef,
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.Config
-        );
-    }
-
+    internal CMSetters PropertySetters => _setters ??= new(_dotnetHelperRef, cm6WrapperComponent.Config, this);
     /// <summary>
-    /// Modify the indentation tab size
+    /// Methods to invoke JS CodeMirror commands.
     /// </summary>
     /// <returns></returns>
-    public async Task SetTabSize()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setTabSize",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.TabSize
-        );
-    }
-
-    /// <summary>
-    /// Modify the indentation unit
-    /// </summary>
-    /// <returns></returns>
-    public async Task SetIndentUnit()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setIndentUnit",
-            cm6WrapperComponent.Id,
-            new string(' ', cm6WrapperComponent.TabSize) // repeat space character by _codeMirror.TabSize
-        );
-    }
-
-    /// <summary>
-    /// Modify the text
-    /// </summary>
-    /// <returns></returns>
-    public async Task SetDoc()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setDoc",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.Doc?.Replace("\r", "")
-        );
-    }
-
-    /// <summary>
-    /// Set the placeholder text
-    /// </summary>
-    /// <returns></returns>
-    public async Task SetPlaceholderText()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setPlaceholderText",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.Placeholder
-        );
-    }
-
-    /// <summary>
-    /// Set the theme
-    /// </summary>
-    /// <returns></returns>
-    public async Task SetTheme()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setTheme",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.Theme?.ToString()
-        );
-    }
-
-    /// <summary>
-    /// Set the read-only state
-    /// </summary>
-    /// <returns></returns>
-    public async Task SetReadOnly()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setReadOnly",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.ReadOnly
-        );
-    }
-
-    /// <summary>
-    /// Set the editable state
-    /// </summary>
-    /// <returns></returns>
-    public async Task SetEditable()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setEditable",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.Editable
-        );
-    }
-
-    /// <summary>
-    /// Set the language
-    /// </summary>
-    public async Task SetLanguage()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setLanguage",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.Language?.ToString()
-        );
-    }
-
-    /// <summary>
-    /// Set the auto format markdown headers state
-    /// </summary>
-    /// <returns></returns>
-    public async Task SetAutoFormatMarkdownHeaders()
-    {
-        var module = await _moduleTask.Value;
-        if (module is null) return;
-        await module.InvokeVoidAsync(
-            "setAutoFormatMarkdownHeaders",
-            cm6WrapperComponent.Id,
-            cm6WrapperComponent.AutoFormatMarkdownHeaders
-        );
-    }
+    public CMCommands Commands => _commands ??= new(this);
 
     /// <summary>
     /// Dispose Javascript modules
@@ -187,4 +59,165 @@ public class CodeMirrorJsInterop(
         }
         GC.SuppressFinalize(this);
     }
+}
+
+internal class CMSetters(
+    DotNetObjectReference<CodeMirror6Wrapper> _dotnetHelperRef,
+    CodeMirrorConfiguration config,
+    CodeMirrorJsInterop cmJsInterop
+)
+{
+    /// <summary>
+    /// Call the Javascript initialization
+    /// </summary>
+    /// <returns></returns>
+    public Task InitCodeMirror() => cmJsInterop.ModuleInvokeVoidAsync(
+        "initCodeMirror",
+        _dotnetHelperRef,
+        config
+    );
+
+    /// <summary>
+    /// Modify the indentation tab size
+    /// </summary>
+    /// <returns></returns>
+    public Task SetTabSize() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setTabSize",
+        config.TabSize
+    );
+
+    /// <summary>
+    /// Modify the indentation unit
+    /// </summary>
+    /// <returns></returns>
+    public Task SetIndentUnit() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setIndentUnit",
+        new string(' ', config.TabSize) // repeat space character by _codeMirror.TabSize
+    );
+
+    /// <summary>
+    /// Modify the text
+    /// </summary>
+    /// <returns></returns>
+    public Task SetDoc() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setDoc",
+        config.Doc?.Replace("\r", "")
+    );
+
+    /// <summary>
+    /// Set the placeholder text
+    /// </summary>
+    /// <returns></returns>
+    public Task SetPlaceholderText() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setPlaceholderText",
+        config.Placeholder
+    );
+
+    /// <summary>
+    /// Set the theme
+    /// </summary>
+    /// <returns></returns>
+    public Task SetTheme() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setTheme",
+        config.ThemeName
+    );
+
+    /// <summary>
+    /// Set the read-only state
+    /// </summary>
+    /// <returns></returns>
+    public Task SetReadOnly() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setReadOnly",
+        config.ReadOnly
+    );
+
+    /// <summary>
+    /// Set the editable state
+    /// </summary>
+    /// <returns></returns>
+    public Task SetEditable() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setEditable",
+        config.Editable
+    );
+
+    /// <summary>
+    /// Set the language
+    /// </summary>
+    public Task SetLanguage() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setLanguage",
+        config.LanguageName
+    );
+
+    /// <summary>
+    /// Set the auto format markdown headers state
+    /// </summary>
+    /// <returns></returns>
+    public Task SetAutoFormatMarkdownHeaders() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setAutoFormatMarkdownHeaders",
+        config.AutoFormatMarkdownHeaders
+    );
+}
+
+/// <summary>
+/// Invoke JS CodeMirror commands
+/// </summary>
+public class CMCommands(CodeMirrorJsInterop cmJsInterop)
+{
+    /// <summary>
+    /// Toggle markdown bold formatting around the selected text
+    /// </summary>
+    /// <returns></returns>
+    public Task ToggleMarkdownBold() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownBold");
+    /// <summary>
+    /// Toggle markdown italic formatting around the selected text
+    /// </summary>
+    /// <returns></returns>
+    public Task ToggleMarkdownItalic() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownItalic");
+    /// <summary>
+    /// Toggle markdown strikethrough formatting around the selected text
+    /// </summary>
+    /// <returns></returns>
+    public Task ToggleMarkdownStrikethrough() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownStrikethrough");
+    /// <summary>
+    /// Toggle markdown code formatting around the selected text
+    /// </summary>
+    /// <returns></returns>
+    public Task ToggleMarkdownCode() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownCode");
+    /// <summary>
+    /// Toggle markdown code block formatting around the selected text
+    /// </summary>
+    /// <returns></returns>
+    public Task ToggleMarkdownCodeBlock() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownCodeBlock");
+    public Task ToggleMarkdownQuote() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownQuote");
+    public Task ToggleMarkdownHeading(int headerLevel) => cmJsInterop.ModuleInvokeVoidAsync($"toggleMarkdownHeading{headerLevel}");
+
+    public Task ToggleMarkdownUnorderedList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownUnorderedList");
+    public Task ToggleMarkdownOrderedList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownOrderedList");
+    public Task ToggleMarkdownTaskList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownTaskList");
+
+    /// <summary>
+    /// Undo the last change
+    /// </summary>
+    /// <returns></returns>
+    public Task PerformUndo() => cmJsInterop.ModuleInvokeVoidAsync("performUndo");
+    /// <summary>
+    /// Redo the last change
+    /// </summary>
+    /// <returns></returns>
+    public Task PerformRedo() => cmJsInterop.ModuleInvokeVoidAsync("performRedo");
+    /// <summary>
+    /// Undo the last selection change
+    /// </summary>
+    /// <returns></returns>
+    public Task PerformUndoSelection() => cmJsInterop.ModuleInvokeVoidAsync("performUndoSelection");
+    /// <summary>
+    /// Redo the last selection change
+    /// </summary>
+    /// <returns></returns>
+    public Task PerformRedoSelection() => cmJsInterop.ModuleInvokeVoidAsync("performRedoSelection");
+    /// <summary>
+    /// Focus the CodeMirror editor
+    /// </summary>
+    /// <returns></returns>
+    public Task FocusCodeMirrorEditor() => cmJsInterop.ModuleInvokeVoidAsync("focus");
 }

@@ -1,13 +1,14 @@
 import {
     EditorView, keymap, highlightSpecialChars, drawSelection, highlightActiveLine, dropCursor,
-    rectangularSelection, crosshairCursor,
+    rectangularSelection, crosshairCursor, ViewUpdate,
     lineNumbers, highlightActiveLineGutter, placeholder
 } from "@codemirror/view"
 import { EditorState } from "@codemirror/state"
-import { indentWithTab, history, historyKeymap, cursorSyntaxLeft, moveLineDown, moveLineUp,
+import {
+    indentWithTab, history, historyKeymap, cursorSyntaxLeft, moveLineDown, moveLineUp,
     selectSyntaxLeft, selectSyntaxRight, cursorSyntaxRight, selectParentSyntax, indentLess, indentMore,
     copyLineUp, copyLineDown, indentSelection, deleteLine, cursorMatchingBracket, toggleComment, toggleBlockComment,
-    simplifySelection, insertBlankLine, selectLine
+    simplifySelection, insertBlankLine, selectLine, undo, redo, redoSelection, undoSelection
 } from "@codemirror/commands"
 import {
     indentUnit, defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
@@ -22,6 +23,28 @@ import { CmConfig } from "./CmConfig"
 import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
 import { getTheme } from "./CmTheme"
 import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLanguage"
+import {
+    toggleMarkdownBoldCommand, toggleMarkdownCodeBlockCommand, toggleMarkdownCodeCommand, toggleMarkdownItalicCommand,
+    toggleMarkdownStrikethroughCommand, toggleMarkdownQuoteCommand, toggleMarkdownHeading1Command, toggleMarkdownHeading2Command,
+    toggleMarkdownHeading3Command, toggleMarkdownHeading4Command, toggleMarkdownHeading5Command, toggleMarkdownHeading6Command,
+    toggleMarkdownUnorderedListCommand, toggleMarkdownOrderedListCommand, toggleMarkdownTaskListCommand, getMarkdownStyleAtRange,
+} from "./CmCommands"
+import { images } from "./CmImages"
+
+async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
+    if (update.docChanged) {
+        await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
+    }
+    if (update.focusChanged) {
+        await dotnetHelper.invokeMethodAsync("FocusChangedFromJS", update.view.hasFocus)
+        if (!update.view.hasFocus)
+            await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
+    }
+    if (update.selectionSet) {
+        await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtRange(update))
+        await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
+    }
+}
 
 /**
  * Initialize a new CodeMirror instance
@@ -30,8 +53,8 @@ import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLangu
  * @param config
  */
 export function initCodeMirror(
-    dotnetHelper: any,
     id: string,
+    dotnetHelper: any,
     config: CmConfig
 ) {
     CMInstances[id] = new CmInstance()
@@ -43,25 +66,14 @@ export function initCodeMirror(
         CMInstances[id].markdownStylingCompartment.of(getDynamicHeaderStyling(config.autoFormatMarkdownHeaders)),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(config.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(config.tabSize))),
-
-        EditorView.updateListener.of(async (update) => {
-            if (update.docChanged) {
-                await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
-            }
-            if (update.focusChanged) {
-                await dotnetHelper.invokeMethodAsync("FocusChangedFromJS", update.view.hasFocus)
-                if (!update.view.hasFocus)
-                    await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
-            }
-            if (update.selectionSet) {
-                await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
-            }
-        }),
-
         CMInstances[id].placeholderCompartment.of(placeholder(config.placeholder)),
         CMInstances[id].themeCompartment.of(getTheme(config.themeName)),
         CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(config.readOnly)),
         CMInstances[id].editableCompartment.of(EditorView.editable.of(config.editable)),
+
+        EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
+
+        images(),
 
         // Basic Setup
         lineNumbers(),
@@ -76,7 +88,7 @@ export function initCodeMirror(
         syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
         bracketMatching(),
         closeBrackets(),
-        autocompletion(),
+        autocompletion({}),
         rectangularSelection(),
         crosshairCursor(),
         highlightActiveLine(),
@@ -85,31 +97,31 @@ export function initCodeMirror(
             ...closeBracketsKeymap,
 
             //...defaultKeymap,
-            {key: "Alt-ArrowLeft", mac: "Ctrl-ArrowLeft", run: cursorSyntaxLeft, shift: selectSyntaxLeft},
-            {key: "Alt-ArrowRight", mac: "Ctrl-ArrowRight", run: cursorSyntaxRight, shift: selectSyntaxRight},
+            { key: "Alt-ArrowLeft", mac: "Ctrl-ArrowLeft", run: cursorSyntaxLeft, shift: selectSyntaxLeft },
+            { key: "Alt-ArrowRight", mac: "Ctrl-ArrowRight", run: cursorSyntaxRight, shift: selectSyntaxRight },
 
-            {key: "Alt-ArrowUp", run: moveLineUp},
-            {key: "Shift-Alt-ArrowUp", run: copyLineUp},
+            { key: "Alt-ArrowUp", run: moveLineUp },
+            { key: "Shift-Alt-ArrowUp", run: copyLineUp },
 
-            {key: "Alt-ArrowDown", run: moveLineDown},
-            {key: "Shift-Alt-ArrowDown", run: copyLineDown},
+            { key: "Alt-ArrowDown", run: moveLineDown },
+            { key: "Shift-Alt-ArrowDown", run: copyLineDown },
 
-            {key: "Escape", run: simplifySelection},
-            {key: "Mod-Enter", run: insertBlankLine},
+            { key: "Escape", run: simplifySelection },
+            { key: "Mod-Enter", run: insertBlankLine },
 
-            {key: "Alt-l", mac: "Ctrl-l", run: selectLine},
-            {key: "Mod-i", run: selectParentSyntax, preventDefault: true},
+            { key: "Alt-l", mac: "Ctrl-l", run: selectLine },
+            { key: "Mod-i", run: selectParentSyntax, preventDefault: true },
 
-            {key: "Mod-[", run: indentLess},
-            {key: "Mod-]", run: indentMore},
-            {key: "Mod-Alt-\\", run: indentSelection},
+            { key: "Mod-[", run: indentLess },
+            { key: "Mod-]", run: indentMore },
+            { key: "Mod-Alt-\\", run: indentSelection },
 
-            {key: "Shift-Mod-k", run: deleteLine},
+            { key: "Shift-Mod-k", run: deleteLine },
 
-            {key: "Shift-Mod-\\", run: cursorMatchingBracket},
+            { key: "Shift-Mod-\\", run: cursorMatchingBracket },
 
-            {key: "Mod-/", run: toggleComment},
-            {key: "Alt-A", run: toggleBlockComment},
+            { key: "Mod-/", run: toggleComment },
+            { key: "Alt-A", run: toggleBlockComment },
 
             ...searchKeymap,
             ...historyKeymap,
@@ -195,6 +207,28 @@ export function setAutoFormatMarkdownHeaders(id: string, autoFormatMarkdownHeade
         effects: CMInstances[id].markdownStylingCompartment.reconfigure(getDynamicHeaderStyling(autoFormatMarkdownHeaders))
     })
 }
+
+export const toggleMarkdownBold = (id: string) => toggleMarkdownBoldCommand(CMInstances[id].view)
+export const toggleMarkdownItalic = (id: string) => toggleMarkdownItalicCommand(CMInstances[id].view)
+export const toggleMarkdownStrikethrough = (id: string) => toggleMarkdownStrikethroughCommand(CMInstances[id].view)
+export const toggleMarkdownCode = (id: string) => toggleMarkdownCodeCommand(CMInstances[id].view)
+export const toggleMarkdownCodeBlock = (id: string) => toggleMarkdownCodeBlockCommand(CMInstances[id].view)
+export const toggleMarkdownQuote = (id: string) => toggleMarkdownQuoteCommand(CMInstances[id].view)
+export const toggleMarkdownHeading1 = (id: string) => toggleMarkdownHeading1Command(CMInstances[id].view)
+export const toggleMarkdownHeading2 = (id: string) => toggleMarkdownHeading2Command(CMInstances[id].view)
+export const toggleMarkdownHeading3 = (id: string) => toggleMarkdownHeading3Command(CMInstances[id].view)
+export const toggleMarkdownHeading4 = (id: string) => toggleMarkdownHeading4Command(CMInstances[id].view)
+export const toggleMarkdownHeading5 = (id: string) => toggleMarkdownHeading5Command(CMInstances[id].view)
+export const toggleMarkdownHeading6 = (id: string) => toggleMarkdownHeading6Command(CMInstances[id].view)
+export const toggleMarkdownUnorderedList = (id: string) => toggleMarkdownUnorderedListCommand(CMInstances[id].view)
+export const toggleMarkdownOrderedList = (id: string) => toggleMarkdownOrderedListCommand(CMInstances[id].view)
+export const toggleMarkdownTaskList = (id: string) => toggleMarkdownTaskListCommand(CMInstances[id].view)
+
+export const performUndo = (id: string) => undo(CMInstances[id].view)
+export const performRedo = (id: string) => redo(CMInstances[id].view)
+export const performUndoSelection = (id: string) => undoSelection(CMInstances[id].view)
+export const performRedoSelection = (id: string) => redoSelection(CMInstances[id].view)
+export const focus = (id: string) => CMInstances[id].view.focus()
 
 /**
  * Dispose of a CodeMirror instance

@@ -97,5 +97,13 @@ public enum ThemeMirrorTheme
     /// <summary>
     /// Preset theme: tomorrow
     /// </summary>
-    Tomorrow
+    Tomorrow,
+    GithubDark,
+    GithubLight,
+    Monokai,
+    Nord,
+    SolarizedDark,
+    TokyoNight,
+    TokyoNightStorm,
+    VSCode,
 }
