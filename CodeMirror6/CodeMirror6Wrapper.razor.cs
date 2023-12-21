@@ -107,11 +107,11 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// </summary>
     public CodeMirrorJsInterop? CmJsInterop = null;
 
-    private bool hasFocus;
-    private bool shouldRender = true;
-
     internal CodeMirrorConfiguration Config = null!;
     internal CodeMirrorState State = new();
+
+    private bool hasFocus;
+    private bool shouldRender = true;
 
     /// <summary>
     /// The document contents has changed

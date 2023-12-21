@@ -225,6 +225,7 @@ export const performUndo = (id: string) => undo(CMInstances[id].view)
 export const performRedo = (id: string) => redo(CMInstances[id].view)
 export const performUndoSelection = (id: string) => undoSelection(CMInstances[id].view)
 export const performRedoSelection = (id: string) => redoSelection(CMInstances[id].view)
+export const focus = (id: string) => CMInstances[id].view.focus()
 
 /**
  * Dispose of a CodeMirror instance

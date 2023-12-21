@@ -190,6 +190,7 @@ public class CMCommands(CodeMirrorJsInterop cmJsInterop)
     public Task ToggleMarkdownCodeBlock() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownCodeBlock");
     public Task ToggleMarkdownQuote() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownQuote");
     public Task ToggleMarkdownHeading(int headerLevel) => cmJsInterop.ModuleInvokeVoidAsync($"toggleMarkdownHeading{headerLevel}");
+
     public Task ToggleMarkdownUnorderedList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownUnorderedList");
     public Task ToggleMarkdownOrderedList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownOrderedList");
     public Task ToggleMarkdownTaskList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownTaskList");
@@ -214,4 +215,9 @@ public class CMCommands(CodeMirrorJsInterop cmJsInterop)
     /// </summary>
     /// <returns></returns>
     public Task PerformRedoSelection() => cmJsInterop.ModuleInvokeVoidAsync("performRedoSelection");
+    /// <summary>
+    /// Focus the CodeMirror editor
+    /// </summary>
+    /// <returns></returns>
+    public Task FocusCodeMirrorEditor() => cmJsInterop.ModuleInvokeVoidAsync("focus");
 }
