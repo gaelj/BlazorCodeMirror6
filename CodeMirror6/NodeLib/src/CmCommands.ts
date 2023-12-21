@@ -62,8 +62,10 @@ function toggleCharactersAroundRange(controlChar: string, state: EditorState, ra
     const extendBefore = isStyledBefore ? -controlCharLength : controlCharLength
     const extendAfter = isStyledAfter ? -controlCharLength : controlCharLength
 
-    const extendedFrom = range.from + extendBefore < lineWithRangeFrom.from ? lineWithRangeFrom.from : range.from + extendBefore
-    const extendedTo = range.to + extendAfter > lineWithRangeTo.to ? lineWithRangeTo.to : range.to + extendAfter
+    const newLineWithRangeFrom = state.doc.lineAt(range.from)
+    const newLineWithRangeTo = state.doc.lineAt(range.to)
+    const extendedFrom = range.from + extendBefore < newLineWithRangeFrom.from ? newLineWithRangeFrom.from : range.from + extendBefore
+    const extendedTo = (range.to + extendAfter > newLineWithRangeTo.to ? newLineWithRangeTo.to : range.to) + extendAfter
 
     return {
         changes,
@@ -143,14 +145,14 @@ export const toggleMarkdownStrikethroughCommand: Command = (view: EditorView) =>
 export const toggleMarkdownCodeCommand: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "`")
 export const toggleMarkdownCodeBlockCommand: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "```")
 
-export const toggleMarkdownQuoteCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, ">")
-export const toggleMarkdownHeading1Command: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "#")
-export const toggleMarkdownHeading2Command: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "##")
-export const toggleMarkdownHeading3Command: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "###")
-export const toggleMarkdownHeading4Command: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "####")
-export const toggleMarkdownHeading5Command: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "#####")
-export const toggleMarkdownHeading6Command: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "######")
-export const toggleMarkdownUnorderedListCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "-")
-export const toggleMarkdownOrderedListCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "1.")
-export const toggleMarkdownTaskListCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "- [ ]")
+export const toggleMarkdownQuoteCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, ">")
+export const toggleMarkdownHeading1Command: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "#")
+export const toggleMarkdownHeading2Command: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "##")
+export const toggleMarkdownHeading3Command: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "###")
+export const toggleMarkdownHeading4Command: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "####")
+export const toggleMarkdownHeading5Command: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "#####")
+export const toggleMarkdownHeading6Command: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "######")
+export const toggleMarkdownUnorderedListCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "-")
+export const toggleMarkdownOrderedListCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "1.")
+export const toggleMarkdownTaskListCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "- [ ]")
 
