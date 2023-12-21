@@ -54,10 +54,10 @@ function toggleCharactersAtStartOfLine(state: EditorState, dispatch: (tr: Transa
         }
         const fullControlChar = `${controlChar} `
         const line = state.doc.lineAt(range.from)
-        const isStyled = line.text.trimStart().startsWith(fullControlChar);
+        const wasStyled = line.text.trimStart().startsWith(fullControlChar);
         const changes = [];
 
-        changes.push(isStyled ? {
+        changes.push(wasStyled ? {
             from: line.from,
             to: line.from + fullControlChar.length,
             insert: Text.of([''])
@@ -68,7 +68,10 @@ function toggleCharactersAtStartOfLine(state: EditorState, dispatch: (tr: Transa
 
         return {
             changes,
-            range: EditorSelection.range(range.from, range.to),
+            range: EditorSelection.range(
+                range.from + ((wasStyled ? -1 : 1) * fullControlChar.length),
+                range.to + ((wasStyled ? -1 : 1) * fullControlChar.length)
+            ),
         };
     })
     dispatch(state.update(changes, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), }))
