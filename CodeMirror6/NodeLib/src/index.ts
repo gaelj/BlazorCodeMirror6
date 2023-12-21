@@ -1,10 +1,11 @@
 import {
     EditorView, keymap, highlightSpecialChars, drawSelection, highlightActiveLine, dropCursor,
-    rectangularSelection, crosshairCursor,
+    rectangularSelection, crosshairCursor, ViewUpdate,
     lineNumbers, highlightActiveLineGutter, placeholder
 } from "@codemirror/view"
 import { EditorState } from "@codemirror/state"
-import { indentWithTab, history, historyKeymap, cursorSyntaxLeft, moveLineDown, moveLineUp,
+import {
+    indentWithTab, history, historyKeymap, cursorSyntaxLeft, moveLineDown, moveLineUp,
     selectSyntaxLeft, selectSyntaxRight, cursorSyntaxRight, selectParentSyntax, indentLess, indentMore,
     copyLineUp, copyLineDown, indentSelection, deleteLine, cursorMatchingBracket, toggleComment, toggleBlockComment,
     simplifySelection, insertBlankLine, selectLine, undo, redo, redoSelection, undoSelection
@@ -22,11 +23,27 @@ import { CmConfig } from "./CmConfig"
 import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
 import { getTheme } from "./CmTheme"
 import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLanguage"
-import { toggleMarkdownBoldCommand, toggleMarkdownCodeBlockCommand, toggleMarkdownCodeCommand, toggleMarkdownItalicCommand,
+import {
+    toggleMarkdownBoldCommand, toggleMarkdownCodeBlockCommand, toggleMarkdownCodeCommand, toggleMarkdownItalicCommand,
     toggleMarkdownStrikethroughCommand, toggleMarkdownQuoteCommand, toggleMarkdownHeading1Command, toggleMarkdownHeading2Command,
     toggleMarkdownHeading3Command, toggleMarkdownHeading4Command, toggleMarkdownHeading5Command, toggleMarkdownHeading6Command,
     toggleMarkdownUnorderedListCommand, toggleMarkdownOrderedListCommand, toggleMarkdownTaskListCommand,
 } from "./CmCommands"
+
+async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
+    if (update.docChanged) {
+        await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
+    }
+    if (update.focusChanged) {
+        await dotnetHelper.invokeMethodAsync("FocusChangedFromJS", update.view.hasFocus)
+        if (!update.view.hasFocus)
+            await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
+    }
+    if (update.selectionSet) {
+        getMarkdownStyleAtRange('', update.state, update.state.selection.ranges[0])
+        await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
+    }
+}
 
 /**
  * Initialize a new CodeMirror instance
@@ -53,19 +70,7 @@ export function initCodeMirror(
         CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(config.readOnly)),
         CMInstances[id].editableCompartment.of(EditorView.editable.of(config.editable)),
 
-        EditorView.updateListener.of(async (update) => {
-            if (update.docChanged) {
-                await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
-            }
-            if (update.focusChanged) {
-                await dotnetHelper.invokeMethodAsync("FocusChangedFromJS", update.view.hasFocus)
-                if (!update.view.hasFocus)
-                    await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
-            }
-            if (update.selectionSet) {
-                await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
-            }
-        }),
+        EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
 
         // Basic Setup
         lineNumbers(),
@@ -80,7 +85,7 @@ export function initCodeMirror(
         syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
         bracketMatching(),
         closeBrackets(),
-        autocompletion({  }),
+        autocompletion({}),
         rectangularSelection(),
         crosshairCursor(),
         highlightActiveLine(),
@@ -89,31 +94,31 @@ export function initCodeMirror(
             ...closeBracketsKeymap,
 
             //...defaultKeymap,
-            {key: "Alt-ArrowLeft", mac: "Ctrl-ArrowLeft", run: cursorSyntaxLeft, shift: selectSyntaxLeft},
-            {key: "Alt-ArrowRight", mac: "Ctrl-ArrowRight", run: cursorSyntaxRight, shift: selectSyntaxRight},
+            { key: "Alt-ArrowLeft", mac: "Ctrl-ArrowLeft", run: cursorSyntaxLeft, shift: selectSyntaxLeft },
+            { key: "Alt-ArrowRight", mac: "Ctrl-ArrowRight", run: cursorSyntaxRight, shift: selectSyntaxRight },
 
-            {key: "Alt-ArrowUp", run: moveLineUp},
-            {key: "Shift-Alt-ArrowUp", run: copyLineUp},
+            { key: "Alt-ArrowUp", run: moveLineUp },
+            { key: "Shift-Alt-ArrowUp", run: copyLineUp },
 
-            {key: "Alt-ArrowDown", run: moveLineDown},
-            {key: "Shift-Alt-ArrowDown", run: copyLineDown},
+            { key: "Alt-ArrowDown", run: moveLineDown },
+            { key: "Shift-Alt-ArrowDown", run: copyLineDown },
 
-            {key: "Escape", run: simplifySelection},
-            {key: "Mod-Enter", run: insertBlankLine},
+            { key: "Escape", run: simplifySelection },
+            { key: "Mod-Enter", run: insertBlankLine },
 
-            {key: "Alt-l", mac: "Ctrl-l", run: selectLine},
-            {key: "Mod-i", run: selectParentSyntax, preventDefault: true},
+            { key: "Alt-l", mac: "Ctrl-l", run: selectLine },
+            { key: "Mod-i", run: selectParentSyntax, preventDefault: true },
 
-            {key: "Mod-[", run: indentLess},
-            {key: "Mod-]", run: indentMore},
-            {key: "Mod-Alt-\\", run: indentSelection},
+            { key: "Mod-[", run: indentLess },
+            { key: "Mod-]", run: indentMore },
+            { key: "Mod-Alt-\\", run: indentSelection },
 
-            {key: "Shift-Mod-k", run: deleteLine},
+            { key: "Shift-Mod-k", run: deleteLine },
 
-            {key: "Shift-Mod-\\", run: cursorMatchingBracket},
+            { key: "Shift-Mod-\\", run: cursorMatchingBracket },
 
-            {key: "Mod-/", run: toggleComment},
-            {key: "Alt-A", run: toggleBlockComment},
+            { key: "Mod-/", run: toggleComment },
+            { key: "Alt-A", run: toggleBlockComment },
 
             ...searchKeymap,
             ...historyKeymap,
