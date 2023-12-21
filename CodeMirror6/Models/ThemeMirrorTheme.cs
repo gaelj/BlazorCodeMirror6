@@ -97,6 +97,7 @@ public enum ThemeMirrorTheme
     /// <summary>
     /// Preset theme: tomorrow
     /// </summary>
+    Tomorrow,
     GithubDark,
     GithubLight,
     Monokai,
