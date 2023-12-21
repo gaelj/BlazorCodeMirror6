@@ -5,6 +5,7 @@ import { ViewUpdate } from "@codemirror/view"
 import { Transaction } from "@codemirror/state"
 import { EditorState, EditorSelection, Text, SelectionRange } from "@codemirror/state"
 import { Command } from "@codemirror/view"
+import { EditorView } from "codemirror"
 
 export function getMarkdownStyleAtRange(update: ViewUpdate): string[] {
     let styles: string[] = [];
@@ -58,24 +59,25 @@ function toggleCharactersAroundRange(controlChar: string, state: EditorState, ra
     }
 }
 
-function toggleCharactersAroundRanges(state: EditorState, dispatch: (tr: Transaction) => void, controlChar: string): boolean{
-    const changes = state.changeByRange((range: SelectionRange) => {
-        if (!markdownLanguage.isActiveAt(state, range.from)) {
+function toggleCharactersAroundRanges(view: EditorView, controlChar: string): boolean{
+    const changes = view.state.changeByRange((range: SelectionRange) => {
+        if (!markdownLanguage.isActiveAt(view.state, range.from)) {
             return { range }
         }
-        return toggleCharactersAroundRange(controlChar, state, range)
+        return toggleCharactersAroundRange(controlChar, view.state, range)
     })
-    dispatch(state.update(changes, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), }))
+    view.dispatch(view.state.update(changes, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), }))
+    view.focus()
     return true
 }
 
-function toggleCharactersAtStartOfLine(state: EditorState, dispatch: (tr: Transaction) => void, controlChar: string): boolean {
-    const changes = state.changeByRange((range: SelectionRange) => {
-        if (!markdownLanguage.isActiveAt(state, range.from)) {
+function toggleCharactersAtStartOfLine(view: EditorView, controlChar: string): boolean {
+    const changes = view.state.changeByRange((range: SelectionRange) => {
+        if (!markdownLanguage.isActiveAt(view.state, range.from)) {
             return { range }
         }
         const fullControlChar = `${controlChar} `
-        const line = state.doc.lineAt(range.from)
+        const line = view.state.doc.lineAt(range.from)
         const wasStyled = line.text.trimStart().startsWith(fullControlChar);
         const changes = [];
 
@@ -96,24 +98,25 @@ function toggleCharactersAtStartOfLine(state: EditorState, dispatch: (tr: Transa
             ),
         }
     })
-    dispatch(state.update(changes, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), }))
+    view.dispatch(view.state.update(changes, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), }))
+    view.focus()
     return true
 }
 
-export const toggleMarkdownBoldCommand: Command = ({ state, dispatch }) => toggleCharactersAroundRanges(state, dispatch, "**")
-export const toggleMarkdownItalicCommand: Command = ({ state, dispatch }) => toggleCharactersAroundRanges(state, dispatch, "*")
-export const toggleMarkdownStrikethroughCommand: Command = ({ state, dispatch }) => toggleCharactersAroundRanges(state, dispatch, "~~")
-export const toggleMarkdownCodeCommand: Command = ({ state, dispatch }) => toggleCharactersAroundRanges(state, dispatch, "`")
-export const toggleMarkdownCodeBlockCommand: Command = ({ state, dispatch }) => toggleCharactersAroundRanges(state, dispatch, "```")
+export const toggleMarkdownBoldCommand: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "**")
+export const toggleMarkdownItalicCommand: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "*")
+export const toggleMarkdownStrikethroughCommand: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "~~")
+export const toggleMarkdownCodeCommand: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "`")
+export const toggleMarkdownCodeBlockCommand: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "```")
 
-export const toggleMarkdownQuoteCommand: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, ">")
-export const toggleMarkdownHeading1Command: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "#")
-export const toggleMarkdownHeading2Command: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "##")
-export const toggleMarkdownHeading3Command: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "###")
-export const toggleMarkdownHeading4Command: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "####")
-export const toggleMarkdownHeading5Command: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "#####")
-export const toggleMarkdownHeading6Command: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "######")
-export const toggleMarkdownUnorderedListCommand: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "-")
-export const toggleMarkdownOrderedListCommand: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "1.")
-export const toggleMarkdownTaskListCommand: Command = ({ state, dispatch }) => toggleCharactersAtStartOfLine(state, dispatch, "- [ ]")
+export const toggleMarkdownQuoteCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, ">")
+export const toggleMarkdownHeading1Command: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "#")
+export const toggleMarkdownHeading2Command: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "##")
+export const toggleMarkdownHeading3Command: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "###")
+export const toggleMarkdownHeading4Command: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "####")
+export const toggleMarkdownHeading5Command: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "#####")
+export const toggleMarkdownHeading6Command: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "######")
+export const toggleMarkdownUnorderedListCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "-")
+export const toggleMarkdownOrderedListCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "1.")
+export const toggleMarkdownTaskListCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLine(view, "- [ ]")
 
