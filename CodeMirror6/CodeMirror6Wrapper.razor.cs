@@ -97,6 +97,15 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <value></value>
     [Parameter] public EventCallback<List<string>> MarkdownStylesAtSelectionsChanged { get; set; }
     /// <summary>
+    /// Whether to allow vertical resizing
+    /// </summary>
+    [Parameter] public bool AllowVerticalResize { get; set; } = true;
+    /// <summary>
+    /// Whether to allow horizontal resizing
+    /// </summary>
+    /// <value></value>
+    [Parameter] public bool AllowHorizontalResize { get; set; }
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     /// <value></value>
@@ -112,6 +121,11 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
 
     private bool hasFocus;
     private bool shouldRender = true;
+    private string ResizeStyle => AllowVerticalResize && AllowHorizontalResize
+        ? "both"
+        : AllowVerticalResize ? "vertical"
+        : AllowHorizontalResize ? "horizontal"
+        : "none";
 
     /// <summary>
     /// The document contents has changed

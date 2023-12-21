@@ -1,4 +1,4 @@
-﻿@if(ContentBefore is not null && CmJsInterop is not null && Config is not null) {
+@if(ContentBefore is not null && CmJsInterop is not null && Config is not null) {
     @ContentBefore((CmJsInterop, Config, State))
 }
 
@@ -7,3 +7,11 @@
 @if(ContentAfter is not null && CmJsInterop is not null && Config is not null) {
     @ContentAfter((CmJsInterop, Config, State))
 }
+
+<style>
+    .cm-editor {
+        resize: @ResizeStyle;
+        overflow: auto;
+        max-height: inherit;
+    }
+</style>

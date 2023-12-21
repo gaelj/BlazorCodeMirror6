@@ -14,6 +14,7 @@ A CodeMirror 6 component for Blazor in .Net 7 and .Net 8.
 - applying syntax highlighting and auto-completion for 13 different languages
 - apply Markdown syntax
 - report Markdown syntax at selection
+- manual resizing of the editor
 
 ### Markdown language
 
