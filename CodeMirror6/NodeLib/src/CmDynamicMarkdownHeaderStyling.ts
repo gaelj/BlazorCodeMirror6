@@ -1,10 +1,10 @@
-import { EditorView, ViewUpdate, Decoration, DecorationSet, ViewPlugin } from "@codemirror/view";
-import { Range } from "@codemirror/state";
-import { syntaxTree } from "@codemirror/language";
-import { markdownLanguage } from "@codemirror/lang-markdown";
-import { Extension } from "@codemirror/state";
+import { EditorView, ViewUpdate, Decoration, DecorationSet, ViewPlugin } from "@codemirror/view"
+import { Range } from "@codemirror/state"
+import { syntaxTree } from "@codemirror/language"
+import { markdownLanguage } from "@codemirror/lang-markdown"
+import { Extension } from "@codemirror/state"
 
-import { languageChangeEffect } from "./CmLanguage";
+import { languageChangeEffect } from "./CmLanguage"
 
 /**
  * Return a ViewPlugin that dynamically styles (resizes) markdown headers based on the header level

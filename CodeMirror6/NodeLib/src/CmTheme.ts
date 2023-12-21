@@ -1,7 +1,7 @@
-import { EditorView } from "@codemirror/view";
-import { Extension } from "@codemirror/state";
-import { amy, ayuLight, barf, bespin, birdsOfParadise, boysAndGirls, clouds, cobalt, coolGlow, dracula, espresso, noctisLilac, rosePineDawn, smoothy, solarizedLight, tomorrow } from 'thememirror';
-import { oneDark } from "@codemirror/theme-one-dark";
+import { EditorView } from "@codemirror/view"
+import { Extension } from "@codemirror/state"
+import { amy, ayuLight, barf, bespin, birdsOfParadise, boysAndGirls, clouds, cobalt, coolGlow, dracula, espresso, noctisLilac, rosePineDawn, smoothy, solarizedLight, tomorrow } from 'thememirror'
+import { oneDark } from "@codemirror/theme-one-dark"
 import { githubDark, githubLight } from "@uiw/codemirror-theme-github"
 import { monokai } from "@uiw/codemirror-theme-monokai"
 import { nord } from "@uiw/codemirror-theme-nord"
@@ -18,41 +18,41 @@ import { vscodeDark } from "@uiw/codemirror-theme-vscode"
 export function getTheme(themeName: string): Extension {
     switch (themeName) {
         case "Amy":
-            return amy;
+            return amy
         case "AyuLight":
-            return ayuLight;
+            return ayuLight
         case "Barf":
-            return barf;
+            return barf
         case "Bespin":
-            return bespin;
+            return bespin
         case "BirdsOfParadise":
-            return birdsOfParadise;
+            return birdsOfParadise
         case "BoysAndGirls":
-            return boysAndGirls;
+            return boysAndGirls
         case "Clouds":
-            return clouds;
+            return clouds
         case "Cobalt":
-            return cobalt;
+            return cobalt
         case "CoolGlow":
-            return coolGlow;
+            return coolGlow
         case "Dracula":
-            return dracula;
+            return dracula
         case "Espresso":
-            return espresso;
+            return espresso
         case "NoctisLilac":
-            return noctisLilac;
+            return noctisLilac
         case "RosePineDawn":
-            return rosePineDawn;
+            return rosePineDawn
         case "Smoothy":
-            return smoothy;
+            return smoothy
         case "SolarizedLight":
-            return solarizedLight;
+            return solarizedLight
         case "Tomorrow":
-            return tomorrow;
+            return tomorrow
         case "Dracula":
-            return dracula;
+            return dracula
         case "OneDark":
-            return oneDark;
+            return oneDark
         case "GithubDark":
             return githubDark
         case "GithubLight":
@@ -70,6 +70,6 @@ export function getTheme(themeName: string): Extension {
         case "VSCode":
             return vscodeDark
         default:
-            return EditorView.baseTheme({});
+            return EditorView.baseTheme({})
     }
 }

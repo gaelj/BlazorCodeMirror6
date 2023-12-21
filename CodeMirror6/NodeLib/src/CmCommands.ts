@@ -7,6 +7,11 @@ import { EditorState, EditorSelection, Text, SelectionRange } from "@codemirror/
 import { Command } from "@codemirror/view"
 import { EditorView } from "codemirror"
 
+/**
+ * Return the active Markdown styles in the selection
+ * @param update
+ * @returns
+ */
 export function getMarkdownStyleAtRange(update: ViewUpdate): string[] {
     let styles: string[] = [];
     for (let range of update.state.selection.ranges) {
@@ -27,13 +32,13 @@ export function getMarkdownStyleAtRange(update: ViewUpdate): string[] {
 }
 
 function toggleCharactersAroundRange(controlChar: string, state: EditorState, range: SelectionRange) {
-    const controlCharLength = controlChar.length;
-    const lineWithRangeFrom = state.doc.lineAt(range.from);
-    const lineWithRangeTo = state.doc.lineAt(range.to);
-    const fromWithChars = range.from - controlCharLength < lineWithRangeFrom.from ? lineWithRangeFrom.from : range.from - controlCharLength;
-    const toWithChars = range.to + controlCharLength > lineWithRangeTo.to ? lineWithRangeTo.to : range.to + controlCharLength;
-    const isStyledBefore = state.sliceDoc(fromWithChars, range.from) === controlChar;
-    const isStyledAfter = state.sliceDoc(range.to, toWithChars) === controlChar;
+    const controlCharLength = controlChar.length
+    const lineWithRangeFrom = state.doc.lineAt(range.from)
+    const lineWithRangeTo = state.doc.lineAt(range.to)
+    const fromWithChars = range.from - controlCharLength < lineWithRangeFrom.from ? lineWithRangeFrom.from : range.from - controlCharLength
+    const toWithChars = range.to + controlCharLength > lineWithRangeTo.to ? lineWithRangeTo.to : range.to + controlCharLength
+    const isStyledBefore = state.sliceDoc(fromWithChars, range.from) === controlChar
+    const isStyledAfter = state.sliceDoc(range.to, toWithChars) === controlChar
     const changes = []
 
     changes.push(isStyledBefore ? {
@@ -54,8 +59,8 @@ function toggleCharactersAroundRange(controlChar: string, state: EditorState, ra
         insert: Text.of([controlChar]),
     })
 
-    const extendBefore = isStyledBefore ? -controlCharLength : controlCharLength;
-    const extendAfter = isStyledAfter ? -controlCharLength : controlCharLength;
+    const extendBefore = isStyledBefore ? -controlCharLength : controlCharLength
+    const extendAfter = isStyledAfter ? -controlCharLength : controlCharLength
 
     const extendedFrom = range.from + extendBefore < lineWithRangeFrom.from ? lineWithRangeFrom.from : range.from + extendBefore
     const extendedTo = range.to + extendAfter > lineWithRangeTo.to ? lineWithRangeTo.to : range.to + extendAfter
