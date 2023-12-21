@@ -2,6 +2,13 @@ import { EditorView } from "@codemirror/view";
 import { Extension } from "@codemirror/state";
 import { amy, ayuLight, barf, bespin, birdsOfParadise, boysAndGirls, clouds, cobalt, coolGlow, dracula, espresso, noctisLilac, rosePineDawn, smoothy, solarizedLight, tomorrow } from 'thememirror';
 import { oneDark } from "@codemirror/theme-one-dark";
+import { githubDark, githubLight } from "@uiw/codemirror-theme-github"
+import { monokai } from "@uiw/codemirror-theme-monokai"
+import { nord } from "@uiw/codemirror-theme-nord"
+import { solarizedDark } from "@uiw/codemirror-theme-solarized"
+import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night"
+import { tokyoNightStorm } from "@uiw/codemirror-theme-tokyo-night-storm"
+import { vscodeDark } from "@uiw/codemirror-theme-vscode"
 
 /**
  * Return the thememirror theme Extension matching the supplied string
@@ -46,6 +53,22 @@ export function getTheme(themeName: string): Extension {
             return dracula;
         case "OneDark":
             return oneDark;
+        case "GithubDark":
+            return githubDark
+        case "GithubLight":
+            return githubLight
+        case "Monokai":
+            return monokai
+        case "Nord":
+            return nord
+        case "SolarizedDark":
+            return solarizedDark
+        case "TokyoNight":
+            return tokyoNight
+        case "TokyoNightStorm":
+            return tokyoNightStorm
+        case "VSCode":
+            return vscodeDark
         default:
             return EditorView.baseTheme({});
     }
