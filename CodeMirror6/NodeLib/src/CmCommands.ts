@@ -28,12 +28,16 @@ export function getMarkdownStyleAtRange(update: ViewUpdate): string[] {
 
 function toggleCharactersAroundRange(controlChar: string, state: EditorState, range: SelectionRange) {
     const controlCharLength = controlChar.length;
-    const isStyledBefore = state.sliceDoc(range.from - controlCharLength, range.from) === controlChar;
-    const isStyledAfter = state.sliceDoc(range.to, range.to + controlCharLength) === controlChar;
+    const lineWithRangeFrom = state.doc.lineAt(range.from);
+    const lineWithRangeTo = state.doc.lineAt(range.to);
+    const fromWithChars = range.from - controlCharLength < lineWithRangeFrom.from ? lineWithRangeFrom.from : range.from - controlCharLength;
+    const toWithChars = range.to + controlCharLength > lineWithRangeTo.to ? lineWithRangeTo.to : range.to + controlCharLength;
+    const isStyledBefore = state.sliceDoc(fromWithChars, range.from) === controlChar;
+    const isStyledAfter = state.sliceDoc(range.to, toWithChars) === controlChar;
     const changes = []
 
     changes.push(isStyledBefore ? {
-        from: range.from - controlCharLength,
+        from: fromWithChars,
         to: range.from,
         insert: Text.of([''])
     } : {
@@ -43,7 +47,7 @@ function toggleCharactersAroundRange(controlChar: string, state: EditorState, ra
 
     changes.push(isStyledAfter ? {
         from: range.to,
-        to: range.to + controlCharLength,
+        to: toWithChars,
         insert: Text.of([''])
     } : {
         from: range.to,
@@ -53,17 +57,18 @@ function toggleCharactersAroundRange(controlChar: string, state: EditorState, ra
     const extendBefore = isStyledBefore ? -controlCharLength : controlCharLength;
     const extendAfter = isStyledAfter ? -controlCharLength : controlCharLength;
 
+    const extendedFrom = range.from + extendBefore < lineWithRangeFrom.from ? lineWithRangeFrom.from : range.from + extendBefore
+    const extendedTo = range.to + extendAfter > lineWithRangeTo.to ? lineWithRangeTo.to : range.to + extendAfter
+
     return {
         changes,
-        range: EditorSelection.range(range.from + extendBefore, range.to + extendAfter),
+        range: EditorSelection.range(extendedFrom, extendedTo),
     }
 }
 
 function toggleCharactersAroundRanges(view: EditorView, controlChar: string): boolean{
     const changes = view.state.changeByRange((range: SelectionRange) => {
-        if (!markdownLanguage.isActiveAt(view.state, range.from)) {
-            return { range }
-        }
+        if (!markdownLanguage.isActiveAt(view.state, range.from)) return { range }
         return toggleCharactersAroundRange(controlChar, view.state, range)
     })
     view.dispatch(view.state.update(changes, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), }))
@@ -71,31 +76,55 @@ function toggleCharactersAroundRanges(view: EditorView, controlChar: string): bo
     return true
 }
 
-function toggleCharactersAtStartOfLine(view: EditorView, controlChar: string): boolean {
+function toggleCharactersAtStartOfLines(view: EditorView, controlChar: string): boolean {
     const changes = view.state.changeByRange((range: SelectionRange) => {
-        if (!markdownLanguage.isActiveAt(view.state, range.from)) {
-            return { range }
-        }
+        if (!markdownLanguage.isActiveAt(view.state, range.from)) return { range }
         const fullControlChar = `${controlChar} `
-        const line = view.state.doc.lineAt(range.from)
-        const wasStyled = line.text.trimStart().startsWith(fullControlChar);
+        const lineAtFrom = view.state.doc.lineAt(range.from)
+        const lineAtTo = view.state.doc.lineAt(range.to)
+        const wasStyled = lineAtFrom.text.trimStart().startsWith(controlChar[0]);
         const changes = [];
+        const indexOfSpace = lineAtFrom.text.indexOf(' ') + 1
+        const oldStyleLength = wasStyled ? indexOfSpace === 0 ? lineAtFrom.text.length : indexOfSpace : 0
+        const wasSameStyle = wasStyled && lineAtFrom.text.trimStart().startsWith(fullControlChar)
+        let newFrom = range.from
+        let newTo = range.to
 
-        changes.push(wasStyled ? {
-            from: line.from,
-            to: line.from + fullControlChar.length,
-            insert: Text.of([''])
-        } : {
-            from: line.from,
-            insert: Text.of([fullControlChar]),
-        })
+        if (wasSameStyle) {
+            changes.push({
+                from: lineAtFrom.from,
+                to: lineAtFrom.from + oldStyleLength,
+                insert: Text.of([''])
+            })
+            newFrom -= oldStyleLength
+            newTo -= oldStyleLength
+        }
+        else {
+            if (wasStyled) {
+                changes.push({
+                    from: lineAtFrom.from,
+                    to: lineAtFrom.from + oldStyleLength,
+                    insert: Text.of([''])
+                })
+                newFrom -= oldStyleLength
+                newTo -= oldStyleLength
+            }
+            changes.push({
+                from: lineAtFrom.from,
+                insert: Text.of([fullControlChar]),
+            })
+            newFrom += fullControlChar.length
+            newTo += fullControlChar.length
+        }
+
+        if (newFrom < lineAtFrom.from) newFrom = lineAtFrom.from
+        if (newTo < lineAtFrom.from) newTo = lineAtFrom.from
+        if (newFrom > lineAtTo.to) newFrom = lineAtTo.to
+        if (newTo > lineAtTo.to) newTo = lineAtTo.to
 
         return {
             changes,
-            range: EditorSelection.range(
-                range.from + ((wasStyled ? -1 : 1) * fullControlChar.length),
-                range.to + ((wasStyled ? -1 : 1) * fullControlChar.length)
-            ),
+            range: EditorSelection.range(newFrom, newTo),
         }
     })
     view.dispatch(view.state.update(changes, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), }))

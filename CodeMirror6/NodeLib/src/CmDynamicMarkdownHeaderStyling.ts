@@ -7,7 +7,7 @@ import { Extension } from "@codemirror/state";
 import { languageChangeEffect } from "./CmLanguage";
 
 /**
- * Return a ViewPlugin that dynamically styles markdown headers based on the header level
+ * Return a ViewPlugin that dynamically styles (resizes) markdown headers based on the header level
  * @param markdownLang
  * @param languageChangeEffect
  * @returns
