@@ -195,6 +195,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
             if (CmJsInterop is null) {
                 CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
                 await CmJsInterop.PropertySetters.InitCodeMirror();
+                await InvokeAsync(StateHasChanged);
             }
         }
     }
