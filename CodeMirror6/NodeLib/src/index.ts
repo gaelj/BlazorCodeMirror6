@@ -33,21 +33,6 @@ import {
 import { images } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
 
-async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
-    if (update.docChanged) {
-        await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
-    }
-    if (update.focusChanged) {
-        await dotnetHelper.invokeMethodAsync("FocusChangedFromJS", update.view.hasFocus)
-        if (!update.view.hasFocus)
-            await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
-    }
-    if (update.selectionSet) {
-        await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtRange(update))
-        await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
-    }
-}
-
 /**
  * Initialize a new CodeMirror instance
  * @param dotnetHelper
@@ -145,6 +130,21 @@ export function initCodeMirror(
         state: CMInstances[id].state,
         parent: document.getElementById(id),
     })
+}
+
+async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
+    if (update.docChanged) {
+        await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
+    }
+    if (update.focusChanged) {
+        await dotnetHelper.invokeMethodAsync("FocusChangedFromJS", update.view.hasFocus)
+        if (!update.view.hasFocus)
+            await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
+    }
+    if (update.selectionSet) {
+        await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtRange(update))
+        await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
+    }
 }
 
 export function setTabSize(id: string, size: number) {
