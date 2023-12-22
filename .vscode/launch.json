@@ -1,31 +1,31 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": ".NET Core Launch (web)",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Examples.BlazorServer/bin/Debug/net7.0/Examples.BlazorServer.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/Examples.BlazorServer",
-            "stopAtEntry": false,
-            "serverReadyAction": {
-                "action": "openExternally",
-                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-            },
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
-            }
-        },
-        {
-            "name": "Launch and Debug Standalone Blazor WebAssembly App",
-            "type": "blazorwasm",
-            "request": "launch",
-            "cwd": "${workspaceFolder}/Examples.BlazorWasm"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET Core Launch (web)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Examples.BlazorServer/bin/Debug/net8.0/Examples.BlazorServer.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Examples.BlazorServer",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    },
+    {
+      "name": "Launch and Debug Standalone Blazor WebAssembly App",
+      "type": "blazorwasm",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/Examples.BlazorWasm"
+    }
+  ]
 }
