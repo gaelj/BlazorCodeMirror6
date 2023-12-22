@@ -19,7 +19,7 @@ import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
 import { linter, lintKeymap } from "@codemirror/lint"
 
 import { CmInstance, CMInstances } from "./CmInstance"
-import { CmConfig } from "./CmConfig"
+import { CmConfiguration } from "./CmConfiguration"
 import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
 import { getTheme } from "./CmTheme"
 import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLanguage"
@@ -37,26 +37,26 @@ import { externalLintSource, getExternalLinterConfig } from "./CmLint"
  * Initialize a new CodeMirror instance
  * @param dotnetHelper
  * @param id
- * @param config
+ * @param initialConfig
  */
 export function initCodeMirror(
     id: string,
     dotnetHelper: any,
-    config: CmConfig
+    initialConfig: CmConfiguration
 ) {
     CMInstances[id] = new CmInstance()
     CMInstances[id].dotNetHelper = dotnetHelper
 
     let extensions = [
-        CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(config.languageName))),
-        CMInstances[id].languageCompartment.of(getLanguage(config.languageName)),
-        CMInstances[id].markdownStylingCompartment.of(getDynamicHeaderStyling(config.autoFormatMarkdownHeaders)),
-        CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(config.tabSize)),
-        CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(config.tabSize))),
-        CMInstances[id].placeholderCompartment.of(placeholder(config.placeholder)),
-        CMInstances[id].themeCompartment.of(getTheme(config.themeName)),
-        CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(config.readOnly)),
-        CMInstances[id].editableCompartment.of(EditorView.editable.of(config.editable)),
+        CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName))),
+        CMInstances[id].languageCompartment.of(getLanguage(initialConfig.languageName)),
+        CMInstances[id].markdownStylingCompartment.of(getDynamicHeaderStyling(initialConfig.autoFormatMarkdownHeaders)),
+        CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
+        CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
+        CMInstances[id].placeholderCompartment.of(placeholder(initialConfig.placeholder)),
+        CMInstances[id].themeCompartment.of(getTheme(initialConfig.themeName)),
+        CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(initialConfig.readOnly)),
+        CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
 
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
 
@@ -122,7 +122,7 @@ export function initCodeMirror(
     ]
 
     CMInstances[id].state = EditorState.create({
-        doc: config.doc,
+        doc: initialConfig.doc,
         extensions: extensions,
     })
 
