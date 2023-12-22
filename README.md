@@ -2,26 +2,50 @@
 
 ![codemirror.svg](codemirror.svg)
 
-A CodeMirror 6 component for Blazor in .Net 7 and .Net 8.
+[CodeMirror 6](https://codemirror.net/) is a wonderful code editor for the browser.
+
+This project wraps it in a Blazor .Net 7 / .Net 8 component, along with many popular use-cases detailed in the official documentation and the user forum, add-ons and themes.
+
+It can be used as a feature-complete Markdown editor.
 
 ## Features
 
-- 2-way-binding of the document contents
-- setting tab size & indentation unit
-- setting a placeholder text
-- applying preset [themes](https://github.com/vadimdemedes/thememirror)
-- setting ReadOnly and Editable attributes
-- applying syntax highlighting and auto-completion for 13 different languages
-- apply Markdown syntax
-- report Markdown syntax at selection(s)
-- manual resizing of the editor
-- image preview
-- linting
+### For all languages
 
-### Markdown language
+- [x] 2-way-binding of the document contents
+- [x] setting tab size & indentation unit
+- [x] setting a placeholder text
+- [x] applying preset [themes](https://github.com/vadimdemedes/thememirror)
+- [x] setting ReadOnly and Editable attributes
+- [x] applying syntax highlighting and auto-completion for 13 different languages
+- [x] manual resizing of the editor (similar to html `textarea`)
+- [x] image preview
+- [x] custom linting
+- [ ] insert text at cursor / at position
+- [ ] allow undo / redo toolbar buttons
+- [ ] support soft line wrapping
+- [ ] better highlight markdown inline code and code blocks
+- [ ] configure which plugins are active at startup
+- [ ] Add C# language
+- [ ] Add a diff viewer
+- [ ] Implement cursor tooltips
+- [ ] Implement Copilot/AI style suggestions
+- [ ] allow setting the [Starting selection](https://codemirror.net/docs/ref/#state.EditorStateConfig.selection)
 
-- Resized header text proportional to header #
-- keybindings to set text in **bold** (`Ctrl-B`) or *italic* (`Ctrl-I`)
+### For Markdown language
+
+- [x] apply Markdown syntax
+- [x] report Markdown syntax at selection(s)
+- [x] Resized header text proportional to header #
+- [x] keybindings to set text in **bold** (`Ctrl-B`) or *italic* (`Ctrl-I`)
+- [ ] customize markdown header sizes
+- [ ] support toolbar toggling of checklist items even if checked
+- [ ] support emoji
+- [ ] Implement @user mentions with dropdown list
+- [ ] Apply Markdown style to whole words
+- [ ] Toggling-off a Markdown style should always select the whole styled text block
+- [ ] Add mermaid language highlighting
+- [ ] Implement kroki / mermaid preview
 
 ## Installation
 
@@ -45,21 +69,13 @@ If you have npm / rollup errors when building (for example after pulling recent 
 
 ## Modification
 
-The javascript-side initialization is in `CodeMirror6/NodeLib/src/index.ts`
-
-Interop from .Net to JS is in `CodeMirror6/CodeMirrorJsInterop.cs`
-
-Interop from JS to .Net is in `CodeMirror6/DotNetHelper.cs`
-
-The blazor component is in `CodeMirror6Wrapper.razor`
-
-The example component is in `Examples.Common/Example.razor`
+- The javascript-side initialization is in `CodeMirror6/NodeLib/src/index.ts`
+- Interop from .Net to JS is in `CodeMirror6/CodeMirrorJsInterop.cs`
+- Interop from JS to .Net is in `CodeMirror6/DotNetHelper.cs`
+- The blazor component is in `CodeMirror6Wrapper.razor`
+- The example component is in `Examples.Common/Example.razor`
 
 > The Node project is automatically built with the .Net project
-
-## Task list
-
-- [ ] [Starting selection](https://codemirror.net/docs/ref/#state.EditorStateConfig.selection)
 
 ## Screenshots
 
