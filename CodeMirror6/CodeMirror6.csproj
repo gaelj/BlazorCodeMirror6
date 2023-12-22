@@ -31,12 +31,22 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" Condition="'$(TargetFramework)'=='net8.0'" />
   </ItemGroup>
 
-   <Target Name="NpmInit" BeforeTargets="BeforeBuild;BeforeRebuild;Rollup">
-    <Exec Command="cd NodeLib &amp;&amp; npm install" />
+  <Target Name="RemoveNodeModulesTarget">
+    <RemoveDir Directories="./NodeLib/node_modules" />
   </Target>
 
-   <Target Name="Rollup" BeforeTargets="BeforeBuild;BeforeRebuild">
-    <Exec Command="cd NodeLib &amp;&amp; npx rollup --config" />
+  <Target Name="NpmInstallTarget" DependsOnTargets="RemoveNodeModulesTarget">
+    <Exec WorkingDirectory="NodeLib" Command="npm install" />
+  </Target>
+
+  <Target Name="RollupBuildTarget" DependsOnTargets="NpmInstallTarget">
+    <Exec WorkingDirectory="NodeLib" Command="npx rollup --config" />
+  </Target>
+
+  <Target Name="BeforeClean" BeforeTargets="Clean" DependsOnTargets="RemoveNodeModulesTarget">
+  </Target>
+
+  <Target Name="BeforeBuild" BeforeTargets="Build" DependsOnTargets="NpmInstallTarget;RollupBuildTarget">
   </Target>
 
 </Project>
