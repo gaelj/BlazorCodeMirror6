@@ -1,4 +1,4 @@
-﻿<h1>Code Mirror 6 Wrapper Demo</h1>
+<h1>Code Mirror 6 Wrapper Demo</h1>
 
 <label for="Theme">Theme</label>
 <select @bind=@Theme id="Theme">
@@ -74,6 +74,9 @@
             </button>
             <button class="btn" @onclick=@(() => c.CmJsInterop.Commands.ToggleMarkdownTaskList()) title="Toggle task list">
                 Task list
+            </button>
+            <button class="btn" @onclick=@(() => c.CmJsInterop.Commands.InsertOrReplaceText("test")) title="Insert or replace text">
+                Insert or replace text
             </button>
         </div>
     </ContentBefore>

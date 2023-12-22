@@ -28,6 +28,7 @@ import {
     toggleMarkdownStrikethroughCommand, toggleMarkdownQuoteCommand, toggleMarkdownHeading1Command, toggleMarkdownHeading2Command,
     toggleMarkdownHeading3Command, toggleMarkdownHeading4Command, toggleMarkdownHeading5Command, toggleMarkdownHeading6Command,
     toggleMarkdownUnorderedListCommand, toggleMarkdownOrderedListCommand, toggleMarkdownTaskListCommand, getMarkdownStyleAtRange,
+    insertOrReplaceTextCommand,
 } from "./CmCommands"
 import { images } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
@@ -137,7 +138,7 @@ export function initCodeMirror(
 
     CMInstances[id].state = EditorState.create({
         doc: config.doc,
-        extensions: extensions
+        extensions: extensions,
     })
 
     CMInstances[id].view = new EditorView({
@@ -164,6 +165,8 @@ export function setDoc(id: string, text: string) {
     })
     CMInstances[id].view.dispatch(transaction)
 }
+
+export const insertOrReplaceText = (id: string, textToInsert: string) => insertOrReplaceTextCommand(CMInstances[id].view, textToInsert)
 
 export function setPlaceholderText(id: string, text: string) {
     CMInstances[id].view.dispatch({
