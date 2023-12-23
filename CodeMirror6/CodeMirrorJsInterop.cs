@@ -40,7 +40,13 @@ public class CodeMirrorJsInterop(
     /// Methods to set JS CodeMirror properties to reflect the values of the blazor wrapper parameters. Internal use only.
     /// </summary>
     /// <returns></returns>
-    internal CMSetters PropertySetters => _setters ??= new(_dotnetHelperRef, cm6WrapperComponent.Config, this);
+    internal CMSetters PropertySetters => _setters ??= new(
+        _dotnetHelperRef,
+        cm6WrapperComponent.Config,
+        cm6WrapperComponent.Setup,
+        this
+    );
+
     /// <summary>
     /// Methods to invoke JS CodeMirror commands.
     /// </summary>
@@ -64,6 +70,7 @@ public class CodeMirrorJsInterop(
 internal class CMSetters(
     DotNetObjectReference<CodeMirror6Wrapper> _dotnetHelperRef,
     CodeMirrorConfiguration config,
+    CodeMirrorSetup setup,
     CodeMirrorJsInterop cmJsInterop
 )
 {
@@ -74,7 +81,8 @@ internal class CMSetters(
     public Task InitCodeMirror() => cmJsInterop.ModuleInvokeVoidAsync(
         "initCodeMirror",
         _dotnetHelperRef,
-        config
+        config,
+        setup
     );
 
     /// <summary>

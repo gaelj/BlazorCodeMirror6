@@ -38,6 +38,7 @@
     Language=@Language
     AutoFormatMarkdownHeaders=@AutoFormatMarkdownHeaders
     LintDocument=@LintDocument
+    Setup=@Setup
     style="max-width: 100%; min-height: 40em; "
 >
     <ContentBefore Context="c">
@@ -209,6 +210,12 @@ func main() {{
     private ThemeMirrorTheme Theme = ThemeMirrorTheme.OneDark;
     private CodeMirrorLanguage Language = CodeMirrorLanguage.Markdown;
     private bool AutoFormatMarkdownHeaders = true;
+    private readonly CodeMirrorSetup Setup = new() {
+        HighlightActiveLine = false,
+        LineNumbers = true,
+        HighlightActiveLineGutter = false,
+        HighlightSelectionMatches = false,
+    };
     private string ButtonClass(CodeMirrorState state, string docStyleTag) => state.MarkdownStylesAtSelections?.Contains(docStyleTag) == true
         ? "btn btn-primary"
         : "btn";

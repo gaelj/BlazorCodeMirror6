@@ -8,11 +8,11 @@ import {
     indentWithTab, history, historyKeymap, cursorSyntaxLeft, moveLineDown, moveLineUp,
     selectSyntaxLeft, selectSyntaxRight, cursorSyntaxRight, selectParentSyntax, indentLess, indentMore,
     copyLineUp, copyLineDown, indentSelection, deleteLine, cursorMatchingBracket, toggleComment, toggleBlockComment,
-    simplifySelection, insertBlankLine, selectLine, undo, redo, redoSelection, undoSelection
+    simplifySelection, insertBlankLine, selectLine, undo, redo, redoSelection, undoSelection,
 } from "@codemirror/commands"
 import {
     indentUnit, defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
-    foldGutter, foldKeymap
+    foldGutter, foldKeymap,
 } from "@codemirror/language"
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
@@ -32,6 +32,7 @@ import {
 } from "./CmCommands"
 import { images } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
+import { CmSetup } from "./CmSetup"
 
 /**
  * Initialize a new CodeMirror instance
@@ -42,7 +43,8 @@ import { externalLintSource, getExternalLinterConfig } from "./CmLint"
 export function initCodeMirror(
     id: string,
     dotnetHelper: any,
-    initialConfig: CmConfiguration
+    initialConfig: CmConfiguration,
+    setup: CmSetup
 ) {
     CMInstances[id] = new CmInstance()
     CMInstances[id].dotNetHelper = dotnetHelper
@@ -59,28 +61,6 @@ export function initCodeMirror(
         CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
 
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
-
-        images(),
-        linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()),
-
-        // Basic Setup
-        lineNumbers(),
-        highlightActiveLineGutter(),
-        highlightSpecialChars(),
-        history(),
-        foldGutter(),
-        drawSelection(),
-        dropCursor(),
-        EditorState.allowMultipleSelections.of(true),
-        indentOnInput(),
-        syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
-        bracketMatching(),
-        closeBrackets(),
-        autocompletion({}),
-        rectangularSelection(),
-        crosshairCursor(),
-        highlightActiveLine(),
-        highlightSelectionMatches(),
         keymap.of([
             ...closeBracketsKeymap,
 
@@ -120,6 +100,28 @@ export function initCodeMirror(
             indentWithTab,
         ])
     ]
+
+    // Basic Setup
+    if (setup.lineNumbers === true) extensions.push(lineNumbers())
+    if (setup.highlightActiveLineGutter === true) extensions.push(highlightActiveLineGutter())
+    if (setup.highlightSpecialChars === true) extensions.push(highlightSpecialChars())
+    if (setup.history === true) extensions.push(history())
+    if (setup.foldGutter === true) extensions.push(foldGutter())
+    if (setup.drawSelection === true) extensions.push(drawSelection())
+    if (setup.dropCursor === true) extensions.push(dropCursor())
+    if (setup.indentOnInput === true) extensions.push(indentOnInput())
+    if (setup.syntaxHighlighting === true) extensions.push(syntaxHighlighting(defaultHighlightStyle, { fallback: true }))
+    if (setup.bracketMatching === true) extensions.push(bracketMatching())
+    if (setup.closeBrackets === true) extensions.push(closeBrackets())
+    if (setup.autocompletion === true) extensions.push(autocompletion({}))
+    if (setup.rectangularSelection === true) extensions.push(rectangularSelection())
+    if (setup.crosshairCursor === true) extensions.push(crosshairCursor())
+    if (setup.highlightActiveLine === true) extensions.push(highlightActiveLine())
+    if (setup.highlightSelectionMatches === true) extensions.push(highlightSelectionMatches())
+    if (setup.previewImages === true) extensions.push(images())
+
+    extensions.push(linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()))
+    if (setup.allowMultipleSelections === true) EditorState.allowMultipleSelections.of(true)
 
     CMInstances[id].state = EditorState.create({
         doc: initialConfig.doc,
