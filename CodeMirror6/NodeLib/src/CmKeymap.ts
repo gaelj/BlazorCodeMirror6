@@ -1,6 +1,6 @@
-import { toggleMarkdownBoldCommand, toggleMarkdownItalicCommand } from "./CmCommands"
+import { toggleMarkdownBold, toggleMarkdownItalic } from "./CmCommands"
 
 export const customMarkdownKeymap = [
-    { key: 'Mod-b', run: toggleMarkdownBoldCommand },    // Cmd/Ctrl + B for bold
-    { key: 'Mod-i', run: toggleMarkdownItalicCommand }, // Cmd/Ctrl + I for italics
+    { key: 'Mod-b', run: toggleMarkdownBold },    // Cmd/Ctrl + B for bold
+    { key: 'Mod-i', run: toggleMarkdownItalic }, // Cmd/Ctrl + I for italics
 ]

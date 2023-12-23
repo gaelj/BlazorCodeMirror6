@@ -43,41 +43,44 @@
 >
     <ContentBefore Context="c">
         <div class="alert alert-info mt-3">
-            <button class=@ButtonClass(c.State, "StrongEmphasis") @onclick=@(() => c.Commands.ToggleMarkdownBold()) title="Toggle bold text (Ctrl-B)">
+            <button class=@ButtonClass(c.State, "StrongEmphasis") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownBold)) title="Toggle bold text (Ctrl-B)">
                 Bold
             </button>
-            <button class=@ButtonClass(c.State, "Emphasis") @onclick=@(() => c.Commands.ToggleMarkdownItalic()) title="Toggle italic text (Ctrl-I)">
+            <button class=@ButtonClass(c.State, "Emphasis") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownItalic)) title="Toggle italic text (Ctrl-I)">
                 Italic
             </button>
-            <button class=@ButtonClass(c.State, "Strikethrough") @onclick=@(() => c.Commands.ToggleMarkdownStrikethrough()) title="Toggle strike-through text">
+            <button class=@ButtonClass(c.State, "Strikethrough") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownStrikethrough)) title="Toggle strike-through text">
                 Strikethrough
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.ToggleMarkdownCode()) title="Toggle inline code text">
+            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownCode)) title="Toggle inline code text">
                 Code
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.ToggleMarkdownCodeBlock()) title="Toggle code block text">
+            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownCodeBlock)) title="Toggle code block text">
                 Code block
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.ToggleMarkdownQuote()) title="Toggle quoted text">
+            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownQuote)) title="Toggle quoted text">
                 Quote
             </button>
             @for (var i = 1; i <= 6; i++) {
                 var headingLevel = i; // Capture the current value of i in a local variable
-                <button class=@ButtonClass(c.State, $"ATXHeading{i}") @onclick=@(() => c.Commands.ToggleMarkdownHeading(headingLevel)) title="Toggle heading text">
-                    @($"H{i}")
+                <button class=@ButtonClass(c.State, $"ATXHeading{headingLevel}") @onclick=@(() => c.Commands.Dispatch(CodeMirrorIntCommand.ToggleMarkdownHeading, headingLevel)) title="Toggle heading text">
+                    @($"H{headingLevel}")
                 </button>
             }
-            <button class="btn" @onclick=@(() => c.Commands.ToggleMarkdownOrderedList()) title="Toggle ordered list">
+            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownOrderedList)) title="Toggle ordered list">
                 Ordered list
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.ToggleMarkdownUnorderedList()) title="Toggle unordered list">
+            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownUnorderedList)) title="Toggle unordered list">
                 Bullet list
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.ToggleMarkdownTaskList()) title="Toggle task list">
+            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownTaskList)) title="Toggle task list">
                 Task list
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.InsertOrReplaceText("test")) title="Insert or replace text">
+            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorStringCommand.InsertOrReplaceText, "test")) title="Insert or replace text">
                 Insert or replace text
+            </button>
+            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorStringCommand.InsertTextAbove, "------")) title="Insert separator above">
+                Insert separator above
             </button>
         </div>
     </ContentBefore>
