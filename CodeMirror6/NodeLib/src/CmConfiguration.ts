@@ -1,7 +1,7 @@
 /**
  * Stores the initial configuration of a CodeMirror instance.
  */
-export class CmConfig {
+export class CmConfiguration {
     public doc: string | null
     public placeholder: string
     public themeName: string | null

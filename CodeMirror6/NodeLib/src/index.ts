@@ -8,18 +8,18 @@ import {
     indentWithTab, history, historyKeymap, cursorSyntaxLeft, moveLineDown, moveLineUp,
     selectSyntaxLeft, selectSyntaxRight, cursorSyntaxRight, selectParentSyntax, indentLess, indentMore,
     copyLineUp, copyLineDown, indentSelection, deleteLine, cursorMatchingBracket, toggleComment, toggleBlockComment,
-    simplifySelection, insertBlankLine, selectLine, undo, redo, redoSelection, undoSelection
+    simplifySelection, insertBlankLine, selectLine, undo, redo, redoSelection, undoSelection,
 } from "@codemirror/commands"
 import {
     indentUnit, defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
-    foldGutter, foldKeymap
+    foldGutter, foldKeymap,
 } from "@codemirror/language"
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
 import { linter, lintKeymap } from "@codemirror/lint"
 
 import { CmInstance, CMInstances } from "./CmInstance"
-import { CmConfig } from "./CmConfig"
+import { CmConfiguration } from "./CmConfiguration"
 import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
 import { getTheme } from "./CmTheme"
 import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLanguage"
@@ -28,73 +28,39 @@ import {
     toggleMarkdownStrikethroughCommand, toggleMarkdownQuoteCommand, toggleMarkdownHeading1Command, toggleMarkdownHeading2Command,
     toggleMarkdownHeading3Command, toggleMarkdownHeading4Command, toggleMarkdownHeading5Command, toggleMarkdownHeading6Command,
     toggleMarkdownUnorderedListCommand, toggleMarkdownOrderedListCommand, toggleMarkdownTaskListCommand, getMarkdownStyleAtRange,
+    insertOrReplaceTextCommand,
 } from "./CmCommands"
 import { images } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
-
-async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
-    if (update.docChanged) {
-        await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
-    }
-    if (update.focusChanged) {
-        await dotnetHelper.invokeMethodAsync("FocusChangedFromJS", update.view.hasFocus)
-        if (!update.view.hasFocus)
-            await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
-    }
-    if (update.selectionSet) {
-        await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtRange(update))
-        await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
-    }
-}
+import { CmSetup } from "./CmSetup"
 
 /**
  * Initialize a new CodeMirror instance
  * @param dotnetHelper
  * @param id
- * @param config
+ * @param initialConfig
  */
 export function initCodeMirror(
     id: string,
     dotnetHelper: any,
-    config: CmConfig
+    initialConfig: CmConfiguration,
+    setup: CmSetup
 ) {
     CMInstances[id] = new CmInstance()
     CMInstances[id].dotNetHelper = dotnetHelper
 
     let extensions = [
-        CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(config.languageName))),
-        CMInstances[id].languageCompartment.of(getLanguage(config.languageName)),
-        CMInstances[id].markdownStylingCompartment.of(getDynamicHeaderStyling(config.autoFormatMarkdownHeaders)),
-        CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(config.tabSize)),
-        CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(config.tabSize))),
-        CMInstances[id].placeholderCompartment.of(placeholder(config.placeholder)),
-        CMInstances[id].themeCompartment.of(getTheme(config.themeName)),
-        CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(config.readOnly)),
-        CMInstances[id].editableCompartment.of(EditorView.editable.of(config.editable)),
+        CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName))),
+        CMInstances[id].languageCompartment.of(getLanguage(initialConfig.languageName)),
+        CMInstances[id].markdownStylingCompartment.of(getDynamicHeaderStyling(initialConfig.autoFormatMarkdownHeaders)),
+        CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
+        CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
+        CMInstances[id].placeholderCompartment.of(placeholder(initialConfig.placeholder)),
+        CMInstances[id].themeCompartment.of(getTheme(initialConfig.themeName)),
+        CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(initialConfig.readOnly)),
+        CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
 
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
-
-        images(),
-        linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()),
-
-        // Basic Setup
-        lineNumbers(),
-        highlightActiveLineGutter(),
-        highlightSpecialChars(),
-        history(),
-        foldGutter(),
-        drawSelection(),
-        dropCursor(),
-        EditorState.allowMultipleSelections.of(true),
-        indentOnInput(),
-        syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
-        bracketMatching(),
-        closeBrackets(),
-        autocompletion({}),
-        rectangularSelection(),
-        crosshairCursor(),
-        highlightActiveLine(),
-        highlightSelectionMatches(),
         keymap.of([
             ...closeBracketsKeymap,
 
@@ -135,15 +101,52 @@ export function initCodeMirror(
         ])
     ]
 
+    // Basic Setup
+    if (setup.lineNumbers === true) extensions.push(lineNumbers())
+    if (setup.highlightActiveLineGutter === true) extensions.push(highlightActiveLineGutter())
+    if (setup.highlightSpecialChars === true) extensions.push(highlightSpecialChars())
+    if (setup.history === true) extensions.push(history())
+    if (setup.foldGutter === true) extensions.push(foldGutter())
+    if (setup.drawSelection === true) extensions.push(drawSelection())
+    if (setup.dropCursor === true) extensions.push(dropCursor())
+    if (setup.indentOnInput === true) extensions.push(indentOnInput())
+    if (setup.syntaxHighlighting === true) extensions.push(syntaxHighlighting(defaultHighlightStyle, { fallback: true }))
+    if (setup.bracketMatching === true) extensions.push(bracketMatching())
+    if (setup.closeBrackets === true) extensions.push(closeBrackets())
+    if (setup.autocompletion === true) extensions.push(autocompletion({}))
+    if (setup.rectangularSelection === true) extensions.push(rectangularSelection())
+    if (setup.crosshairCursor === true) extensions.push(crosshairCursor())
+    if (setup.highlightActiveLine === true) extensions.push(highlightActiveLine())
+    if (setup.highlightSelectionMatches === true) extensions.push(highlightSelectionMatches())
+    if (setup.previewImages === true) extensions.push(images())
+
+    extensions.push(linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()))
+    if (setup.allowMultipleSelections === true) EditorState.allowMultipleSelections.of(true)
+
     CMInstances[id].state = EditorState.create({
-        doc: config.doc,
-        extensions: extensions
+        doc: initialConfig.doc,
+        extensions: extensions,
     })
 
     CMInstances[id].view = new EditorView({
         state: CMInstances[id].state,
         parent: document.getElementById(id),
     })
+}
+
+async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
+    if (update.docChanged) {
+        await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
+    }
+    if (update.focusChanged) {
+        await dotnetHelper.invokeMethodAsync("FocusChangedFromJS", update.view.hasFocus)
+        if (!update.view.hasFocus)
+            await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
+    }
+    if (update.selectionSet) {
+        await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtRange(update))
+        await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
+    }
 }
 
 export function setTabSize(id: string, size: number) {
@@ -164,6 +167,8 @@ export function setDoc(id: string, text: string) {
     })
     CMInstances[id].view.dispatch(transaction)
 }
+
+export const insertOrReplaceText = (id: string, textToInsert: string) => insertOrReplaceTextCommand(CMInstances[id].view, textToInsert)
 
 export function setPlaceholderText(id: string, text: string) {
     CMInstances[id].view.dispatch({

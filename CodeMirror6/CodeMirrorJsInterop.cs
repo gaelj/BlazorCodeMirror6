@@ -40,7 +40,13 @@ public class CodeMirrorJsInterop(
     /// Methods to set JS CodeMirror properties to reflect the values of the blazor wrapper parameters. Internal use only.
     /// </summary>
     /// <returns></returns>
-    internal CMSetters PropertySetters => _setters ??= new(_dotnetHelperRef, cm6WrapperComponent.Config, this);
+    internal CMSetters PropertySetters => _setters ??= new(
+        _dotnetHelperRef,
+        cm6WrapperComponent.Config,
+        cm6WrapperComponent.Setup,
+        this
+    );
+
     /// <summary>
     /// Methods to invoke JS CodeMirror commands.
     /// </summary>
@@ -64,6 +70,7 @@ public class CodeMirrorJsInterop(
 internal class CMSetters(
     DotNetObjectReference<CodeMirror6Wrapper> _dotnetHelperRef,
     CodeMirrorConfiguration config,
+    CodeMirrorSetup setup,
     CodeMirrorJsInterop cmJsInterop
 )
 {
@@ -74,7 +81,8 @@ internal class CMSetters(
     public Task InitCodeMirror() => cmJsInterop.ModuleInvokeVoidAsync(
         "initCodeMirror",
         _dotnetHelperRef,
-        config
+        config,
+        setup
     );
 
     /// <summary>
@@ -168,31 +176,60 @@ public class CMCommands(CodeMirrorJsInterop cmJsInterop)
     /// </summary>
     /// <returns></returns>
     public Task ToggleMarkdownBold() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownBold");
+
     /// <summary>
     /// Toggle markdown italic formatting around the selected text
     /// </summary>
     /// <returns></returns>
     public Task ToggleMarkdownItalic() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownItalic");
+
     /// <summary>
     /// Toggle markdown strikethrough formatting around the selected text
     /// </summary>
     /// <returns></returns>
     public Task ToggleMarkdownStrikethrough() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownStrikethrough");
+
     /// <summary>
     /// Toggle markdown code formatting around the selected text
     /// </summary>
     /// <returns></returns>
     public Task ToggleMarkdownCode() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownCode");
+
     /// <summary>
     /// Toggle markdown code block formatting around the selected text
     /// </summary>
     /// <returns></returns>
     public Task ToggleMarkdownCodeBlock() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownCodeBlock");
+
+    /// <summary>
+    /// Toggle markdown quote formatting around the selected text
+    /// </summary>
+    /// <returns></returns>
     public Task ToggleMarkdownQuote() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownQuote");
+
+    /// <summary>
+    /// Toggle markdown header formatting for the selected line
+    /// </summary>
+    /// <param name="headerLevel"></param>
+    /// <returns></returns>
     public Task ToggleMarkdownHeading(int headerLevel) => cmJsInterop.ModuleInvokeVoidAsync($"toggleMarkdownHeading{headerLevel}");
 
+    /// <summary>
+    /// Toggle markdown unordered list formatting for the selected line
+    /// </summary>
+    /// <returns></returns>
     public Task ToggleMarkdownUnorderedList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownUnorderedList");
+
+    /// <summary>
+    /// Toggle markdown ordered list formatting for the selected line
+    /// </summary>
+    /// <returns></returns>
     public Task ToggleMarkdownOrderedList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownOrderedList");
+
+    /// <summary>
+    /// Toggle markdown task list formatting for the selected line
+    /// </summary>
+    /// <returns></returns>
     public Task ToggleMarkdownTaskList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownTaskList");
 
     /// <summary>
@@ -200,24 +237,33 @@ public class CMCommands(CodeMirrorJsInterop cmJsInterop)
     /// </summary>
     /// <returns></returns>
     public Task PerformUndo() => cmJsInterop.ModuleInvokeVoidAsync("performUndo");
+
     /// <summary>
     /// Redo the last change
     /// </summary>
     /// <returns></returns>
     public Task PerformRedo() => cmJsInterop.ModuleInvokeVoidAsync("performRedo");
+
     /// <summary>
     /// Undo the last selection change
     /// </summary>
     /// <returns></returns>
     public Task PerformUndoSelection() => cmJsInterop.ModuleInvokeVoidAsync("performUndoSelection");
+
     /// <summary>
     /// Redo the last selection change
     /// </summary>
     /// <returns></returns>
     public Task PerformRedoSelection() => cmJsInterop.ModuleInvokeVoidAsync("performRedoSelection");
+
     /// <summary>
     /// Focus the CodeMirror editor
     /// </summary>
     /// <returns></returns>
     public Task FocusCodeMirrorEditor() => cmJsInterop.ModuleInvokeVoidAsync("focus");
+
+    /// <summary>
+    /// Insert or replace the selected text
+    /// </summary>
+    public Task InsertOrReplaceText(string text) => cmJsInterop.ModuleInvokeVoidAsync("insertOrReplaceText", text);
 }

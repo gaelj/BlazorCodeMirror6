@@ -111,6 +111,11 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <value></value>
     [Parameter] public Func<string, CancellationToken, Task<List<CodeMirrorDiagnostic>>> LintDocument { get; set; } = (_, _) => Task.FromResult(new List<CodeMirrorDiagnostic>());
     /// <summary>
+    /// The CodeMirror setup
+    /// </summary>
+    /// <value></value>
+    [Parameter] public CodeMirrorSetup Setup { get; set; } = new();
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     /// <value></value>
@@ -214,7 +219,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// </summary>
     protected override void OnInitialized()
     {
-        Config = new CodeMirrorConfiguration(
+        Config = new(
             Doc,
             Placeholder,
             Theme?.ToString(),

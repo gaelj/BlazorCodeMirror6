@@ -2,8 +2,7 @@ import { markdownLanguage } from "@codemirror/lang-markdown"
 import { syntaxTree } from "@codemirror/language"
 import { SyntaxNodeRef } from "@lezer/common"
 import { ViewUpdate } from "@codemirror/view"
-import { Transaction } from "@codemirror/state"
-import { EditorState, EditorSelection, Text, SelectionRange } from "@codemirror/state"
+import { EditorState, ChangeSpec, EditorSelection, Transaction, Text, SelectionRange } from "@codemirror/state"
 import { Command } from "@codemirror/view"
 import { EditorView } from "codemirror"
 
@@ -73,7 +72,7 @@ function toggleCharactersAroundRange(controlChar: string, state: EditorState, ra
     }
 }
 
-function toggleCharactersAroundRanges(view: EditorView, controlChar: string): boolean{
+function toggleCharactersAroundRanges(view: EditorView, controlChar: string): boolean {
     const changes = view.state.changeByRange((range: SelectionRange) => {
         if (!markdownLanguage.isActiveAt(view.state, range.from)) return { range }
         return toggleCharactersAroundRange(controlChar, view.state, range)
@@ -145,7 +144,6 @@ export const toggleMarkdownItalicCommand: Command = (view: EditorView) => toggle
 export const toggleMarkdownStrikethroughCommand: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "~~")
 export const toggleMarkdownCodeCommand: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "`")
 export const toggleMarkdownCodeBlockCommand: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "```")
-
 export const toggleMarkdownQuoteCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, ">", true)
 export const toggleMarkdownHeading1Command: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "#", false)
 export const toggleMarkdownHeading2Command: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "##", false)
@@ -156,4 +154,25 @@ export const toggleMarkdownHeading6Command: Command = (view: EditorView) => togg
 export const toggleMarkdownUnorderedListCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "-", true)
 export const toggleMarkdownOrderedListCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "1.", true)
 export const toggleMarkdownTaskListCommand: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "- [ ]", true)
+
+export function insertOrReplaceTextCommand(view: EditorView, textToInsert: string) {
+    const changeSpec = view.state.changeByRange((range: SelectionRange) => {
+        const changes: ChangeSpec[] = []
+        if (range.empty) {
+            // Range length is 0, so insert
+            changes.push({ from: range.from, insert: textToInsert })
+        } else {
+            // Range length is more than 0, so replace
+            changes.push({ from: range.from, to: range.to, insert: textToInsert })
+        }
+        return {
+            changes,
+            range: EditorSelection.range(range.from, range.from + textToInsert.length),
+        }
+    })
+    view.dispatch(
+        view.state.update(changeSpec, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), })
+    )
+    view.focus()
+}
 
