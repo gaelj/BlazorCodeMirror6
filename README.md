@@ -25,13 +25,15 @@ It can be used as a feature-complete Markdown editor.
 - [x] allow undo / redo toolbar buttons
 - [ ] support soft line wrapping
 - [ ] better highlight markdown inline code and code blocks
-- [ ] configure which plugins are active at startup
-~~- [ ] Add C# language~~ needs a backend, see [mirrorsharp](https://github.com/ashmind/mirrorsharp)
+- [x] configure which plugins are active at startup(https://github.com/ashmind/mirrorsharp)
 - [ ] Add a diff viewer
 - [ ] Implement cursor tooltips
 - [ ] Implement Copilot/AI style suggestions
 - [ ] allow setting the [Starting selection](https://codemirror.net/docs/ref/#state.EditorStateConfig.selection)
 - [ ] Retrieve keybindings
+- [ ] Implement search & replace
+
+~~- [ ] Add C# language~~ needs a backend, see [mirrorsharp]
 
 ### For Markdown language
 
