@@ -51,7 +51,7 @@ public class CodeMirrorJsInterop(
     /// Methods to invoke JS CodeMirror commands.
     /// </summary>
     /// <returns></returns>
-    public CMCommands Commands => _commands ??= new(this);
+    internal CMCommands Commands => _commands ??= new(this);
 
     /// <summary>
     /// Dispose Javascript modules

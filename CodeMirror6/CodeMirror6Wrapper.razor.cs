@@ -85,12 +85,12 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// Content to be rendered before the editor
     /// </summary>
     /// <value></value>
-    [Parameter] public RenderFragment<(CodeMirrorJsInterop CmJsInterop, CodeMirrorConfiguration Config, CodeMirrorState State)>? ContentBefore { get; set; }
+    [Parameter] public RenderFragment<(CMCommands Commands, CodeMirrorConfiguration Config, CodeMirrorState State)>? ContentBefore { get; set; }
     /// <summary>
     /// Content to be rendered after the editor
     /// </summary>
     /// <value></value>
-    [Parameter] public RenderFragment<(CodeMirrorJsInterop CmJsInterop, CodeMirrorConfiguration Config, CodeMirrorState State)>? ContentAfter { get; set; }
+    [Parameter] public RenderFragment<(CMCommands Commands, CodeMirrorConfiguration Config, CodeMirrorState State)>? ContentAfter { get; set; }
     /// <summary>
     /// The active markdown styles at the current selection(s)
     /// </summary>
@@ -122,10 +122,15 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     /// <summary>
+    /// Methods to invoke JS CodeMirror commands.
+    /// </summary>
+    /// <returns></returns>
+    public CMCommands? Commands => CmJsInterop?.Commands;
+
+    /// <summary>
     /// JavaScript interop instance
     /// </summary>
-    public CodeMirrorJsInterop? CmJsInterop = null;
-
+    internal CodeMirrorJsInterop? CmJsInterop = null;
     internal CodeMirrorConfiguration Config = null!;
     internal CodeMirrorState State = new();
 
