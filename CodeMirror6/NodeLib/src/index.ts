@@ -160,16 +160,6 @@ export function setIndentUnit(id: string, indentUnitString: string) {
         effects: CMInstances[id].indentUnitCompartment.reconfigure(indentUnit.of(indentUnitString))
     })
 }
-
-export function setDoc(id: string, text: string) {
-    const transaction = CMInstances[id].view.state.update({
-        changes: { from: 0, to: CMInstances[id].view.state.doc.length, insert: text }
-    })
-    CMInstances[id].view.dispatch(transaction)
-}
-
-export const insertOrReplaceText = (id: string, textToInsert: string) => insertOrReplaceTextCommand(CMInstances[id].view, textToInsert)
-
 export function setPlaceholderText(id: string, text: string) {
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].placeholderCompartment.reconfigure(placeholder(text))
@@ -214,6 +204,16 @@ export function setAutoFormatMarkdownHeaders(id: string, autoFormatMarkdownHeade
         effects: CMInstances[id].markdownStylingCompartment.reconfigure(getDynamicHeaderStyling(autoFormatMarkdownHeaders))
     })
 }
+
+export function setDoc(id: string, text: string) {
+    const transaction = CMInstances[id].view.state.update({
+        changes: { from: 0, to: CMInstances[id].view.state.doc.length, insert: text }
+    })
+    CMInstances[id].view.dispatch(transaction)
+}
+
+export const insertOrReplaceText = (id: string, textToInsert: string) => insertOrReplaceTextCommand(CMInstances[id].view, textToInsert)
+export const insertTextAbove = (id: string, textToInsert: string) => insertOrReplaceTextCommand(CMInstances[id].view, textToInsert)
 
 export const toggleMarkdownBold = (id: string) => toggleMarkdownBoldCommand(CMInstances[id].view)
 export const toggleMarkdownItalic = (id: string) => toggleMarkdownItalicCommand(CMInstances[id].view)

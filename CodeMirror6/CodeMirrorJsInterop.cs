@@ -266,4 +266,11 @@ public class CMCommands(CodeMirrorJsInterop cmJsInterop)
     /// Insert or replace the selected text
     /// </summary>
     public Task InsertOrReplaceText(string text) => cmJsInterop.ModuleInvokeVoidAsync("insertOrReplaceText", text);
+
+    /// <summary>
+    /// Insert text above the selected text's line
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public Task InsertTextAbove(string text) => cmJsInterop.ModuleInvokeVoidAsync("insertTextAbove", text);
 }

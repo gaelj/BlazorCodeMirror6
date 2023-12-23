@@ -176,3 +176,21 @@ export function insertOrReplaceTextCommand(view: EditorView, textToInsert: strin
     view.focus()
 }
 
+export function insertTextAboveCommand(view: EditorView, textToInsert: string) {
+    const changeSpec = view.state.changeByRange((range: SelectionRange) => {
+        const changes: ChangeSpec[] = []
+        // find the beginning of the line
+        const lineStart = view.state.doc.lineAt(range.from).from
+        // insert the text at the beginning of the line
+        changes.push({ from: lineStart, insert: textToInsert + "\n" })
+        return {
+            changes,
+            range: EditorSelection.range(range.from, range.from + textToInsert.length),
+        }
+    })
+    view.dispatch(
+        view.state.update(changeSpec, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), })
+    )
+    view.focus()
+}
+
