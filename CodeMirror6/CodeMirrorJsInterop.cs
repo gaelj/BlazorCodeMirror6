@@ -7,7 +7,6 @@ namespace CodeMirror6;
 /// <summary>
 /// Wraps JavaScript functionality in a .NET class for easy consumption.
 /// The associated JavaScript module is loaded on demand when first needed.
-///
 /// This class can be registered as scoped DI service and then injected into Blazor
 /// components for use.
 /// </summary>
@@ -168,6 +167,91 @@ public enum CodeMirrorSimpleCommand
     /// Redo the last selection change
     /// </summary>
     RedoSelection,
+
+    /// <summary>
+    /// Decreases the indentation level of the selected lines.
+    /// </summary>
+    IndentLess,
+
+    /// <summary>
+    /// Increases the indentation level of the selected lines.
+    /// </summary>
+    IndentMore,
+
+    /// <summary>
+    /// Copies the selected line and inserts it above the current line.
+    /// </summary>
+    CopyLineUp,
+
+    /// <summary>
+    /// Copies the selected line and inserts it below the current line.
+    /// </summary>
+    CopyLineDown,
+
+    /// <summary>
+    /// Indents the selected lines.
+    /// </summary>
+    IndentSelection,
+
+    /// <summary>
+    /// Moves the cursor to the matching bracket.
+    /// </summary>
+    CursorMatchingBracket,
+
+    /// <summary>
+    /// Toggles the comment on the selected lines.
+    /// </summary>
+    ToggleComment,
+
+    /// <summary>
+    /// Toggles the block comment on the selected lines.
+    /// </summary>
+    ToggleBlockComment,
+
+    /// <summary>
+    /// Simplifies the selection by removing leading and trailing whitespace.
+    /// </summary>
+    SimplifySelection,
+
+    /// <summary>
+    /// Inserts a blank line at the current cursor position.
+    /// </summary>
+    InsertBlankLine,
+
+    /// <summary>
+    /// Selects the current line.
+    /// </summary>
+    SelectLine,
+
+    /// <summary>
+    /// Comments out the selected lines as a block.
+    /// </summary>
+    BlockComment,
+
+    /// <summary>
+    /// Uncomments the selected lines as a block.
+    /// </summary>
+    BlockUncomment,
+
+    /// <summary>
+    /// Toggles the block comment on each line of the selection.
+    /// </summary>
+    ToggleBlockCommentByLine,
+
+    /// <summary>
+    /// Comments out the current line.
+    /// </summary>
+    LineComment,
+
+    /// <summary>
+    /// Uncomments the current line.
+    /// </summary>
+    LineUncomment,
+
+    /// <summary>
+    /// Toggles the comment on the current line.
+    /// </summary>
+    ToggleLineComment,
 
     /// <summary>
     /// Focus the CodeMirror editor

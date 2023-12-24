@@ -245,6 +245,24 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
             case 'Redo': redo(view); break;
             case 'UndoSelection': undoSelection(view); break;
             case 'RedoSelection': redoSelection(view); break;
+            case 'IndentLess': indentLess(view); break;
+            case 'IndentMore': indentMore(view); break;
+            case 'CopyLineUp': copyLineUp(view); break;
+            case 'CopyLineDown': copyLineDown(view); break;
+            case 'IndentSelection': indentSelection(view); break;
+            case 'CursorMatchingBracket': cursorMatchingBracket(view); break;
+            case 'ToggleComment': toggleComment(view); break;
+            case 'ToggleBlockComment': toggleBlockComment(view); break;
+            case 'SimplifySelection': simplifySelection(view); break;
+            case 'InsertBlankLine': insertBlankLine(view); break;
+            case 'SelectLine': selectLine(view); break;
+            case 'BlockComment': blockComment(view); break;
+            case 'BlockUncomment': blockUncomment(view); break;
+            case 'ToggleBlockCommentByLine': toggleBlockCommentByLine(view); break;
+            case 'LineComment': lineComment(view); break;
+            case 'LineUncomment': lineUncomment(view); break;
+            case 'ToggleLineComment': toggleLineComment(view); break;
+
             case 'Focus': view.focus(); break;
 
             default: throw new Error(`Function ${functionName} does not exist.`);
