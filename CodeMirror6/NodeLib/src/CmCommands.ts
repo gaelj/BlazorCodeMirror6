@@ -11,22 +11,28 @@ import { EditorView } from "codemirror"
  * @param update
  * @returns
  */
-export function getMarkdownStyleAtRange(update: ViewUpdate): string[] {
+export function getMarkdownStyleAtSelections(state: EditorState): string[] {
     let styles: string[] = [];
-    for (let range of update.state.selection.ranges) {
-        let tree = syntaxTree(update.state)
-        tree.iterate({
-            from: range.from,
-            to: range.to,
-            enter: (node: SyntaxNodeRef) => {
-                const style = node.name
-                if (style && !styles.includes(style)) {
-                    styles.push(style)
-                }
-            }
-        })
+    for (let range of state.selection.ranges) {
+        styles.push(...getMarkdownStyleAtRange(state, range))
     }
-    console.log("Active Markdown styles in selection:", styles)
+    return styles
+}
+
+function getMarkdownStyleAtRange(state: EditorState, range: SelectionRange): string[] {
+    let styles: string[] = [];
+    let tree = syntaxTree(state)
+    tree.iterate({
+        from: range.from,
+        to: range.to,
+        enter: (node: SyntaxNodeRef) => {
+            const style = node.name
+            if (style && !styles.includes(style)) {
+                styles.push(style)
+            }
+        }
+    })
+    console.log("Active Markdown styles in range:", styles)
     return styles
 }
 
