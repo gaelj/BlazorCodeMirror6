@@ -87,7 +87,6 @@ function toggleCharactersAtStartOfLines(view: EditorView, controlChar: string, e
         if (!markdownLanguage.isActiveAt(view.state, range.from)) return { range }
         const fullControlChar = `${controlChar} `
         const lineAtFrom = view.state.doc.lineAt(range.from)
-        const lineAtTo = view.state.doc.lineAt(range.to)
         const wasStyled = lineAtFrom.text.trimStart().startsWith(exactMatch ? `${controlChar} ` : controlChar[0]);
         const changes = [];
         const indexOfSpace = exactMatch ? fullControlChar.length : lineAtFrom.text.indexOf(' ') + 1
@@ -124,10 +123,8 @@ function toggleCharactersAtStartOfLines(view: EditorView, controlChar: string, e
         }
 
         const newLineAtFrom = view.state.doc.lineAt(range.from)
-        const newLineAtTo = view.state.doc.lineAt(range.to)
         if (newFrom < newLineAtFrom.from) newFrom = newLineAtFrom.from
         if (newTo < newLineAtFrom.from) newTo = newLineAtFrom.from
-        if (newFrom > newLineAtTo.to) newFrom = newLineAtTo.to
 
         return {
             changes,
