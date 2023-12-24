@@ -5,10 +5,12 @@ import {
 } from "@codemirror/view"
 import { EditorState } from "@codemirror/state"
 import {
-    indentWithTab, history, historyKeymap, cursorSyntaxLeft, moveLineDown, moveLineUp,
-    selectSyntaxLeft, selectSyntaxRight, cursorSyntaxRight, selectParentSyntax, indentLess, indentMore,
-    copyLineUp, copyLineDown, indentSelection, deleteLine, cursorMatchingBracket, toggleComment, toggleBlockComment,
+    indentWithTab, history, historyKeymap,
+    cursorSyntaxLeft, selectSyntaxLeft, selectSyntaxRight, cursorSyntaxRight, deleteLine,
+    moveLineDown, moveLineUp, selectParentSyntax, indentLess, indentMore,
+    copyLineUp, copyLineDown, indentSelection, cursorMatchingBracket, toggleComment, toggleBlockComment,
     simplifySelection, insertBlankLine, selectLine, undo, redo, redoSelection, undoSelection,
+    blockComment, blockUncomment, toggleBlockCommentByLine, lineComment, lineUncomment, toggleLineComment,
 } from "@codemirror/commands"
 import {
     indentUnit, defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
@@ -24,15 +26,17 @@ import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
 import { getTheme } from "./CmTheme"
 import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLanguage"
 import {
-    toggleMarkdownBoldCommand, toggleMarkdownCodeBlockCommand, toggleMarkdownCodeCommand, toggleMarkdownItalicCommand,
-    toggleMarkdownStrikethroughCommand, toggleMarkdownQuoteCommand, toggleMarkdownHeading1Command, toggleMarkdownHeading2Command,
-    toggleMarkdownHeading3Command, toggleMarkdownHeading4Command, toggleMarkdownHeading5Command, toggleMarkdownHeading6Command,
-    toggleMarkdownUnorderedListCommand, toggleMarkdownOrderedListCommand, toggleMarkdownTaskListCommand, getMarkdownStyleAtRange,
-    insertOrReplaceTextCommand,
+    toggleMarkdownBold, toggleMarkdownItalic, toggleMarkdownCodeBlock, toggleMarkdownCode,
+    toggleMarkdownStrikethrough, toggleMarkdownQuote, toggleMarkdownHeading,
+    toggleMarkdownUnorderedList, toggleMarkdownOrderedList, toggleMarkdownTaskList,
+    getMarkdownStyleAtRange,
+    insertOrReplaceText,
+    insertTextAboveCommand,
 } from "./CmCommands"
 import { images } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
 import { CmSetup } from "./CmSetup"
+import { createEmojiExtension, lastOperationWasUndo } from "./CmEmoji"
 
 /**
  * Initialize a new CodeMirror instance
@@ -59,6 +63,8 @@ export function initCodeMirror(
         CMInstances[id].themeCompartment.of(getTheme(initialConfig.themeName)),
         CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(initialConfig.readOnly)),
         CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
+        CMInstances[id].emojiReplacerCompartment.of(createEmojiExtension(initialConfig.replaceEmojiCodes)),
+        lastOperationWasUndo,
 
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
         keymap.of([
@@ -160,16 +166,6 @@ export function setIndentUnit(id: string, indentUnitString: string) {
         effects: CMInstances[id].indentUnitCompartment.reconfigure(indentUnit.of(indentUnitString))
     })
 }
-
-export function setDoc(id: string, text: string) {
-    const transaction = CMInstances[id].view.state.update({
-        changes: { from: 0, to: CMInstances[id].view.state.doc.length, insert: text }
-    })
-    CMInstances[id].view.dispatch(transaction)
-}
-
-export const insertOrReplaceText = (id: string, textToInsert: string) => insertOrReplaceTextCommand(CMInstances[id].view, textToInsert)
-
 export function setPlaceholderText(id: string, text: string) {
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].placeholderCompartment.reconfigure(placeholder(text))
@@ -215,27 +211,49 @@ export function setAutoFormatMarkdownHeaders(id: string, autoFormatMarkdownHeade
     })
 }
 
-export const toggleMarkdownBold = (id: string) => toggleMarkdownBoldCommand(CMInstances[id].view)
-export const toggleMarkdownItalic = (id: string) => toggleMarkdownItalicCommand(CMInstances[id].view)
-export const toggleMarkdownStrikethrough = (id: string) => toggleMarkdownStrikethroughCommand(CMInstances[id].view)
-export const toggleMarkdownCode = (id: string) => toggleMarkdownCodeCommand(CMInstances[id].view)
-export const toggleMarkdownCodeBlock = (id: string) => toggleMarkdownCodeBlockCommand(CMInstances[id].view)
-export const toggleMarkdownQuote = (id: string) => toggleMarkdownQuoteCommand(CMInstances[id].view)
-export const toggleMarkdownHeading1 = (id: string) => toggleMarkdownHeading1Command(CMInstances[id].view)
-export const toggleMarkdownHeading2 = (id: string) => toggleMarkdownHeading2Command(CMInstances[id].view)
-export const toggleMarkdownHeading3 = (id: string) => toggleMarkdownHeading3Command(CMInstances[id].view)
-export const toggleMarkdownHeading4 = (id: string) => toggleMarkdownHeading4Command(CMInstances[id].view)
-export const toggleMarkdownHeading5 = (id: string) => toggleMarkdownHeading5Command(CMInstances[id].view)
-export const toggleMarkdownHeading6 = (id: string) => toggleMarkdownHeading6Command(CMInstances[id].view)
-export const toggleMarkdownUnorderedList = (id: string) => toggleMarkdownUnorderedListCommand(CMInstances[id].view)
-export const toggleMarkdownOrderedList = (id: string) => toggleMarkdownOrderedListCommand(CMInstances[id].view)
-export const toggleMarkdownTaskList = (id: string) => toggleMarkdownTaskListCommand(CMInstances[id].view)
+export function setReplaceEmojiCodes(id: string, replaceEmojiCodes: boolean) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].emojiReplacerCompartment.reconfigure(createEmojiExtension(replaceEmojiCodes))
+    });
+}
 
-export const performUndo = (id: string) => undo(CMInstances[id].view)
-export const performRedo = (id: string) => redo(CMInstances[id].view)
-export const performUndoSelection = (id: string) => undoSelection(CMInstances[id].view)
-export const performRedoSelection = (id: string) => redoSelection(CMInstances[id].view)
-export const focus = (id: string) => CMInstances[id].view.focus()
+export function setDoc(id: string, text: string) {
+    const transaction = CMInstances[id].view.state.update({
+        changes: { from: 0, to: CMInstances[id].view.state.doc.length, insert: text }
+    })
+    CMInstances[id].view.dispatch(transaction)
+}
+
+export function dispatchCommand(id: string, functionName: string, ...args: any[]) {
+    const view = CMInstances[id].view
+    try {
+        switch (functionName) {
+            case 'ToggleMarkdownBold': toggleMarkdownBold(view); break;
+            case 'ToggleMarkdownItalic': toggleMarkdownItalic(view); break;
+            case 'ToggleMarkdownStrikethrough': toggleMarkdownStrikethrough(view); break;
+            case 'ToggleMarkdownCode': toggleMarkdownCode(view); break;
+            case 'ToggleMarkdownCodeBlock': toggleMarkdownCodeBlock(view); break;
+            case 'ToggleMarkdownQuote': toggleMarkdownQuote(view); break;
+            case 'ToggleMarkdownHeading': toggleMarkdownHeading(args[0] as number)(view); break;
+            case 'ToggleMarkdownUnorderedList': toggleMarkdownUnorderedList(view); break;
+            case 'ToggleMarkdownOrderedList': toggleMarkdownOrderedList(view); break;
+            case 'ToggleMarkdownTaskList': toggleMarkdownTaskList(view); break;
+            case 'InsertOrReplaceText': insertOrReplaceText(view, args[0] as string); break;
+            case 'InsertTextAbove': insertTextAboveCommand(view, args[0] as string); break;
+
+            case 'Undo': undo(view); break;
+            case 'Redo': redo(view); break;
+            case 'UndoSelection': undoSelection(view); break;
+            case 'RedoSelection': redoSelection(view); break;
+            case 'Focus': view.focus(); break;
+
+            default: throw new Error(`Function ${functionName} does not exist.`);
+        }
+    }
+    catch (error) {
+        console.error(`Error in calling the function ${functionName}`, error);
+    }
+}
 
 /**
  * Dispose of a CodeMirror instance

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using CodeMirror6.Models;
 using Microsoft.JSInterop;
 
@@ -51,7 +52,7 @@ public class CodeMirrorJsInterop(
     /// Methods to invoke JS CodeMirror commands.
     /// </summary>
     /// <returns></returns>
-    public CMCommands Commands => _commands ??= new(this);
+    internal CMCommands Commands => _commands ??= new(this);
 
     /// <summary>
     /// Dispose Javascript modules
@@ -65,6 +66,142 @@ public class CodeMirrorJsInterop(
         }
         GC.SuppressFinalize(this);
     }
+}
+
+/// <summary>
+/// Built-in parameterless CodeMirror commands
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum CodeMirrorSimpleCommand
+{
+    /// <summary>
+    /// Toggle markdown bold formatting around the selected text
+    /// </summary>
+    ToggleMarkdownBold,
+
+    /// <summary>
+    /// Toggle markdown italic formatting around the selected text
+    /// </summary>
+    ToggleMarkdownItalic,
+
+    /// <summary>
+    /// Toggle markdown strikethrough formatting around the selected text
+    /// </summary>
+    ToggleMarkdownStrikethrough,
+
+    /// <summary>
+    /// Toggle markdown code formatting around the selected text
+    /// </summary>
+    ToggleMarkdownCode,
+
+    /// <summary>
+    /// Toggle markdown code block formatting around the selected text
+    /// </summary>
+    ToggleMarkdownCodeBlock,
+
+    /// <summary>
+    /// Toggle markdown quote formatting around the selected text
+    /// </summary>
+    ToggleMarkdownQuote,
+
+    /// <summary>
+    /// Toggle markdown header formatting for the selected line
+    /// </summary>
+    ToggleMarkdownHeading1,
+
+    /// <summary>
+    /// Toggle markdown header formatting for the selected line
+    /// </summary>
+    ToggleMarkdownHeading2,
+
+    /// <summary>
+    /// Toggle markdown header formatting for the selected line
+    /// </summary>
+    ToggleMarkdownHeading3,
+
+    /// <summary>
+    /// Toggle markdown header formatting for the selected line
+    /// </summary>
+    ToggleMarkdownHeading4,
+
+    /// <summary>
+    /// Toggle markdown header formatting for the selected line
+    /// </summary>
+    ToggleMarkdownHeading5,
+
+    /// <summary>
+    /// Toggle markdown header formatting for the selected line
+    /// </summary>
+    ToggleMarkdownHeading6,
+
+    /// <summary>
+    /// Toggle markdown unordered list formatting for the selected line
+    /// </summary>
+    ToggleMarkdownUnorderedList,
+
+    /// <summary>
+    /// Toggle markdown ordered list formatting for the selected line
+    /// </summary>
+    ToggleMarkdownOrderedList,
+
+    /// <summary>
+    /// Toggle markdown task list formatting for the selected line
+    /// </summary>
+    ToggleMarkdownTaskList,
+
+    /// <summary>
+    /// Undo the last change
+    /// </summary>
+    Undo,
+
+    /// <summary>
+    /// Redo the last change
+    /// </summary>
+    Redo,
+
+    /// <summary>
+    /// Undo the last selection change
+    /// </summary>
+    UndoSelection,
+
+    /// <summary>
+    /// Redo the last selection change
+    /// </summary>
+    RedoSelection,
+
+    /// <summary>
+    /// Focus the CodeMirror editor
+    /// </summary>
+    Focus,
+}
+
+/// <summary>
+/// Built-in CodeMirror commands with an integer parameter
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum CodeMirrorIntCommand
+{
+    /// <summary>
+    /// Toggle markdown header formatting for the selected line
+    /// </summary>
+    ToggleMarkdownHeading,
+}
+
+/// <summary>
+/// Built-in CodeMirror commands with a string parameter
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum CodeMirrorStringCommand
+{
+    /// <summary>
+    /// Insert at selection or replace selected text
+    /// </summary>
+    InsertOrReplaceText,
+
+    /// <summary>
+    /// Insert text above the selected text's line
+    /// </summary>
+    InsertTextAbove,
 }
 
 internal class CMSetters(
@@ -164,6 +301,11 @@ internal class CMSetters(
         "setAutoFormatMarkdownHeaders",
         config.AutoFormatMarkdownHeaders
     );
+
+    public Task SetReplaceEmojiCodes() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setReplaceEmojiCodes",
+        config.ReplaceEmojiCodes
+    );
 }
 
 /// <summary>
@@ -172,98 +314,25 @@ internal class CMSetters(
 public class CMCommands(CodeMirrorJsInterop cmJsInterop)
 {
     /// <summary>
-    /// Toggle markdown bold formatting around the selected text
+    /// Invoke a built-in CodeMirror command
     /// </summary>
+    /// <param name="command"></param>
     /// <returns></returns>
-    public Task ToggleMarkdownBold() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownBold");
+    public Task Dispatch(CodeMirrorSimpleCommand command) => cmJsInterop.ModuleInvokeVoidAsync("dispatchCommand", command);
 
     /// <summary>
-    /// Toggle markdown italic formatting around the selected text
+    /// Invoke a built-in CodeMirror command with an integer parameter
     /// </summary>
+    /// <param name="command"></param>
+    /// <param name="value"></param>
     /// <returns></returns>
-    public Task ToggleMarkdownItalic() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownItalic");
+    public Task Dispatch(CodeMirrorIntCommand command, int value) => cmJsInterop.ModuleInvokeVoidAsync("dispatchCommand", command, value);
 
     /// <summary>
-    /// Toggle markdown strikethrough formatting around the selected text
+    /// Invoke a built-in CodeMirror command with a string parameter
     /// </summary>
+    /// <param name="command"></param>
+    /// <param name="value"></param>
     /// <returns></returns>
-    public Task ToggleMarkdownStrikethrough() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownStrikethrough");
-
-    /// <summary>
-    /// Toggle markdown code formatting around the selected text
-    /// </summary>
-    /// <returns></returns>
-    public Task ToggleMarkdownCode() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownCode");
-
-    /// <summary>
-    /// Toggle markdown code block formatting around the selected text
-    /// </summary>
-    /// <returns></returns>
-    public Task ToggleMarkdownCodeBlock() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownCodeBlock");
-
-    /// <summary>
-    /// Toggle markdown quote formatting around the selected text
-    /// </summary>
-    /// <returns></returns>
-    public Task ToggleMarkdownQuote() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownQuote");
-
-    /// <summary>
-    /// Toggle markdown header formatting for the selected line
-    /// </summary>
-    /// <param name="headerLevel"></param>
-    /// <returns></returns>
-    public Task ToggleMarkdownHeading(int headerLevel) => cmJsInterop.ModuleInvokeVoidAsync($"toggleMarkdownHeading{headerLevel}");
-
-    /// <summary>
-    /// Toggle markdown unordered list formatting for the selected line
-    /// </summary>
-    /// <returns></returns>
-    public Task ToggleMarkdownUnorderedList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownUnorderedList");
-
-    /// <summary>
-    /// Toggle markdown ordered list formatting for the selected line
-    /// </summary>
-    /// <returns></returns>
-    public Task ToggleMarkdownOrderedList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownOrderedList");
-
-    /// <summary>
-    /// Toggle markdown task list formatting for the selected line
-    /// </summary>
-    /// <returns></returns>
-    public Task ToggleMarkdownTaskList() => cmJsInterop.ModuleInvokeVoidAsync("toggleMarkdownTaskList");
-
-    /// <summary>
-    /// Undo the last change
-    /// </summary>
-    /// <returns></returns>
-    public Task PerformUndo() => cmJsInterop.ModuleInvokeVoidAsync("performUndo");
-
-    /// <summary>
-    /// Redo the last change
-    /// </summary>
-    /// <returns></returns>
-    public Task PerformRedo() => cmJsInterop.ModuleInvokeVoidAsync("performRedo");
-
-    /// <summary>
-    /// Undo the last selection change
-    /// </summary>
-    /// <returns></returns>
-    public Task PerformUndoSelection() => cmJsInterop.ModuleInvokeVoidAsync("performUndoSelection");
-
-    /// <summary>
-    /// Redo the last selection change
-    /// </summary>
-    /// <returns></returns>
-    public Task PerformRedoSelection() => cmJsInterop.ModuleInvokeVoidAsync("performRedoSelection");
-
-    /// <summary>
-    /// Focus the CodeMirror editor
-    /// </summary>
-    /// <returns></returns>
-    public Task FocusCodeMirrorEditor() => cmJsInterop.ModuleInvokeVoidAsync("focus");
-
-    /// <summary>
-    /// Insert or replace the selected text
-    /// </summary>
-    public Task InsertOrReplaceText(string text) => cmJsInterop.ModuleInvokeVoidAsync("insertOrReplaceText", text);
+    public Task Dispatch(CodeMirrorStringCommand command, string value) => cmJsInterop.ModuleInvokeVoidAsync("dispatchCommand", command, value);
 }

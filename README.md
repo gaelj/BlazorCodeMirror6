@@ -23,15 +23,20 @@ It can be used as a feature-complete Markdown editor.
 - [x] custom linting
 - [x] insert text at cursor / at position
 - [x] allow undo / redo toolbar buttons
+- [x] configure which plugins are active at startup
+- [ ] style Markdown quote lines and paragraphs
+- [ ] add increase / decrease selected header (#) level
+- [ ] add a toolbar with toolbar button template
+- [ ] support custom completions, for example @name
 - [ ] support soft line wrapping
 - [ ] better highlight markdown inline code and code blocks
-- [x] configure which plugins are active at startup
 - [ ] Add a diff viewer
 - [ ] Implement cursor tooltips
 - [ ] Implement Copilot/AI style suggestions
 - [ ] allow setting the [Starting selection](https://codemirror.net/docs/ref/#state.EditorStateConfig.selection)
 - [ ] Retrieve keybindings
 - [ ] Implement search & replace
+- [ ] Highlight edited lines
 
 ~~- [ ] Add C# language~~ needs a backend, see [mirrorsharp](https://github.com/ashmind/mirrorsharp)
 
@@ -41,9 +46,9 @@ It can be used as a feature-complete Markdown editor.
 - [x] report Markdown syntax at selection(s)
 - [x] Resized header text proportional to header #
 - [x] keybindings to set text in **bold** (`Ctrl-B`) or *italic* (`Ctrl-I`)
+- [x] support emoji
 - [ ] customize markdown header sizes
 - [ ] support toolbar toggling of checklist items even if checked
-- [ ] support emoji
 - [ ] Implement @user mentions with dropdown list
 - [ ] Apply Markdown style to whole words
 - [ ] Toggling-off a Markdown style should always select the whole styled text block

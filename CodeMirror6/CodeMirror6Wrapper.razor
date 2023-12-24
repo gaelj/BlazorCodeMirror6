@@ -1,11 +1,11 @@
-﻿@if (ContentBefore is not null && CmJsInterop is not null && Config is not null) {
-    @ContentBefore((CmJsInterop, Config, State))
+﻿@if (ContentBefore is not null && CmJsInterop is not null && Config is not null && Commands is not null) {
+    @ContentBefore((Commands, Config, State))
 }
 
 <div id=@Id @attributes=@AdditionalAttributes></div>
 
-@if (ContentAfter is not null && CmJsInterop is not null && Config is not null) {
-    @ContentAfter((CmJsInterop, Config, State))
+@if (ContentAfter is not null && CmJsInterop is not null && Config is not null && Commands is not null) {
+    @ContentAfter((Commands, Config, State))
 }
 
 <style>
