@@ -116,6 +116,11 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <value></value>
     [Parameter] public CodeMirrorSetup Setup { get; set; } = new();
     /// <summary>
+    /// Whether to replace :emoji_codes: with emoji
+    /// </summary>
+    /// <value></value>
+    [Parameter] public bool ReplaceEmojiCodes { get; set; } = true;
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     /// <value></value>
@@ -233,7 +238,8 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
             ReadOnly,
             Editable,
             Language?.ToString(),
-            AutoFormatMarkdownHeaders
+            AutoFormatMarkdownHeaders,
+            ReplaceEmojiCodes
         );
     }
 
@@ -297,6 +303,10 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
         if (Config.AutoFormatMarkdownHeaders != AutoFormatMarkdownHeaders) {
             Config.AutoFormatMarkdownHeaders = AutoFormatMarkdownHeaders;
             await CmJsInterop.PropertySetters.SetAutoFormatMarkdownHeaders();
+        }
+        if (Config.ReplaceEmojiCodes != ReplaceEmojiCodes) {
+            Config.ReplaceEmojiCodes = ReplaceEmojiCodes;
+            await CmJsInterop.PropertySetters.SetReplaceEmojiCodes();
         }
         shouldRender = true;
     }

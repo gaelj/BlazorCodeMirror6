@@ -301,6 +301,11 @@ internal class CMSetters(
         "setAutoFormatMarkdownHeaders",
         config.AutoFormatMarkdownHeaders
     );
+
+    public Task SetReplaceEmojiCodes() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setReplaceEmojiCodes",
+        config.ReplaceEmojiCodes
+    );
 }
 
 /// <summary>

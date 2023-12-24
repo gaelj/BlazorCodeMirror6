@@ -2,7 +2,7 @@ import { markdownLanguage } from "@codemirror/lang-markdown"
 import { syntaxTree } from "@codemirror/language"
 import { SyntaxNodeRef } from "@lezer/common"
 import { ViewUpdate } from "@codemirror/view"
-import { EditorState, ChangeSpec, EditorSelection, Transaction, Text, SelectionRange } from "@codemirror/state"
+import { EditorState, ChangeSpec, EditorSelection, Transaction, Text, SelectionRange, TransactionSpec } from "@codemirror/state"
 import { Command } from "@codemirror/view"
 import { EditorView } from "codemirror"
 
@@ -153,7 +153,7 @@ export const toggleMarkdownOrderedList: Command = (view: EditorView) => toggleCh
 export const toggleMarkdownTaskList: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "- [ ]", true)
 
 export function insertOrReplaceText(view: EditorView, textToInsert: string) {
-    const changeSpec = view.state.changeByRange((range: SelectionRange) => {
+    const transactionSpec: TransactionSpec = view.state.changeByRange((range: SelectionRange) => {
         const changes: ChangeSpec[] = []
         if (range.empty) {
             // Range length is 0, so insert
@@ -168,7 +168,7 @@ export function insertOrReplaceText(view: EditorView, textToInsert: string) {
         }
     })
     view.dispatch(
-        view.state.update(changeSpec, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), })
+        view.state.update(transactionSpec, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), })
     )
     view.focus()
 }

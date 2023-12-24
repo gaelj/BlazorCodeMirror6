@@ -18,6 +18,7 @@ export class CmInstance
     public readonlyCompartment: Compartment = new Compartment
     public editableCompartment: Compartment = new Compartment
     public keymapCompartment: Compartment = new Compartment
+    public emojiReplacerCompartment: Compartment = new Compartment
 }
 
 export const CMInstances: { [id: string]: CmInstance}  = {}

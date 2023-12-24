@@ -43,7 +43,7 @@ It can be used as a feature-complete Markdown editor.
 - [x] keybindings to set text in **bold** (`Ctrl-B`) or *italic* (`Ctrl-I`)
 - [ ] customize markdown header sizes
 - [ ] support toolbar toggling of checklist items even if checked
-- [ ] support emoji
+- [x] support emoji
 - [ ] Implement @user mentions with dropdown list
 - [ ] Apply Markdown style to whole words
 - [ ] Toggling-off a Markdown style should always select the whole styled text block

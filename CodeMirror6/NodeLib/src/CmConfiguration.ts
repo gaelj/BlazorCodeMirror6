@@ -11,4 +11,5 @@ export class CmConfiguration {
     public editable: boolean
     public languageName: string
     public autoFormatMarkdownHeaders: boolean
+    public replaceEmojiCodes: boolean
 }

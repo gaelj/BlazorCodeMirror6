@@ -3,7 +3,8 @@ using System.Text.Json.Serialization;
 namespace CodeMirror6.Models;
 
 /// <summary>
-/// Represents the configuration of the CodeMirror editor
+/// Represents the configuration of the CodeMirror editor.
+/// These settings can be changed after the editor is created.
 /// </summary>
 /// <param name="doc"></param>
 /// <param name="placeholder"></param>
@@ -14,6 +15,7 @@ namespace CodeMirror6.Models;
 /// <param name="editable"></param>
 /// <param name="languageName"></param>
 /// <param name="autoFormatMarkdownHeaders"></param>
+/// <param name="replaceEmojiCodes"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -23,7 +25,8 @@ public class CodeMirrorConfiguration(
     bool readOnly,
     bool editable,
     string? languageName,
-    bool autoFormatMarkdownHeaders)
+    bool autoFormatMarkdownHeaders,
+    bool replaceEmojiCodes)
 {
 
     /// <summary>
@@ -71,4 +74,9 @@ public class CodeMirrorConfiguration(
     /// Whether to automatically format (resize) markdown headers
     /// </summary>
     [JsonPropertyName("autoFormatMarkdownHeaders")] public bool AutoFormatMarkdownHeaders { get; internal set; } = autoFormatMarkdownHeaders;
+
+    /// <summary>
+    /// Whether to automatically replace :emoji_codes: with emoji
+    /// </summary>
+    [JsonPropertyName("replaceEmojiCodes")] public bool ReplaceEmojiCodes { get; internal set; } = replaceEmojiCodes;
 }

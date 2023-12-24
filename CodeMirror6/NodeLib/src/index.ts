@@ -36,6 +36,7 @@ import {
 import { images } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
 import { CmSetup } from "./CmSetup"
+import { createEmojiExtension, lastOperationWasUndo } from "./CmEmoji"
 
 /**
  * Initialize a new CodeMirror instance
@@ -62,6 +63,8 @@ export function initCodeMirror(
         CMInstances[id].themeCompartment.of(getTheme(initialConfig.themeName)),
         CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(initialConfig.readOnly)),
         CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
+        CMInstances[id].emojiReplacerCompartment.of(createEmojiExtension(initialConfig.replaceEmojiCodes)),
+        lastOperationWasUndo,
 
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
         keymap.of([
@@ -206,6 +209,12 @@ export function setAutoFormatMarkdownHeaders(id: string, autoFormatMarkdownHeade
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].markdownStylingCompartment.reconfigure(getDynamicHeaderStyling(autoFormatMarkdownHeaders))
     })
+}
+
+export function setReplaceEmojiCodes(id: string, replaceEmojiCodes: boolean) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].emojiReplacerCompartment.reconfigure(createEmojiExtension(replaceEmojiCodes))
+    });
 }
 
 export function setDoc(id: string, text: string) {

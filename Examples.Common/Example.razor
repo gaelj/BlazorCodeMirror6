@@ -39,6 +39,7 @@
     AutoFormatMarkdownHeaders=@AutoFormatMarkdownHeaders
     LintDocument=@LintDocument
     Setup=@Setup
+    ReplaceEmojiCodes=@ReplaceEmojiCodes
     style="max-width: 100%; min-height: 40em; "
 >
     <ContentBefore Context="c">
@@ -81,6 +82,9 @@
             </button>
             <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorStringCommand.InsertTextAbove, "------")) title="Insert separator above">
                 Insert separator above
+            </button>
+            <button class=@ButtonClass(ReplaceEmojiCodes) @onclick=@(() => ToggleEmojis(c.Commands)) title="Toggle replacing :emoji_codes: with the unicode character">
+                Replace emojis
             </button>
         </div>
     </ContentBefore>
@@ -179,15 +183,24 @@ Result:
     private ThemeMirrorTheme Theme = ThemeMirrorTheme.OneDark;
     private CodeMirrorLanguage Language = CodeMirrorLanguage.Markdown;
     private bool AutoFormatMarkdownHeaders = true;
+    private bool ReplaceEmojiCodes = true;
     private readonly CodeMirrorSetup Setup = new() {
         HighlightActiveLine = false,
         LineNumbers = true,
         HighlightActiveLineGutter = false,
         HighlightSelectionMatches = false,
     };
-    private string ButtonClass(CodeMirrorState state, string docStyleTag) => state.MarkdownStylesAtSelections?.Contains(docStyleTag) == true
+    private string ButtonClass(CodeMirrorState state, string docStyleTag) => ButtonClass(state.MarkdownStylesAtSelections?.Contains(docStyleTag) == true);
+    private string ButtonClass(bool enabled) => enabled
         ? "btn btn-primary"
         : "btn";
+
+    private async Task ToggleEmojis(CMCommands commands)
+    {
+        ReplaceEmojiCodes = !ReplaceEmojiCodes;
+        await commands.Dispatch(CodeMirrorSimpleCommand.Focus);
+    }
+
     private Task<List<CodeMirrorDiagnostic>> LintDocument(string code, CancellationToken cancellationToken)
     {
         var result = new List<CodeMirrorDiagnostic>();
