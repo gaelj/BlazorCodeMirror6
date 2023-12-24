@@ -260,23 +260,16 @@ public enum CodeMirrorSimpleCommand
 }
 
 /// <summary>
-/// Built-in CodeMirror commands with an integer parameter
+/// Built-in CodeMirror commands expecting 1 parameter
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum CodeMirrorIntCommand
+public enum CodeMirrorCommandOneParameter
 {
     /// <summary>
     /// Toggle markdown header formatting for the selected line
     /// </summary>
     ToggleMarkdownHeading,
-}
 
-/// <summary>
-/// Built-in CodeMirror commands with a string parameter
-/// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum CodeMirrorStringCommand
-{
     /// <summary>
     /// Insert at selection or replace selected text
     /// </summary>
@@ -405,18 +398,10 @@ public class CMCommands(CodeMirrorJsInterop cmJsInterop)
     public Task Dispatch(CodeMirrorSimpleCommand command) => cmJsInterop.ModuleInvokeVoidAsync("dispatchCommand", command);
 
     /// <summary>
-    /// Invoke a built-in CodeMirror command with an integer parameter
+    /// Invoke a built-in CodeMirror command with one parameter
     /// </summary>
     /// <param name="command"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public Task Dispatch(CodeMirrorIntCommand command, int value) => cmJsInterop.ModuleInvokeVoidAsync("dispatchCommand", command, value);
-
-    /// <summary>
-    /// Invoke a built-in CodeMirror command with a string parameter
-    /// </summary>
-    /// <param name="command"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    public Task Dispatch(CodeMirrorStringCommand command, string value) => cmJsInterop.ModuleInvokeVoidAsync("dispatchCommand", command, value);
+    public Task Dispatch<TCommandEnum, TValue>(TCommandEnum command, TValue value) => cmJsInterop.ModuleInvokeVoidAsync("dispatchCommand", command, value);
 }

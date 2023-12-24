@@ -1,4 +1,4 @@
-﻿<h1>Code Mirror 6 Wrapper Demo</h1>
+<h1>Code Mirror 6 Wrapper Demo</h1>
 
 <label for="Theme">Theme</label>
 <select @bind=@Theme id="Theme">
@@ -64,7 +64,7 @@
             </button>
             @for (var i = 1; i <= 6; i++) {
                 var headingLevel = i; // Capture the current value of i in a local variable
-                <button class=@ButtonClass(c.State, $"ATXHeading{headingLevel}") @onclick=@(() => c.Commands.Dispatch(CodeMirrorIntCommand.ToggleMarkdownHeading, headingLevel)) title="Toggle heading text">
+                <button class=@ButtonClass(c.State, $"ATXHeading{headingLevel}") @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.ToggleMarkdownHeading, headingLevel)) title="Toggle heading text">
                     @($"H{headingLevel}")
                 </button>
             }
@@ -77,10 +77,10 @@
             <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownTaskList)) title="Toggle task list">
                 Task list
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorStringCommand.InsertOrReplaceText, "test")) title="Insert or replace text">
+            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertOrReplaceText, "test")) title="Insert or replace text">
                 Insert or replace text
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorStringCommand.InsertTextAbove, "------")) title="Insert separator above">
+            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertTextAbove, "------")) title="Insert separator above">
                 Insert separator above
             </button>
             <button class=@ButtonClass(ReplaceEmojiCodes) @onclick=@(() => ToggleEmojis(c.Commands)) title="Toggle replacing :emoji_codes: with the unicode character">
