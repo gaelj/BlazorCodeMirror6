@@ -1,9 +1,11 @@
 import { syntaxTree } from '@codemirror/language'
-import { EditorState, Extension, Range, RangeSet, StateField } from '@codemirror/state'
-import { Decoration, DecorationSet, EditorView, WidgetType } from '@codemirror/view'
+import type { EditorState, Extension, Range } from '@codemirror/state'
+import { RangeSet, StateField } from '@codemirror/state'
+import type { DecorationSet } from '@codemirror/view'
+import { Decoration, EditorView, WidgetType } from '@codemirror/view'
 
 interface ImageWidgetParams {
-    url: string
+    url: string,
 }
 
 class ImageWidget extends WidgetType {
@@ -72,9 +74,8 @@ export const images = (): Extension => {
                 if (type.name === 'Image') {
                     const result = imageRegex.exec(state.doc.sliceString(from, to))
 
-                    if (result && result.groups && result.groups.url) {
+                    if (result && result.groups && result.groups.url)
                         widgets.push(imageDecoration({ url: result.groups.url }).range(state.doc.lineAt(from).from))
-                    }
                 }
             },
         })
@@ -82,20 +83,13 @@ export const images = (): Extension => {
         return widgets.length > 0 ? RangeSet.of(widgets) : Decoration.none
     }
 
-    const imagesTheme = EditorView.baseTheme({
-        '.cm-image-backdrop': {
-            backgroundColor: 'var(--ink-internal-block-background-color)',
-        },
-    })
-
     const imagesField = StateField.define<DecorationSet>({
         create(state) {
             return decorate(state)
         },
         update(images, transaction) {
-            if (transaction.docChanged) {
+            if (transaction.docChanged)
                 return decorate(transaction.state)
-            }
 
             return images.map(transaction.changes)
         },
@@ -105,7 +99,6 @@ export const images = (): Extension => {
     })
 
     return [
-        imagesTheme,
         imagesField,
     ]
 }
