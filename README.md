@@ -59,6 +59,7 @@ It can be used as a feature-complete Markdown editor.
 - [ ] Toggling-off a Markdown style should always select the whole styled text block
 - [ ] Add mermaid language highlighting
 - [ ] Implement kroki / mermaid preview
+- [ ] support file upload
 
 ## Installation
 
