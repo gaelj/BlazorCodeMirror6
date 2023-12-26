@@ -48,6 +48,7 @@ It can be used as a feature-complete Markdown editor.
 - [x] Resized header text proportional to header #
 - [x] keybindings to set text in **bold** (`Ctrl-B`) or *italic* (`Ctrl-I`)
 - [x] support emoji
+- [x] format lists
 - [ ] customize markdown header sizes
 - [ ] support toolbar toggling of checklist items even if checked
 - [ ] Implement @user mentions with dropdown list

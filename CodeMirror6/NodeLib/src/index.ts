@@ -38,6 +38,7 @@ import { externalLintSource, getExternalLinterConfig } from "./CmLint"
 import { CmSetup } from "./CmSetup"
 import { createEmojiExtension, lastOperationWasUndo } from "./CmEmoji"
 import { blockquote } from "./CmBlockquote"
+import { listsExtension } from "./CmLists"
 import { dynamicHrExtension } from "./CmHorizontalRule"
 import { mentionExtension } from "./CmMentions"
 
@@ -65,6 +66,7 @@ export function initCodeMirror(
             dynamicHrExtension(initialConfig.autoFormatMarkdown),
             dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
             mentionExtension(CMInstances[id].dotNetHelper, setup.allowMentions, initialConfig.autoFormatMarkdown),
+            listsExtension(initialConfig.autoFormatMarkdown),
         ]),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -221,6 +223,7 @@ export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
             dynamicHrExtension(autoFormatMarkdown),
             dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
             mentionExtension(CMInstances[id].dotNetHelper, CMInstances[id].setup.allowMentions, autoFormatMarkdown),
+            listsExtension(autoFormatMarkdown),
         ])
     })
 }
