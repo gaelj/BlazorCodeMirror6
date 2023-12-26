@@ -22,4 +22,5 @@ export class CmSetup
     public highlightActiveLine: boolean
     public highlightSelectionMatches: boolean
     public previewImages: boolean
+    public allowMentions: boolean
 }

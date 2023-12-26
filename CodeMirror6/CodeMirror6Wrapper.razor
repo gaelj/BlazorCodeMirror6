@@ -1,4 +1,4 @@
-﻿@if (ContentBefore is not null && CmJsInterop is not null && Config is not null && Commands is not null) {
+@if (ContentBefore is not null && CmJsInterop is not null && Config is not null && Commands is not null) {
     @ContentBefore((Commands, Config, State))
 }
 
@@ -14,4 +14,28 @@
         overflow: auto;
         max-height: inherit;
     }
+
+    .mention {
+        color: blue;
+        font-weight: bold;
+    }
+
+    .cm-blockquote {
+        @* background-color: #f0f0f0; *@
+        border-left: 0.25rem solid currentColor;
+        padding: 0 0.5rem;
+    }
+
+    .cm-blockquote .cm-blockquote-open {
+        border-top-left-radius: 0.25rem;
+        border-top-right-radius: 0.25rem;
+        padding-top: 0.5rem;
+    }
+
+    .cm-blockquote .cm-blockquote-close {
+        border-bottom-left-radius: 0.25rem;
+        border-bottom-right-radius: 0.25rem;
+        padding-bottom: 0.5rem;
+    }
+
 </style>

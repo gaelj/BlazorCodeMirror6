@@ -29,14 +29,18 @@ import {
     toggleMarkdownBold, toggleMarkdownItalic, toggleMarkdownCodeBlock, toggleMarkdownCode,
     toggleMarkdownStrikethrough, toggleMarkdownQuote, toggleMarkdownHeading,
     toggleMarkdownUnorderedList, toggleMarkdownOrderedList, toggleMarkdownTaskList,
-    getMarkdownStyleAtRange,
+    getMarkdownStyleAtSelections,
     insertOrReplaceText,
     insertTextAboveCommand,
 } from "./CmCommands"
-import { images } from "./CmImages"
+import { dynamicImagesExtension } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
 import { CmSetup } from "./CmSetup"
 import { createEmojiExtension, lastOperationWasUndo } from "./CmEmoji"
+import { blockquote } from "./CmBlockquote"
+import { listsExtension } from "./CmLists"
+import { dynamicHrExtension } from "./CmHorizontalRule"
+import { mentionExtension } from "./CmMentions"
 
 /**
  * Initialize a new CodeMirror instance
@@ -52,11 +56,18 @@ export function initCodeMirror(
 ) {
     CMInstances[id] = new CmInstance()
     CMInstances[id].dotNetHelper = dotnetHelper
+    CMInstances[id].setup = setup
 
     let extensions = [
         CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName))),
         CMInstances[id].languageCompartment.of(getLanguage(initialConfig.languageName)),
-        CMInstances[id].markdownStylingCompartment.of(getDynamicHeaderStyling(initialConfig.autoFormatMarkdownHeaders)),
+        CMInstances[id].markdownStylingCompartment.of([
+            getDynamicHeaderStyling(initialConfig.autoFormatMarkdown),
+            dynamicHrExtension(initialConfig.autoFormatMarkdown),
+            dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
+            mentionExtension(CMInstances[id].dotNetHelper, setup.allowMentions, initialConfig.autoFormatMarkdown),
+            listsExtension(initialConfig.autoFormatMarkdown),
+        ]),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
         CMInstances[id].placeholderCompartment.of(placeholder(initialConfig.placeholder)),
@@ -65,6 +76,7 @@ export function initCodeMirror(
         CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
         CMInstances[id].emojiReplacerCompartment.of(createEmojiExtension(initialConfig.replaceEmojiCodes)),
         lastOperationWasUndo,
+        blockquote(),
 
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
         keymap.of([
@@ -124,7 +136,6 @@ export function initCodeMirror(
     if (setup.crosshairCursor === true) extensions.push(crosshairCursor())
     if (setup.highlightActiveLine === true) extensions.push(highlightActiveLine())
     if (setup.highlightSelectionMatches === true) extensions.push(highlightSelectionMatches())
-    if (setup.previewImages === true) extensions.push(images())
 
     extensions.push(linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()))
     if (setup.allowMultipleSelections === true) EditorState.allowMultipleSelections.of(true)
@@ -150,7 +161,7 @@ async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
             await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
     }
     if (update.selectionSet) {
-        await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtRange(update))
+        await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtSelections(update.state))
         await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
     }
 }
@@ -205,9 +216,15 @@ export function setLanguage(id: string, languageName: string) {
     })
 }
 
-export function setAutoFormatMarkdownHeaders(id: string, autoFormatMarkdownHeaders: boolean) {
+export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
     CMInstances[id].view.dispatch({
-        effects: CMInstances[id].markdownStylingCompartment.reconfigure(getDynamicHeaderStyling(autoFormatMarkdownHeaders))
+        effects: CMInstances[id].markdownStylingCompartment.reconfigure([
+            getDynamicHeaderStyling(autoFormatMarkdown),
+            dynamicHrExtension(autoFormatMarkdown),
+            dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
+            mentionExtension(CMInstances[id].dotNetHelper, CMInstances[id].setup.allowMentions, autoFormatMarkdown),
+            listsExtension(autoFormatMarkdown),
+        ])
     })
 }
 
@@ -245,6 +262,24 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
             case 'Redo': redo(view); break;
             case 'UndoSelection': undoSelection(view); break;
             case 'RedoSelection': redoSelection(view); break;
+            case 'IndentLess': indentLess(view); break;
+            case 'IndentMore': indentMore(view); break;
+            case 'CopyLineUp': copyLineUp(view); break;
+            case 'CopyLineDown': copyLineDown(view); break;
+            case 'IndentSelection': indentSelection(view); break;
+            case 'CursorMatchingBracket': cursorMatchingBracket(view); break;
+            case 'ToggleComment': toggleComment(view); break;
+            case 'ToggleBlockComment': toggleBlockComment(view); break;
+            case 'SimplifySelection': simplifySelection(view); break;
+            case 'InsertBlankLine': insertBlankLine(view); break;
+            case 'SelectLine': selectLine(view); break;
+            case 'BlockComment': blockComment(view); break;
+            case 'BlockUncomment': blockUncomment(view); break;
+            case 'ToggleBlockCommentByLine': toggleBlockCommentByLine(view); break;
+            case 'LineComment': lineComment(view); break;
+            case 'LineUncomment': lineUncomment(view); break;
+            case 'ToggleLineComment': toggleLineComment(view); break;
+
             case 'Focus': view.focus(); break;
 
             default: throw new Error(`Function ${functionName} does not exist.`);

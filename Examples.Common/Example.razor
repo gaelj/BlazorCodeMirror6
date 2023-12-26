@@ -19,8 +19,8 @@
 <label for="tabSizeInput">TabSize:</label>
 <input id="tabSizeInput" @bind-value=TabSize @bind-value:event="oninput" type="number" min="1" max="8" step="1" />
 
-<label for="AutoFormatMarkdownHeaders">Auto-Format Markdown Headers</label>
-<input id="AutoFormatMarkdownHeaders" type="checkbox" @bind=@AutoFormatMarkdownHeaders />
+<label for="AutoFormatMarkdown">Auto-Format Markdown</label>
+<input id="AutoFormatMarkdown" type="checkbox" @bind=@AutoFormatMarkdown />
 
 <button class="btn btn-danger"
     @onclick=@(async () => {
@@ -36,10 +36,11 @@
     @bind-Selection=@selectionRanges1
     Theme=@Theme
     Language=@Language
-    AutoFormatMarkdownHeaders=@AutoFormatMarkdownHeaders
+    AutoFormatMarkdown=@AutoFormatMarkdown
     LintDocument=@LintDocument
     Setup=@Setup
     ReplaceEmojiCodes=@ReplaceEmojiCodes
+    GetMentionCompletions=@GetMentionCompletions
     style="max-width: 100%; min-height: 40em; "
 >
     <ContentBefore Context="c">
@@ -53,34 +54,34 @@
             <button class=@ButtonClass(c.State, "Strikethrough") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownStrikethrough)) title="Toggle strike-through text">
                 Strikethrough
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownCode)) title="Toggle inline code text">
+            <button class=@ButtonClass(c.State, "InlineCode") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownCode)) title="Toggle inline code text">
                 Code
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownCodeBlock)) title="Toggle code block text">
+            <button class=@ButtonClass(c.State, "FencedCode") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownCodeBlock)) title="Toggle code block text">
                 Code block
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownQuote)) title="Toggle quoted text">
+            <button class=@ButtonClass(c.State, "Blockquote") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownQuote)) title="Toggle quoted text">
                 Quote
             </button>
             @for (var i = 1; i <= 6; i++) {
                 var headingLevel = i; // Capture the current value of i in a local variable
-                <button class=@ButtonClass(c.State, $"ATXHeading{headingLevel}") @onclick=@(() => c.Commands.Dispatch(CodeMirrorIntCommand.ToggleMarkdownHeading, headingLevel)) title="Toggle heading text">
+                <button class=@ButtonClass(c.State, $"ATXHeading{headingLevel}") @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.ToggleMarkdownHeading, headingLevel)) title="Toggle heading text">
                     @($"H{headingLevel}")
                 </button>
             }
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownOrderedList)) title="Toggle ordered list">
+            <button class=@ButtonClass(c.State, "OrderedList") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownOrderedList)) title="Toggle ordered list">
                 Ordered list
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownUnorderedList)) title="Toggle unordered list">
+            <button class=@ButtonClass(c.State, "BulletList") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownUnorderedList)) title="Toggle unordered list">
                 Bullet list
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownTaskList)) title="Toggle task list">
+            <button class=@ButtonClass(c.State, "Task") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownTaskList)) title="Toggle task list">
                 Task list
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorStringCommand.InsertOrReplaceText, "test")) title="Insert or replace text">
+            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertOrReplaceText, "test")) title="Insert or replace text">
                 Insert or replace text
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorStringCommand.InsertTextAbove, "------")) title="Insert separator above">
+            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertTextAbove, "\n------\n")) title="Insert separator above">
                 Insert separator above
             </button>
             <button class=@ButtonClass(ReplaceEmojiCodes) @onclick=@(() => ToggleEmojis(c.Commands)) title="Toggle replacing :emoji_codes: with the unicode character">
@@ -113,7 +114,7 @@ Result:
     @bind-Selection=@selectionRanges2
     Theme=@Theme
     Language=@CodeMirrorLanguage.Markdown
-    AutoFormatMarkdownHeaders=@AutoFormatMarkdownHeaders
+    AutoFormatMarkdown=@AutoFormatMarkdown
     LintDocument=@LintDocument
 />
 
@@ -140,7 +141,7 @@ Result:
     @bind-Selection=@selectionRanges3
     Theme=@Theme
     Language=@CodeMirrorLanguage.Markdown
-    AutoFormatMarkdownHeaders=@AutoFormatMarkdownHeaders
+    AutoFormatMarkdown=@AutoFormatMarkdown
     LintDocument=@LintDocument
 />
 
@@ -182,7 +183,7 @@ Result:
     private string NewPlaceHolderText = "New placeholder text !";
     private ThemeMirrorTheme Theme = ThemeMirrorTheme.OneDark;
     private CodeMirrorLanguage Language = CodeMirrorLanguage.Markdown;
-    private bool AutoFormatMarkdownHeaders = true;
+    private bool AutoFormatMarkdown = true;
     private bool ReplaceEmojiCodes = true;
     private readonly CodeMirrorSetup Setup = new() {
         HighlightActiveLine = false,
@@ -221,5 +222,99 @@ Result:
             position += line.Length + 1;
         }
         return Task.FromResult(result);
+    }
+
+    private async Task<List<CodeMirrorCompletion>> GetMentionCompletions(string? firstCharacters)
+    {
+        return await Task.FromResult<List<CodeMirrorCompletion>>(
+            new List<CodeMirrorCompletion> {
+                new CodeMirrorCompletion {
+                    Label = "abc",
+                    Detail = "Alice",
+                    Info = "Alice is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "bcd",
+                    Detail = "Bob",
+                    Info = "Bob is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "cde",
+                    Detail = "Carol",
+                    Info = "Carol is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "def",
+                    Detail = "Dave",
+                    Info = "Dave is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "eee",
+                    Detail = "Eve",
+                    Info = "Eve is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "fff",
+                    Detail = "Frank",
+                    Info = "Frank is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "ggg",
+                    Detail = "Grace",
+                    Info = "Grace is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "hhh",
+                    Detail = "Heidi",
+                    Info = "Heidi is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "Ivan",
+                    Detail = "Ivan",
+                    Info = "Ivan is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "Judy",
+                    Detail = "Judy",
+                    Info = "Judy is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "Mallory",
+                    Detail = "Mallory",
+                    Info = "Mallory is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "Oscar",
+                    Detail = "Oscar",
+                    Info = "Oscar is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "Peggy",
+                    Detail = "Peggy",
+                    Info = "Peggy is a person",
+                    // Type = "variable"
+                },
+            }.Where(c =>
+                //string.IsNullOrEmpty(firstCharacters) ||
+                !string.IsNullOrEmpty(firstCharacters) &&
+                firstCharacters.Length > 0 &&
+                (
+                    c.Label.StartsWith(firstCharacters, StringComparison.InvariantCultureIgnoreCase) ||
+                    (c.Detail is not null && c.Detail.StartsWith(firstCharacters, StringComparison.InvariantCultureIgnoreCase))
+                )
+            ).ToList()
+        );
     }
 }

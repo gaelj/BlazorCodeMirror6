@@ -14,7 +14,7 @@ namespace CodeMirror6.Models;
 /// <param name="readOnly"></param>
 /// <param name="editable"></param>
 /// <param name="languageName"></param>
-/// <param name="autoFormatMarkdownHeaders"></param>
+/// <param name="autoFormatMarkdown"></param>
 /// <param name="replaceEmojiCodes"></param>
 public class CodeMirrorConfiguration(
     string? doc,
@@ -25,7 +25,7 @@ public class CodeMirrorConfiguration(
     bool readOnly,
     bool editable,
     string? languageName,
-    bool autoFormatMarkdownHeaders,
+    bool autoFormatMarkdown,
     bool replaceEmojiCodes)
 {
 
@@ -73,7 +73,7 @@ public class CodeMirrorConfiguration(
     /// <summary>
     /// Whether to automatically format (resize) markdown headers
     /// </summary>
-    [JsonPropertyName("autoFormatMarkdownHeaders")] public bool AutoFormatMarkdownHeaders { get; internal set; } = autoFormatMarkdownHeaders;
+    [JsonPropertyName("autoFormatMarkdown")] public bool AutoFormatMarkdown { get; internal set; } = autoFormatMarkdown;
 
     /// <summary>
     /// Whether to automatically replace :emoji_codes: with emoji

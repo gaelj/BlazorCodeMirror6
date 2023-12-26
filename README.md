@@ -24,12 +24,13 @@ It can be used as a feature-complete Markdown editor.
 - [x] insert text at cursor / at position
 - [x] allow undo / redo toolbar buttons
 - [x] configure which plugins are active at startup
-- [ ] style Markdown quote lines and paragraphs
+- [x] Show horizontal rule instead of ------
+- [x] style Markdown quote lines and paragraphs
+- [ ] better highlight markdown inline code and code blocks
 - [ ] add increase / decrease selected header (#) level
 - [ ] add a toolbar with toolbar button template
-- [ ] support custom completions, for example @name
 - [ ] support soft line wrapping
-- [ ] better highlight markdown inline code and code blocks
+- [ ] support read-only paragraphs
 - [ ] Add a diff viewer
 - [ ] Implement cursor tooltips
 - [ ] Implement Copilot/AI style suggestions
@@ -37,6 +38,7 @@ It can be used as a feature-complete Markdown editor.
 - [ ] Retrieve keybindings
 - [ ] Implement search & replace
 - [ ] Highlight edited lines
+- [ ] Allow toggling console debug mode
 
 ~~- [ ] Add C# language~~ needs a backend, see [mirrorsharp](https://github.com/ashmind/mirrorsharp)
 
@@ -47,10 +49,12 @@ It can be used as a feature-complete Markdown editor.
 - [x] Resized header text proportional to header #
 - [x] keybindings to set text in **bold** (`Ctrl-B`) or *italic* (`Ctrl-I`)
 - [x] support emoji
+- [x] format lists
+- [ ] format tables
 - [ ] customize markdown header sizes
 - [ ] support toolbar toggling of checklist items even if checked
-- [ ] Implement @user mentions with dropdown list
-- [ ] Apply Markdown style to whole words
+- [x] Implement @user mentions with dropdown list
+- [ ] Apply Markdown style toggles to whole words
 - [ ] Toggling-off a Markdown style should always select the whole styled text block
 - [ ] Add mermaid language highlighting
 - [ ] Implement kroki / mermaid preview

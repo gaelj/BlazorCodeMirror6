@@ -1,7 +1,6 @@
 import { markdownLanguage } from "@codemirror/lang-markdown"
 import { syntaxTree } from "@codemirror/language"
 import { SyntaxNodeRef } from "@lezer/common"
-import { ViewUpdate } from "@codemirror/view"
 import { EditorState, ChangeSpec, EditorSelection, Transaction, Text, SelectionRange, TransactionSpec } from "@codemirror/state"
 import { Command } from "@codemirror/view"
 import { EditorView } from "codemirror"
@@ -11,22 +10,28 @@ import { EditorView } from "codemirror"
  * @param update
  * @returns
  */
-export function getMarkdownStyleAtRange(update: ViewUpdate): string[] {
+export function getMarkdownStyleAtSelections(state: EditorState): string[] {
     let styles: string[] = [];
-    for (let range of update.state.selection.ranges) {
-        let tree = syntaxTree(update.state)
-        tree.iterate({
-            from: range.from,
-            to: range.to,
-            enter: (node: SyntaxNodeRef) => {
-                const style = node.name
-                if (style && !styles.includes(style)) {
-                    styles.push(style)
-                }
-            }
-        })
+    for (let range of state.selection.ranges) {
+        styles.push(...getMarkdownStyleAtRange(state, range))
     }
-    console.log("Active Markdown styles in selection:", styles)
+    return styles
+}
+
+function getMarkdownStyleAtRange(state: EditorState, range: SelectionRange): string[] {
+    let styles: string[] = [];
+    let tree = syntaxTree(state)
+    tree.iterate({
+        from: range.from,
+        to: range.to,
+        enter: (node: SyntaxNodeRef) => {
+            const style = node.name
+            if (style && !styles.includes(style)) {
+                styles.push(style)
+            }
+        }
+    })
+    console.log("Active styles in range:", styles)
     return styles
 }
 
@@ -87,7 +92,6 @@ function toggleCharactersAtStartOfLines(view: EditorView, controlChar: string, e
         if (!markdownLanguage.isActiveAt(view.state, range.from)) return { range }
         const fullControlChar = `${controlChar} `
         const lineAtFrom = view.state.doc.lineAt(range.from)
-        const lineAtTo = view.state.doc.lineAt(range.to)
         const wasStyled = lineAtFrom.text.trimStart().startsWith(exactMatch ? `${controlChar} ` : controlChar[0]);
         const changes = [];
         const indexOfSpace = exactMatch ? fullControlChar.length : lineAtFrom.text.indexOf(' ') + 1
@@ -124,10 +128,8 @@ function toggleCharactersAtStartOfLines(view: EditorView, controlChar: string, e
         }
 
         const newLineAtFrom = view.state.doc.lineAt(range.from)
-        const newLineAtTo = view.state.doc.lineAt(range.to)
         if (newFrom < newLineAtFrom.from) newFrom = newLineAtFrom.from
         if (newTo < newLineAtFrom.from) newTo = newLineAtFrom.from
-        if (newFrom > newLineAtTo.to) newFrom = newLineAtTo.to
 
         return {
             changes,
@@ -182,7 +184,7 @@ export function insertTextAboveCommand(view: EditorView, textToInsert: string) {
         changes.push({ from: lineStart, insert: textToInsert + "\n" })
         return {
             changes,
-            range: EditorSelection.range(range.from, range.from + textToInsert.length),
+            range: EditorSelection.range(range.from + textToInsert.length, range.from + textToInsert.length),
         }
     })
     view.dispatch(

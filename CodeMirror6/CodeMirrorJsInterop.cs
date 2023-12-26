@@ -7,7 +7,6 @@ namespace CodeMirror6;
 /// <summary>
 /// Wraps JavaScript functionality in a .NET class for easy consumption.
 /// The associated JavaScript module is loaded on demand when first needed.
-///
 /// This class can be registered as scoped DI service and then injected into Blazor
 /// components for use.
 /// </summary>
@@ -170,29 +169,107 @@ public enum CodeMirrorSimpleCommand
     RedoSelection,
 
     /// <summary>
+    /// Decreases the indentation level of the selected lines.
+    /// </summary>
+    IndentLess,
+
+    /// <summary>
+    /// Increases the indentation level of the selected lines.
+    /// </summary>
+    IndentMore,
+
+    /// <summary>
+    /// Copies the selected line and inserts it above the current line.
+    /// </summary>
+    CopyLineUp,
+
+    /// <summary>
+    /// Copies the selected line and inserts it below the current line.
+    /// </summary>
+    CopyLineDown,
+
+    /// <summary>
+    /// Indents the selected lines.
+    /// </summary>
+    IndentSelection,
+
+    /// <summary>
+    /// Moves the cursor to the matching bracket.
+    /// </summary>
+    CursorMatchingBracket,
+
+    /// <summary>
+    /// Toggles the comment on the selected lines.
+    /// </summary>
+    ToggleComment,
+
+    /// <summary>
+    /// Toggles the block comment on the selected lines.
+    /// </summary>
+    ToggleBlockComment,
+
+    /// <summary>
+    /// Simplifies the selection by removing leading and trailing whitespace.
+    /// </summary>
+    SimplifySelection,
+
+    /// <summary>
+    /// Inserts a blank line at the current cursor position.
+    /// </summary>
+    InsertBlankLine,
+
+    /// <summary>
+    /// Selects the current line.
+    /// </summary>
+    SelectLine,
+
+    /// <summary>
+    /// Comments out the selected lines as a block.
+    /// </summary>
+    BlockComment,
+
+    /// <summary>
+    /// Uncomments the selected lines as a block.
+    /// </summary>
+    BlockUncomment,
+
+    /// <summary>
+    /// Toggles the block comment on each line of the selection.
+    /// </summary>
+    ToggleBlockCommentByLine,
+
+    /// <summary>
+    /// Comments out the current line.
+    /// </summary>
+    LineComment,
+
+    /// <summary>
+    /// Uncomments the current line.
+    /// </summary>
+    LineUncomment,
+
+    /// <summary>
+    /// Toggles the comment on the current line.
+    /// </summary>
+    ToggleLineComment,
+
+    /// <summary>
     /// Focus the CodeMirror editor
     /// </summary>
     Focus,
 }
 
 /// <summary>
-/// Built-in CodeMirror commands with an integer parameter
+/// Built-in CodeMirror commands expecting 1 parameter
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum CodeMirrorIntCommand
+public enum CodeMirrorCommandOneParameter
 {
     /// <summary>
     /// Toggle markdown header formatting for the selected line
     /// </summary>
     ToggleMarkdownHeading,
-}
 
-/// <summary>
-/// Built-in CodeMirror commands with a string parameter
-/// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum CodeMirrorStringCommand
-{
     /// <summary>
     /// Insert at selection or replace selected text
     /// </summary>
@@ -297,9 +374,9 @@ internal class CMSetters(
     /// Set the auto format markdown headers state
     /// </summary>
     /// <returns></returns>
-    public Task SetAutoFormatMarkdownHeaders() => cmJsInterop.ModuleInvokeVoidAsync(
-        "setAutoFormatMarkdownHeaders",
-        config.AutoFormatMarkdownHeaders
+    public Task SetAutoFormatMarkdown() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setAutoFormatMarkdown",
+        config.AutoFormatMarkdown
     );
 
     public Task SetReplaceEmojiCodes() => cmJsInterop.ModuleInvokeVoidAsync(
@@ -321,18 +398,10 @@ public class CMCommands(CodeMirrorJsInterop cmJsInterop)
     public Task Dispatch(CodeMirrorSimpleCommand command) => cmJsInterop.ModuleInvokeVoidAsync("dispatchCommand", command);
 
     /// <summary>
-    /// Invoke a built-in CodeMirror command with an integer parameter
+    /// Invoke a built-in CodeMirror command with one parameter
     /// </summary>
     /// <param name="command"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public Task Dispatch(CodeMirrorIntCommand command, int value) => cmJsInterop.ModuleInvokeVoidAsync("dispatchCommand", command, value);
-
-    /// <summary>
-    /// Invoke a built-in CodeMirror command with a string parameter
-    /// </summary>
-    /// <param name="command"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    public Task Dispatch(CodeMirrorStringCommand command, string value) => cmJsInterop.ModuleInvokeVoidAsync("dispatchCommand", command, value);
+    public Task Dispatch<TCommandEnum, TValue>(TCommandEnum command, TValue value) => cmJsInterop.ModuleInvokeVoidAsync("dispatchCommand", command, value);
 }

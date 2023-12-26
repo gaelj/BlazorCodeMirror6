@@ -63,7 +63,7 @@ function dynamicMarkdownHeaderStyling() {
  * Return a ViewPlugin that does nothing
  * @returns
  */
-function noMarkdownHeaderStyling() {
+function noMarkdownStyling() {
     return ViewPlugin.fromClass(class {
         decorations: DecorationSet;
         constructor(view: EditorView) {
@@ -79,13 +79,13 @@ function noMarkdownHeaderStyling() {
 
 /**
  * Return the header styling Extension matching the supplied parameter
- * @param autoFormatMarkdownHeaders
+ * @param autoFormatMarkdown
  * @returns
  */
-export function getDynamicHeaderStyling(autoFormatMarkdownHeaders: boolean): Extension {
-    if (autoFormatMarkdownHeaders)
+export function getDynamicHeaderStyling(autoFormatMarkdown: boolean): Extension {
+    if (autoFormatMarkdown)
         return dynamicMarkdownHeaderStyling()
 
     else
-        return noMarkdownHeaderStyling()
+        return noMarkdownStyling()
 }
