@@ -1,1 +1,4 @@
 
+[submodule "ink-mde"]
+	path = ink-mde
+	url = https://github.com/davidmyersdev/ink-mde.git
