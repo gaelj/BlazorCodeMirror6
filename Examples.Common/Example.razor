@@ -1,4 +1,4 @@
-<h1>Code Mirror 6 Wrapper Demo</h1>
+﻿<h1>Code Mirror 6 Wrapper Demo</h1>
 
 <label for="Theme">Theme</label>
 <select @bind=@Theme id="Theme">
@@ -54,13 +54,13 @@
             <button class=@ButtonClass(c.State, "Strikethrough") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownStrikethrough)) title="Toggle strike-through text">
                 Strikethrough
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownCode)) title="Toggle inline code text">
+            <button class=@ButtonClass(c.State, "InlineCode") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownCode)) title="Toggle inline code text">
                 Code
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownCodeBlock)) title="Toggle code block text">
+            <button class=@ButtonClass(c.State, "FencedCode") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownCodeBlock)) title="Toggle code block text">
                 Code block
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownQuote)) title="Toggle quoted text">
+            <button class=@ButtonClass(c.State, "Blockquote") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownQuote)) title="Toggle quoted text">
                 Quote
             </button>
             @for (var i = 1; i <= 6; i++) {
@@ -69,13 +69,13 @@
                     @($"H{headingLevel}")
                 </button>
             }
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownOrderedList)) title="Toggle ordered list">
+            <button class=@ButtonClass(c.State, "OrderedList") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownOrderedList)) title="Toggle ordered list">
                 Ordered list
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownUnorderedList)) title="Toggle unordered list">
+            <button class=@ButtonClass(c.State, "BulletList") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownUnorderedList)) title="Toggle unordered list">
                 Bullet list
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownTaskList)) title="Toggle task list">
+            <button class=@ButtonClass(c.State, "Task") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownTaskList)) title="Toggle task list">
                 Task list
             </button>
             <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertOrReplaceText, "test")) title="Insert or replace text">
