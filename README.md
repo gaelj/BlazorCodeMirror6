@@ -60,6 +60,7 @@ It can be used as a feature-complete Markdown editor.
 - [ ] Add mermaid language highlighting
 - [ ] Implement kroki / mermaid preview
 - [ ] support file upload
+- [ ] add color picker extension
 
 ## Installation
 
