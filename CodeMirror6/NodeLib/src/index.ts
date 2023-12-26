@@ -37,6 +37,7 @@ import { images } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
 import { CmSetup } from "./CmSetup"
 import { createEmojiExtension, lastOperationWasUndo } from "./CmEmoji"
+import { mentionExtension } from "./CmMentions"
 
 /**
  * Initialize a new CodeMirror instance
@@ -65,6 +66,7 @@ export function initCodeMirror(
         CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
         CMInstances[id].emojiReplacerCompartment.of(createEmojiExtension(initialConfig.replaceEmojiCodes)),
         lastOperationWasUndo,
+        mentionExtension(CMInstances[id].dotNetHelper),
 
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
         keymap.of([

@@ -40,6 +40,7 @@
     LintDocument=@LintDocument
     Setup=@Setup
     ReplaceEmojiCodes=@ReplaceEmojiCodes
+    GetMentionCompletions=@GetMentionCompletions
     style="max-width: 100%; min-height: 40em; "
 >
     <ContentBefore Context="c">
@@ -221,5 +222,99 @@ Result:
             position += line.Length + 1;
         }
         return Task.FromResult(result);
+    }
+
+    private async Task<List<CodeMirrorCompletion>> GetMentionCompletions(string? firstCharacters)
+    {
+        return await Task.FromResult<List<CodeMirrorCompletion>>(
+            new List<CodeMirrorCompletion> {
+                new CodeMirrorCompletion {
+                    Label = "aaa",
+                    Detail = "Alice",
+                    Info = "Alice is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "bbb",
+                    Detail = "Bob",
+                    Info = "Bob is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "ccc",
+                    Detail = "Carol",
+                    Info = "Carol is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "ddd",
+                    Detail = "Dave",
+                    Info = "Dave is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "eee",
+                    Detail = "Eve",
+                    Info = "Eve is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "fff",
+                    Detail = "Frank",
+                    Info = "Frank is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "ggg",
+                    Detail = "Grace",
+                    Info = "Grace is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "hhh",
+                    Detail = "Heidi",
+                    Info = "Heidi is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "Ivan",
+                    Detail = "Ivan",
+                    Info = "Ivan is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "Judy",
+                    Detail = "Judy",
+                    Info = "Judy is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "Mallory",
+                    Detail = "Mallory",
+                    Info = "Mallory is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "Oscar",
+                    Detail = "Oscar",
+                    Info = "Oscar is a person",
+                    // Type = "variable"
+                },
+                new CodeMirrorCompletion {
+                    Label = "Peggy",
+                    Detail = "Peggy",
+                    Info = "Peggy is a person",
+                    // Type = "variable"
+                },
+            }.Where(c =>
+                //string.IsNullOrEmpty(firstCharacters) ||
+                !string.IsNullOrEmpty(firstCharacters) &&
+                firstCharacters.Length > 0 &&
+                (
+                    c.Label.StartsWith(firstCharacters, StringComparison.InvariantCultureIgnoreCase) ||
+                    (c.Detail is not null && c.Detail.StartsWith(firstCharacters, StringComparison.InvariantCultureIgnoreCase))
+                )
+            ).ToList()
+        );
     }
 }

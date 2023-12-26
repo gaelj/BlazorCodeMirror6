@@ -27,7 +27,7 @@ It can be used as a feature-complete Markdown editor.
 - [ ] style Markdown quote lines and paragraphs
 - [ ] add increase / decrease selected header (#) level
 - [ ] add a toolbar with toolbar button template
-- [ ] support custom completions, for example @name
+- [x] support custom completions, for example @name
 - [ ] support soft line wrapping
 - [ ] better highlight markdown inline code and code blocks
 - [ ] Add a diff viewer

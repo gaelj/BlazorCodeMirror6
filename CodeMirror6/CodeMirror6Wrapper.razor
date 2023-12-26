@@ -1,4 +1,4 @@
-﻿@if (ContentBefore is not null && CmJsInterop is not null && Config is not null && Commands is not null) {
+@if (ContentBefore is not null && CmJsInterop is not null && Config is not null && Commands is not null) {
     @ContentBefore((Commands, Config, State))
 }
 
@@ -13,5 +13,10 @@
         resize: @ResizeStyle;
         overflow: auto;
         max-height: inherit;
+    }
+
+    .mention {
+        color: blue;
+        font-weight: bold;
     }
 </style>

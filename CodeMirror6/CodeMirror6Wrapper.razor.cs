@@ -121,6 +121,11 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <value></value>
     [Parameter] public bool ReplaceEmojiCodes { get; set; } = true;
     /// <summary>
+    /// Get the &#64;user mention completions
+    /// </summary>
+    /// <value></value>
+    [Parameter] public Func<string?, Task<List<CodeMirrorCompletion>>>? GetMentionCompletions { get; set; }
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     /// <value></value>
@@ -200,8 +205,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// </summary>
     /// <param name="code"></param>
     /// <returns></returns>
-    [JSInvokable]
-    public async Task<List<CodeMirrorDiagnostic>> LintingRequestedFromJS(string code)
+    [JSInvokable] public async Task<List<CodeMirrorDiagnostic>> LintingRequestedFromJS(string code)
     {
         try {
             LinterCancellationTokenSource.Cancel();
@@ -216,6 +220,15 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
             return [];
         }
     }
+
+    /// <summary>
+    /// codeMirror requested mention completions
+    /// </summary>
+    /// <returns></returns>
+    [JSInvokable] public async Task<List<CodeMirrorCompletion>> GetMentionCompletionsFromJS(string? firstCharacters)
+        => GetMentionCompletions is null
+            ? await Task.FromResult(new List<CodeMirrorCompletion>())
+            : await GetMentionCompletions(firstCharacters);
 
     private CancellationTokenSource LinterCancellationTokenSource = new();
 
