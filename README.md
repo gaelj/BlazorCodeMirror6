@@ -50,6 +50,7 @@ It can be used as a feature-complete Markdown editor.
 - [x] keybindings to set text in **bold** (`Ctrl-B`) or *italic* (`Ctrl-I`)
 - [x] support emoji
 - [x] format lists
+- [ ] use latest header
 - [ ] format tables
 - [ ] customize markdown header sizes
 - [ ] support toolbar toggling of checklist items even if checked
