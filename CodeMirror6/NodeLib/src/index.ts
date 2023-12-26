@@ -37,6 +37,7 @@ import { images } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
 import { CmSetup } from "./CmSetup"
 import { createEmojiExtension, lastOperationWasUndo } from "./CmEmoji"
+import { dynamicHrExtension } from "./CmHorizontalRule"
 import { mentionExtension } from "./CmMentions"
 
 /**
@@ -57,7 +58,10 @@ export function initCodeMirror(
     let extensions = [
         CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName))),
         CMInstances[id].languageCompartment.of(getLanguage(initialConfig.languageName)),
-        CMInstances[id].markdownStylingCompartment.of(getDynamicHeaderStyling(initialConfig.autoFormatMarkdownHeaders)),
+        CMInstances[id].markdownStylingCompartment.of([
+            getDynamicHeaderStyling(initialConfig.autoFormatMarkdown),
+            dynamicHrExtension(initialConfig.autoFormatMarkdown),
+        ]),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
         CMInstances[id].placeholderCompartment.of(placeholder(initialConfig.placeholder)),
@@ -207,9 +211,12 @@ export function setLanguage(id: string, languageName: string) {
     })
 }
 
-export function setAutoFormatMarkdownHeaders(id: string, autoFormatMarkdownHeaders: boolean) {
+export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
     CMInstances[id].view.dispatch({
-        effects: CMInstances[id].markdownStylingCompartment.reconfigure(getDynamicHeaderStyling(autoFormatMarkdownHeaders))
+        effects: CMInstances[id].markdownStylingCompartment.reconfigure([
+            getDynamicHeaderStyling(autoFormatMarkdown),
+            dynamicHrExtension(autoFormatMarkdown),
+        ])
     })
 }
 

@@ -24,12 +24,13 @@ It can be used as a feature-complete Markdown editor.
 - [x] insert text at cursor / at position
 - [x] allow undo / redo toolbar buttons
 - [x] configure which plugins are active at startup
+- [x] Show horizontal rule instead of ------
 - [ ] style Markdown quote lines and paragraphs
+- [ ] better highlight markdown inline code and code blocks
 - [ ] add increase / decrease selected header (#) level
 - [ ] add a toolbar with toolbar button template
 - [x] support custom completions, for example @name
 - [ ] support soft line wrapping
-- [ ] better highlight markdown inline code and code blocks
 - [ ] Add a diff viewer
 - [ ] Implement cursor tooltips
 - [ ] Implement Copilot/AI style suggestions

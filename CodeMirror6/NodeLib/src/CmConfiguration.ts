@@ -10,6 +10,6 @@ export class CmConfiguration {
     public readOnly: boolean
     public editable: boolean
     public languageName: string
-    public autoFormatMarkdownHeaders: boolean
+    public autoFormatMarkdown: boolean
     public replaceEmojiCodes: boolean
 }

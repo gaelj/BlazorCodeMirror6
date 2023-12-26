@@ -374,9 +374,9 @@ internal class CMSetters(
     /// Set the auto format markdown headers state
     /// </summary>
     /// <returns></returns>
-    public Task SetAutoFormatMarkdownHeaders() => cmJsInterop.ModuleInvokeVoidAsync(
-        "setAutoFormatMarkdownHeaders",
-        config.AutoFormatMarkdownHeaders
+    public Task SetAutoFormatMarkdown() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setAutoFormatMarkdown",
+        config.AutoFormatMarkdown
     );
 
     public Task SetReplaceEmojiCodes() => cmJsInterop.ModuleInvokeVoidAsync(

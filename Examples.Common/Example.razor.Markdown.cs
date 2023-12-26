@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace Examples.Common;
 
@@ -14,6 +14,8 @@ function Demo() {{
 ```
 
 @Alice
+
+---
 
 there is an error here
 
