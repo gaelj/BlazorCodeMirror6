@@ -63,6 +63,7 @@ export function initCodeMirror(
             getDynamicHeaderStyling(initialConfig.autoFormatMarkdown),
             dynamicHrExtension(initialConfig.autoFormatMarkdown),
             dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
+            mentionExtension(CMInstances[id].dotNetHelper, setup.allowMentions, initialConfig.autoFormatMarkdown),
         ]),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -72,7 +73,6 @@ export function initCodeMirror(
         CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
         CMInstances[id].emojiReplacerCompartment.of(createEmojiExtension(initialConfig.replaceEmojiCodes)),
         lastOperationWasUndo,
-        mentionExtension(CMInstances[id].dotNetHelper),
 
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
         keymap.of([
@@ -218,6 +218,7 @@ export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
             getDynamicHeaderStyling(autoFormatMarkdown),
             dynamicHrExtension(autoFormatMarkdown),
             dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
+            mentionExtension(CMInstances[id].dotNetHelper, CMInstances[id].setup.allowMentions, autoFormatMarkdown),
         ])
     })
 }

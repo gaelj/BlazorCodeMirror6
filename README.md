@@ -29,7 +29,7 @@ It can be used as a feature-complete Markdown editor.
 - [ ] better highlight markdown inline code and code blocks
 - [ ] add increase / decrease selected header (#) level
 - [ ] add a toolbar with toolbar button template
-- [x] support custom completions, for example @name
+- [x] support user mentions, for example @name
 - [ ] support soft line wrapping
 - [ ] Add a diff viewer
 - [ ] Implement cursor tooltips

@@ -30,10 +30,8 @@ export const isCursorInRange = (state: EditorState, from: number, to: number) =>
  * @returns
  */
 export const dynamicHrExtension = (enabled: boolean = true): Extension => {
-    if (!enabled) {
-        // If the extension is disabled, return an empty extension
+    if (!enabled)
         return []
-    }
 
     const hrDecoration = () => Decoration.replace({
         widget: hrWidget(),
