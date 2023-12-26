@@ -63,6 +63,12 @@
             <button class=@ButtonClass(c.State, "Blockquote") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownQuote)) title="Toggle quoted text">
                 Quote
             </button>
+            <button class=@ButtonClass(c.State, "ATXHeading") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.IncreaseMarkdownHeadingLevel)) title="Increase Markdown heading level">
+                Increase heading level
+            </button>
+            <button class=@ButtonClass(c.State, "ATXHeading") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.DecreaseMarkdownHeadingLevel)) title="Decrease Markdown heading level">
+                Decrease heading level
+            </button>
             @for (var i = 1; i <= 6; i++) {
                 var headingLevel = i; // Capture the current value of i in a local variable
                 <button class=@ButtonClass(c.State, $"ATXHeading{headingLevel}") @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.ToggleMarkdownHeading, headingLevel)) title="Toggle heading text">

@@ -48,12 +48,15 @@ It can be used as a feature-complete Markdown editor.
 - [x] report Markdown syntax at selection(s)
 - [x] Resized header text proportional to header #
 - [x] keybindings to set text in **bold** (`Ctrl-B`) or *italic* (`Ctrl-I`)
-- [x] support emoji
+- [x] support emoji: replace on type
 - [x] format lists
+- [x] Implement @user mentions with dropdown list
+- [ ] format links, make them clickable
+- [ ] emojis: view :emoji_codes: in the raw text as the emoji
+- [ ] emojis: add auto-complete
 - [ ] format tables
 - [ ] customize markdown header sizes
 - [ ] support toolbar toggling of checklist items even if checked
-- [x] Implement @user mentions with dropdown list
 - [ ] Apply Markdown style toggles to whole words
 - [ ] Toggling-off a Markdown style should always select the whole styled text block
 - [ ] Add mermaid language highlighting

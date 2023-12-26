@@ -32,6 +32,8 @@ import {
     getMarkdownStyleAtSelections,
     insertOrReplaceText,
     insertTextAboveCommand,
+    increaseMarkdownHeadingLevel,
+    decreaseMarkdownHeadingLevel,
 } from "./CmCommands"
 import { dynamicImagesExtension } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
@@ -251,6 +253,8 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
             case 'ToggleMarkdownCode': toggleMarkdownCode(view); break;
             case 'ToggleMarkdownCodeBlock': toggleMarkdownCodeBlock(view); break;
             case 'ToggleMarkdownQuote': toggleMarkdownQuote(view); break;
+            case 'IncreaseMarkdownHeadingLevel': increaseMarkdownHeadingLevel(view); break;
+            case 'DecreaseMarkdownHeadingLevel': decreaseMarkdownHeadingLevel(view); break;
             case 'ToggleMarkdownHeading': toggleMarkdownHeading(args[0] as number)(view); break;
             case 'ToggleMarkdownUnorderedList': toggleMarkdownUnorderedList(view); break;
             case 'ToggleMarkdownOrderedList': toggleMarkdownOrderedList(view); break;
