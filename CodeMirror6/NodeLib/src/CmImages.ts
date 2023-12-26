@@ -57,10 +57,15 @@ class ImageWidget extends WidgetType {
     }
 }
 
-export const images = (): Extension => {
+export const dynamicImagesExtension = (enabled: boolean = true): Extension => {
+    if (!enabled) {
+        // If the extension is disabled, return an empty extension
+        return []
+    }
+
     const imageRegex = /!\[.*?\]\((?<url>.*?)\)/
 
-    const imageDecoration = (imageWidgetParams: ImageWidgetParams) => Decoration.widget({
+    const imageWidget = (imageWidgetParams: ImageWidgetParams) => Decoration.widget({
         widget: new ImageWidget(imageWidgetParams),
         side: -1,
         block: true,
@@ -69,16 +74,18 @@ export const images = (): Extension => {
     const decorate = (state: EditorState) => {
         const widgets: Range<Decoration>[] = []
 
-        syntaxTree(state).iterate({
-            enter: ({ type, from, to }) => {
-                if (type.name === 'Image') {
-                    const result = imageRegex.exec(state.doc.sliceString(from, to))
+        if (enabled) {
+            syntaxTree(state).iterate({
+                enter: ({ type, from, to }) => {
+                    if (type.name === 'Image') {
+                        const result = imageRegex.exec(state.doc.sliceString(from, to))
 
-                    if (result && result.groups && result.groups.url)
-                        widgets.push(imageDecoration({ url: result.groups.url }).range(state.doc.lineAt(from).from))
-                }
-            },
-        })
+                        if (result && result.groups && result.groups.url)
+                            widgets.push(imageWidget({ url: result.groups.url }).range(state.doc.lineAt(from).from))
+                    }
+                },
+            })
+        }
 
         return widgets.length > 0 ? RangeSet.of(widgets) : Decoration.none
     }

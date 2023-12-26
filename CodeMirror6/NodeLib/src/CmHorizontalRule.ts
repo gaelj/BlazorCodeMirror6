@@ -29,8 +29,8 @@ export const isCursorInRange = (state: EditorState, from: number, to: number) =>
  * @param autoFormatMarkdown
  * @returns
  */
-export const dynamicHrExtension = (enableHr: boolean = true): Extension => {
-    if (!enableHr) {
+export const dynamicHrExtension = (enabled: boolean = true): Extension => {
+    if (!enabled) {
         // If the extension is disabled, return an empty extension
         return []
     }
@@ -42,7 +42,7 @@ export const dynamicHrExtension = (enableHr: boolean = true): Extension => {
     const decorate = (state: EditorState) => {
         const widgets: Range<Decoration>[] = [];
 
-        if (enableHr) {
+        if (enabled) {
             syntaxTree(state).iterate({
                 enter: ({ type, from, to }) => {
                     if (type.name === 'HorizontalRule' && !isCursorInRange(state, from, to)) {
@@ -59,7 +59,7 @@ export const dynamicHrExtension = (enableHr: boolean = true): Extension => {
         }
 
         return widgets.length > 0 ? RangeSet.of(widgets) : Decoration.none;
-    };
+    }
 
     const viewPlugin = ViewPlugin.define(() => ({}), {})
     const stateField = StateField.define<DecorationSet>({

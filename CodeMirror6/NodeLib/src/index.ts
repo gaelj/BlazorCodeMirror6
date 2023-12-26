@@ -33,7 +33,7 @@ import {
     insertOrReplaceText,
     insertTextAboveCommand,
 } from "./CmCommands"
-import { images } from "./CmImages"
+import { dynamicImagesExtension } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
 import { CmSetup } from "./CmSetup"
 import { createEmojiExtension, lastOperationWasUndo } from "./CmEmoji"
@@ -54,6 +54,7 @@ export function initCodeMirror(
 ) {
     CMInstances[id] = new CmInstance()
     CMInstances[id].dotNetHelper = dotnetHelper
+    CMInstances[id].setup = setup
 
     let extensions = [
         CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName))),
@@ -61,6 +62,7 @@ export function initCodeMirror(
         CMInstances[id].markdownStylingCompartment.of([
             getDynamicHeaderStyling(initialConfig.autoFormatMarkdown),
             dynamicHrExtension(initialConfig.autoFormatMarkdown),
+            dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
         ]),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -130,7 +132,6 @@ export function initCodeMirror(
     if (setup.crosshairCursor === true) extensions.push(crosshairCursor())
     if (setup.highlightActiveLine === true) extensions.push(highlightActiveLine())
     if (setup.highlightSelectionMatches === true) extensions.push(highlightSelectionMatches())
-    if (setup.previewImages === true) extensions.push(images())
 
     extensions.push(linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()))
     if (setup.allowMultipleSelections === true) EditorState.allowMultipleSelections.of(true)
@@ -216,6 +217,7 @@ export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
         effects: CMInstances[id].markdownStylingCompartment.reconfigure([
             getDynamicHeaderStyling(autoFormatMarkdown),
             dynamicHrExtension(autoFormatMarkdown),
+            dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
         ])
     })
 }
