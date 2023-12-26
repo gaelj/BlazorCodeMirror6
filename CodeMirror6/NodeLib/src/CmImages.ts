@@ -39,7 +39,7 @@ class ImageWidget extends WidgetType {
 
         backdrop.classList.add('cm-image-backdrop')
 
-        backdrop.style.borderRadius = 'var(--ink-internal-border-radius)'
+        backdrop.style.borderRadius = '0px'
         backdrop.style.display = 'flex'
         backdrop.style.alignItems = 'center'
         backdrop.style.justifyContent = 'center'
@@ -49,7 +49,7 @@ class ImageWidget extends WidgetType {
         figure.style.margin = '0'
 
         image.style.display = 'block'
-        image.style.maxHeight = 'var(--ink-internal-block-max-height)'
+        image.style.maxHeight = '80vh'
         image.style.maxWidth = '100%'
         image.style.width = '100%'
 

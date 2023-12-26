@@ -37,6 +37,7 @@ import { dynamicImagesExtension } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
 import { CmSetup } from "./CmSetup"
 import { createEmojiExtension, lastOperationWasUndo } from "./CmEmoji"
+import { blockquote } from "./CmBlockquote"
 import { dynamicHrExtension } from "./CmHorizontalRule"
 import { mentionExtension } from "./CmMentions"
 
@@ -73,6 +74,7 @@ export function initCodeMirror(
         CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
         CMInstances[id].emojiReplacerCompartment.of(createEmojiExtension(initialConfig.replaceEmojiCodes)),
         lastOperationWasUndo,
+        blockquote(),
 
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
         keymap.of([

@@ -25,7 +25,7 @@ It can be used as a feature-complete Markdown editor.
 - [x] allow undo / redo toolbar buttons
 - [x] configure which plugins are active at startup
 - [x] Show horizontal rule instead of ------
-- [ ] style Markdown quote lines and paragraphs
+- [x] style Markdown quote lines and paragraphs
 - [ ] better highlight markdown inline code and code blocks
 - [ ] add increase / decrease selected header (#) level
 - [ ] add a toolbar with toolbar button template
