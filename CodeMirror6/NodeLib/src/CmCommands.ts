@@ -1,7 +1,6 @@
 import { markdownLanguage } from "@codemirror/lang-markdown"
 import { syntaxTree } from "@codemirror/language"
 import { SyntaxNodeRef } from "@lezer/common"
-import { ViewUpdate } from "@codemirror/view"
 import { EditorState, ChangeSpec, EditorSelection, Transaction, Text, SelectionRange, TransactionSpec } from "@codemirror/state"
 import { Command } from "@codemirror/view"
 import { EditorView } from "codemirror"
@@ -32,7 +31,7 @@ function getMarkdownStyleAtRange(state: EditorState, range: SelectionRange): str
             }
         }
     })
-    console.log("Active Markdown styles in range:", styles)
+    console.log("Active styles in range:", styles)
     return styles
 }
 
@@ -185,7 +184,7 @@ export function insertTextAboveCommand(view: EditorView, textToInsert: string) {
         changes.push({ from: lineStart, insert: textToInsert + "\n" })
         return {
             changes,
-            range: EditorSelection.range(range.from, range.from + textToInsert.length),
+            range: EditorSelection.range(range.from + textToInsert.length, range.from + textToInsert.length),
         }
     })
     view.dispatch(
