@@ -49,12 +49,19 @@ const mentionDecorationPlugin = ViewPlugin.define((view: EditorView) => {
             const builder = new RangeSetBuilder<Decoration>()
 
             for (const { from, to } of view.visibleRanges) {
-                const text = view.state.doc.sliceString(from, to);
-                let match;
-                while ((match = mentionRegex.exec(text))) {
-                    const start = from + match.index;
-                    const end = start + match[0].length;
-                    builder.add(start, end, Decoration.mark({ class: "mention" }));
+                if (markdownLanguage.isActiveAt(view.state, from)) {
+                    const text = view.state.doc.sliceString(from, to);
+                    let match;
+                    while ((match = mentionRegex.exec(text))) {
+                        const start = from + match.index;
+                        const end = start + match[0].length;
+                        const text2 = view.state.doc.sliceString(start, end);
+                        console.log(text2)
+                        const isCode = isInCodeBlock(view.state, start)
+                        if (!isCode) {
+                            builder.add(start, end, Decoration.mark({ class: "mention" }));
+                        }
+                    }
                 }
             }
 
