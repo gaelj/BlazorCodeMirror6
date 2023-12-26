@@ -1,6 +1,1 @@
-[submodule "CodeMirror6/NodeLib/ink-mde"]
-	path = CodeMirror6/NodeLib/ink-mde
-	url = https://github.com/davidmyersdev/ink-mde.git
-[submodule "ink-mde"]
-	path = ink-mde
-	url = https://github.com/davidmyersdev/ink-mde.git
+
