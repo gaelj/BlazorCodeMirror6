@@ -18,7 +18,7 @@ export class CmSetup
     public closeBrackets: boolean
     public autocompletion: boolean
     public rectangularSelection: boolean
-    public crosshairCursor: boolean
+    public crossHairSelection: boolean
     public highlightActiveLine: boolean
     public highlightSelectionMatches: boolean
     public previewImages: boolean

@@ -69,6 +69,7 @@ export function initCodeMirror(
             dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
             mentionExtension(CMInstances[id].dotNetHelper, setup.allowMentions, initialConfig.autoFormatMarkdown),
             listsExtension(initialConfig.autoFormatMarkdown),
+            blockquote(),
         ]),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -78,7 +79,6 @@ export function initCodeMirror(
         CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
         CMInstances[id].emojiReplacerCompartment.of(createEmojiExtension(initialConfig.replaceEmojiCodes)),
         lastOperationWasUndo,
-        blockquote(),
 
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
         keymap.of([
@@ -135,7 +135,7 @@ export function initCodeMirror(
     if (setup.closeBrackets === true) extensions.push(closeBrackets())
     if (setup.autocompletion === true) extensions.push(autocompletion({}))
     if (setup.rectangularSelection === true) extensions.push(rectangularSelection())
-    if (setup.crosshairCursor === true) extensions.push(crosshairCursor())
+    if (setup.crossHairSelection === true) extensions.push(crosshairCursor())
     if (setup.highlightActiveLine === true) extensions.push(highlightActiveLine())
     if (setup.highlightSelectionMatches === true) extensions.push(highlightSelectionMatches())
 
@@ -226,6 +226,7 @@ export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
             dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
             mentionExtension(CMInstances[id].dotNetHelper, CMInstances[id].setup.allowMentions, autoFormatMarkdown),
             listsExtension(autoFormatMarkdown),
+            blockquote(),
         ])
     })
 }
