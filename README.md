@@ -54,6 +54,7 @@ It can be used as a feature-complete Markdown editor.
 - [ ] format links, make them clickable
 - [ ] emojis: view :emoji_codes: in the raw text as the emoji
 - [ ] emojis: add auto-complete
+- [ ] use latest header
 - [ ] format tables
 - [ ] customize markdown header sizes
 - [ ] support toolbar toggling of checklist items even if checked
@@ -61,6 +62,8 @@ It can be used as a feature-complete Markdown editor.
 - [ ] Toggling-off a Markdown style should always select the whole styled text block
 - [ ] Add mermaid language highlighting
 - [ ] Implement kroki / mermaid preview
+- [ ] support file upload
+- [ ] add color picker extension
 
 ## Installation
 
