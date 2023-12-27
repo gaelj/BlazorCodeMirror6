@@ -38,11 +38,12 @@ import {
 import { dynamicImagesExtension } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
 import { CmSetup } from "./CmSetup"
-import { createEmojiExtension, lastOperationWasUndo } from "./CmEmoji"
+import { replaceEmojiExtension, lastOperationWasUndo } from "./CmEmojiReplace"
 import { blockquote } from "./CmBlockquote"
 import { listsExtension } from "./CmLists"
 import { dynamicHrExtension } from "./CmHorizontalRule"
 import { mentionExtension } from "./CmMentions"
+import { viewEmojiExtension } from "./CmEmojiView"
 
 /**
  * Initialize a new CodeMirror instance
@@ -70,6 +71,7 @@ export function initCodeMirror(
             mentionExtension(CMInstances[id].dotNetHelper, setup.allowMentions, initialConfig.autoFormatMarkdown),
             listsExtension(initialConfig.autoFormatMarkdown),
             blockquote(),
+            viewEmojiExtension(initialConfig.autoFormatMarkdown),
         ]),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -77,7 +79,7 @@ export function initCodeMirror(
         CMInstances[id].themeCompartment.of(getTheme(initialConfig.themeName)),
         CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(initialConfig.readOnly)),
         CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
-        CMInstances[id].emojiReplacerCompartment.of(createEmojiExtension(initialConfig.replaceEmojiCodes)),
+        CMInstances[id].emojiReplacerCompartment.of(replaceEmojiExtension(initialConfig.replaceEmojiCodes)),
         lastOperationWasUndo,
 
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
@@ -227,6 +229,7 @@ export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
             mentionExtension(CMInstances[id].dotNetHelper, CMInstances[id].setup.allowMentions, autoFormatMarkdown),
             listsExtension(autoFormatMarkdown),
             blockquote(),
+            viewEmojiExtension(autoFormatMarkdown),
         ])
     })
 }

@@ -19,6 +19,8 @@ function Demo() {{
 
 @abc
 
+:smile:
+
 ---
 
 - [ ] task 1

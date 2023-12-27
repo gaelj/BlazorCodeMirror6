@@ -51,8 +51,8 @@ It can be used as a feature-complete Markdown editor.
 - [x] support emoji: replace on type
 - [x] format lists
 - [x] Implement @user mentions with dropdown list
+- [x] emojis: view :emoji_codes: in the raw text as the emoji
 - [ ] format links, make them clickable
-- [ ] emojis: view :emoji_codes: in the raw text as the emoji
 - [ ] emojis: add auto-complete
 - [ ] use latest header
 - [ ] format tables
