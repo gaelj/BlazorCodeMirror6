@@ -236,7 +236,7 @@ export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
 
 export function setReplaceEmojiCodes(id: string, replaceEmojiCodes: boolean) {
     CMInstances[id].view.dispatch({
-        effects: CMInstances[id].emojiReplacerCompartment.reconfigure(createEmojiExtension(replaceEmojiCodes))
+        effects: CMInstances[id].emojiReplacerCompartment.reconfigure(replaceEmojiExtension(replaceEmojiCodes))
     });
 }
 
