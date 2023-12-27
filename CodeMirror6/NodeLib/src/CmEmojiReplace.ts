@@ -28,7 +28,7 @@ export const lastOperationWasUndo = StateField.define<boolean>({
     }
 })
 
-export const emojiRegex = /^(:.*:)$/
+export const emojiRegex = /^(:[0-9a-z\_]+:)$/
 
 /**
  * A function to replace the last word with an emoji
@@ -60,7 +60,7 @@ function checkForEmojiReplacement(tr: Transaction): StateEffect<replaceEmojiType
         const line = tr.state.doc.lineAt(from)
         const beforeText = line.text.slice(0, from - line.from)
         const potentialEmojiText = beforeText + inserted
-        const match = potentialEmojiText.match(/(:.*:)$/) // Get the emoji code in the last word
+        const match = potentialEmojiText.match(/(:[0-9a-z\_]+:)$/) // Get the emoji code in the last word
         if (match) {
             const match0 = match[0].trim()
             const lastWordEmoji = emoji.get(match0)
