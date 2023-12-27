@@ -140,7 +140,7 @@ export function initCodeMirror(
     if (setup.highlightSelectionMatches === true) extensions.push(highlightSelectionMatches())
 
     extensions.push(linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()))
-    if (setup.allowMultipleSelections === true) EditorState.allowMultipleSelections.of(true)
+    if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
 
     CMInstances[id].state = EditorState.create({
         doc: initialConfig.doc,
