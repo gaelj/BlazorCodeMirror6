@@ -7,13 +7,10 @@ import { buildWidget } from './lib/codemirror-kit'
 import { isCursorInRange } from './CmHorizontalRule'
 import * as emoji from 'node-emoji'
 
-const emojiRegex = /(:.*:)/
-
 const emojiWidget = (emoji: string) => buildWidget({
     eq: () => false,
     toDOM: () => {
         const span = document.createElement('span');
-        //TODO: show emoji
         span.innerText = emoji
         return span;
     },
@@ -39,15 +36,12 @@ export const viewEmojiExtension = (enabled: boolean = true): Extension => {
             syntaxTree(state).iterate({
                 enter: ({ type, from, to }) => {
                     if (!isCursorInRange(state, from, to)) {
-                        const line = state.doc.lineAt(from)
-                        const lineText = state.doc.sliceString(line.from, line.to)
-
-                        const matches = emojiRegex.exec(lineText)
-                        if (!matches) return
-                        for (let emojiCode of matches.values()) {
-                            const insertedEmoji = emoji.get(emojiCode)
-                            if (!insertedEmoji) continue
-                            widgets.push(emojiDecoration(insertedEmoji).range(line.from, line.to))
+                        if (type.name === 'Emoji') {
+                            const emojiCode = state.sliceDoc(from, to)
+                            const emojiText = emoji.get(emojiCode)
+                            if (emojiText) {
+                                widgets.push(emojiDecoration(emojiText).range(from, to))
+                            }
                         }
                     }
                 },
