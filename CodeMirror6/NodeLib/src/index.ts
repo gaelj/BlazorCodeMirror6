@@ -42,7 +42,7 @@ import { replaceEmojiExtension, lastOperationWasUndo } from "./CmEmojiReplace"
 import { blockquote } from "./CmBlockquote"
 import { listsExtension } from "./CmLists"
 import { dynamicHrExtension } from "./CmHorizontalRule"
-import { mentionExtension } from "./CmMentions"
+import { mentionExtension } from "./CmMentionsCompletion"
 import { viewEmojiExtension } from "./CmEmojiView"
 
 /**
