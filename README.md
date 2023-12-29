@@ -24,10 +24,6 @@ It can be used as a feature-complete Markdown editor.
 - [x] insert text at cursor / at position
 - [x] allow undo / redo toolbar buttons
 - [x] configure which plugins are active at startup
-- [x] Show horizontal rule instead of ------
-- [x] style Markdown quote lines and paragraphs
-- [ ] better highlight markdown inline code and code blocks
-- [ ] add increase / decrease selected header (#) level
 - [ ] add a toolbar with toolbar button template
 - [ ] support soft line wrapping
 - [ ] support read-only paragraphs
@@ -55,6 +51,10 @@ It can be used as a feature-complete Markdown editor.
 - [x] format lists
 - [x] Implement @user mentions with dropdown list
 - [x] emojis: view :emoji_codes: in the raw text as the emoji
+- [x] Show horizontal rule instead of ------
+- [x] style Markdown quote lines and paragraphs
+- [ ] better highlight markdown inline code and code blocks
+- [ ] add increase / decrease selected header (#) level
 - [ ] format links, make them clickable
 - [ ] emojis: add auto-complete
 - [ ] use latest header
