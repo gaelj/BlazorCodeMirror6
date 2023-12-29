@@ -20,7 +20,7 @@ function Demo() {{
 @abc
 
 :smile: :smile::smile:
-:writing_hand_tone1:
+:writing_hand:
 :yellow_heart:
 :clock1:
 
