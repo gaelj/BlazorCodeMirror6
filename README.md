@@ -39,8 +39,11 @@ It can be used as a feature-complete Markdown editor.
 - [ ] Implement search & replace
 - [ ] Highlight edited lines
 - [ ] Allow toggling console debug mode
-
-~~- [ ] Add C# language~~ needs a backend, see [mirrorsharp](https://github.com/ashmind/mirrorsharp)
+- [ ] collaborative editing
+- [ ] Add C# language needs a backend, see [mirrorsharp](https://github.com/ashmind/mirrorsharp)
+- [ ] voice recognition
+- [ ] automatic translation
+- [ ] update doc in dotnet either on text changes or on blur / add GetText()
 
 ### For Markdown language
 
