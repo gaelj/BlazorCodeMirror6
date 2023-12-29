@@ -97,11 +97,11 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <value></value>
     [Parameter] public EventCallback<List<string>> MarkdownStylesAtSelectionsChanged { get; set; }
     /// <summary>
-    /// Whether to allow vertical resizing
+    /// Whether to allow vertical resizing similar to a textarea
     /// </summary>
     [Parameter] public bool AllowVerticalResize { get; set; } = true;
     /// <summary>
-    /// Whether to allow horizontal resizing
+    /// Whether to allow horizontal resizing similar to a textarea
     /// </summary>
     /// <value></value>
     [Parameter] public bool AllowHorizontalResize { get; set; }
@@ -119,9 +119,9 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// Whether to replace :emoji_codes: with emoji
     /// </summary>
     /// <value></value>
-    [Parameter] public bool ReplaceEmojiCodes { get; set; } = true;
+    [Parameter] public bool ReplaceEmojiCodes { get; set; } = false;
     /// <summary>
-    /// Get the &#64;user mention completions
+    /// Get the &#64;user mention completions for the given first characters
     /// </summary>
     /// <value></value>
     [Parameter] public Func<string?, Task<List<CodeMirrorCompletion>>>? GetMentionCompletions { get; set; }
