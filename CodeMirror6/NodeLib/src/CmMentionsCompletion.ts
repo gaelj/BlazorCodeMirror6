@@ -1,4 +1,5 @@
 import { Completion, CompletionContext, CompletionSource } from "@codemirror/autocomplete"
+import { isInCodeBlock } from "./CmHelpers"
 
 
 export const cachedCompletions: Completion[] = []
@@ -8,12 +9,16 @@ function createMentionsCompletionSource(): CompletionSource {
         let options: Completion[] = []
         let from = context.pos
 
-        const match = context.matchBefore(/(?:\s|^)\@[\w]*$/)
-        if (match) {
-            const searchText = context.matchBefore(/[\w]+/)
-            if (searchText)
-                from = searchText.from
-            options = getMentionCompletions(searchText ? searchText.text : null)
+        const isCode = isInCodeBlock(context.state, from)
+
+        if (!isCode) {
+            const match = context.matchBefore(/(?:\s|^)\@[\w]*$/)
+            if (match) {
+                const searchText = context.matchBefore(/[\w]+/)
+                if (searchText)
+                    from = searchText.from
+                options = getMentionCompletions(searchText ? searchText.text : null)
+            }
         }
 
         return {

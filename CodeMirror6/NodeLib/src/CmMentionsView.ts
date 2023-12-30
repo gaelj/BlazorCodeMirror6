@@ -1,10 +1,9 @@
 import { markdownLanguage } from "@codemirror/lang-markdown";
 import { EditorState, RangeSetBuilder, Extension } from '@codemirror/state'
 import { EditorView, ViewPlugin, Decoration } from "@codemirror/view"
-import { syntaxTree } from '@codemirror/language'
 import { buildWidget } from "./lib/codemirror-kit"
-import { cachedCompletions } from "./CmMentionsCompletion";
-import { isCursorInRange } from "./CmHorizontalRule";
+import { cachedCompletions } from "./CmMentionsCompletion"
+import { isCursorInRange, isInCodeBlock } from "./CmHelpers"
 
 const mentionsRegex = /(?:\s|^)(?:@)(\w*)/g
 
@@ -42,16 +41,6 @@ function createMentionDetailsPlugin(): Extension {
             decorations: plugin => plugin.update()
         }
     )
-}
-
-function isInCodeBlock(state: EditorState, pos: number) {
-    let tree = syntaxTree(state).resolve(pos, -1)
-    while (tree.parent) {
-        if (tree.name.indexOf('Code') > -1)
-            return true
-        tree = tree.parent
-    }
-    return false
 }
 
 function createMentionWidget(detail: string) {

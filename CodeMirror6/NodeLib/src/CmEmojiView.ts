@@ -4,7 +4,7 @@ import { Decoration, EditorView, ViewPlugin } from '@codemirror/view'
 import type { EditorState, Extension, Range } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
 import { buildWidget } from './lib/codemirror-kit'
-import { isCursorInRange } from './CmHorizontalRule'
+import { isCursorInRange } from './CmHelpers'
 import * as emoji from 'node-emoji'
 
 const emojiWidget = (emoji: string) => buildWidget({

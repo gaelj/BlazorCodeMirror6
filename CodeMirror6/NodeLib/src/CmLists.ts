@@ -4,6 +4,7 @@ import { Decoration, EditorView, ViewPlugin } from '@codemirror/view'
 import type { EditorState, Extension, Range } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
 import { buildWidget } from './lib/codemirror-kit'
+import { isCursorInRange } from './CmHelpers'
 
 const dotWidget = () => buildWidget({
     eq: () => {
@@ -36,16 +37,6 @@ const taskWidget = (isChecked: boolean) => buildWidget({
         return input
     },
 })
-
-const hasOverlap = (x1: number, x2: number, y1: number, y2: number) => {
-    return Math.max(x1, y1) <= Math.min(x2, y2)
-}
-
-export const isCursorInRange = (state: EditorState, from: number, to: number) => {
-    return state.selection.ranges.some((range) => {
-        return hasOverlap(from, to, range.from, range.to)
-    })
-}
 
 const toggleTask = (view: EditorView, position: number) => {
     const before = view.state.sliceDoc(position + 2, position + 5)
