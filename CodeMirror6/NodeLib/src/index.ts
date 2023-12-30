@@ -46,6 +46,7 @@ import { mentionCompletionExtension, setCachedCompletions } from "./CmMentionsCo
 import { mentionDecorationExtension } from "./CmMentionsView"
 import { viewEmojiExtension } from "./CmEmojiView"
 import { emojiCompletionExtension } from "./CmEmojiCompletion"
+import { indentationMarkers } from '@replit/codemirror-indentation-markers'
 
 /**
  * Initialize a new CodeMirror instance
@@ -89,6 +90,7 @@ export function initCodeMirror(
         CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
         CMInstances[id].emojiReplacerCompartment.of(replaceEmojiExtension(initialConfig.replaceEmojiCodes)),
         lastOperationWasUndo,
+        indentationMarkers(),
 
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
         keymap.of([
