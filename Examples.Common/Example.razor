@@ -230,10 +230,10 @@ Result:
         return Task.FromResult(result);
     }
 
-    private async Task<List<CodeMirrorCompletion>> GetMentionCompletions(string? firstCharacters)
+    private static async Task<List<CodeMirrorCompletion>> GetMentionCompletions()
     {
         return await Task.FromResult<List<CodeMirrorCompletion>>(
-            new List<CodeMirrorCompletion> {
+            [
                 new CodeMirrorCompletion {
                     Label = "abc",
                     Detail = "Alice",
@@ -312,15 +312,7 @@ Result:
                     Info = "Peggy is a person",
                     // Type = "variable"
                 },
-            }.Where(c =>
-                //string.IsNullOrEmpty(firstCharacters) ||
-                !string.IsNullOrEmpty(firstCharacters) &&
-                firstCharacters.Length > 0 &&
-                (
-                    c.Label.StartsWith(firstCharacters, StringComparison.InvariantCultureIgnoreCase) ||
-                    (c.Detail is not null && c.Detail.StartsWith(firstCharacters, StringComparison.InvariantCultureIgnoreCase))
-                )
-            ).ToList()
+            ]
         );
     }
 }

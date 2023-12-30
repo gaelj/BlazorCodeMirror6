@@ -363,6 +363,11 @@ internal class CMSetters(
         "setReplaceEmojiCodes",
         config.ReplaceEmojiCodes
     );
+
+    internal Task SetMentionCompletions(List<CodeMirrorCompletion> mentionCompletions) => cmJsInterop.ModuleInvokeVoidAsync(
+        "setMentionCompletions",
+        mentionCompletions
+    );
 }
 
 /// <summary>

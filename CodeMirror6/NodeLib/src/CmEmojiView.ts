@@ -11,16 +11,11 @@ const emojiWidget = (emoji: string) => buildWidget({
     eq: () => false,
     toDOM: () => {
         const span = document.createElement('span');
-        span.innerText = emoji
+        span.textContent = emoji
         return span;
     },
 })
 
-/**
- * Return the horizontal rule Extension if the supplied parameter is true
- * @param enabled
- * @returns
- */
 export const viewEmojiExtension = (enabled: boolean = true): Extension => {
     if (!enabled)
         return []

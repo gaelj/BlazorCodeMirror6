@@ -16,7 +16,7 @@ import {
     indentUnit, defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
     foldGutter, foldKeymap,
 } from "@codemirror/language"
-import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete"
+import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap, Completion } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
 import { linter, lintKeymap } from "@codemirror/lint"
 
@@ -42,7 +42,8 @@ import { replaceEmojiExtension, lastOperationWasUndo } from "./CmEmojiReplace"
 import { blockquote } from "./CmBlockquote"
 import { listsExtension } from "./CmLists"
 import { dynamicHrExtension } from "./CmHorizontalRule"
-import { mentionExtension } from "./CmMentionsCompletion"
+import { mentionCompletionExtension, setCachedCompletions } from "./CmMentionsCompletion"
+import { mentionDecorationExtension } from "./CmMentionsView"
 import { viewEmojiExtension } from "./CmEmojiView"
 
 /**
@@ -68,7 +69,10 @@ export function initCodeMirror(
             getDynamicHeaderStyling(initialConfig.autoFormatMarkdown),
             dynamicHrExtension(initialConfig.autoFormatMarkdown),
             dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
-            mentionExtension(CMInstances[id].dotNetHelper, setup.allowMentions, initialConfig.autoFormatMarkdown),
+            autocompletion({
+                override: [...mentionCompletionExtension(setup.allowMentions)]
+            }),
+            mentionDecorationExtension(initialConfig.autoFormatMarkdown),
             listsExtension(initialConfig.autoFormatMarkdown),
             blockquote(),
             viewEmojiExtension(initialConfig.autoFormatMarkdown),
@@ -220,13 +224,20 @@ export function setLanguage(id: string, languageName: string) {
     })
 }
 
+export function setMentionCompletions(id: string, mentionCompletions: Completion[]) {
+    setCachedCompletions(mentionCompletions)
+}
+
 export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].markdownStylingCompartment.reconfigure([
             getDynamicHeaderStyling(autoFormatMarkdown),
             dynamicHrExtension(autoFormatMarkdown),
             dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
-            mentionExtension(CMInstances[id].dotNetHelper, CMInstances[id].setup.allowMentions, autoFormatMarkdown),
+            autocompletion({
+                override: [...mentionCompletionExtension(CMInstances[id].setup.allowMentions)]
+            }),
+            mentionDecorationExtension(autoFormatMarkdown),
             listsExtension(autoFormatMarkdown),
             blockquote(),
             viewEmojiExtension(autoFormatMarkdown),
