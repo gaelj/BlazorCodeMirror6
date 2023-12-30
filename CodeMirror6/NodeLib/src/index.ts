@@ -45,6 +45,7 @@ import { dynamicHrExtension } from "./CmHorizontalRule"
 import { mentionCompletionExtension, setCachedCompletions } from "./CmMentionsCompletion"
 import { mentionDecorationExtension } from "./CmMentionsView"
 import { viewEmojiExtension } from "./CmEmojiView"
+import { emojiCompletionExtension } from "./CmEmojiCompletion"
 
 /**
  * Initialize a new CodeMirror instance
@@ -70,7 +71,10 @@ export function initCodeMirror(
             dynamicHrExtension(initialConfig.autoFormatMarkdown),
             dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
             autocompletion({
-                override: [...mentionCompletionExtension(setup.allowMentions)]
+                override: [
+                    ...mentionCompletionExtension(setup.allowMentions),
+                    ...emojiCompletionExtension(true)
+                ]
             }),
             mentionDecorationExtension(initialConfig.autoFormatMarkdown),
             listsExtension(initialConfig.autoFormatMarkdown),

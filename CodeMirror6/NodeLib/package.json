@@ -23,7 +23,7 @@
     "@codemirror/lang-python": "^6.1.3",
     "@codemirror/lang-rust": "^6.0.1",
     "@codemirror/lang-sass": "^6.0.2",
-    "@codemirror/lang-sql": "^6.5.4",
+    "@codemirror/lang-sql": "^6.5.5",
     "@codemirror/lang-xml": "^6.0.2",
     "@codemirror/language-data": "^6.3.1",
     "@codemirror/lint": "^6.4.2",
@@ -36,16 +36,17 @@
     "@uiw/codemirror-theme-tokyo-night-storm": "^4.21.21",
     "@uiw/codemirror-theme-vscode": "^4.21.21",
     "codemirror": "^6.0.1",
+    "emojilib": "^3.0.11",
     "node-emoji": "^2.1.3",
     "thememirror": "^2.0.1"
   },
   "devDependencies": {
-    "@babel/runtime": "^7.23.6",
+    "@babel/runtime": "^7.23.7",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.5",
-    "rollup": "^4.9.1",
+    "rollup": "^4.9.2",
     "ts-loader": "^9.5.1",
     "tslib": "^2.6.2",
     "typescript": "^5.3.3"

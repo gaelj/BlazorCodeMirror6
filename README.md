@@ -51,12 +51,12 @@ It can be used as a feature-complete Markdown editor.
 - [x] format lists
 - [x] Implement @user mentions with dropdown list
 - [x] emojis: view :emoji_codes: in the raw text as the emoji
+- [x] emojis: add auto-complete
 - [x] Show horizontal rule instead of ------
 - [x] style Markdown quote lines and paragraphs
 - [ ] better highlight markdown inline code and code blocks
 - [x] add increase / decrease selected header (#) level
 - [ ] format links, make them clickable
-- [ ] emojis: add auto-complete
 - [ ] use latest header
 - [ ] format tables
 - [ ] customize markdown header sizes
