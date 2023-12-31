@@ -24,7 +24,7 @@ function Demo() {{
 :yellow_heart:
 :clock1:
 
-Bats with <span style=""color: red"">red teeth</span> !
+Bats with <span style=""color: red"">red teeth</span> and <span style=""color: blue"">blue eyes</span> !
 
 
 ---

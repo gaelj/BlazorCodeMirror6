@@ -9,7 +9,7 @@ import { isCursorInRange } from './CmHelpers'
 const htmlWidget = (content: string) => buildWidget({
     eq: () => false,
     toDOM: () => {
-        const container = document.createElement('div');
+        const container = document.createElement('span');
         container.innerHTML = content; // Insert HTML content
         return container;
     },
@@ -43,8 +43,7 @@ export const viewInlineHtmlExtension = (enabled: boolean = true): Extension => {
                     else if (type.name === 'HTMLTag') {
                         foundClosingTag = !foundClosingTag
                         htmlCode += text
-                        if (htmlCode !== '' && foundClosingTag) {
-                            console.log(htmlCode)
+                        if (htmlCode !== '' && paragraph !== '' && foundClosingTag) {
                             if (!isCursorInRange(state, paragraphFrom, paragraphTo)) {
                                 widgets.push(htmlDecoration(paragraph).range(paragraphFrom, paragraphTo))
                             }
@@ -63,6 +62,7 @@ export const viewInlineHtmlExtension = (enabled: boolean = true): Extension => {
     }
 
     const viewPlugin = ViewPlugin.define(() => ({}), {})
+
     const stateField = StateField.define<DecorationSet>({
         create(state) {
             return decorate(state)
