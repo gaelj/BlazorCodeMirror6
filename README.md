@@ -44,6 +44,7 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [ ] voice recognition
 - [ ] automatic translation
 - [ ] update doc in dotnet either on text changes or on blur / add GetText()
+- [ ] deleting a file link deletes the file from the server
 
 ### For Markdown language
 
