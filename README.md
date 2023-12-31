@@ -1,16 +1,20 @@
 # Blazor CodeMirror 6
 
+> 🚧 This project is still a work-in-progress 🚧
+
 ![codemirror.svg](codemirror.svg)
 
-[CodeMirror 6](https://codemirror.net/) is a wonderful code editor for the browser.
+Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.net/) code editor to Blazor, offering a comprehensive .NET 7 / .NET 8 component. It's tailored for both general and specialized use-cases, supporting a range of languages and Markdown editing.
 
-This project wraps it in a Blazor .Net 7 / .Net 8 component, along with many popular use-cases detailed in the official documentation and the user forum, add-ons and themes.
+## Why Blazor CodeMirror 6?
 
-It can be used as a feature-complete Markdown editor.
+- Seamless Integration: Easily embeddable within Blazor applications.
+- Feature-Rich: Extensive support for syntax highlighting, auto-completion, custom linting, themes, and more.
+- Versatile: From Markdown editing to collaborative features (*to be implemented*), it's a one-stop solution for various editing needs.
 
 ## Features
 
-### For all languages
+### General
 
 - [x] 2-way-binding of the document contents
 - [x] setting tab size & indentation unit
@@ -69,17 +73,24 @@ It can be used as a feature-complete Markdown editor.
 - [ ] support file upload
 - [ ] add color picker extension
 
-## Installation
+## Screenshots
+
+![image](https://github.com/gaelj/BlazorCodeMirror6/assets/8884632/141f6b9e-82c4-433a-94d9-a02aba6ac336)
+
+## Quick Start
 
 Currently there is no Nuget package available, but it is planned.
 
-Clone the repository and reference it in the `csproj` file of your own project:
+To get started with Blazor CodeMirror 6:
 
-`<ProjectReference Include="..\CodeMirror6\CodeMirror6.csproj" />`
+- Clone the repository: `git clone https://github.com/gaelj/BlazorCodeMirror6.git`
+- Reference in your project: `<ProjectReference Include="..\CodeMirror6\CodeMirror6.csproj" />`
+- Install [node.js](https://nodejs.org/) and npx: `npm install npx`
+- Add `@using CodeMirror6` in your `_Imports.razor` or page/component.
+- Use the `<CodeMirror6Wrapper />` component as demonstrated in `Examples.Common/Example.razor`.
+- For build issues: `run dotnet clean` followed by `dotnet build`.
 
-In addition to the dotnet 7 or 8 SDK & runtime, [node.js](https://nodejs.org/) and `npx` (`npm install npx`) are needed.
-
-## Usage
+## Examples
 
 See `Examples.Common/Example.razor`
 
@@ -87,18 +98,28 @@ JS / CSS resources are loaded automatically (nothing to add in `_Host.cshtml` / 
 
 Just add `@using CodeMirror6` in `_Imports.razor` or in your razor page / component and use `<CodeMirror6Wrapper />` as in the examples.
 
-If you have npm / rollup errors when building (for example after pulling recent changes), `dotnet clean` will delete the `node_modules` directory. Then run `dotnet build` again.
-
 ## Modification
 
 - The javascript-side initialization is in `CodeMirror6/NodeLib/src/index.ts`
 - Interop from .Net to JS is in `CodeMirror6/CodeMirrorJsInterop.cs`
-- Interop from JS to .Net is in `CodeMirror6/DotNetHelper.cs`
-- The blazor component is in `CodeMirror6Wrapper.razor`
+- Interop from JS to .Net is in `CodeMirror6Wrapper.razor.cs`
+- The blazor component is in `CodeMirror6Wrapper.razor` and `CodeMirror6Wrapper.razor.cs`
 - The example component is in `Examples.Common/Example.razor`
 
-> The Node project is automatically built with the .Net project
+> The Node project is automatically built with the .Net project.
 
-## Screenshots
+## FAQs / Troubleshooting
 
-![image](https://github.com/gaelj/BlazorCodeMirror6/assets/8884632/141f6b9e-82c4-433a-94d9-a02aba6ac336)
+- If you have npm / rollup errors when building (for example after pulling recent changes), `dotnet clean` will delete the `node_modules` directory. Then run `dotnet build` again.
+
+## Changelog
+
+- initial development 🚧
+
+## License
+
+Blazor CodeMirror 6 is released under the MIT License. See the LICENSE for more details.
+
+## Contact
+
+File an [issue](https://github.com/gaelj/BlazorCodeMirror6/issues) or open a [discussion](https://github.com/gaelj/BlazorCodeMirror6/discussions)
