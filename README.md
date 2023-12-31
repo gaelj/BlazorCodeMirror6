@@ -54,8 +54,9 @@ It can be used as a feature-complete Markdown editor.
 - [x] emojis: add auto-complete
 - [x] Show horizontal rule instead of ------
 - [x] style Markdown quote lines and paragraphs
-- [ ] better highlight markdown inline code and code blocks
 - [x] add increase / decrease selected header (#) level
+- [x] format inline html
+- [ ] better highlight markdown inline code and code blocks
 - [ ] format links, make them clickable
 - [ ] use latest header
 - [ ] format tables
