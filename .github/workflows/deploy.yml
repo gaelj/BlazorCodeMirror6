@@ -17,7 +17,7 @@ jobs:
         dotnet-version: '8.0.x'
 
     - run: dotnet build Examples.BlazorWasm
-
+    - run: sed -i 's|<base href="/" />|<base href="/BlazorCodeMirror6/" />|g' ./wwwroot/index.html
     - name: Publish
       run: dotnet publish Examples.BlazorWasm -c Release -o ./build
 
