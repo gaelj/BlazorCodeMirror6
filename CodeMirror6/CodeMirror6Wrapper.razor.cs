@@ -97,11 +97,11 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <value></value>
     [Parameter] public EventCallback<List<string>> MarkdownStylesAtSelectionsChanged { get; set; }
     /// <summary>
-    /// Whether to allow vertical resizing
+    /// Whether to allow vertical resizing similar to a textarea
     /// </summary>
     [Parameter] public bool AllowVerticalResize { get; set; } = true;
     /// <summary>
-    /// Whether to allow horizontal resizing
+    /// Whether to allow horizontal resizing similar to a textarea
     /// </summary>
     /// <value></value>
     [Parameter] public bool AllowHorizontalResize { get; set; }
@@ -119,12 +119,12 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// Whether to replace :emoji_codes: with emoji
     /// </summary>
     /// <value></value>
-    [Parameter] public bool ReplaceEmojiCodes { get; set; } = true;
+    [Parameter] public bool ReplaceEmojiCodes { get; set; } = false;
     /// <summary>
-    /// Get the &#64;user mention completions
+    /// Get all users available for &#64;user mention completions
     /// </summary>
     /// <value></value>
-    [Parameter] public Func<string?, Task<List<CodeMirrorCompletion>>>? GetMentionCompletions { get; set; }
+    [Parameter] public Func<Task<List<CodeMirrorCompletion>>>? GetMentionCompletions { get; set; }
     /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
@@ -221,15 +221,6 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
         }
     }
 
-    /// <summary>
-    /// codeMirror requested mention completions
-    /// </summary>
-    /// <returns></returns>
-    [JSInvokable] public async Task<List<CodeMirrorCompletion>> GetMentionCompletionsFromJS(string? firstCharacters)
-        => GetMentionCompletions is null
-            ? await Task.FromResult(new List<CodeMirrorCompletion>())
-            : await GetMentionCompletions(firstCharacters);
-
     private CancellationTokenSource LinterCancellationTokenSource = new();
 
     /*
@@ -267,6 +258,10 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
             if (CmJsInterop is null) {
                 CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
                 await CmJsInterop.PropertySetters.InitCodeMirror();
+                if (GetMentionCompletions is not null) {
+                    var mentionCompletions = await GetMentionCompletions();
+                    await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions);
+                }
                 await InvokeAsync(StateHasChanged);
             }
         }

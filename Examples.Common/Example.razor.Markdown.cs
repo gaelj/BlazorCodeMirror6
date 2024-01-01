@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace Examples.Common;
 
@@ -17,7 +17,15 @@ function Demo() {{
 > kjvhfdkjv
 > khjvfjkd
 
-@abc
+@abc @def @fff
+
+:smile: :smile::smile:
+:writing_hand:
+:yellow_heart:
+:clock1:
+
+Bats with <span style=""color: red"">red teeth</span> and <span style=""color: blue"">blue eyes</span> !
+
 
 ---
 

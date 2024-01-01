@@ -16,7 +16,7 @@ import {
     indentUnit, defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
     foldGutter, foldKeymap,
 } from "@codemirror/language"
-import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete"
+import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap, Completion } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
 import { linter, lintKeymap } from "@codemirror/lint"
 
@@ -32,15 +32,22 @@ import {
     getMarkdownStyleAtSelections,
     insertOrReplaceText,
     insertTextAboveCommand,
+    increaseMarkdownHeadingLevel,
+    decreaseMarkdownHeadingLevel,
 } from "./CmCommands"
 import { dynamicImagesExtension } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
 import { CmSetup } from "./CmSetup"
-import { createEmojiExtension, lastOperationWasUndo } from "./CmEmoji"
+import { replaceEmojiExtension, lastOperationWasUndo } from "./CmEmojiReplace"
 import { blockquote } from "./CmBlockquote"
 import { listsExtension } from "./CmLists"
 import { dynamicHrExtension } from "./CmHorizontalRule"
-import { mentionExtension } from "./CmMentions"
+import { mentionCompletionExtension, setCachedCompletions } from "./CmMentionsCompletion"
+import { mentionDecorationExtension } from "./CmMentionsView"
+import { viewEmojiExtension } from "./CmEmojiView"
+import { emojiCompletionExtension } from "./CmEmojiCompletion"
+import { indentationMarkers } from '@replit/codemirror-indentation-markers'
+import { viewInlineHtmlExtension } from "./CmHtml"
 
 /**
  * Initialize a new CodeMirror instance
@@ -65,8 +72,17 @@ export function initCodeMirror(
             getDynamicHeaderStyling(initialConfig.autoFormatMarkdown),
             dynamicHrExtension(initialConfig.autoFormatMarkdown),
             dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
-            mentionExtension(CMInstances[id].dotNetHelper, setup.allowMentions, initialConfig.autoFormatMarkdown),
+            autocompletion({
+                override: [
+                    ...mentionCompletionExtension(setup.allowMentions),
+                    ...emojiCompletionExtension(true)
+                ]
+            }),
+            mentionDecorationExtension(initialConfig.autoFormatMarkdown),
             listsExtension(initialConfig.autoFormatMarkdown),
+            blockquote(),
+            viewEmojiExtension(initialConfig.autoFormatMarkdown),
+            viewInlineHtmlExtension(initialConfig.autoFormatMarkdown),
         ]),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -74,9 +90,9 @@ export function initCodeMirror(
         CMInstances[id].themeCompartment.of(getTheme(initialConfig.themeName)),
         CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(initialConfig.readOnly)),
         CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
-        CMInstances[id].emojiReplacerCompartment.of(createEmojiExtension(initialConfig.replaceEmojiCodes)),
+        CMInstances[id].emojiReplacerCompartment.of(replaceEmojiExtension(initialConfig.replaceEmojiCodes)),
         lastOperationWasUndo,
-        blockquote(),
+        indentationMarkers(),
 
         EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
         keymap.of([
@@ -133,12 +149,12 @@ export function initCodeMirror(
     if (setup.closeBrackets === true) extensions.push(closeBrackets())
     if (setup.autocompletion === true) extensions.push(autocompletion({}))
     if (setup.rectangularSelection === true) extensions.push(rectangularSelection())
-    if (setup.crosshairCursor === true) extensions.push(crosshairCursor())
+    if (setup.crossHairSelection === true) extensions.push(crosshairCursor())
     if (setup.highlightActiveLine === true) extensions.push(highlightActiveLine())
     if (setup.highlightSelectionMatches === true) extensions.push(highlightSelectionMatches())
 
     extensions.push(linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()))
-    if (setup.allowMultipleSelections === true) EditorState.allowMultipleSelections.of(true)
+    if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
 
     CMInstances[id].state = EditorState.create({
         doc: initialConfig.doc,
@@ -216,21 +232,31 @@ export function setLanguage(id: string, languageName: string) {
     })
 }
 
+export function setMentionCompletions(id: string, mentionCompletions: Completion[]) {
+    setCachedCompletions(mentionCompletions)
+}
+
 export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].markdownStylingCompartment.reconfigure([
             getDynamicHeaderStyling(autoFormatMarkdown),
             dynamicHrExtension(autoFormatMarkdown),
             dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
-            mentionExtension(CMInstances[id].dotNetHelper, CMInstances[id].setup.allowMentions, autoFormatMarkdown),
+            autocompletion({
+                override: [...mentionCompletionExtension(CMInstances[id].setup.allowMentions)]
+            }),
+            mentionDecorationExtension(autoFormatMarkdown),
             listsExtension(autoFormatMarkdown),
+            blockquote(),
+            viewEmojiExtension(autoFormatMarkdown),
+            viewInlineHtmlExtension(autoFormatMarkdown),
         ])
     })
 }
 
 export function setReplaceEmojiCodes(id: string, replaceEmojiCodes: boolean) {
     CMInstances[id].view.dispatch({
-        effects: CMInstances[id].emojiReplacerCompartment.reconfigure(createEmojiExtension(replaceEmojiCodes))
+        effects: CMInstances[id].emojiReplacerCompartment.reconfigure(replaceEmojiExtension(replaceEmojiCodes))
     });
 }
 
@@ -251,6 +277,8 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
             case 'ToggleMarkdownCode': toggleMarkdownCode(view); break;
             case 'ToggleMarkdownCodeBlock': toggleMarkdownCodeBlock(view); break;
             case 'ToggleMarkdownQuote': toggleMarkdownQuote(view); break;
+            case 'IncreaseMarkdownHeadingLevel': increaseMarkdownHeadingLevel(view); break;
+            case 'DecreaseMarkdownHeadingLevel': decreaseMarkdownHeadingLevel(view); break;
             case 'ToggleMarkdownHeading': toggleMarkdownHeading(args[0] as number)(view); break;
             case 'ToggleMarkdownUnorderedList': toggleMarkdownUnorderedList(view); break;
             case 'ToggleMarkdownOrderedList': toggleMarkdownOrderedList(view); break;

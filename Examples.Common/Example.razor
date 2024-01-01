@@ -1,4 +1,4 @@
-﻿<h1>Code Mirror 6 Wrapper Demo</h1>
+<h1>Code Mirror 6 Wrapper Demo</h1>
 
 <label for="Theme">Theme</label>
 <select @bind=@Theme id="Theme">
@@ -41,7 +41,7 @@
     Setup=@Setup
     ReplaceEmojiCodes=@ReplaceEmojiCodes
     GetMentionCompletions=@GetMentionCompletions
-    style="max-width: 100%; min-height: 40em; "
+    style="max-width: 100%; max-height: 60em; "
 >
     <ContentBefore Context="c">
         <div class="alert alert-info mt-3">
@@ -62,6 +62,12 @@
             </button>
             <button class=@ButtonClass(c.State, "Blockquote") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownQuote)) title="Toggle quoted text">
                 Quote
+            </button>
+            <button class=@ButtonClass(c.State, "ATXHeading") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.IncreaseMarkdownHeadingLevel)) title="Increase Markdown heading level">
+                Increase heading level
+            </button>
+            <button class=@ButtonClass(c.State, "ATXHeading") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.DecreaseMarkdownHeadingLevel)) title="Decrease Markdown heading level">
+                Decrease heading level
             </button>
             @for (var i = 1; i <= 6; i++) {
                 var headingLevel = i; // Capture the current value of i in a local variable
@@ -184,7 +190,7 @@ Result:
     private ThemeMirrorTheme Theme = ThemeMirrorTheme.OneDark;
     private CodeMirrorLanguage Language = CodeMirrorLanguage.Markdown;
     private bool AutoFormatMarkdown = true;
-    private bool ReplaceEmojiCodes = true;
+    private bool ReplaceEmojiCodes = false;
     private readonly CodeMirrorSetup Setup = new() {
         HighlightActiveLine = false,
         LineNumbers = true,
@@ -224,10 +230,10 @@ Result:
         return Task.FromResult(result);
     }
 
-    private async Task<List<CodeMirrorCompletion>> GetMentionCompletions(string? firstCharacters)
+    private static async Task<List<CodeMirrorCompletion>> GetMentionCompletions()
     {
         return await Task.FromResult<List<CodeMirrorCompletion>>(
-            new List<CodeMirrorCompletion> {
+            [
                 new CodeMirrorCompletion {
                     Label = "abc",
                     Detail = "Alice",
@@ -306,15 +312,7 @@ Result:
                     Info = "Peggy is a person",
                     // Type = "variable"
                 },
-            }.Where(c =>
-                //string.IsNullOrEmpty(firstCharacters) ||
-                !string.IsNullOrEmpty(firstCharacters) &&
-                firstCharacters.Length > 0 &&
-                (
-                    c.Label.StartsWith(firstCharacters, StringComparison.InvariantCultureIgnoreCase) ||
-                    (c.Detail is not null && c.Detail.StartsWith(firstCharacters, StringComparison.InvariantCultureIgnoreCase))
-                )
-            ).ToList()
+            ]
         );
     }
 }

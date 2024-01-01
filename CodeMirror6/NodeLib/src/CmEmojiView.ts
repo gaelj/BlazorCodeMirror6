@@ -5,28 +5,23 @@ import type { EditorState, Extension, Range } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
 import { buildWidget } from './lib/codemirror-kit'
 import { isCursorInRange } from './CmHelpers'
+import * as emoji from 'node-emoji'
 
-const hrWidget = () => buildWidget({
+const emojiWidget = (emoji: string) => buildWidget({
     eq: () => false,
     toDOM: () => {
-        const hr = document.createElement('hr');
-        hr.setAttribute('aria-hidden', 'true');
-        return hr;
+        const span = document.createElement('span');
+        span.textContent = emoji
+        return span;
     },
 })
 
-
-/**
- * Return the horizontal rule Extension if the supplied parameter is true
- * @param enabled
- * @returns
- */
-export const dynamicHrExtension = (enabled: boolean = true): Extension => {
+export const viewEmojiExtension = (enabled: boolean = true): Extension => {
     if (!enabled)
         return []
 
-    const hrDecoration = () => Decoration.replace({
-        widget: hrWidget(),
+    const emojiDecoration = (emoji: string) => Decoration.replace({
+        widget: emojiWidget(emoji),
     })
 
     const decorate = (state: EditorState) => {
@@ -35,13 +30,13 @@ export const dynamicHrExtension = (enabled: boolean = true): Extension => {
         if (enabled) {
             syntaxTree(state).iterate({
                 enter: ({ type, from, to }) => {
-                    if (type.name === 'HorizontalRule' && !isCursorInRange(state, from, to)) {
-                        const line = state.doc.lineAt(from)
-                        const lineText = state.doc.sliceString(line.from, line.to)
-                        const hrRegex = /^-{3,}$/
-
-                        if (hrRegex.test(lineText)) {
-                            widgets.push(hrDecoration().range(line.from, line.to))
+                    if (!isCursorInRange(state, from, to)) {
+                        if (type.name === 'Emoji') {
+                            const emojiCode = state.sliceDoc(from, to)
+                            const emojiText = emoji.get(emojiCode)
+                            if (emojiText) {
+                                widgets.push(emojiDecoration(emojiText).range(from, to))
+                            }
                         }
                     }
                 },

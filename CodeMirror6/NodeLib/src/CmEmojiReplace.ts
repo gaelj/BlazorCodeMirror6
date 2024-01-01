@@ -28,6 +28,8 @@ export const lastOperationWasUndo = StateField.define<boolean>({
     }
 })
 
+export const emojiRegex = /^(:[0-9a-z\_]+:)$/
+
 /**
  * A function to replace the last word with an emoji
  * @param tr
@@ -46,7 +48,7 @@ function checkForEmojiReplacement(tr: Transaction): StateEffect<replaceEmojiType
     // if the emoji map has a key that matches inserted text, just insert the emoji
     if (inserted.length > 1) {
         // if inserted begins and ends with a semicolon only
-        if (inserted.match(/^(:.*:)$/)) {
+        if (inserted.match(emojiRegex)) {
             const insertedEmoji = emoji.get(inserted)
             if (insertedEmoji) {
                 return replaceEmojiEffect.of({ from: from, to: to, emoji: insertedEmoji })
@@ -58,7 +60,7 @@ function checkForEmojiReplacement(tr: Transaction): StateEffect<replaceEmojiType
         const line = tr.state.doc.lineAt(from)
         const beforeText = line.text.slice(0, from - line.from)
         const potentialEmojiText = beforeText + inserted
-        const match = potentialEmojiText.match(/(:.*:)$/) // Get the emoji code in the last word
+        const match = potentialEmojiText.match(/(:[0-9a-z\_]+:)$/) // Get the emoji code in the last word
         if (match) {
             const match0 = match[0].trim()
             const lastWordEmoji = emoji.get(match0)
@@ -74,7 +76,7 @@ function checkForEmojiReplacement(tr: Transaction): StateEffect<replaceEmojiType
 /**
  * An extension that replaces the last word with an emoji, if it's an :emoji_code:
  */
-export function createEmojiExtension(enabled: boolean) {
+export function replaceEmojiExtension(enabled: boolean) {
     return EditorView.updateListener.of(
         update => {
             if (enabled === false) return // Skip emoji replacement if disabled

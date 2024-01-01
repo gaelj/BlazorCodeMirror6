@@ -104,34 +104,14 @@ public enum CodeMirrorSimpleCommand
     ToggleMarkdownQuote,
 
     /// <summary>
-    /// Toggle markdown header formatting for the selected line
+    /// Increase markdown header formatting for the selected line
     /// </summary>
-    ToggleMarkdownHeading1,
+    IncreaseMarkdownHeadingLevel,
 
     /// <summary>
-    /// Toggle markdown header formatting for the selected line
+    /// Decrease markdown header formatting for the selected line
     /// </summary>
-    ToggleMarkdownHeading2,
-
-    /// <summary>
-    /// Toggle markdown header formatting for the selected line
-    /// </summary>
-    ToggleMarkdownHeading3,
-
-    /// <summary>
-    /// Toggle markdown header formatting for the selected line
-    /// </summary>
-    ToggleMarkdownHeading4,
-
-    /// <summary>
-    /// Toggle markdown header formatting for the selected line
-    /// </summary>
-    ToggleMarkdownHeading5,
-
-    /// <summary>
-    /// Toggle markdown header formatting for the selected line
-    /// </summary>
-    ToggleMarkdownHeading6,
+    DecreaseMarkdownHeadingLevel,
 
     /// <summary>
     /// Toggle markdown unordered list formatting for the selected line
@@ -382,6 +362,11 @@ internal class CMSetters(
     public Task SetReplaceEmojiCodes() => cmJsInterop.ModuleInvokeVoidAsync(
         "setReplaceEmojiCodes",
         config.ReplaceEmojiCodes
+    );
+
+    internal Task SetMentionCompletions(List<CodeMirrorCompletion> mentionCompletions) => cmJsInterop.ModuleInvokeVoidAsync(
+        "setMentionCompletions",
+        mentionCompletions
     );
 }
 

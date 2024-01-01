@@ -141,6 +141,44 @@ function toggleCharactersAtStartOfLines(view: EditorView, controlChar: string, e
     return true
 }
 
+function modifyHeaderLevelAtSelections(view: EditorView, delta: number): boolean {
+    const changes = view.state.changeByRange((range: SelectionRange) => {
+        if (!markdownLanguage.isActiveAt(view.state, range.from)) return { range }
+        const lineAtFrom = view.state.doc.lineAt(range.from)
+        const headerLevel = lineAtFrom.text.match(/^#+/)?.[0]?.length ?? 0
+        const headerLengthWithSpaces = lineAtFrom.text.match(/^#+\s+/)?.[0]?.length ?? 0
+        const newHeaderLevel = Math.max(0, Math.min(6, headerLevel + delta))
+        if (newHeaderLevel === headerLevel) return { range }
+        const changes = []
+        if (newHeaderLevel === 0) {
+            changes.push({
+                from: lineAtFrom.from,
+                to: lineAtFrom.from + headerLengthWithSpaces,
+                insert: Text.of([''])
+            })
+        }
+        else {
+            changes.push({
+                from: lineAtFrom.from,
+                to: lineAtFrom.from + headerLengthWithSpaces,
+                insert: Text.of(['#'.repeat(newHeaderLevel) + ' '])
+            })
+        }
+        let from = Math.min(Math.max(lineAtFrom.from, range.from + delta), lineAtFrom.to)
+        if (newHeaderLevel === 0)
+            from -= (headerLengthWithSpaces - headerLevel)
+        if (headerLevel === 0)
+            from += 1
+        return {
+            changes,
+            range: EditorSelection.range(from, from),
+        }
+    })
+    view.dispatch(view.state.update(changes, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), }))
+    view.focus()
+    return true
+}
+
 export const toggleMarkdownBold: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "**")
 export const toggleMarkdownItalic: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "*")
 export const toggleMarkdownStrikethrough: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "~~")
@@ -149,6 +187,12 @@ export const toggleMarkdownCodeBlock: Command = (view: EditorView) => toggleChar
 export const toggleMarkdownQuote: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, ">", true)
 export function toggleMarkdownHeading(headingLevel: number): Command {
     return (view: EditorView) => toggleCharactersAtStartOfLines(view, "#".repeat(headingLevel), false)
+}
+export const increaseMarkdownHeadingLevel: Command = (view: EditorView) =>  {
+    return modifyHeaderLevelAtSelections(view, -1);
+}
+export const decreaseMarkdownHeadingLevel: Command = (view: EditorView) =>  {
+    return modifyHeaderLevelAtSelections(view, 1);
 }
 export const toggleMarkdownUnorderedList: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "-", true)
 export const toggleMarkdownOrderedList: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "1.", true)
