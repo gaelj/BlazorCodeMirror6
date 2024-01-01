@@ -78,6 +78,10 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 
 ![image](https://github.com/gaelj/BlazorCodeMirror6/assets/8884632/141f6b9e-82c4-433a-94d9-a02aba6ac336)
 
+## Try It Out
+
+Experience Blazor CodeMirror 6 in action! Visit the live demo at https://gaelj.github.io/BlazorCodeMirror6/ to see the component's capabilities.
+
 ## Quick Start
 
 Currently there is no Nuget package available, but it is planned.
