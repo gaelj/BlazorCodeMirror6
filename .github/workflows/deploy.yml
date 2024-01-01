@@ -21,7 +21,10 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: build
+    - name: build library
+      run: dotnet build BlazorCodeMirror6
+
+    - name: build wasm app
       run: dotnet build Examples.BlazorWasm
 
     - name: Publish
@@ -29,6 +32,7 @@ jobs:
 
     - name: set base path
       run: sed -i 's|<base href="/" />|<base href="/BlazorCodeMirror6/" />|g' ./build/wwwroot/index.html
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
