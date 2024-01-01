@@ -22,7 +22,7 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: build library
-      run: dotnet build BlazorCodeMirror6
+      run: dotnet build CodeMirror6
 
     - name: build wasm app
       run: dotnet build Examples.BlazorWasm
