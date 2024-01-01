@@ -20,7 +20,7 @@ jobs:
 
     - name: Publish
       run: dotnet publish Examples.BlazorWasm -c Release -o ./build
-    - run: sed -i 's|<base href="/" />|<base href="/BlazorCodeMirror6/" />|g' ./wwwroot/index.html
+    - run: sed -i 's|<base href="/" />|<base href="/BlazorCodeMirror6/" />|g' ./build/wwwroot/index.html
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
