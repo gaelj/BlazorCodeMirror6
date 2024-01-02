@@ -137,6 +137,8 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <returns></returns>
     public CMCommands? Commands => CmJsInterop?.Commands;
 
+    private string LoadingDivId => $"{Id}_Loading";
+
     /// <summary>
     /// JavaScript interop instance
     /// </summary>
