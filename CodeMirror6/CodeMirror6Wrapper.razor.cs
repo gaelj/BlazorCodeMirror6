@@ -231,7 +231,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <summary>
     /// Life-cycle method invoked when the component is initialized.
     /// </summary>
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         Config = new(
             Doc,
@@ -245,6 +245,11 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
             AutoFormatMarkdown,
             ReplaceEmojiCodes
         );
+        try {
+            await OnAfterRenderAsync(true); // try early initialization for Blazor WASM
+        }
+        catch (Exception) {
+        }
     }
 
     /// <summary>
