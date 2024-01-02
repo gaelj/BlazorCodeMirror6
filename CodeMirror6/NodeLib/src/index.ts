@@ -169,6 +169,7 @@ export async function initCodeMirror(
     CMInstances[id].view = new EditorView({
         state: CMInstances[id].state,
         parent: document.getElementById(id),
+    })
 
     // Hide the placeholder once the editor is initialized
     const loadingPlaceholder: HTMLElement = document.getElementById(`${id}_Loading`)
