@@ -6,15 +6,6 @@ import type { DecorationSet } from '@codemirror/view'
 import { buildWidget } from './lib/codemirror-kit'
 import { isCursorInRange } from './CmHelpers'
 
-const hrWidget = () => buildWidget({
-    eq: () => false,
-    toDOM: () => {
-        const hr = document.createElement('hr');
-        hr.setAttribute('aria-hidden', 'true');
-        return hr;
-    },
-})
-
 
 /**
  * Return the horizontal rule Extension if the supplied parameter is true
@@ -25,8 +16,16 @@ export const dynamicHrExtension = (enabled: boolean = true): Extension => {
     if (!enabled)
         return []
 
-    const hrDecoration = () => Decoration.replace({
-        widget: hrWidget(),
+    const createHRDecorationWidget = () => Decoration.replace({
+        widget: buildWidget({
+            eq: () => false,
+            toDOM: () => {
+                const hr = document.createElement('hr')
+                hr.setAttribute('aria-hidden', 'true')
+                return hr
+            },
+            ignoreEvent: () => false,
+        }),
     })
 
     const decorate = (state: EditorState) => {
@@ -41,7 +40,7 @@ export const dynamicHrExtension = (enabled: boolean = true): Extension => {
                         const hrRegex = /^-{3,}$/
 
                         if (hrRegex.test(lineText)) {
-                            widgets.push(hrDecoration().range(line.from, line.to))
+                            widgets.push(createHRDecorationWidget().range(line.from, line.to))
                         }
                     }
                 },
@@ -52,12 +51,13 @@ export const dynamicHrExtension = (enabled: boolean = true): Extension => {
     }
 
     const viewPlugin = ViewPlugin.define(() => ({}), {})
+
     const stateField = StateField.define<DecorationSet>({
         create(state) {
             return decorate(state)
         },
-        update(_references, { state }) {
-            return decorate(state)
+        update(_references, transaction) {
+            return decorate(transaction.state)
         },
         provide(field) {
             return EditorView.decorations.from(field)
