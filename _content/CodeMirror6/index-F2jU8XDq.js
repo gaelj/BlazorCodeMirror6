@@ -33629,7 +33629,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-PCHmw6Kk.js').then(m => m.less());
+            return import('./index-FQ702h3m.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -33655,7 +33655,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-Ja0aTHxc.js').then(m => m.php());
+            return import('./index-S23mlcsH.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -33724,7 +33724,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-yneUzVuY.js').then(m => m.wast());
+            return import('./index-2Z6pKCYq.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34535,13 +34535,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-3nd5htvS.js').then(m => m.vue());
+            return import('./index-0s3jRafg.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-YenwZY3W.js').then(m => m.angular());
+            return import('./index-XEqiTOhc.js').then(m => m.angular());
         }
     })
 ];
@@ -72430,7 +72430,8 @@ function htmlViewPlugin(enabled) {
  * @param id
  * @param initialConfig
  */
-function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
+async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
+    const minDelay = new Promise(res => setTimeout(res, 100));
     CMInstances[id] = new CmInstance();
     CMInstances[id].dotNetHelper = dotnetHelper;
     CMInstances[id].setup = setup;
@@ -72527,6 +72528,7 @@ function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
     extensions.push(linter(async (view) => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()));
     if (setup.allowMultipleSelections === true)
         extensions.push(EditorState.allowMultipleSelections.of(true));
+    await minDelay;
     CMInstances[id].state = EditorState.create({
         doc: initialConfig.doc,
         extensions: extensions,
@@ -72535,6 +72537,13 @@ function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         state: CMInstances[id].state,
         parent: document.getElementById(id),
     });
+    // Hide the placeholder once the editor is initialized
+    const loadingPlaceholder = document.getElementById(`${id}_Loading`);
+    if (loadingPlaceholder) {
+        loadingPlaceholder.style.display = 'none';
+    }
+    // add a class to allow resizing of the editor
+    setResize(id, initialConfig.resize);
 }
 async function updateListenerExtension(dotnetHelper, update) {
     if (update.docChanged) {
@@ -72549,6 +72558,14 @@ async function updateListenerExtension(dotnetHelper, update) {
         await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtSelections(update.state));
         await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to }; }));
     }
+}
+function setResize(id, resize) {
+    setClassToParent(id, `resize-${resize}`, ['resize-horizontal', 'resize-both', 'resize-none', 'resize-vertical']);
+}
+function setClassToParent(id, className, classNamesToRemove) {
+    const dom = CMInstances[id].view.dom.parentElement;
+    classNamesToRemove.forEach(c => dom.classList.remove(c));
+    dom.classList.add(className);
 }
 function setTabSize(id, size) {
     CMInstances[id].view.dispatch({
@@ -72762,4 +72779,4 @@ function dispose(id) {
     delete CMInstances[id];
 }
 
-export { setDoc as A, dispatchCommand as B, dispose as C, ExternalTokenizer as E, LRLanguage as L, foldInside as a, LanguageSupport as b, continuedIndent as c, defineCSSCompletionSource as d, LRParser as e, foldNodeProp as f, delimitedIndent as g, html as h, indentNodeProp as i, LocalTokenGroup as j, javascriptLanguage as k, initCodeMirror as l, setTabSize as m, setIndentUnit as n, setPlaceholderText as o, parseMixed as p, setTheme as q, setReadOnly as r, styleTags as s, tags$1 as t, setEditable as u, setLanguage as v, setMentionCompletions as w, forceRedraw as x, setAutoFormatMarkdown as y, setReplaceEmojiCodes as z };
+export { setAutoFormatMarkdown as A, setReplaceEmojiCodes as B, setDoc as C, dispatchCommand as D, ExternalTokenizer as E, dispose as F, LRLanguage as L, foldInside as a, LanguageSupport as b, continuedIndent as c, defineCSSCompletionSource as d, LRParser as e, foldNodeProp as f, delimitedIndent as g, html as h, indentNodeProp as i, LocalTokenGroup as j, javascriptLanguage as k, initCodeMirror as l, setResize as m, setClassToParent as n, setTabSize as o, parseMixed as p, setIndentUnit as q, setPlaceholderText as r, styleTags as s, tags$1 as t, setTheme as u, setReadOnly as v, setEditable as w, setLanguage as x, setMentionCompletions as y, forceRedraw as z };

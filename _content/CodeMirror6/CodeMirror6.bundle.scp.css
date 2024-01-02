@@ -10,8 +10,24 @@
     max-height: inherit;
 }
 
-[b-v1cccotw35] .cm-editor .cm-focused {
-    outline: none;
+[b-v1cccotw35] .resize-none .cm-editor {
+    resize: none;
+}
+
+[b-v1cccotw35] .resize-vertical .cm-editor {
+    resize: vertical;
+}
+
+[b-v1cccotw35] .resize-horizontal .cm-editor {
+    resize: horizontal;
+}
+
+[b-v1cccotw35] .resize-both .cm-editor {
+    resize: both;
+}
+
+[b-v1cccotw35] .cm-editor.cm-focused {
+    outline: none !important;
 }
 
 [b-v1cccotw35] .cm-mention {
@@ -44,4 +60,36 @@
     border-bottom-left-radius: 0.25rem;
     border-bottom-right-radius: 0.25rem;
     padding-bottom: 0.5rem;
+}
+
+/* Placeholder styles */
+.editor-loading[b-v1cccotw35] {
+    overflow: auto;
+    max-height: inherit;
+    width: 100%;
+    display: block;
+    background-color: #2f2f2f;
+    position: relative;
+    overflow: hidden;
+    padding: 15px;
+}
+
+/* Shimmer effect */
+@keyframes shimmer-b-v1cccotw35 {
+    0% {
+        background-position: -600px 0;
+    }
+    100% {
+        background-position: 600px 0;
+    }
+}
+
+/* Blurred lines */
+[b-v1cccotw35] .loading-animation {
+    height: 12px;
+    margin: 8px 0;
+    background: linear-gradient(to right, #eeeeee 8%, #ddddddab 18%, #eeeeee 33%);
+    background-size: 800px 104px;
+    animation: shimmer-b-v1cccotw35 1.5s infinite linear;
+    border-radius: 4px;
 }
