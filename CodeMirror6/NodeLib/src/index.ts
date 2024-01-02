@@ -163,7 +163,9 @@ export function initCodeMirror(
     CMInstances[id].view = new EditorView({
         state: CMInstances[id].state,
         parent: document.getElementById(id),
-    })
+
+    // add a class to allow resizing of the editor
+    setResize(id, initialConfig.resize)
 }
 
 async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
@@ -179,6 +181,16 @@ async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
         await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtSelections(update.state))
         await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
     }
+}
+
+export function setResize(id: string, resize: string) {
+    setClassToParent(id, `resize-${resize}`, ['resize-horizontal', 'resize-both', 'resize-none', 'resize-vertical'])
+}
+
+export function setClassToParent(id: string, className: string, classNamesToRemove: string[]) {
+    const dom = CMInstances[id].view.dom.parentElement
+    classNamesToRemove.forEach(c => dom.classList.remove(c))
+    dom.classList.add(className)
 }
 
 export function setTabSize(id: string, size: number) {

@@ -243,7 +243,8 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
             Editable,
             Language?.ToString(),
             AutoFormatMarkdown,
-            ReplaceEmojiCodes
+            ReplaceEmojiCodes,
+            ResizeStyle
         );
         try {
             await OnAfterRenderAsync(true); // try early initialization for Blazor WASM
@@ -320,6 +321,10 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
         if (Config.ReplaceEmojiCodes != ReplaceEmojiCodes) {
             Config.ReplaceEmojiCodes = ReplaceEmojiCodes;
             await CmJsInterop.PropertySetters.SetReplaceEmojiCodes();
+        }
+        if (Config.Resize != ResizeStyle) {
+            Config.Resize = ResizeStyle;
+            await CmJsInterop.PropertySetters.SetResize();
         }
         shouldRender = true;
     }

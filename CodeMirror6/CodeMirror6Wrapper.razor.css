@@ -1,4 +1,4 @@
-﻿::deep :root {
+::deep :root {
     --ink-internal-border-radius: 0.25rem;
     --ink-internal-block-background-color: #f0f0f0;
     --ink-internal-block-padding: 0.5rem;
@@ -7,6 +7,22 @@
 ::deep .cm-editor {
     overflow: auto;
     max-height: inherit;
+}
+
+::deep .resize-none .cm-editor {
+    resize: none;
+}
+
+::deep .resize-vertical .cm-editor {
+    resize: vertical;
+}
+
+::deep .resize-horizontal .cm-editor {
+    resize: horizontal;
+}
+
+::deep .resize-both .cm-editor {
+    resize: both;
 }
 
 ::deep .cm-editor .cm-focused {

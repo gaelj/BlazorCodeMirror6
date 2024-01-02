@@ -2,14 +2,21 @@
     @ContentBefore((Commands, Config, State))
 }
 
-<div id=@Id @attributes=@AdditionalAttributes></div>
+<div
+    id="editorPlaceholder"
+    style="width: 600px; height: 400px;"
+>
+    <div class="loading-animation">Loading...</div>
+</div>
+
+<div>
+    <div
+        id=@Id
+        @attributes=@AdditionalAttributes
+    >
+    </div>
+</div>
 
 @if (ContentAfter is not null && CmJsInterop is not null && Config is not null && Commands is not null) {
     @ContentAfter((Commands, Config, State))
 }
-
-<style>
-    .cm-editor {
-        resize: @ResizeStyle;
-    }
-</style>

@@ -12,4 +12,5 @@ export class CmConfiguration {
     public languageName: string
     public autoFormatMarkdown: boolean
     public replaceEmojiCodes: boolean
+    public resize: string
 }

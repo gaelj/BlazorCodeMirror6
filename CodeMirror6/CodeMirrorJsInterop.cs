@@ -372,6 +372,11 @@ internal class CMSetters(
     internal Task ForceRedraw() => cmJsInterop.ModuleInvokeVoidAsync(
         "forceRedraw"
     );
+
+    internal Task SetResize() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setResize",
+        config.Resize
+    );
 }
 
 /// <summary>
