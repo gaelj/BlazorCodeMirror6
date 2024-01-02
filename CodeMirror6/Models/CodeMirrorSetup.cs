@@ -106,7 +106,7 @@ public readonly record struct CodeMirrorSetup
     [JsonPropertyName("previewImages")] public bool PreviewImages { get; init; } = true;
 
     /// <summary>
-    /// Whether to enable mentions
+    /// Whether to enable mentions.
     /// </summary>
     [JsonPropertyName("allowMentions")] public bool AllowMentions { get; init; } = true;
 }

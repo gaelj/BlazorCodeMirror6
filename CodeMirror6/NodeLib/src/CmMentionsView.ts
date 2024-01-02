@@ -1,4 +1,4 @@
-import { markdownLanguage } from "@codemirror/lang-markdown";
+import { markdownLanguage } from "@codemirror/lang-markdown"
 import { EditorState, RangeSetBuilder, Extension } from '@codemirror/state'
 import { EditorView, ViewPlugin, Decoration } from "@codemirror/view"
 import { buildWidget } from "./lib/codemirror-kit"

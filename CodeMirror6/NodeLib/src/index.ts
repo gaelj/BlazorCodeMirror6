@@ -3,7 +3,7 @@ import {
     rectangularSelection, crosshairCursor, ViewUpdate,
     lineNumbers, highlightActiveLineGutter, placeholder
 } from "@codemirror/view"
-import { EditorState } from "@codemirror/state"
+import { EditorState, SelectionRange } from "@codemirror/state"
 import {
     indentWithTab, history, historyKeymap,
     cursorSyntaxLeft, selectSyntaxLeft, selectSyntaxRight, cursorSyntaxRight, deleteLine,
@@ -19,7 +19,6 @@ import {
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap, Completion } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
 import { linter, lintKeymap } from "@codemirror/lint"
-
 import { CmInstance, CMInstances } from "./CmInstance"
 import { CmConfiguration } from "./CmConfiguration"
 import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
@@ -47,7 +46,7 @@ import { mentionDecorationExtension } from "./CmMentionsView"
 import { viewEmojiExtension } from "./CmEmojiView"
 import { emojiCompletionExtension } from "./CmEmojiCompletion"
 import { indentationMarkers } from '@replit/codemirror-indentation-markers'
-import { viewInlineHtmlExtension } from "./CmHtml"
+import { htmlViewPlugin } from "./CmHtml"
 
 /**
  * Initialize a new CodeMirror instance
@@ -82,7 +81,7 @@ export function initCodeMirror(
             listsExtension(initialConfig.autoFormatMarkdown),
             blockquote(),
             viewEmojiExtension(initialConfig.autoFormatMarkdown),
-            viewInlineHtmlExtension(initialConfig.autoFormatMarkdown),
+            htmlViewPlugin(initialConfig.autoFormatMarkdown),
         ]),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -234,6 +233,15 @@ export function setLanguage(id: string, languageName: string) {
 
 export function setMentionCompletions(id: string, mentionCompletions: Completion[]) {
     setCachedCompletions(mentionCompletions)
+    forceRedraw(id)
+}
+
+export function forceRedraw(id: string) {
+    const view = CMInstances[id].view
+    const changes = view.state.changeByRange((range: SelectionRange) => {
+        return { range }
+    })
+    view.dispatch(view.state.update(changes))
 }
 
 export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
@@ -249,7 +257,7 @@ export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
             listsExtension(autoFormatMarkdown),
             blockquote(),
             viewEmojiExtension(autoFormatMarkdown),
-            viewInlineHtmlExtension(autoFormatMarkdown),
+            htmlViewPlugin(autoFormatMarkdown),
         ])
     })
 }
