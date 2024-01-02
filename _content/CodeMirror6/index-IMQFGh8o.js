@@ -33629,7 +33629,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-NF4grjmM.js').then(m => m.less());
+            return import('./index-PCHmw6Kk.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -33655,7 +33655,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-KZim7RqN.js').then(m => m.php());
+            return import('./index-Ja0aTHxc.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -33724,7 +33724,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-ByQSRSXV.js').then(m => m.wast());
+            return import('./index-yneUzVuY.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34535,13 +34535,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-t0mPrgwA.js').then(m => m.vue());
+            return import('./index-3nd5htvS.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-WY2ueYVh.js').then(m => m.angular());
+            return import('./index-YenwZY3W.js').then(m => m.angular());
         }
     })
 ];
@@ -58687,14 +58687,6 @@ const listsExtension = (enabled = true) => {
     ];
 };
 
-const hrWidget = () => buildWidget({
-    eq: () => false,
-    toDOM: () => {
-        const hr = document.createElement('hr');
-        hr.setAttribute('aria-hidden', 'true');
-        return hr;
-    },
-});
 /**
  * Return the horizontal rule Extension if the supplied parameter is true
  * @param enabled
@@ -58703,8 +58695,16 @@ const hrWidget = () => buildWidget({
 const dynamicHrExtension = (enabled = true) => {
     if (!enabled)
         return [];
-    const hrDecoration = () => Decoration.replace({
-        widget: hrWidget(),
+    const createHRDecorationWidget = () => Decoration.replace({
+        widget: buildWidget({
+            eq: () => false,
+            toDOM: () => {
+                const hr = document.createElement('hr');
+                hr.setAttribute('aria-hidden', 'true');
+                return hr;
+            },
+            ignoreEvent: () => false,
+        }),
     });
     const decorate = (state) => {
         const widgets = [];
@@ -58716,7 +58716,7 @@ const dynamicHrExtension = (enabled = true) => {
                         const lineText = state.doc.sliceString(line.from, line.to);
                         const hrRegex = /^-{3,}$/;
                         if (hrRegex.test(lineText)) {
-                            widgets.push(hrDecoration().range(line.from, line.to));
+                            widgets.push(createHRDecorationWidget().range(line.from, line.to));
                         }
                     }
                 },
@@ -58729,8 +58729,8 @@ const dynamicHrExtension = (enabled = true) => {
         create(state) {
             return decorate(state);
         },
-        update(_references, { state }) {
-            return decorate(state);
+        update(_references, transaction) {
+            return decorate(transaction.state);
         },
         provide(field) {
             return EditorView.decorations.from(field);
@@ -72373,73 +72373,56 @@ function indentationMarkers(config = {}) {
     ];
 }
 
-const htmlWidget = (content) => buildWidget({
-    eq: () => false,
-    toDOM: () => {
-        const container = document.createElement('span');
-        container.innerHTML = content; // Insert HTML content
-        return container;
-    },
-});
-const viewInlineHtmlExtension = (enabled = true) => {
+function createHtmlDecorationWidget(content) {
+    return Decoration.replace({
+        widget: buildWidget({
+            eq: (other) => other.content === content,
+            toDOM: () => {
+                const container = document.createElement('span');
+                container.innerHTML = content;
+                return container;
+            },
+            ignoreEvent: () => false,
+            content: content
+        }),
+    });
+}
+function htmlViewPlugin(enabled) {
     if (!enabled)
         return [];
-    const htmlDecoration = (content) => Decoration.replace({
-        widget: htmlWidget(content),
-    });
-    const decorate = (state) => {
-        const widgets = [];
-        if (enabled) {
-            let foundClosingTag = true;
-            let htmlCode = '';
-            let paragraph = '';
-            let paragraphFrom = 0;
-            let paragraphTo = 0;
-            syntaxTree(state).iterate({
-                enter: ({ type, from, to }) => {
-                    const text = state.sliceDoc(from, to);
-                    if (type.name === 'Paragraph') {
-                        paragraph = text;
-                        paragraphFrom = from;
-                        paragraphTo = to;
-                    }
-                    else if (type.name === 'HTMLTag') {
-                        foundClosingTag = !foundClosingTag;
-                        htmlCode += text;
-                        if (htmlCode !== '' && paragraph !== '' && foundClosingTag) {
-                            if (!isCursorInRange(state, paragraphFrom, paragraphTo)) {
-                                widgets.push(htmlDecoration(paragraph).range(paragraphFrom, paragraphTo));
+    return ViewPlugin.define((view) => {
+        return {
+            update: () => {
+                const builder = new RangeSetBuilder();
+                for (const { from, to } of view.visibleRanges) {
+                    const text = view.state.doc.sliceString(from, to);
+                    if (markdownLanguage.isActiveAt(view.state, from)) {
+                        // recognize html spans (<span>...</span>) and decorate them
+                        const spanRegex = /<span[^>]*>([^<]*)<\/span>/g;
+                        let match;
+                        while ((match = spanRegex.exec(text)) !== null) {
+                            const start = from + match.index;
+                            const end = start + match[0].length;
+                            if (!isCursorInRange(view.state, start, end)) {
+                                const isCode = isInCodeBlock(view.state, start);
+                                if (!isCode) {
+                                    const spanText = match[1];
+                                    if (!spanText || spanText === "")
+                                        continue;
+                                    const widget = createHtmlDecorationWidget(match[0]);
+                                    builder.add(start, end, widget);
+                                }
                             }
-                            htmlCode = '';
-                            paragraph = '';
                         }
                     }
-                    else {
-                        if (!foundClosingTag)
-                            htmlCode += text;
-                    }
-                },
-            });
-        }
-        return widgets.length > 0 ? RangeSet.of(widgets) : Decoration.none;
-    };
-    const viewPlugin = ViewPlugin.define(() => ({}), {});
-    const stateField = StateField.define({
-        create(state) {
-            return decorate(state);
-        },
-        update(_references, { state }) {
-            return decorate(state);
-        },
-        provide(field) {
-            return EditorView.decorations.from(field);
-        },
+                }
+                return builder.finish();
+            },
+        };
+    }, {
+        decorations: plugin => plugin.update()
     });
-    return [
-        viewPlugin,
-        stateField,
-    ];
-};
+}
 
 /**
  * Initialize a new CodeMirror instance
@@ -72468,7 +72451,7 @@ function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             listsExtension(initialConfig.autoFormatMarkdown),
             blockquote(),
             viewEmojiExtension(initialConfig.autoFormatMarkdown),
-            viewInlineHtmlExtension(initialConfig.autoFormatMarkdown),
+            htmlViewPlugin(initialConfig.autoFormatMarkdown),
         ]),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -72613,6 +72596,14 @@ function setLanguage(id, languageName) {
 }
 function setMentionCompletions(id, mentionCompletions) {
     setCachedCompletions(mentionCompletions);
+    forceRedraw(id);
+}
+function forceRedraw(id) {
+    const view = CMInstances[id].view;
+    const changes = view.state.changeByRange((range) => {
+        return { range };
+    });
+    view.dispatch(view.state.update(changes));
 }
 function setAutoFormatMarkdown(id, autoFormatMarkdown) {
     CMInstances[id].view.dispatch({
@@ -72627,7 +72618,7 @@ function setAutoFormatMarkdown(id, autoFormatMarkdown) {
             listsExtension(autoFormatMarkdown),
             blockquote(),
             viewEmojiExtension(autoFormatMarkdown),
-            viewInlineHtmlExtension(autoFormatMarkdown),
+            htmlViewPlugin(autoFormatMarkdown),
         ])
     });
 }
@@ -72771,4 +72762,4 @@ function dispose(id) {
     delete CMInstances[id];
 }
 
-export { dispatchCommand as A, dispose as B, ExternalTokenizer as E, LRLanguage as L, foldInside as a, LanguageSupport as b, continuedIndent as c, defineCSSCompletionSource as d, LRParser as e, foldNodeProp as f, delimitedIndent as g, html as h, indentNodeProp as i, LocalTokenGroup as j, javascriptLanguage as k, initCodeMirror as l, setTabSize as m, setIndentUnit as n, setPlaceholderText as o, parseMixed as p, setTheme as q, setReadOnly as r, styleTags as s, tags$1 as t, setEditable as u, setLanguage as v, setMentionCompletions as w, setAutoFormatMarkdown as x, setReplaceEmojiCodes as y, setDoc as z };
+export { setDoc as A, dispatchCommand as B, dispose as C, ExternalTokenizer as E, LRLanguage as L, foldInside as a, LanguageSupport as b, continuedIndent as c, defineCSSCompletionSource as d, LRParser as e, foldNodeProp as f, delimitedIndent as g, html as h, indentNodeProp as i, LocalTokenGroup as j, javascriptLanguage as k, initCodeMirror as l, setTabSize as m, setIndentUnit as n, setPlaceholderText as o, parseMixed as p, setTheme as q, setReadOnly as r, styleTags as s, tags$1 as t, setEditable as u, setLanguage as v, setMentionCompletions as w, forceRedraw as x, setAutoFormatMarkdown as y, setReplaceEmojiCodes as z };

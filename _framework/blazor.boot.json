@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Examples.BlazorWasm",
   "resources": {
-    "hash": "sha256-hEwwJzDeuCyGXu3EUEwxdMp2HIs51nT4fpkjzsuF4tU=",
+    "hash": "sha256-uz1F5zOfssN641iXuwahfbOn4nTRlWUXyNHqEhp3CEQ=",
     "jsModuleNative": {
       "dotnet.native.8.0.0.45ykigla5r.js": "sha256-LjLDIz9+J7uuiwMlQ4HbNx2BnSpphOtO2MwkoI28vdI="
     },
@@ -17,9 +17,9 @@
       "icudt_no_CJK.dat": "sha256-L7sV7NEYP37/Qr2FPCePo5cJqRgTXRwGHuwF5Q+0Nfs="
     },
     "assembly": {
-      "CodeMirror6.wasm": "sha256-KblRcsgRgc/QZxizvzYXla7VDQVq3Z0kgjl8NVPC2Xs=",
-      "Examples.BlazorWasm.wasm": "sha256-9gEh4/7dUgoFbD769pWJWl4Yxd4zvo9kXWC0hf2wmVk=",
-      "Examples.Common.wasm": "sha256-aD4hpWIMPvoXqA3w9IHhdkGZgBJjpBqf2cmLB3/d05o=",
+      "CodeMirror6.wasm": "sha256-z8I8HHvCwTdk3jPUN38j3j90/CpRDohn8UyuB8SxPx8=",
+      "Examples.BlazorWasm.wasm": "sha256-xdcyKsbjHQQrNUZM9LAo7y1Q9T98aya2Of5e9tl0w/o=",
+      "Examples.Common.wasm": "sha256-4fIHjljGwnrAqcmCJbZmqtHHIc/ZQJE47MmEuRaBkQ8=",
       "Microsoft.AspNetCore.Components.wasm": "sha256-MWCvVCq1aLfkO94YRuDxg+yjN9uoQwg9u5r3QDgn1aQ=",
       "Microsoft.AspNetCore.Components.Web.wasm": "sha256-ivj7kxN8rrhTm1UV0H7dhsOewu6rhATFU2ZAG/YKLvA=",
       "Microsoft.AspNetCore.Components.WebAssembly.wasm": "sha256-Ws5szf6fWPAXna+XyWsAhavx+WDFcA/91DQ7iPRPCMs=",
@@ -47,7 +47,7 @@
       "System.Net.Http.wasm": "sha256-TW+R/9ZQjo0P5f/2dW64x5N9qU2TArQ0lBXZRc7Oivk=",
       "System.Net.Primitives.wasm": "sha256-bo1gfuHZsgQyxWH2Favd8eHySb2ogILJUiH+LG7ewjI=",
       "System.ObjectModel.wasm": "sha256-lGaFTI4GIq1+E2+yhF9kUXquMQpVea91vp04/bvMH8E=",
-      "System.Private.CoreLib.wasm": "sha256-PXhPBsGdS6kKQU4P35SxQRzEbWk0z/HiMeKpqbmriJw=",
+      "System.Private.CoreLib.wasm": "sha256-rdIPz9y/XTVP5iw7XEqcoJVuRDWwR1iqwUyxo82ODS4=",
       "System.Private.Uri.wasm": "sha256-grO+UW70VzZBW0n9SSU0Ujgn0Pc6+yg55hIuZIR+fXA=",
       "System.Runtime.InteropServices.JavaScript.wasm": "sha256-8v1T2sHtPVF+DFfHC56eeBb2CK3E+CJ2i/u+8hAjWtU=",
       "System.Runtime.wasm": "sha256-nfptYi/gd8FgVXWoZ9vxK3UDe81Fzzb7J8IStAVmays=",
