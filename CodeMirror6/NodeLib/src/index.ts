@@ -54,12 +54,14 @@ import { htmlViewPlugin } from "./CmHtml"
  * @param id
  * @param initialConfig
  */
-export function initCodeMirror(
+export async function initCodeMirror(
     id: string,
     dotnetHelper: any,
     initialConfig: CmConfiguration,
     setup: CmSetup
 ) {
+    const minDelay = new Promise(res => setTimeout(res, 100))
+
     CMInstances[id] = new CmInstance()
     CMInstances[id].dotNetHelper = dotnetHelper
     CMInstances[id].setup = setup
@@ -155,6 +157,10 @@ export function initCodeMirror(
     extensions.push(linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()))
     if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
 
+    await minDelay
+
+
+
     CMInstances[id].state = EditorState.create({
         doc: initialConfig.doc,
         extensions: extensions,
@@ -163,7 +169,14 @@ export function initCodeMirror(
     CMInstances[id].view = new EditorView({
         state: CMInstances[id].state,
         parent: document.getElementById(id),
-    })
+
+    // Hide the placeholder once the editor is initialized
+    const loadingPlaceholder = document.getElementById(`${id}_Loading`)
+    if (loadingPlaceholder) {
+        loadingPlaceholder.style.display = 'none'
+    }
+    // add a class to allow resizing of the editor
+    setResize(id, initialConfig.resize)
 }
 
 async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
@@ -179,6 +192,16 @@ async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
         await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtSelections(update.state))
         await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
     }
+}
+
+export function setResize(id: string, resize: string) {
+    setClassToParent(id, `resize-${resize}`, ['resize-horizontal', 'resize-both', 'resize-none', 'resize-vertical'])
+}
+
+export function setClassToParent(id: string, className: string, classNamesToRemove: string[]) {
+    const dom = CMInstances[id].view.dom.parentElement
+    classNamesToRemove.forEach(c => dom.classList.remove(c))
+    dom.classList.add(className)
 }
 
 export function setTabSize(id: string, size: number) {

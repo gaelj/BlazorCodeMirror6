@@ -122,6 +122,8 @@ Result:
     Language=@CodeMirrorLanguage.Markdown
     AutoFormatMarkdown=@AutoFormatMarkdown
     LintDocument=@LintDocument
+    AllowHorizontalResize
+    AllowVerticalResize=false
 />
 
 Result:
@@ -149,6 +151,8 @@ Result:
     Language=@CodeMirrorLanguage.Markdown
     AutoFormatMarkdown=@AutoFormatMarkdown
     LintDocument=@LintDocument
+    AllowHorizontalResize=false
+    AllowVerticalResize=false
 />
 
 Result:
@@ -199,8 +203,8 @@ Result:
     };
     private string ButtonClass(CodeMirrorState state, string docStyleTag) => ButtonClass(state.MarkdownStylesAtSelections?.Contains(docStyleTag) == true);
     private string ButtonClass(bool enabled) => enabled
-        ? "btn btn-primary"
-        : "btn btn-outline-secondary";
+        ? "btn btn-sm btn-primary"
+        : "btn btn-sm btn-outline-secondary";
 
     private async Task ToggleEmojis(CMCommands commands)
     {

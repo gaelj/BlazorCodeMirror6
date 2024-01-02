@@ -16,6 +16,7 @@ namespace CodeMirror6.Models;
 /// <param name="languageName"></param>
 /// <param name="autoFormatMarkdown"></param>
 /// <param name="replaceEmojiCodes"></param>
+/// <param name="resize">none, vertical, horizontal or both</param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -26,7 +27,8 @@ public class CodeMirrorConfiguration(
     bool editable,
     string? languageName,
     bool autoFormatMarkdown,
-    bool replaceEmojiCodes)
+    bool replaceEmojiCodes,
+    string resize)
 {
 
     /// <summary>
@@ -79,4 +81,9 @@ public class CodeMirrorConfiguration(
     /// Whether to automatically replace :emoji_codes: with emoji
     /// </summary>
     [JsonPropertyName("replaceEmojiCodes")] public bool ReplaceEmojiCodes { get; internal set; } = replaceEmojiCodes;
+
+    /// <summary>
+    /// Controls whether the editor should have a resize handle like a textarea
+    /// </summary>
+    [JsonPropertyName("resize")] public string Resize { get; internal set; } = resize;
 }
