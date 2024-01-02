@@ -67,8 +67,8 @@ export const viewInlineHtmlExtension = (enabled: boolean = true): Extension => {
         create(state) {
             return decorate(state)
         },
-        update(_references, { state }) {
-            return decorate(state)
+        update(_references, transaction) {
+            return decorate(transaction.state)
         },
         provide(field) {
             return EditorView.decorations.from(field)

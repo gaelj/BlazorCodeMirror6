@@ -44,54 +44,54 @@
     style="max-width: 100%; max-height: 60em; "
 >
     <ContentBefore Context="c">
-        <div class="alert alert-info mt-3">
+        <div class="toolbar sticky-top alert alert-info my-3">
             <button class=@ButtonClass(c.State, "StrongEmphasis") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownBold)) title="Toggle bold text (Ctrl-B)">
-                Bold
+                <i class="fa fa-bold"></i>
             </button>
             <button class=@ButtonClass(c.State, "Emphasis") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownItalic)) title="Toggle italic text (Ctrl-I)">
-                Italic
+                <i class="fa fa-italic"></i>
             </button>
             <button class=@ButtonClass(c.State, "Strikethrough") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownStrikethrough)) title="Toggle strike-through text">
-                Strikethrough
+                <i class="fa fa-strikethrough"></i>
             </button>
             <button class=@ButtonClass(c.State, "InlineCode") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownCode)) title="Toggle inline code text">
-                Code
+                <i class="fa fa-code"></i>
             </button>
             <button class=@ButtonClass(c.State, "FencedCode") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownCodeBlock)) title="Toggle code block text">
-                Code block
+                <i class="fab fa-codepen"></i>
             </button>
             <button class=@ButtonClass(c.State, "Blockquote") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownQuote)) title="Toggle quoted text">
-                Quote
+                <i class="fa fa-quote-right"></i>
             </button>
             <button class=@ButtonClass(c.State, "ATXHeading") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.IncreaseMarkdownHeadingLevel)) title="Increase Markdown heading level">
-                Increase heading level
+                <i class="fa fa-heading"></i> +
             </button>
             <button class=@ButtonClass(c.State, "ATXHeading") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.DecreaseMarkdownHeadingLevel)) title="Decrease Markdown heading level">
-                Decrease heading level
+                <i class="fa fa-heading"></i> -
             </button>
             @for (var i = 1; i <= 6; i++) {
                 var headingLevel = i; // Capture the current value of i in a local variable
-                <button class=@ButtonClass(c.State, $"ATXHeading{headingLevel}") @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.ToggleMarkdownHeading, headingLevel)) title="Toggle heading text">
-                    @($"H{headingLevel}")
+                <button class=@ButtonClass(c.State, $"ATXHeading{headingLevel}") @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.ToggleMarkdownHeading, headingLevel)) title=@($"Toggle heading text {i}")>
+                    <i class="fa fa-heading"></i> @($"{headingLevel}")
                 </button>
             }
-            <button class=@ButtonClass(c.State, "OrderedList") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownOrderedList)) title="Toggle ordered list">
-                Ordered list
-            </button>
             <button class=@ButtonClass(c.State, "BulletList") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownUnorderedList)) title="Toggle unordered list">
-                Bullet list
+                <i class="fa fa-list-ul"></i>
+            </button>
+            <button class=@ButtonClass(c.State, "OrderedList") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownOrderedList)) title="Toggle ordered list">
+                <i class="fa fa-list-ol"></i>
             </button>
             <button class=@ButtonClass(c.State, "Task") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownTaskList)) title="Toggle task list">
-                Task list
+                <i class="fa fa-tasks"></i>
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertOrReplaceText, "test")) title="Insert or replace text">
+            <button class=@ButtonClass(c.State, "") @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertOrReplaceText, "test")) title="Insert or replace text">
                 Insert or replace text
             </button>
-            <button class="btn" @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertTextAbove, "\n------\n")) title="Insert separator above">
-                Insert separator above
+            <button class=@ButtonClass(c.State, "HorizontalRule") @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertTextAbove, "\n---\n")) title="Insert separator above">
+                <i class="fas fa-paragraph"></i>
             </button>
             <button class=@ButtonClass(ReplaceEmojiCodes) @onclick=@(() => ToggleEmojis(c.Commands)) title="Toggle replacing :emoji_codes: with the unicode character">
-                Replace emojis
+                <i class="far fa-smile"></i>
             </button>
         </div>
     </ContentBefore>
@@ -200,7 +200,7 @@ Result:
     private string ButtonClass(CodeMirrorState state, string docStyleTag) => ButtonClass(state.MarkdownStylesAtSelections?.Contains(docStyleTag) == true);
     private string ButtonClass(bool enabled) => enabled
         ? "btn btn-primary"
-        : "btn";
+        : "btn btn-outline-secondary";
 
     private async Task ToggleEmojis(CMCommands commands)
     {
