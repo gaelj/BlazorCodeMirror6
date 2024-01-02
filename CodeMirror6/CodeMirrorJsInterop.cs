@@ -368,6 +368,10 @@ internal class CMSetters(
         "setMentionCompletions",
         mentionCompletions
     );
+
+    internal Task ForceRedraw() => cmJsInterop.ModuleInvokeVoidAsync(
+        "forceRedraw"
+    );
 }
 
 /// <summary>

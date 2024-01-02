@@ -232,6 +232,7 @@ Result:
 
     private static async Task<List<CodeMirrorCompletion>> GetMentionCompletions()
     {
+        await Task.Delay(1000);
         return await Task.FromResult<List<CodeMirrorCompletion>>(
             [
                 new CodeMirrorCompletion {
