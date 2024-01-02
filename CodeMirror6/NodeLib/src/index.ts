@@ -46,7 +46,7 @@ import { mentionDecorationExtension } from "./CmMentionsView"
 import { viewEmojiExtension } from "./CmEmojiView"
 import { emojiCompletionExtension } from "./CmEmojiCompletion"
 import { indentationMarkers } from '@replit/codemirror-indentation-markers'
-import { viewInlineHtmlExtension } from "./CmHtml"
+import { htmlViewPlugin } from "./CmHtml"
 
 /**
  * Initialize a new CodeMirror instance
@@ -81,7 +81,7 @@ export function initCodeMirror(
             listsExtension(initialConfig.autoFormatMarkdown),
             blockquote(),
             viewEmojiExtension(initialConfig.autoFormatMarkdown),
-            viewInlineHtmlExtension(initialConfig.autoFormatMarkdown),
+            htmlViewPlugin(initialConfig.autoFormatMarkdown),
         ]),
         CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
         CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -257,7 +257,7 @@ export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
             listsExtension(autoFormatMarkdown),
             blockquote(),
             viewEmojiExtension(autoFormatMarkdown),
-            viewInlineHtmlExtension(autoFormatMarkdown),
+            htmlViewPlugin(autoFormatMarkdown),
         ])
     })
 }

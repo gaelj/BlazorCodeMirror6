@@ -1,82 +1,61 @@
 import { syntaxTree } from '@codemirror/language'
-import { RangeSet, StateField } from '@codemirror/state'
+import { RangeSet, StateField, RangeSetBuilder } from '@codemirror/state'
 import { Decoration, EditorView, ViewPlugin } from '@codemirror/view'
 import type { EditorState, Extension, Range } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
+import { markdownLanguage } from "@codemirror/lang-markdown"
 import { buildWidget } from './lib/codemirror-kit'
-import { isCursorInRange } from './CmHelpers'
+import { isCursorInRange, isInCodeBlock } from './CmHelpers'
 
-const htmlWidget = (content: string) => buildWidget({
-    eq: () => false,
-    toDOM: () => {
-        const container = document.createElement('span');
-        container.innerHTML = content; // Insert HTML content
-        return container;
-    },
-})
 
-export const viewInlineHtmlExtension = (enabled: boolean = true): Extension => {
-    if (!enabled)
-        return []
-
-    const htmlDecoration = (content: string) => Decoration.replace({
-        widget: htmlWidget(content),
+function createHtmlDecorationWidget(content: string) {
+    return Decoration.replace({
+        widget: buildWidget({
+            eq: (other) => other.content === content,
+            toDOM: () => {
+                const container = document.createElement('span')
+                container.innerHTML = content
+                return container
+            },
+            ignoreEvent: () => false,
+            content: content
+        }),
     })
+}
 
-    const decorate = (state: EditorState) => {
-        const widgets: Range<Decoration>[] = [];
+export function htmlViewPlugin(enabled: boolean): Extension {
+    if (!enabled) return []
+    return ViewPlugin.define((view: EditorView) => {
+        return {
+            update: () => {
+                const builder = new RangeSetBuilder<Decoration>()
+                for (const { from, to } of view.visibleRanges) {
+                    const text = view.state.doc.sliceString(from, to)
 
-        if (enabled) {
-            let foundClosingTag = true
-            let htmlCode = ''
-            let paragraph = ''
-            let paragraphFrom = 0
-            let paragraphTo = 0
-            syntaxTree(state).iterate({
-                enter: ({ type, from, to }) => {
-                    const text = state.sliceDoc(from, to)
-                    if (type.name === 'Paragraph') {
-                        paragraph = text
-                        paragraphFrom = from
-                        paragraphTo = to
-                    }
-                    else if (type.name === 'HTMLTag') {
-                        foundClosingTag = !foundClosingTag
-                        htmlCode += text
-                        if (htmlCode !== '' && paragraph !== '' && foundClosingTag) {
-                            if (!isCursorInRange(state, paragraphFrom, paragraphTo)) {
-                                widgets.push(htmlDecoration(paragraph).range(paragraphFrom, paragraphTo))
+                    if (markdownLanguage.isActiveAt(view.state, from)) {
+                        // recognize html spans (<span>...</span>) and decorate them
+                        const spanRegex = /<span[^>]*>([^<]*)<\/span>/g
+                        let match
+                        while ((match = spanRegex.exec(text)) !== null) {
+                            const start = from + match.index
+                            const end = start + match[0].length
+                            if (!isCursorInRange(view.state, start, end)) {
+                                const isCode = isInCodeBlock(view.state, start)
+                                if (!isCode) {
+                                    const spanText = match[1]
+                                    if (!spanText || spanText === "") continue
+                                    const widget = createHtmlDecorationWidget(match[0])
+                                    builder.add(start, end, widget)
+                                }
                             }
-                            htmlCode = ''
-                            paragraph = ''
                         }
                     }
-                    else {
-                        if (!foundClosingTag) htmlCode += text
-                    }
-                },
-            })
+                }
+                return builder.finish();
+            },
         }
-
-        return widgets.length > 0 ? RangeSet.of(widgets) : Decoration.none;
-    }
-
-    const viewPlugin = ViewPlugin.define(() => ({}), {})
-
-    const stateField = StateField.define<DecorationSet>({
-        create(state) {
-            return decorate(state)
-        },
-        update(_references, transaction) {
-            return decorate(transaction.state)
-        },
-        provide(field) {
-            return EditorView.decorations.from(field)
-        },
+    },
+    {
+        decorations: plugin => plugin.update()
     })
-
-    return [
-        viewPlugin,
-        stateField,
-    ]
 }
