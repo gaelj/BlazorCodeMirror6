@@ -357,6 +357,8 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
  * @param id
  */
 export function dispose(id: string) {
+    CMInstances[id].dotNetHelper.dispose()
+    CMInstances[id].dotNetHelper = undefined
     CMInstances[id].view.destroy()
     CMInstances[id] = undefined
     delete CMInstances[id]
