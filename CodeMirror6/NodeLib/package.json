@@ -28,6 +28,7 @@
     "@codemirror/language-data": "^6.3.1",
     "@codemirror/lint": "^6.4.2",
     "@codemirror/theme-one-dark": "^6.1.2",
+    "@microsoft/dotnet-js-interop": "^8.0.0",
     "@replit/codemirror-indentation-markers": "^6.5.0",
     "@uiw/codemirror-theme-github": "^4.21.21",
     "@uiw/codemirror-theme-monokai": "^4.21.21",

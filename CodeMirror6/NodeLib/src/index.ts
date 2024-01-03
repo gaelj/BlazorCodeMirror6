@@ -47,6 +47,7 @@ import { viewEmojiExtension } from "./CmEmojiView"
 import { emojiCompletionExtension } from "./CmEmojiCompletion"
 import { indentationMarkers } from '@replit/codemirror-indentation-markers'
 import { htmlViewPlugin } from "./CmHtml"
+import { DotNet } from "@microsoft/dotnet-js-interop"
 
 /**
  * Initialize a new CodeMirror instance
@@ -56,7 +57,7 @@ import { htmlViewPlugin } from "./CmHtml"
  */
 export async function initCodeMirror(
     id: string,
-    dotnetHelper: any,
+    dotnetHelper: DotNet.DotNetObject,
     initialConfig: CmConfiguration,
     setup: CmSetup
 ) {
@@ -176,11 +177,12 @@ export async function initCodeMirror(
     if (loadingPlaceholder) {
         loadingPlaceholder.style.display = 'none'
     }
+
     // add a class to allow resizing of the editor
     setResize(id, initialConfig.resize)
 }
 
-async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
+async function updateListenerExtension(dotnetHelper: DotNet.DotNetObject, update: ViewUpdate) {
     if (update.docChanged) {
         await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
     }
