@@ -41,6 +41,7 @@
     Setup=@Setup
     ReplaceEmojiCodes=@ReplaceEmojiCodes
     GetMentionCompletions=@GetMentionCompletions
+    UploadFile=@UploadFile
     style="max-width: 100%; max-height: 60em; "
 >
     <ContentBefore Context="c">
@@ -88,7 +89,7 @@
                 Insert or replace text
             </button>
             <button class=@ButtonClass(c.State, "HorizontalRule") @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertTextAbove, "\n---\n")) title="Insert separator above">
-                <i class="fas fa-paragraph"></i>
+                <i class="fas fa-minus"></i>
             </button>
             <button class=@ButtonClass(ReplaceEmojiCodes) @onclick=@(() => ToggleEmojis(c.Commands)) title="Toggle replacing :emoji_codes: with the unicode character">
                 <i class="far fa-smile"></i>
@@ -319,5 +320,15 @@ Result:
                 },
             ]
         );
+    }
+
+    private async Task<string> UploadFile(Microsoft.AspNetCore.Http.IFormFile file)
+    {
+        var fileBytes = new byte[file.Length];
+        await file.OpenReadStream().ReadAsync(fileBytes);
+        var base64 = Convert.ToBase64String(fileBytes);
+        var mimeType = file.ContentType;
+
+        return $"data:{mimeType};base64,{base64}";
     }
 }

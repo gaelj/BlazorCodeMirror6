@@ -1,5 +1,7 @@
 using CodeMirror6.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
 using Microsoft.JSInterop;
 
 namespace CodeMirror6;
@@ -126,6 +128,16 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <value></value>
     [Parameter] public Func<Task<List<CodeMirrorCompletion>>>? GetMentionCompletions { get; set; }
     /// <summary>
+    /// Upload a file to a server and return the URL to the file
+    /// </summary>
+    /// <value></value>
+    [Parameter] public Func<IFormFile, Task<string>>? UploadFile { get; set; }
+    /// <summary>
+    /// Upload an IBrowserFile to a server and returns the URL to the file
+    /// </summary>
+    [Parameter] public Func<IBrowserFile, Task<string>>? UploadBrowserFile { get; set; }
+
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     /// <value></value>
@@ -203,7 +215,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     }
 
     /// <summary>
-    /// codeMirror requested linting of the document
+    /// CodeMirror requested linting of the document
     /// </summary>
     /// <param name="code"></param>
     /// <returns></returns>
@@ -212,7 +224,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
         try {
             LinterCancellationTokenSource.Cancel();
         }
-        catch (ObjectDisposedException) {}
+        catch (ObjectDisposedException) { }
         LinterCancellationTokenSource = new();
         var token = LinterCancellationTokenSource.Token;
         try {
@@ -225,8 +237,33 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
 
     private CancellationTokenSource LinterCancellationTokenSource = new();
 
+    /// <summary>
+    /// A file upload was initiated from the editor
+    /// </summary>
+    /// <param name="fileBytes"></param>
+    /// <param name="fileName"></param>
+    /// <param name="contentType"></param>
+    /// <param name="lastModified"></param>
+    /// <returns></returns>
+    [JSInvokable] public async Task<string?> UploadFileFromJS(byte[] fileBytes, string fileName, string contentType, DateTime lastModified)
+    {
+        using var fileStream = new MemoryStream(fileBytes);
+        var customFormFile = new CustomFormFile(fileStream, fileName, contentType);
+        var customBrowserFile = new CustomBrowserFile(fileStream, fileName, contentType, lastModified);
+        var fileUrl = UploadFile is not null
+            ? await UploadFile(customFormFile)
+            : UploadBrowserFile is not null
+                ? await UploadBrowserFile(customBrowserFile)
+                : null;
+        if (!string.IsNullOrEmpty(fileUrl)) {
+            var imageChar = contentType.StartsWith("image/") ? "!" : string.Empty;
+            var imageLink = $"\n{imageChar}[{fileName}]({fileUrl})\n";
+            //await CmJsInterop!.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertTextAbove, imageLink);
+        }
+        return fileUrl;
+    }
+
     /*
-    [JSInvokable] public async Task<string> UploadFileBlob(string base64, string fileName) => await DoUploadFileBlob(base64, fileName);
     [JSInvokable] public async Task<string> RequestPasteAction(string[] options) => await DoRequestPasteAction(options);
     */
 

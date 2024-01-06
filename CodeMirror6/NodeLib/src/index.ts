@@ -47,6 +47,7 @@ import { viewEmojiExtension } from "./CmEmojiView"
 import { emojiCompletionExtension } from "./CmEmojiCompletion"
 import { indentationMarkers } from '@replit/codemirror-indentation-markers'
 import { htmlViewPlugin } from "./CmHtml"
+import { getFileUploadExtensions } from "./CmFileUpload"
 import { DotNet } from "@microsoft/dotnet-js-interop"
 
 /**
@@ -157,6 +158,8 @@ export async function initCodeMirror(
 
     extensions.push(linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()))
     if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
+
+    extensions.push(...getFileUploadExtensions(id, setup))
 
     await minDelay
 
