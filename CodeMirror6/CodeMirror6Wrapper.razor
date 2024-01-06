@@ -1,7 +1,7 @@
 ﻿<ErrorBoundary>
     <ChildContent>
-        @if (ContentBefore is not null && CmJsInterop is not null && Config is not null && Commands is not null) {
-            @ContentBefore((Commands, Config, State))
+        @if (ContentBefore is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
+            @ContentBefore((CommandDispatcher, Config, State))
         }
         <div
             id=@LoadingDivId
@@ -21,8 +21,8 @@
             >
             </div>
         </div>
-        @if (ContentAfter is not null && CmJsInterop is not null && Config is not null && Commands is not null) {
-            @ContentAfter((Commands, Config, State))
+        @if (ContentAfter is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
+            @ContentAfter((CommandDispatcher, Config, State))
         }
     </ChildContent>
     <ErrorContent>

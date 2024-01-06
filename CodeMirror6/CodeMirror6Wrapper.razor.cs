@@ -148,7 +148,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// Methods to invoke JS CodeMirror commands.
     /// </summary>
     /// <returns></returns>
-    public CMCommandDispatcher? Commands => CmJsInterop?.Commands;
+    public CMCommandDispatcher? CommandDispatcher => CmJsInterop?.CommandDispatcher;
 
     private string LoadingDivId => $"{Id}_Loading";
     private string ResizeStyle => AllowVerticalResize && AllowHorizontalResize
