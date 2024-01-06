@@ -1,7 +1,7 @@
 /**
 The data structure for documents. @nonabstract
 */
-let Text$1 = class Text {
+class Text {
     /**
     Get the line description around the given position.
     */
@@ -125,11 +125,11 @@ let Text$1 = class Text {
             return Text.empty;
         return text.length <= 32 /* Tree.Branch */ ? new TextLeaf(text) : TextNode.from(TextLeaf.split(text, []));
     }
-};
+}
 // Leaves store an array of line strings. There are always line breaks
 // between these strings. Leaves are limited in size and have to be
 // contained in TextNode instances for bigger documents.
-class TextLeaf extends Text$1 {
+class TextLeaf extends Text {
     constructor(text, length = textLength(text)) {
         super();
         this.text = text;
@@ -212,7 +212,7 @@ class TextLeaf extends Text$1 {
 // number of other nodes or leaves, taking care to balance themselves
 // on changes. There are implied line breaks _between_ the children of
 // a node (but not before the first or after the last child).
-class TextNode extends Text$1 {
+class TextNode extends Text {
     constructor(children, length) {
         super();
         this.children = children;
@@ -348,7 +348,7 @@ class TextNode extends Text$1 {
         return chunked.length == 1 ? chunked[0] : new TextNode(chunked, length);
     }
 }
-Text$1.empty = /*@__PURE__*/new TextLeaf([""], 0);
+Text.empty = /*@__PURE__*/new TextLeaf([""], 0);
 function textLength(text) {
     let length = -1;
     for (let line of text)
@@ -515,7 +515,7 @@ class LineCursor {
     get lineBreak() { return false; }
 }
 if (typeof Symbol != "undefined") {
-    Text$1.prototype[Symbol.iterator] = function () { return this.iter(); };
+    Text.prototype[Symbol.iterator] = function () { return this.iter(); };
     RawTextCursor.prototype[Symbol.iterator] = PartialTextCursor.prototype[Symbol.iterator] =
         LineCursor.prototype[Symbol.iterator] = function () { return this; };
 }
@@ -899,8 +899,8 @@ class ChangeSet extends ChangeDesc {
                 sections[i + 1] = len;
                 let index = i >> 1;
                 while (inserted.length < index)
-                    inserted.push(Text$1.empty);
-                inserted.push(len ? doc.slice(pos, pos + len) : Text$1.empty);
+                    inserted.push(Text.empty);
+                inserted.push(len ? doc.slice(pos, pos + len) : Text.empty);
             }
             pos += len;
         }
@@ -1027,7 +1027,7 @@ class ChangeSet extends ChangeDesc {
                 let { from, to = from, insert } = spec;
                 if (from > to || from < 0 || to > length)
                     throw new RangeError(`Invalid change range ${from} to ${to} (in doc of length ${length})`);
-                let insText = !insert ? Text$1.empty : typeof insert == "string" ? Text$1.of(insert.split(lineSep || DefaultSplit)) : insert;
+                let insText = !insert ? Text.empty : typeof insert == "string" ? Text.of(insert.split(lineSep || DefaultSplit)) : insert;
                 let insLen = insText.length;
                 if (from == to && insLen == 0)
                     return;
@@ -1071,8 +1071,8 @@ class ChangeSet extends ChangeDesc {
             }
             else {
                 while (inserted.length < i)
-                    inserted.push(Text$1.empty);
-                inserted[i] = Text$1.of(part.slice(1));
+                    inserted.push(Text.empty);
+                inserted[i] = Text.of(part.slice(1));
                 sections.push(part[0], inserted[i].length);
             }
         }
@@ -1109,7 +1109,7 @@ function addInsert(values, sections, value) {
     }
     else {
         while (values.length < index)
-            values.push(Text$1.empty);
+            values.push(Text.empty);
         values.push(value);
     }
 }
@@ -1122,7 +1122,7 @@ function iterChanges(desc, f, individual) {
             posB += len;
         }
         else {
-            let endA = posA, endB = posB, text = Text$1.empty;
+            let endA = posA, endB = posB, text = Text.empty;
             for (;;) {
                 endA += len;
                 endB += ins;
@@ -1275,11 +1275,11 @@ class SectionIter {
     get len2() { return this.ins < 0 ? this.len : this.ins; }
     get text() {
         let { inserted } = this.set, index = (this.i - 2) >> 1;
-        return index >= inserted.length ? Text$1.empty : inserted[index];
+        return index >= inserted.length ? Text.empty : inserted[index];
     }
     textBit(len) {
         let { inserted } = this.set, index = (this.i - 2) >> 1;
-        return index >= inserted.length && !len ? Text$1.empty
+        return index >= inserted.length && !len ? Text.empty
             : inserted[index].slice(this.off, len == null ? undefined : this.off + len);
     }
     forward(len) {
@@ -2714,7 +2714,7 @@ class EditorState {
     [`Text`](https://codemirror.net/6/docs/ref/#state.Text) instance from the given string.
     */
     toText(string) {
-        return Text$1.of(string.split(this.facet(EditorState.lineSeparator) || DefaultSplit));
+        return Text.of(string.split(this.facet(EditorState.lineSeparator) || DefaultSplit));
     }
     /**
     Return the given range of the document as a string.
@@ -2781,8 +2781,8 @@ class EditorState {
     */
     static create(config = {}) {
         let configuration = Configuration.resolve(config.extensions || [], new Map);
-        let doc = config.doc instanceof Text$1 ? config.doc
-            : Text$1.of((config.doc || "").split(configuration.staticFacet(EditorState.lineSeparator) || DefaultSplit));
+        let doc = config.doc instanceof Text ? config.doc
+            : Text.of((config.doc || "").split(configuration.staticFacet(EditorState.lineSeparator) || DefaultSplit));
         let selection = !config.selection ? EditorSelection.single(0)
             : config.selection instanceof EditorSelection ? config.selection
                 : EditorSelection.single(config.selection.anchor, config.selection.head);
@@ -5094,12 +5094,12 @@ class WidgetView extends ContentView {
     ignoreEvent(event) { return this.widget.ignoreEvent(event); }
     get overrideDOMText() {
         if (this.length == 0)
-            return Text$1.empty;
+            return Text.empty;
         let top = this;
         while (top.parent)
             top = top.parent;
         let { view } = top, text = view && view.state.doc, start = this.posAtStart;
-        return text ? text.slice(start, start + this.length) : Text$1.empty;
+        return text ? text.slice(start, start + this.length) : Text.empty;
     }
     domAtPos(pos) {
         return (this.length ? pos == 0 : this.side > 0)
@@ -5161,7 +5161,7 @@ class WidgetBufferView extends ContentView {
         return this.dom.getBoundingClientRect();
     }
     get overrideDOMText() {
-        return Text$1.empty;
+        return Text.empty;
     }
     get isHidden() { return true; }
 }
@@ -5493,7 +5493,7 @@ class BlockWidgetView extends ContentView {
         }
     }
     get overrideDOMText() {
-        return this.parent ? this.parent.view.state.doc.slice(this.posAtStart, this.posAtEnd) : Text$1.empty;
+        return this.parent ? this.parent.view.state.doc.slice(this.posAtStart, this.posAtEnd) : Text.empty;
     }
     domBoundsAround() { return null; }
     become(other) {
@@ -8649,7 +8649,7 @@ const wrappingWhiteSpace = ["pre-wrap", "normal", "pre-line", "break-spaces"];
 class HeightOracle {
     constructor(lineWrapping) {
         this.lineWrapping = lineWrapping;
-        this.doc = Text$1.empty;
+        this.doc = Text.empty;
         this.heightSamples = {};
         this.lineHeight = 14; // The height of an entire line (line-height)
         this.charWidth = 7;
@@ -9484,7 +9484,7 @@ class ViewState {
         let guessWrapping = state.facet(contentAttributes).some(v => typeof v != "function" && v.class == "cm-lineWrapping");
         this.heightOracle = new HeightOracle(guessWrapping);
         this.stateDeco = state.facet(decorations).filter(d => typeof d != "function");
-        this.heightMap = HeightMap.empty().applyChanges(this.stateDeco, Text$1.empty, this.heightOracle.setDoc(state.doc), [new ChangedRange(0, 0, 0, state.doc.length)]);
+        this.heightMap = HeightMap.empty().applyChanges(this.stateDeco, Text.empty, this.heightOracle.setDoc(state.doc), [new ChangedRange(0, 0, 0, state.doc.length)]);
         this.viewport = this.getViewport(0, null);
         this.updateViewportLines();
         this.updateForViewport();
@@ -9627,7 +9627,7 @@ class ViewState {
             oracle.heightChanged = false;
             for (let vp of this.viewports) {
                 let heights = vp.from == this.viewport.from ? lineHeights : view.docView.measureVisibleLineHeights(vp);
-                this.heightMap = (refresh ? HeightMap.empty().applyChanges(this.stateDeco, Text$1.empty, this.heightOracle, [new ChangedRange(0, 0, 0, view.state.doc.length)]) : this.heightMap).updateHeight(oracle, 0, refresh, new MeasuredHeights(vp.from, heights));
+                this.heightMap = (refresh ? HeightMap.empty().applyChanges(this.stateDeco, Text.empty, this.heightOracle, [new ChangedRange(0, 0, 0, view.state.doc.length)]) : this.heightMap).updateHeight(oracle, 0, refresh, new MeasuredHeights(vp.from, heights));
             }
             if (oracle.heightChanged)
                 result |= 2 /* UpdateFlag.Height */;
@@ -10386,7 +10386,7 @@ function applyDOMChange(view, domChange) {
                 diff.toB == diff.from + 2 && domChange.text.slice(diff.from, diff.toB) == LineBreakPlaceholder + LineBreakPlaceholder)
                 diff.toB--;
             change = { from: from + diff.from, to: from + diff.toA,
-                insert: Text$1.of(domChange.text.slice(diff.from, diff.toB).split(LineBreakPlaceholder)) };
+                insert: Text.of(domChange.text.slice(diff.from, diff.toB).split(LineBreakPlaceholder)) };
         }
     }
     else if (newSel && (!view.hasFocus && view.state.facet(editable) || newSel.main.eq(sel))) {
@@ -10415,7 +10415,7 @@ function applyDOMChange(view, domChange) {
         // and transform it into a regular space insert.
         if (newSel && change.insert.length == 2)
             newSel = EditorSelection.single(newSel.main.anchor - 1, newSel.main.head - 1);
-        change = { from: sel.from, to: sel.to, insert: Text$1.of([" "]) };
+        change = { from: sel.from, to: sel.to, insert: Text.of([" "]) };
     }
     else if (browser.chrome && change && change.from == change.to && change.from == sel.head &&
         change.insert.toString() == "\n " && view.lineWrapping) {
@@ -10424,7 +10424,7 @@ function applyDOMChange(view, domChange) {
         // bogus new line to be created in CodeMirror (#968)
         if (newSel)
             newSel = EditorSelection.single(newSel.main.anchor - 1, newSel.main.head - 1);
-        change = { from: sel.from, to: sel.to, insert: Text$1.of([" "]) };
+        change = { from: sel.from, to: sel.to, insert: Text.of([" "]) };
     }
     if (change) {
         if (browser.ios && view.inputState.flushIOSKey())
@@ -20742,7 +20742,7 @@ function newlineAndIndent(atEof) {
             let insert = ["", indentString(state, indent)];
             if (explode)
                 insert.push(indentString(state, cx.lineIndent(line.from, -1)));
-            return { changes: { from, to, insert: Text$1.of(insert) },
+            return { changes: { from, to, insert: Text.of(insert) },
                 range: EditorSelection.cursor(from + 1 + insert[1].length) };
         });
         dispatch(state.update(changes, { scrollIntoView: true, userEvent: "input" }));
@@ -22279,7 +22279,7 @@ function snippet(template) {
     return (editor, completion, from, to) => {
         let { text, ranges } = snippet.instantiate(editor.state, from);
         let spec = {
-            changes: { from, to, insert: Text$1.of(text) },
+            changes: { from, to, insert: Text.of(text) },
             scrollIntoView: true,
             annotations: completion ? pickedCompletion.of(completion) : undefined
         };
@@ -33629,7 +33629,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-_LJ5JwHW.js').then(m => m.less());
+            return import('./index-60e4-JmK.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -33655,7 +33655,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-UZtwFqnp.js').then(m => m.php());
+            return import('./index-kXNlaMDY.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -33724,7 +33724,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-CXtVrFQ2.js').then(m => m.wast());
+            return import('./index-aQCLwVCb.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34535,13 +34535,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-x3JKrHry.js').then(m => m.vue());
+            return import('./index-AxStLE0f.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-PirFEjcO.js').then(m => m.angular());
+            return import('./index-I9NHyrZt.js').then(m => m.angular());
         }
     })
 ];
@@ -34586,18 +34586,18 @@ function toggleCharactersAroundRange(controlChar, state, range) {
     changes.push(isStyledBefore ? {
         from: fromWithChars,
         to: range.from,
-        insert: Text$1.of([''])
+        insert: Text.of([''])
     } : {
         from: range.from,
-        insert: Text$1.of([controlChar]),
+        insert: Text.of([controlChar]),
     });
     changes.push(isStyledAfter ? {
         from: range.to,
         to: toWithChars,
-        insert: Text$1.of([''])
+        insert: Text.of([''])
     } : {
         from: range.to,
-        insert: Text$1.of([controlChar]),
+        insert: Text.of([controlChar]),
     });
     const extendBefore = isStyledBefore ? -controlCharLength : controlCharLength;
     const extendAfter = isStyledAfter ? -controlCharLength : controlCharLength;
@@ -34637,7 +34637,7 @@ function toggleCharactersAtStartOfLines(view, controlChar, exactMatch) {
             changes.push({
                 from: lineAtFrom.from,
                 to: lineAtFrom.from + oldStyleLength,
-                insert: Text$1.of([''])
+                insert: Text.of([''])
             });
             newFrom -= oldStyleLength;
             newTo -= oldStyleLength;
@@ -34647,14 +34647,14 @@ function toggleCharactersAtStartOfLines(view, controlChar, exactMatch) {
                 changes.push({
                     from: lineAtFrom.from,
                     to: lineAtFrom.from + oldStyleLength,
-                    insert: Text$1.of([''])
+                    insert: Text.of([''])
                 });
                 newFrom -= oldStyleLength;
                 newTo -= oldStyleLength;
             }
             changes.push({
                 from: lineAtFrom.from,
-                insert: Text$1.of([fullControlChar]),
+                insert: Text.of([fullControlChar]),
             });
             newFrom += fullControlChar.length;
             newTo += fullControlChar.length;
@@ -34688,14 +34688,14 @@ function modifyHeaderLevelAtSelections(view, delta) {
             changes.push({
                 from: lineAtFrom.from,
                 to: lineAtFrom.from + headerLengthWithSpaces,
-                insert: Text$1.of([''])
+                insert: Text.of([''])
             });
         }
         else {
             changes.push({
                 from: lineAtFrom.from,
                 to: lineAtFrom.from + headerLengthWithSpaces,
-                insert: Text$1.of(['#'.repeat(newHeaderLevel) + ' '])
+                insert: Text.of(['#'.repeat(newHeaderLevel) + ' '])
             });
         }
         let from = Math.min(Math.max(lineAtFrom.from, range.from + delta), lineAtFrom.to);
