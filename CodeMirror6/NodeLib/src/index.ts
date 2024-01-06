@@ -3,7 +3,7 @@ import {
     rectangularSelection, crosshairCursor, ViewUpdate,
     lineNumbers, highlightActiveLineGutter, placeholder
 } from "@codemirror/view"
-import { EditorState, SelectionRange } from "@codemirror/state"
+import { EditorState, SelectionRange, Text } from "@codemirror/state"
 import {
     indentWithTab, history, historyKeymap,
     cursorSyntaxLeft, selectSyntaxLeft, selectSyntaxRight, cursorSyntaxRight, deleteLine,
