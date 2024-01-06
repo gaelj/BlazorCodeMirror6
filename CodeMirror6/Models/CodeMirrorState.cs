@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+
 namespace CodeMirror6.Models;
 
 /// <summary>
@@ -9,5 +11,10 @@ public class CodeMirrorState
     /// List of markdown styles active at the current selection(s)
     /// </summary>
     /// <value></value>
-    public List<string> MarkdownStylesAtSelections { get; internal set; } = [];
+    public ReadOnlyCollection<string> MarkdownStylesAtSelections { get; internal set; } = new([]);
+
+    /// <summary>
+    /// Has the editor received focus
+    /// </summary>
+    public bool HasFocus;
 }

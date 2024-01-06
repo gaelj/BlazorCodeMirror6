@@ -1,25 +1,33 @@
 ﻿@if (ContentBefore is not null && CmJsInterop is not null && Config is not null && Commands is not null) {
     @ContentBefore((Commands, Config, State))
 }
+<ErrorBoundary>
+    <ChildContent>
+        <div
+            id=@LoadingDivId
+            @attributes=@AdditionalAttributes
+            class="editor-loading"
+        >
+            @for (var i = 0; i < (Doc?.Split("\n").Length ?? 10); i++) {
+                var randomWidth = new Random().Next(20, 80);
+                <div class="loading-animation" style=@($"width: {randomWidth}%")></div>
+            }
+        </div>
 
-<div
-    id=@LoadingDivId
-    @attributes=@AdditionalAttributes
-    class="editor-loading"
->
-    @for (var i = 0; i < (Doc?.Split("\n").Length ?? 10); i++) {
-        var randomWidth = new Random().Next(20, 80);
-        <div class="loading-animation" style=@($"width: {randomWidth}%")></div>
-    }
-</div>
-
-<div>
-    <div
-        id=@Id
-        @attributes=@AdditionalAttributes
-    >
-    </div>
-</div>
+        <div>
+            <div
+                id=@Id
+                @attributes=@AdditionalAttributes
+            >
+            </div>
+        </div>
+    </ChildContent>
+    <ErrorContent>
+        <p class="alert alert-danger" role="alert">
+            An error occurred while loading the editor.
+        </p>
+    </ErrorContent>
+</ErrorBoundary>
 
 @if (ContentAfter is not null && CmJsInterop is not null && Config is not null && Commands is not null) {
     @ContentAfter((Commands, Config, State))
