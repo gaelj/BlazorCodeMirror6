@@ -75,6 +75,11 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <value></value>
     [Parameter] public bool Editable { get; set; } = true;
     /// <summary>
+    /// Controls whether long lines should wrap
+    /// </summary>
+    /// <value></value>
+    [Parameter] public bool LineWrapping { get; set; } = true;
+    /// <summary>
     /// The language to use in the editor
     /// </summary>
     /// <value></value>
@@ -180,7 +185,8 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
             Language?.ToString(),
             AutoFormatMarkdown,
             ReplaceEmojiCodes,
-            ResizeStyle
+            ResizeStyle,
+            LineWrapping
         );
         try {
             await OnAfterRenderAsync(true); // try early initialization for Blazor WASM
@@ -261,6 +267,10 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
         if (Config.Resize != ResizeStyle) {
             Config.Resize = ResizeStyle;
             await CmJsInterop.PropertySetters.SetResize();
+        }
+        if (Config.LineWrapping != LineWrapping) {
+            Config.LineWrapping = LineWrapping;
+            await CmJsInterop.PropertySetters.SetLineWrapping();
         }
         shouldRender = true;
     }

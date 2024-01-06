@@ -33,6 +33,7 @@
     @bind-Doc=@Text
     Placeholder="Enter your code.... (1)"
     TabSize=@TabSize
+    IndentationUnit=@TabSize
     @bind-Selection=@selectionRanges1
     Theme=@Theme
     Language=@Language
@@ -42,6 +43,9 @@
     ReplaceEmojiCodes=@ReplaceEmojiCodes
     GetMentionCompletions=@GetMentionCompletions
     UploadFile=@UploadFile
+    Editable
+    ReadOnly=false
+    LineWrapping=@LineWrapping
     style="max-width: 100%; max-height: 60em; "
 >
     <ContentBefore Context="c">
@@ -93,6 +97,9 @@
             </button>
             <button class=@ButtonClass(ReplaceEmojiCodes) @onclick=@(() => ToggleEmojis(c.Commands)) title="Toggle replacing :emoji_codes: with the unicode character">
                 <i class="far fa-smile"></i>
+            </button>
+            <button class=@ButtonClass(LineWrapping) @onclick=@(() => LineWrapping = !LineWrapping) title="Toggle long line wrapping">
+                <i class="fas fa-paragraph"></i>
             </button>
         </div>
     </ContentBefore>
@@ -196,6 +203,7 @@ Result:
     private CodeMirrorLanguage Language = CodeMirrorLanguage.Markdown;
     private bool AutoFormatMarkdown = true;
     private bool ReplaceEmojiCodes = false;
+    private bool LineWrapping = true;
     private readonly CodeMirrorSetup Setup = new() {
         HighlightActiveLine = false,
         LineNumbers = true,

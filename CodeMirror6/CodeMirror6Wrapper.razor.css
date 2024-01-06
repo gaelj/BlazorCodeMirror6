@@ -7,6 +7,7 @@
 ::deep .cm-editor {
     overflow: auto;
     max-height: inherit;
+    max-width: 100%;
 }
 
 ::deep .resize-none .cm-editor {
