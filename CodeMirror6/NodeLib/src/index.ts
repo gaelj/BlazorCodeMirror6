@@ -164,7 +164,7 @@ export async function initCodeMirror(
     await minDelay
 
     const scrollToEndEffect = EditorView.scrollIntoView(initialConfig.doc ? initialConfig.doc.length : 0, { y: 'end' })
-    const docLines = initialConfig.doc?.split(/\r\n|\r|\n/) ?? []
+        const docLines = initialConfig.doc?.split(/\r\n|\r|\n/) ?? [initialConfig.doc]
     const text = Text.of(docLines)
     const textLength = text?.length ?? 0
 
