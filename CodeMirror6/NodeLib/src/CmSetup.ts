@@ -23,4 +23,5 @@ export class CmSetup
     public highlightSelectionMatches: boolean
     public previewImages: boolean
     public allowMentions: boolean
+    public scrollToEnd: boolean
 }

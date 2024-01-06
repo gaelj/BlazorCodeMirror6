@@ -109,4 +109,9 @@ public readonly record struct CodeMirrorSetup
     /// Whether to enable mentions.
     /// </summary>
     [JsonPropertyName("allowMentions")] public bool AllowMentions { get; init; } = true;
+
+    /// <summary>
+    /// Scroll to the end of the document when the editor is created.
+    /// </summary>
+    [JsonPropertyName("scrollToEnd")] public bool ScrollToEnd { get; init; }
 }

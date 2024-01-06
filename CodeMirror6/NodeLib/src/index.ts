@@ -163,17 +163,28 @@ export async function initCodeMirror(
 
     await minDelay
 
-
+    const scrollToEndEffect = EditorView.scrollIntoView(initialConfig.doc ? initialConfig.doc.length : 0, { y: 'end' })
+    const docLines = initialConfig.doc?.split(/\r\n|\r|\n/) ?? []
+    const text = Text.of(docLines)
+    const textLength = text?.length ?? 0
 
     CMInstances[id].state = EditorState.create({
         doc: initialConfig.doc,
         extensions: extensions,
+        selection: {
+            anchor: setup.scrollToEnd === true ? textLength : 0,
+        },
     })
 
     CMInstances[id].view = new EditorView({
         state: CMInstances[id].state,
         parent: document.getElementById(id),
+        scrollTo: setup.scrollToEnd === true ? scrollToEndEffect : null,
     })
+
+    if (setup.scrollToEnd === true ) {
+        CMInstances[id].view.focus()
+    }
 
     // Hide the placeholder once the editor is initialized
     const loadingPlaceholder: HTMLElement = document.getElementById(`${id}_Loading`)
