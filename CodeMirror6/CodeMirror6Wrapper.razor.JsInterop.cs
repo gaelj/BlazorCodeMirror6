@@ -33,10 +33,24 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
 
         internal async Task ModuleInvokeVoidAsync(string method, params object?[] args)
         {
+#pragma warning disable CS0168 // Variable is declared but never used
+            try {
                 var module = await _moduleTask.Value;
                 if (module is null) return;
                 args = args.Prepend(cm6WrapperComponent.Id).ToArray();
                 await module.InvokeVoidAsync(method, args);
+            }
+            catch (Exception ex)
+            {
+                #if NET8_0_OR_GREATER
+                await cm6WrapperComponent.DispatchExceptionAsync(ex);
+                #else
+                throw;
+                #endif
+            }
+            finally {
+            }
+#pragma warning restore CS0168 // Variable is declared but never used
         }
 
         /// <summary>
