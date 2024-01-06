@@ -8,6 +8,7 @@
 [b-v1cccotw35] .cm-editor {
     overflow: auto;
     max-height: inherit;
+    max-width: 100%;
 }
 
 [b-v1cccotw35] .resize-none .cm-editor {

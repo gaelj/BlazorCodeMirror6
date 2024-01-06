@@ -24461,6 +24461,7 @@ class CmInstance {
         this.editableCompartment = new Compartment;
         this.keymapCompartment = new Compartment;
         this.emojiReplacerCompartment = new Compartment;
+        this.lineWrappingCompartment = new Compartment;
     }
 }
 const CMInstances = {};
@@ -33629,7 +33630,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-Gxgnv9JU.js').then(m => m.less());
+            return import('./index-cWXgJX5t.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -33655,7 +33656,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-80UUKc5y.js').then(m => m.php());
+            return import('./index-WBW0zwhc.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -33724,7 +33725,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-9YRyXa4B.js').then(m => m.wast());
+            return import('./index-4zYra85I.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34535,13 +34536,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-dVbcIgnJ.js').then(m => m.vue());
+            return import('./index-VMGXWwbb.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-z7s6cczM.js').then(m => m.angular());
+            return import('./index-nmVh0HZY.js').then(m => m.angular());
         }
     })
 ];
@@ -75289,6 +75290,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             CMInstances[id].emojiReplacerCompartment.of(replaceEmojiExtension(initialConfig.replaceEmojiCodes)),
             lastOperationWasUndo,
             indentationMarkers(),
+            CMInstances[id].lineWrappingCompartment.of(initialConfig.lineWrapping ? EditorView.lineWrapping : []),
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update); }),
             keymap.of([
                 ...closeBracketsKeymap,
@@ -75440,6 +75442,11 @@ function setReadOnly(id, readOnly) {
 function setEditable(id, editable) {
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].editableCompartment.reconfigure(EditorView.editable.of(editable))
+    });
+}
+function setLineWrapping(id, lineWrapping) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].lineWrappingCompartment.reconfigure(lineWrapping ? EditorView.lineWrapping : [])
     });
 }
 function setLanguage(id, languageName) {
@@ -75623,4 +75630,4 @@ function dispose(id) {
     delete CMInstances[id];
 }
 
-export { setAutoFormatMarkdown as A, setReplaceEmojiCodes as B, setDoc as C, dispatchCommand as D, ExternalTokenizer as E, dispose as F, LRLanguage as L, foldInside as a, LanguageSupport as b, continuedIndent as c, defineCSSCompletionSource as d, LRParser as e, foldNodeProp as f, delimitedIndent as g, html as h, indentNodeProp as i, LocalTokenGroup as j, javascriptLanguage as k, initCodeMirror as l, setResize as m, setClassToParent as n, setTabSize as o, parseMixed as p, setIndentUnit as q, setPlaceholderText as r, styleTags as s, tags$1 as t, setTheme as u, setReadOnly as v, setEditable as w, setLanguage as x, setMentionCompletions as y, forceRedraw as z };
+export { forceRedraw as A, setAutoFormatMarkdown as B, setReplaceEmojiCodes as C, setDoc as D, ExternalTokenizer as E, dispatchCommand as F, dispose as G, LRLanguage as L, foldInside as a, LanguageSupport as b, continuedIndent as c, defineCSSCompletionSource as d, LRParser as e, foldNodeProp as f, delimitedIndent as g, html as h, indentNodeProp as i, LocalTokenGroup as j, javascriptLanguage as k, initCodeMirror as l, setResize as m, setClassToParent as n, setTabSize as o, parseMixed as p, setIndentUnit as q, setPlaceholderText as r, styleTags as s, tags$1 as t, setTheme as u, setReadOnly as v, setEditable as w, setLineWrapping as x, setLanguage as y, setMentionCompletions as z };
