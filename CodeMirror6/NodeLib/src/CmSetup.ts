@@ -24,4 +24,5 @@ export class CmSetup
     public previewImages: boolean
     public allowMentions: boolean
     public scrollToEnd: boolean
+    public fileIcon: string
 }

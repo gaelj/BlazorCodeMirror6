@@ -114,4 +114,9 @@ public readonly record struct CodeMirrorSetup
     /// Scroll to the end of the document when the editor is created.
     /// </summary>
     [JsonPropertyName("scrollToEnd")] public bool ScrollToEnd { get; init; }
+
+    /// <summary>
+    /// The file icon css class to use for the editor
+    /// </summary>
+    [JsonPropertyName("fileIcon")] public string? FileIcon { get; init; } = "fa fa-file";
 }
