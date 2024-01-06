@@ -33629,7 +33629,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-60e4-JmK.js').then(m => m.less());
+            return import('./index-Gxgnv9JU.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -33655,7 +33655,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-kXNlaMDY.js').then(m => m.php());
+            return import('./index-80UUKc5y.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -33724,7 +33724,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-aQCLwVCb.js').then(m => m.wast());
+            return import('./index-9YRyXa4B.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34535,13 +34535,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-AxStLE0f.js').then(m => m.vue());
+            return import('./index-dVbcIgnJ.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-I9NHyrZt.js').then(m => m.angular());
+            return import('./index-z7s6cczM.js').then(m => m.angular());
         }
     })
 ];
@@ -75256,131 +75256,136 @@ function getFileUploadExtensions(id, setup) {
  * @param initialConfig
  */
 async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
-    const minDelay = new Promise(res => setTimeout(res, 100));
-    CMInstances[id] = new CmInstance();
-    CMInstances[id].dotNetHelper = dotnetHelper;
-    CMInstances[id].setup = setup;
-    let extensions = [
-        CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName))),
-        CMInstances[id].languageCompartment.of(getLanguage(initialConfig.languageName)),
-        CMInstances[id].markdownStylingCompartment.of([
-            getDynamicHeaderStyling(initialConfig.autoFormatMarkdown),
-            dynamicHrExtension(initialConfig.autoFormatMarkdown),
-            dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
-            autocompletion({
-                override: [
-                    ...mentionCompletionExtension(setup.allowMentions),
-                    ...emojiCompletionExtension(true)
-                ]
-            }),
-            mentionDecorationExtension(initialConfig.autoFormatMarkdown),
-            listsExtension(initialConfig.autoFormatMarkdown),
-            blockquote(),
-            viewEmojiExtension(initialConfig.autoFormatMarkdown),
-            htmlViewPlugin(initialConfig.autoFormatMarkdown),
-        ]),
-        CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
-        CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
-        CMInstances[id].placeholderCompartment.of(placeholder(initialConfig.placeholder)),
-        CMInstances[id].themeCompartment.of(getTheme(initialConfig.themeName)),
-        CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(initialConfig.readOnly)),
-        CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
-        CMInstances[id].emojiReplacerCompartment.of(replaceEmojiExtension(initialConfig.replaceEmojiCodes)),
-        lastOperationWasUndo,
-        indentationMarkers(),
-        EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update); }),
-        keymap.of([
-            ...closeBracketsKeymap,
-            //...defaultKeymap,
-            { key: "Alt-ArrowLeft", mac: "Ctrl-ArrowLeft", run: cursorSyntaxLeft, shift: selectSyntaxLeft },
-            { key: "Alt-ArrowRight", mac: "Ctrl-ArrowRight", run: cursorSyntaxRight, shift: selectSyntaxRight },
-            { key: "Alt-ArrowUp", run: moveLineUp },
-            { key: "Shift-Alt-ArrowUp", run: copyLineUp },
-            { key: "Alt-ArrowDown", run: moveLineDown },
-            { key: "Shift-Alt-ArrowDown", run: copyLineDown },
-            { key: "Escape", run: simplifySelection },
-            { key: "Mod-Enter", run: insertBlankLine },
-            { key: "Alt-l", mac: "Ctrl-l", run: selectLine },
-            { key: "Mod-i", run: selectParentSyntax, preventDefault: true },
-            { key: "Mod-[", run: indentLess },
-            { key: "Mod-]", run: indentMore },
-            { key: "Mod-Alt-\\", run: indentSelection },
-            { key: "Shift-Mod-k", run: deleteLine },
-            { key: "Shift-Mod-\\", run: cursorMatchingBracket },
-            { key: "Mod-/", run: toggleComment },
-            { key: "Alt-A", run: toggleBlockComment },
-            ...searchKeymap,
-            ...historyKeymap,
-            ...foldKeymap,
-            ...completionKeymap,
-            ...lintKeymap,
-            indentWithTab,
-        ])
-    ];
-    // Basic Setup
-    if (setup.lineNumbers === true)
-        extensions.push(lineNumbers());
-    if (setup.highlightActiveLineGutter === true)
-        extensions.push(highlightActiveLineGutter());
-    if (setup.highlightSpecialChars === true)
-        extensions.push(highlightSpecialChars());
-    if (setup.history === true)
-        extensions.push(history());
-    if (setup.foldGutter === true)
-        extensions.push(foldGutter());
-    if (setup.drawSelection === true)
-        extensions.push(drawSelection());
-    if (setup.dropCursor === true)
-        extensions.push(dropCursor());
-    if (setup.indentOnInput === true)
-        extensions.push(indentOnInput());
-    if (setup.syntaxHighlighting === true)
-        extensions.push(syntaxHighlighting(defaultHighlightStyle, { fallback: true }));
-    if (setup.bracketMatching === true)
-        extensions.push(bracketMatching());
-    if (setup.closeBrackets === true)
-        extensions.push(closeBrackets());
-    if (setup.autocompletion === true)
-        extensions.push(autocompletion({}));
-    if (setup.rectangularSelection === true)
-        extensions.push(rectangularSelection());
-    if (setup.crossHairSelection === true)
-        extensions.push(crosshairCursor());
-    if (setup.highlightActiveLine === true)
-        extensions.push(highlightActiveLine());
-    if (setup.highlightSelectionMatches === true)
-        extensions.push(highlightSelectionMatches());
-    extensions.push(linter(async (view) => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()));
-    if (setup.allowMultipleSelections === true)
-        extensions.push(EditorState.allowMultipleSelections.of(true));
-    extensions.push(...getFileUploadExtensions(id, setup));
-    await minDelay;
-    const scrollToEndEffect = EditorView.scrollIntoView(initialConfig.doc ? initialConfig.doc.length : 0, { y: 'end' });
-    const docLines = initialConfig.doc?.split(/\r\n|\r|\n/) ?? [];
-    const text = Text.of(docLines);
-    const textLength = text?.length ?? 0;
-    CMInstances[id].state = EditorState.create({
-        doc: initialConfig.doc,
-        extensions: extensions,
-        selection: {
-            anchor: setup.scrollToEnd === true ? textLength : 0,
-        },
-    });
-    CMInstances[id].view = new EditorView({
-        state: CMInstances[id].state,
-        parent: document.getElementById(id),
-        scrollTo: setup.scrollToEnd === true ? scrollToEndEffect : null,
-    });
-    if (setup.scrollToEnd === true) {
-        CMInstances[id].view.focus();
+    try {
+        const minDelay = new Promise(res => setTimeout(res, 100));
+        CMInstances[id] = new CmInstance();
+        CMInstances[id].dotNetHelper = dotnetHelper;
+        CMInstances[id].setup = setup;
+        let extensions = [
+            CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName))),
+            CMInstances[id].languageCompartment.of(getLanguage(initialConfig.languageName)),
+            CMInstances[id].markdownStylingCompartment.of([
+                getDynamicHeaderStyling(initialConfig.autoFormatMarkdown),
+                dynamicHrExtension(initialConfig.autoFormatMarkdown),
+                dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
+                autocompletion({
+                    override: [
+                        ...mentionCompletionExtension(setup.allowMentions),
+                        ...emojiCompletionExtension(true)
+                    ]
+                }),
+                mentionDecorationExtension(initialConfig.autoFormatMarkdown),
+                listsExtension(initialConfig.autoFormatMarkdown),
+                blockquote(),
+                viewEmojiExtension(initialConfig.autoFormatMarkdown),
+                htmlViewPlugin(initialConfig.autoFormatMarkdown),
+            ]),
+            CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
+            CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
+            CMInstances[id].placeholderCompartment.of(placeholder(initialConfig.placeholder)),
+            CMInstances[id].themeCompartment.of(getTheme(initialConfig.themeName)),
+            CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(initialConfig.readOnly)),
+            CMInstances[id].editableCompartment.of(EditorView.editable.of(initialConfig.editable)),
+            CMInstances[id].emojiReplacerCompartment.of(replaceEmojiExtension(initialConfig.replaceEmojiCodes)),
+            lastOperationWasUndo,
+            indentationMarkers(),
+            EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update); }),
+            keymap.of([
+                ...closeBracketsKeymap,
+                //...defaultKeymap,
+                { key: "Alt-ArrowLeft", mac: "Ctrl-ArrowLeft", run: cursorSyntaxLeft, shift: selectSyntaxLeft },
+                { key: "Alt-ArrowRight", mac: "Ctrl-ArrowRight", run: cursorSyntaxRight, shift: selectSyntaxRight },
+                { key: "Alt-ArrowUp", run: moveLineUp },
+                { key: "Shift-Alt-ArrowUp", run: copyLineUp },
+                { key: "Alt-ArrowDown", run: moveLineDown },
+                { key: "Shift-Alt-ArrowDown", run: copyLineDown },
+                { key: "Escape", run: simplifySelection },
+                { key: "Mod-Enter", run: insertBlankLine },
+                { key: "Alt-l", mac: "Ctrl-l", run: selectLine },
+                { key: "Mod-i", run: selectParentSyntax, preventDefault: true },
+                { key: "Mod-[", run: indentLess },
+                { key: "Mod-]", run: indentMore },
+                { key: "Mod-Alt-\\", run: indentSelection },
+                { key: "Shift-Mod-k", run: deleteLine },
+                { key: "Shift-Mod-\\", run: cursorMatchingBracket },
+                { key: "Mod-/", run: toggleComment },
+                { key: "Alt-A", run: toggleBlockComment },
+                ...searchKeymap,
+                ...historyKeymap,
+                ...foldKeymap,
+                ...completionKeymap,
+                ...lintKeymap,
+                indentWithTab,
+            ])
+        ];
+        // Basic Setup
+        if (setup.lineNumbers === true)
+            extensions.push(lineNumbers());
+        if (setup.highlightActiveLineGutter === true)
+            extensions.push(highlightActiveLineGutter());
+        if (setup.highlightSpecialChars === true)
+            extensions.push(highlightSpecialChars());
+        if (setup.history === true)
+            extensions.push(history());
+        if (setup.foldGutter === true)
+            extensions.push(foldGutter());
+        if (setup.drawSelection === true)
+            extensions.push(drawSelection());
+        if (setup.dropCursor === true)
+            extensions.push(dropCursor());
+        if (setup.indentOnInput === true)
+            extensions.push(indentOnInput());
+        if (setup.syntaxHighlighting === true)
+            extensions.push(syntaxHighlighting(defaultHighlightStyle, { fallback: true }));
+        if (setup.bracketMatching === true)
+            extensions.push(bracketMatching());
+        if (setup.closeBrackets === true)
+            extensions.push(closeBrackets());
+        if (setup.autocompletion === true)
+            extensions.push(autocompletion({}));
+        if (setup.rectangularSelection === true)
+            extensions.push(rectangularSelection());
+        if (setup.crossHairSelection === true)
+            extensions.push(crosshairCursor());
+        if (setup.highlightActiveLine === true)
+            extensions.push(highlightActiveLine());
+        if (setup.highlightSelectionMatches === true)
+            extensions.push(highlightSelectionMatches());
+        extensions.push(linter(async (view) => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()));
+        if (setup.allowMultipleSelections === true)
+            extensions.push(EditorState.allowMultipleSelections.of(true));
+        extensions.push(...getFileUploadExtensions(id, setup));
+        await minDelay;
+        const scrollToEndEffect = EditorView.scrollIntoView(initialConfig.doc ? initialConfig.doc.length : 0, { y: 'end' });
+        const docLines = initialConfig.doc?.split(/\r\n|\r|\n/) ?? [initialConfig.doc];
+        const text = Text.of(docLines);
+        const textLength = text?.length ?? 0;
+        CMInstances[id].state = EditorState.create({
+            doc: initialConfig.doc,
+            extensions: extensions,
+            selection: {
+                anchor: setup.scrollToEnd === true ? textLength : 0,
+            },
+        });
+        CMInstances[id].view = new EditorView({
+            state: CMInstances[id].state,
+            parent: document.getElementById(id),
+            scrollTo: setup.scrollToEnd === true ? scrollToEndEffect : null,
+        });
+        if (setup.scrollToEnd === true) {
+            CMInstances[id].view.focus();
+        }
+        // Hide the placeholder once the editor is initialized
+        const loadingPlaceholder = document.getElementById(`${id}_Loading`);
+        if (loadingPlaceholder) {
+            loadingPlaceholder.style.display = 'none';
+        }
+        // add a class to allow resizing of the editor
+        setResize(id, initialConfig.resize);
     }
-    // Hide the placeholder once the editor is initialized
-    const loadingPlaceholder = document.getElementById(`${id}_Loading`);
-    if (loadingPlaceholder) {
-        loadingPlaceholder.style.display = 'none';
+    catch (error) {
+        console.error(`Error in initializing CodeMirror`, error);
     }
-    // add a class to allow resizing of the editor
-    setResize(id, initialConfig.resize);
 }
 async function updateListenerExtension(dotnetHelper, update) {
     if (update.docChanged) {
