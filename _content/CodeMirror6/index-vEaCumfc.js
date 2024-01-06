@@ -1,7 +1,7 @@
 /**
 The data structure for documents. @nonabstract
 */
-class Text {
+let Text$1 = class Text {
     /**
     Get the line description around the given position.
     */
@@ -125,11 +125,11 @@ class Text {
             return Text.empty;
         return text.length <= 32 /* Tree.Branch */ ? new TextLeaf(text) : TextNode.from(TextLeaf.split(text, []));
     }
-}
+};
 // Leaves store an array of line strings. There are always line breaks
 // between these strings. Leaves are limited in size and have to be
 // contained in TextNode instances for bigger documents.
-class TextLeaf extends Text {
+class TextLeaf extends Text$1 {
     constructor(text, length = textLength(text)) {
         super();
         this.text = text;
@@ -212,7 +212,7 @@ class TextLeaf extends Text {
 // number of other nodes or leaves, taking care to balance themselves
 // on changes. There are implied line breaks _between_ the children of
 // a node (but not before the first or after the last child).
-class TextNode extends Text {
+class TextNode extends Text$1 {
     constructor(children, length) {
         super();
         this.children = children;
@@ -348,7 +348,7 @@ class TextNode extends Text {
         return chunked.length == 1 ? chunked[0] : new TextNode(chunked, length);
     }
 }
-Text.empty = /*@__PURE__*/new TextLeaf([""], 0);
+Text$1.empty = /*@__PURE__*/new TextLeaf([""], 0);
 function textLength(text) {
     let length = -1;
     for (let line of text)
@@ -515,7 +515,7 @@ class LineCursor {
     get lineBreak() { return false; }
 }
 if (typeof Symbol != "undefined") {
-    Text.prototype[Symbol.iterator] = function () { return this.iter(); };
+    Text$1.prototype[Symbol.iterator] = function () { return this.iter(); };
     RawTextCursor.prototype[Symbol.iterator] = PartialTextCursor.prototype[Symbol.iterator] =
         LineCursor.prototype[Symbol.iterator] = function () { return this; };
 }
@@ -899,8 +899,8 @@ class ChangeSet extends ChangeDesc {
                 sections[i + 1] = len;
                 let index = i >> 1;
                 while (inserted.length < index)
-                    inserted.push(Text.empty);
-                inserted.push(len ? doc.slice(pos, pos + len) : Text.empty);
+                    inserted.push(Text$1.empty);
+                inserted.push(len ? doc.slice(pos, pos + len) : Text$1.empty);
             }
             pos += len;
         }
@@ -1027,7 +1027,7 @@ class ChangeSet extends ChangeDesc {
                 let { from, to = from, insert } = spec;
                 if (from > to || from < 0 || to > length)
                     throw new RangeError(`Invalid change range ${from} to ${to} (in doc of length ${length})`);
-                let insText = !insert ? Text.empty : typeof insert == "string" ? Text.of(insert.split(lineSep || DefaultSplit)) : insert;
+                let insText = !insert ? Text$1.empty : typeof insert == "string" ? Text$1.of(insert.split(lineSep || DefaultSplit)) : insert;
                 let insLen = insText.length;
                 if (from == to && insLen == 0)
                     return;
@@ -1071,8 +1071,8 @@ class ChangeSet extends ChangeDesc {
             }
             else {
                 while (inserted.length < i)
-                    inserted.push(Text.empty);
-                inserted[i] = Text.of(part.slice(1));
+                    inserted.push(Text$1.empty);
+                inserted[i] = Text$1.of(part.slice(1));
                 sections.push(part[0], inserted[i].length);
             }
         }
@@ -1109,7 +1109,7 @@ function addInsert(values, sections, value) {
     }
     else {
         while (values.length < index)
-            values.push(Text.empty);
+            values.push(Text$1.empty);
         values.push(value);
     }
 }
@@ -1122,7 +1122,7 @@ function iterChanges(desc, f, individual) {
             posB += len;
         }
         else {
-            let endA = posA, endB = posB, text = Text.empty;
+            let endA = posA, endB = posB, text = Text$1.empty;
             for (;;) {
                 endA += len;
                 endB += ins;
@@ -1275,11 +1275,11 @@ class SectionIter {
     get len2() { return this.ins < 0 ? this.len : this.ins; }
     get text() {
         let { inserted } = this.set, index = (this.i - 2) >> 1;
-        return index >= inserted.length ? Text.empty : inserted[index];
+        return index >= inserted.length ? Text$1.empty : inserted[index];
     }
     textBit(len) {
         let { inserted } = this.set, index = (this.i - 2) >> 1;
-        return index >= inserted.length && !len ? Text.empty
+        return index >= inserted.length && !len ? Text$1.empty
             : inserted[index].slice(this.off, len == null ? undefined : this.off + len);
     }
     forward(len) {
@@ -2714,7 +2714,7 @@ class EditorState {
     [`Text`](https://codemirror.net/6/docs/ref/#state.Text) instance from the given string.
     */
     toText(string) {
-        return Text.of(string.split(this.facet(EditorState.lineSeparator) || DefaultSplit));
+        return Text$1.of(string.split(this.facet(EditorState.lineSeparator) || DefaultSplit));
     }
     /**
     Return the given range of the document as a string.
@@ -2781,8 +2781,8 @@ class EditorState {
     */
     static create(config = {}) {
         let configuration = Configuration.resolve(config.extensions || [], new Map);
-        let doc = config.doc instanceof Text ? config.doc
-            : Text.of((config.doc || "").split(configuration.staticFacet(EditorState.lineSeparator) || DefaultSplit));
+        let doc = config.doc instanceof Text$1 ? config.doc
+            : Text$1.of((config.doc || "").split(configuration.staticFacet(EditorState.lineSeparator) || DefaultSplit));
         let selection = !config.selection ? EditorSelection.single(0)
             : config.selection instanceof EditorSelection ? config.selection
                 : EditorSelection.single(config.selection.anchor, config.selection.head);
@@ -5094,12 +5094,12 @@ class WidgetView extends ContentView {
     ignoreEvent(event) { return this.widget.ignoreEvent(event); }
     get overrideDOMText() {
         if (this.length == 0)
-            return Text.empty;
+            return Text$1.empty;
         let top = this;
         while (top.parent)
             top = top.parent;
         let { view } = top, text = view && view.state.doc, start = this.posAtStart;
-        return text ? text.slice(start, start + this.length) : Text.empty;
+        return text ? text.slice(start, start + this.length) : Text$1.empty;
     }
     domAtPos(pos) {
         return (this.length ? pos == 0 : this.side > 0)
@@ -5161,7 +5161,7 @@ class WidgetBufferView extends ContentView {
         return this.dom.getBoundingClientRect();
     }
     get overrideDOMText() {
-        return Text.empty;
+        return Text$1.empty;
     }
     get isHidden() { return true; }
 }
@@ -5493,7 +5493,7 @@ class BlockWidgetView extends ContentView {
         }
     }
     get overrideDOMText() {
-        return this.parent ? this.parent.view.state.doc.slice(this.posAtStart, this.posAtEnd) : Text.empty;
+        return this.parent ? this.parent.view.state.doc.slice(this.posAtStart, this.posAtEnd) : Text$1.empty;
     }
     domBoundsAround() { return null; }
     become(other) {
@@ -8649,7 +8649,7 @@ const wrappingWhiteSpace = ["pre-wrap", "normal", "pre-line", "break-spaces"];
 class HeightOracle {
     constructor(lineWrapping) {
         this.lineWrapping = lineWrapping;
-        this.doc = Text.empty;
+        this.doc = Text$1.empty;
         this.heightSamples = {};
         this.lineHeight = 14; // The height of an entire line (line-height)
         this.charWidth = 7;
@@ -9484,7 +9484,7 @@ class ViewState {
         let guessWrapping = state.facet(contentAttributes).some(v => typeof v != "function" && v.class == "cm-lineWrapping");
         this.heightOracle = new HeightOracle(guessWrapping);
         this.stateDeco = state.facet(decorations).filter(d => typeof d != "function");
-        this.heightMap = HeightMap.empty().applyChanges(this.stateDeco, Text.empty, this.heightOracle.setDoc(state.doc), [new ChangedRange(0, 0, 0, state.doc.length)]);
+        this.heightMap = HeightMap.empty().applyChanges(this.stateDeco, Text$1.empty, this.heightOracle.setDoc(state.doc), [new ChangedRange(0, 0, 0, state.doc.length)]);
         this.viewport = this.getViewport(0, null);
         this.updateViewportLines();
         this.updateForViewport();
@@ -9627,7 +9627,7 @@ class ViewState {
             oracle.heightChanged = false;
             for (let vp of this.viewports) {
                 let heights = vp.from == this.viewport.from ? lineHeights : view.docView.measureVisibleLineHeights(vp);
-                this.heightMap = (refresh ? HeightMap.empty().applyChanges(this.stateDeco, Text.empty, this.heightOracle, [new ChangedRange(0, 0, 0, view.state.doc.length)]) : this.heightMap).updateHeight(oracle, 0, refresh, new MeasuredHeights(vp.from, heights));
+                this.heightMap = (refresh ? HeightMap.empty().applyChanges(this.stateDeco, Text$1.empty, this.heightOracle, [new ChangedRange(0, 0, 0, view.state.doc.length)]) : this.heightMap).updateHeight(oracle, 0, refresh, new MeasuredHeights(vp.from, heights));
             }
             if (oracle.heightChanged)
                 result |= 2 /* UpdateFlag.Height */;
@@ -10386,7 +10386,7 @@ function applyDOMChange(view, domChange) {
                 diff.toB == diff.from + 2 && domChange.text.slice(diff.from, diff.toB) == LineBreakPlaceholder + LineBreakPlaceholder)
                 diff.toB--;
             change = { from: from + diff.from, to: from + diff.toA,
-                insert: Text.of(domChange.text.slice(diff.from, diff.toB).split(LineBreakPlaceholder)) };
+                insert: Text$1.of(domChange.text.slice(diff.from, diff.toB).split(LineBreakPlaceholder)) };
         }
     }
     else if (newSel && (!view.hasFocus && view.state.facet(editable) || newSel.main.eq(sel))) {
@@ -10415,7 +10415,7 @@ function applyDOMChange(view, domChange) {
         // and transform it into a regular space insert.
         if (newSel && change.insert.length == 2)
             newSel = EditorSelection.single(newSel.main.anchor - 1, newSel.main.head - 1);
-        change = { from: sel.from, to: sel.to, insert: Text.of([" "]) };
+        change = { from: sel.from, to: sel.to, insert: Text$1.of([" "]) };
     }
     else if (browser.chrome && change && change.from == change.to && change.from == sel.head &&
         change.insert.toString() == "\n " && view.lineWrapping) {
@@ -10424,7 +10424,7 @@ function applyDOMChange(view, domChange) {
         // bogus new line to be created in CodeMirror (#968)
         if (newSel)
             newSel = EditorSelection.single(newSel.main.anchor - 1, newSel.main.head - 1);
-        change = { from: sel.from, to: sel.to, insert: Text.of([" "]) };
+        change = { from: sel.from, to: sel.to, insert: Text$1.of([" "]) };
     }
     if (change) {
         if (browser.ios && view.inputState.flushIOSKey())
@@ -20742,7 +20742,7 @@ function newlineAndIndent(atEof) {
             let insert = ["", indentString(state, indent)];
             if (explode)
                 insert.push(indentString(state, cx.lineIndent(line.from, -1)));
-            return { changes: { from, to, insert: Text.of(insert) },
+            return { changes: { from, to, insert: Text$1.of(insert) },
                 range: EditorSelection.cursor(from + 1 + insert[1].length) };
         });
         dispatch(state.update(changes, { scrollIntoView: true, userEvent: "input" }));
@@ -22279,7 +22279,7 @@ function snippet(template) {
     return (editor, completion, from, to) => {
         let { text, ranges } = snippet.instantiate(editor.state, from);
         let spec = {
-            changes: { from, to, insert: Text.of(text) },
+            changes: { from, to, insert: Text$1.of(text) },
             scrollIntoView: true,
             annotations: completion ? pickedCompletion.of(completion) : undefined
         };
@@ -22413,7 +22413,7 @@ function closing(ch) {
             return definedClosing.charAt(i + 1);
     return fromCodePoint(ch < 128 ? ch : ch + 1);
 }
-function config$3(state, pos) {
+function config$c(state, pos) {
     return state.languageDataAt("closeBrackets", pos)[0] || defaults$1;
 }
 const android$1 = typeof navigator == "object" && /*@__PURE__*//Android\b/.test(navigator.userAgent);
@@ -22437,7 +22437,7 @@ the cursor is between them.
 const deleteBracketPair = ({ state, dispatch }) => {
     if (state.readOnly)
         return false;
-    let conf = config$3(state, state.selection.main.head);
+    let conf = config$c(state, state.selection.main.head);
     let tokens = conf.brackets || defaults$1.brackets;
     let dont = null, changes = state.changeByRange(range => {
         if (range.empty) {
@@ -22473,7 +22473,7 @@ to programmatically insert brackets—the
 take care of running this for user input.)
 */
 function insertBracket(state, bracket) {
-    let conf = config$3(state, state.selection.main.head);
+    let conf = config$c(state, state.selection.main.head);
     let tokens = conf.brackets || defaults$1.brackets;
     for (let tok of tokens) {
         let closed = closing(codePointAt(tok, 0));
@@ -33629,7 +33629,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-FQ702h3m.js').then(m => m.less());
+            return import('./index-_LJ5JwHW.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -33655,7 +33655,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-S23mlcsH.js').then(m => m.php());
+            return import('./index-UZtwFqnp.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -33724,7 +33724,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-2Z6pKCYq.js').then(m => m.wast());
+            return import('./index-CXtVrFQ2.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34535,13 +34535,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-0s3jRafg.js').then(m => m.vue());
+            return import('./index-x3JKrHry.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-XEqiTOhc.js').then(m => m.angular());
+            return import('./index-PirFEjcO.js').then(m => m.angular());
         }
     })
 ];
@@ -34586,18 +34586,18 @@ function toggleCharactersAroundRange(controlChar, state, range) {
     changes.push(isStyledBefore ? {
         from: fromWithChars,
         to: range.from,
-        insert: Text.of([''])
+        insert: Text$1.of([''])
     } : {
         from: range.from,
-        insert: Text.of([controlChar]),
+        insert: Text$1.of([controlChar]),
     });
     changes.push(isStyledAfter ? {
         from: range.to,
         to: toWithChars,
-        insert: Text.of([''])
+        insert: Text$1.of([''])
     } : {
         from: range.to,
-        insert: Text.of([controlChar]),
+        insert: Text$1.of([controlChar]),
     });
     const extendBefore = isStyledBefore ? -controlCharLength : controlCharLength;
     const extendAfter = isStyledAfter ? -controlCharLength : controlCharLength;
@@ -34637,7 +34637,7 @@ function toggleCharactersAtStartOfLines(view, controlChar, exactMatch) {
             changes.push({
                 from: lineAtFrom.from,
                 to: lineAtFrom.from + oldStyleLength,
-                insert: Text.of([''])
+                insert: Text$1.of([''])
             });
             newFrom -= oldStyleLength;
             newTo -= oldStyleLength;
@@ -34647,14 +34647,14 @@ function toggleCharactersAtStartOfLines(view, controlChar, exactMatch) {
                 changes.push({
                     from: lineAtFrom.from,
                     to: lineAtFrom.from + oldStyleLength,
-                    insert: Text.of([''])
+                    insert: Text$1.of([''])
                 });
                 newFrom -= oldStyleLength;
                 newTo -= oldStyleLength;
             }
             changes.push({
                 from: lineAtFrom.from,
-                insert: Text.of([fullControlChar]),
+                insert: Text$1.of([fullControlChar]),
             });
             newFrom += fullControlChar.length;
             newTo += fullControlChar.length;
@@ -34688,14 +34688,14 @@ function modifyHeaderLevelAtSelections(view, delta) {
             changes.push({
                 from: lineAtFrom.from,
                 to: lineAtFrom.from + headerLengthWithSpaces,
-                insert: Text.of([''])
+                insert: Text$1.of([''])
             });
         }
         else {
             changes.push({
                 from: lineAtFrom.from,
                 to: lineAtFrom.from + headerLengthWithSpaces,
-                insert: Text.of(['#'.repeat(newHeaderLevel) + ' '])
+                insert: Text$1.of(['#'.repeat(newHeaderLevel) + ' '])
             });
         }
         let from = Math.min(Math.max(lineAtFrom.from, range.from + delta), lineAtFrom.to);
@@ -36267,7 +36267,7 @@ var githubDarkInit = options => {
 };
 var githubDark = githubDarkInit();
 
-var config$2 = {
+var config$b = {
   background: '#272822',
   foreground: '#f8f8f2',
   selection: '#4a4a76',
@@ -36294,14 +36294,14 @@ var config$2 = {
 };
 
 var defaultSettingsMonokai = {
-  background: config$2.background,
-  foreground: config$2.foreground,
-  caret: config$2.cursor,
-  selection: config$2.selection,
-  selectionMatch: config$2.selection,
-  gutterBackground: config$2.background,
-  gutterForeground: config$2.foreground,
-  lineHighlight: config$2.activeLine
+  background: config$b.background,
+  foreground: config$b.foreground,
+  caret: config$b.cursor,
+  selection: config$b.selection,
+  selectionMatch: config$b.selection,
+  gutterBackground: config$b.background,
+  gutterForeground: config$b.foreground,
+  lineHighlight: config$b.activeLine
 };
 var monokaiInit = options => {
   var {
@@ -36314,47 +36314,47 @@ var monokaiInit = options => {
     settings: _extends({}, defaultSettingsMonokai, settings),
     styles: [{
       tag: tags$1.keyword,
-      color: config$2.keyword
+      color: config$b.keyword
     }, {
       tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
-      color: config$2.variable
+      color: config$b.variable
     }, {
       tag: [tags$1.propertyName],
-      color: config$2.function
+      color: config$b.function
     }, {
       tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
-      color: config$2.string
+      color: config$b.string
     }, {
       tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
-      color: config$2.function
+      color: config$b.function
     }, {
       tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
-      color: config$2.constant
+      color: config$b.constant
     }, {
       tag: [tags$1.definition(tags$1.name), tags$1.separator],
-      color: config$2.variable
+      color: config$b.variable
     }, {
       tag: [tags$1.className],
-      color: config$2.class
+      color: config$b.class
     }, {
       tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
-      color: config$2.number
+      color: config$b.number
     }, {
       tag: [tags$1.typeName],
-      color: config$2.type,
-      fontStyle: config$2.type
+      color: config$b.type,
+      fontStyle: config$b.type
     }, {
       tag: [tags$1.operator, tags$1.operatorKeyword],
-      color: config$2.keyword
+      color: config$b.keyword
     }, {
       tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
-      color: config$2.regexp
+      color: config$b.regexp
     }, {
       tag: [tags$1.meta, tags$1.comment],
-      color: config$2.comment
+      color: config$b.comment
     }, {
       tag: tags$1.tagName,
-      color: config$2.tag
+      color: config$b.tag
     }, {
       tag: tags$1.strong,
       fontWeight: 'bold'
@@ -36367,13 +36367,13 @@ var monokaiInit = options => {
     }, {
       tag: tags$1.heading,
       fontWeight: 'bold',
-      color: config$2.heading
+      color: config$b.heading
     }, {
       tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
-      color: config$2.variable
+      color: config$b.variable
     }, {
       tag: tags$1.invalid,
-      color: config$2.invalid
+      color: config$b.invalid
     }, {
       tag: tags$1.strikethrough,
       textDecoration: 'line-through'
@@ -36528,7 +36528,7 @@ var nordInit = options => {
 };
 var nord = nordInit();
 
-var config$1 = {
+var config$a = {
   background: '#002B36',
   foreground: '#839496',
   selection: '#004454AA',
@@ -36556,15 +36556,15 @@ var config$1 = {
 };
 
 var defaultSettingsSolarizedDark = {
-  background: config$1.background,
-  foreground: config$1.foreground,
-  caret: config$1.cursor,
-  selection: config$1.selection,
-  selectionMatch: config$1.selection,
-  gutterBackground: config$1.background,
-  gutterForeground: config$1.foreground,
+  background: config$a.background,
+  foreground: config$a.foreground,
+  caret: config$a.cursor,
+  selection: config$a.selection,
+  selectionMatch: config$a.selection,
+  gutterBackground: config$a.background,
+  gutterForeground: config$a.foreground,
   gutterBorder: 'transparent',
-  lineHighlight: config$1.activeLine
+  lineHighlight: config$a.activeLine
 };
 var solarizedDarkInit = options => {
   var {
@@ -36577,47 +36577,47 @@ var solarizedDarkInit = options => {
     settings: _extends({}, defaultSettingsSolarizedDark, settings),
     styles: [{
       tag: tags$1.keyword,
-      color: config$1.keyword
+      color: config$a.keyword
     }, {
       tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
-      color: config$1.variable
+      color: config$a.variable
     }, {
       tag: [tags$1.propertyName],
-      color: config$1.function
+      color: config$a.function
     }, {
       tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
-      color: config$1.string
+      color: config$a.string
     }, {
       tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
-      color: config$1.function
+      color: config$a.function
     }, {
       tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
-      color: config$1.constant
+      color: config$a.constant
     }, {
       tag: [tags$1.definition(tags$1.name), tags$1.separator],
-      color: config$1.variable
+      color: config$a.variable
     }, {
       tag: [tags$1.className],
-      color: config$1.class
+      color: config$a.class
     }, {
       tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
-      color: config$1.number
+      color: config$a.number
     }, {
       tag: [tags$1.typeName],
-      color: config$1.type,
-      fontStyle: config$1.type
+      color: config$a.type,
+      fontStyle: config$a.type
     }, {
       tag: [tags$1.operator, tags$1.operatorKeyword],
-      color: config$1.keyword
+      color: config$a.keyword
     }, {
       tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
-      color: config$1.regexp
+      color: config$a.regexp
     }, {
       tag: [tags$1.meta, tags$1.comment],
-      color: config$1.comment
+      color: config$a.comment
     }, {
       tag: tags$1.tagName,
-      color: config$1.tag
+      color: config$a.tag
     }, {
       tag: tags$1.strong,
       fontWeight: 'bold'
@@ -36630,13 +36630,13 @@ var solarizedDarkInit = options => {
     }, {
       tag: tags$1.heading,
       fontWeight: 'bold',
-      color: config$1.heading
+      color: config$a.heading
     }, {
       tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
-      color: config$1.variable
+      color: config$a.variable
     }, {
       tag: tags$1.invalid,
-      color: config$1.invalid
+      color: config$a.invalid
     }, {
       tag: tags$1.strikethrough,
       textDecoration: 'line-through'
@@ -36645,7 +36645,7 @@ var solarizedDarkInit = options => {
 };
 var solarizedDark = solarizedDarkInit();
 
-var config = {
+var config$9 = {
   background: '#FDF6E3',
   foreground: '#657B83',
   selection: '#EEE8D5',
@@ -36673,15 +36673,15 @@ var config = {
 };
 
 var defaultSettingsSolarizedLight = {
-  background: config.background,
-  foreground: config.foreground,
-  caret: config.cursor,
-  selection: config.selection,
-  selectionMatch: config.selectionMatch,
-  gutterBackground: config.background,
-  gutterForeground: config.foreground,
+  background: config$9.background,
+  foreground: config$9.foreground,
+  caret: config$9.cursor,
+  selection: config$9.selection,
+  selectionMatch: config$9.selectionMatch,
+  gutterBackground: config$9.background,
+  gutterForeground: config$9.foreground,
   gutterBorder: 'transparent',
-  lineHighlight: config.activeLine
+  lineHighlight: config$9.activeLine
 };
 var solarizedLightInit = options => {
   var {
@@ -36694,47 +36694,47 @@ var solarizedLightInit = options => {
     settings: _extends({}, defaultSettingsSolarizedLight, settings),
     styles: [{
       tag: tags$1.keyword,
-      color: config.keyword
+      color: config$9.keyword
     }, {
       tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
-      color: config.variable
+      color: config$9.variable
     }, {
       tag: [tags$1.propertyName],
-      color: config.function
+      color: config$9.function
     }, {
       tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
-      color: config.string
+      color: config$9.string
     }, {
       tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
-      color: config.function
+      color: config$9.function
     }, {
       tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
-      color: config.constant
+      color: config$9.constant
     }, {
       tag: [tags$1.definition(tags$1.name), tags$1.separator],
-      color: config.variable
+      color: config$9.variable
     }, {
       tag: [tags$1.className],
-      color: config.class
+      color: config$9.class
     }, {
       tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
-      color: config.number
+      color: config$9.number
     }, {
       tag: [tags$1.typeName],
-      color: config.type,
-      fontStyle: config.type
+      color: config$9.type,
+      fontStyle: config$9.type
     }, {
       tag: [tags$1.operator, tags$1.operatorKeyword],
-      color: config.keyword
+      color: config$9.keyword
     }, {
       tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
-      color: config.regexp
+      color: config$9.regexp
     }, {
       tag: [tags$1.meta, tags$1.comment],
-      color: config.comment
+      color: config$9.comment
     }, {
       tag: tags$1.tagName,
-      color: config.tag
+      color: config$9.tag
     }, {
       tag: tags$1.strong,
       fontWeight: 'bold'
@@ -36747,13 +36747,13 @@ var solarizedLightInit = options => {
     }, {
       tag: tags$1.heading,
       fontWeight: 'bold',
-      color: config.heading
+      color: config$9.heading
     }, {
       tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
-      color: config.variable
+      color: config$9.variable
     }, {
       tag: tags$1.invalid,
-      color: config.invalid
+      color: config$9.invalid
     }, {
       tag: tags$1.strikethrough,
       textDecoration: 'line-through'
@@ -37014,6 +37014,2684 @@ function vscodeDarkInit(options) {
 }
 var vscodeDark = vscodeDarkInit();
 
+var defaultSettingsAbcdef = {
+  background: '#0f0f0f',
+  foreground: '#defdef',
+  caret: '#00FF00',
+  selection: '#515151',
+  selectionMatch: '#515151',
+  gutterBackground: '#555',
+  gutterForeground: '#FFFFFF',
+  lineHighlight: '#0a6bcb3d'
+};
+var abcdefInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsAbcdef, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: 'darkgoldenrod',
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.atom,
+      color: '#77F'
+    }, {
+      tag: tags$1.comment,
+      color: '#7a7b7c',
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.number,
+      color: 'violet'
+    }, {
+      tag: tags$1.definition(tags$1.variableName),
+      color: '#fffabc'
+    }, {
+      tag: tags$1.variableName,
+      color: '#abcdef'
+    }, {
+      tag: tags$1.function(tags$1.variableName),
+      color: '#fffabc'
+    }, {
+      tag: tags$1.typeName,
+      color: '#FFDD44'
+    }, {
+      tag: tags$1.tagName,
+      color: '#def'
+    }, {
+      tag: tags$1.string,
+      color: '#2b4'
+    }, {
+      tag: tags$1.meta,
+      color: '#C9F'
+    },
+    // { tag: t.qualifier, color: '#FFF700' },
+    // { tag: t.builtin, color: '#30aabc' },
+    {
+      tag: tags$1.bracket,
+      color: '#8a8a8a'
+    }, {
+      tag: tags$1.attributeName,
+      color: '#DDFF00'
+    }, {
+      tag: tags$1.heading,
+      color: 'aquamarine',
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.link,
+      color: 'blueviolet',
+      fontWeight: 'bold'
+    }, ...styles]
+  });
+};
+var abcdef = abcdefInit();
+
+var config$8 = {
+  background: '#000c18',
+  foreground: '#6688cc',
+  selection: '#770811',
+  selectionMatch: '#770811',
+  cursor: '#ddbb88',
+  dropdownBackground: '#181f2f',
+  activeLine: '#0055ff30',
+  matchingBracket: '#082050',
+  keyword: '#225588',
+  storage: '#225588',
+  variable: '#2277ff',
+  parameter: '#2277ff',
+  function: '#9966b8',
+  string: '#22aa44',
+  constant: '#f280d0',
+  type: '#9966b8',
+  class: '#ddbb88',
+  number: '#f280d0',
+  comment: '#384887',
+  heading: '#6688cc',
+  invalid: '#A22D44',
+  regexp: '#22aa44',
+  tag: '#225588'
+};
+
+var defaultSettingsAbyss = {
+  background: config$8.background,
+  foreground: config$8.foreground,
+  caret: config$8.cursor,
+  selection: config$8.selection,
+  selectionMatch: config$8.selectionMatch,
+  gutterBackground: config$8.background,
+  gutterForeground: config$8.foreground,
+  lineHighlight: config$8.activeLine
+};
+var abyssInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsAbyss, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: config$8.keyword
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
+      color: config$8.variable
+    }, {
+      tag: [tags$1.propertyName],
+      color: config$8.function
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
+      color: config$8.string
+    }, {
+      tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
+      color: config$8.function
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: config$8.constant
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: config$8.variable
+    }, {
+      tag: [tags$1.className],
+      color: config$8.class
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: config$8.number
+    }, {
+      tag: [tags$1.typeName],
+      color: config$8.type,
+      fontStyle: config$8.type
+    }, {
+      tag: [tags$1.operator, tags$1.operatorKeyword],
+      color: config$8.keyword
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
+      color: config$8.regexp
+    }, {
+      tag: [tags$1.meta, tags$1.comment],
+      color: config$8.comment
+    }, {
+      tag: tags$1.tagName,
+      color: config$8.tag
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.link,
+      textDecoration: 'underline'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: config$8.heading
+    }, {
+      tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
+      color: config$8.variable
+    }, {
+      tag: tags$1.invalid,
+      color: config$8.invalid
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, ...styles]
+  });
+};
+var abyss = abyssInit();
+
+var defaultSettingsAndroidstudio = {
+  background: '#282b2e',
+  foreground: '#a9b7c6',
+  caret: '#00FF00',
+  selection: '#4e5254',
+  selectionMatch: '#4e5254',
+  lineHighlight: '#7f85891f'
+};
+var androidstudioInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsAndroidstudio, settings),
+    styles: [{
+      tag: [tags$1.keyword, tags$1.deleted, tags$1.className],
+      color: '#cc7832'
+    }, {
+      tag: [tags$1.number, tags$1.literal, tags$1.derefOperator],
+      color: '#6897bb'
+    }, {
+      tag: [tags$1.link, tags$1.variableName],
+      color: '#629755'
+    }, {
+      tag: [tags$1.comment, tags$1.quote],
+      color: 'grey'
+    }, {
+      tag: [tags$1.meta, tags$1.documentMeta],
+      color: '#bbb529'
+    }, {
+      tag: [tags$1.string, tags$1.propertyName, tags$1.attributeValue],
+      color: '#6a8759'
+    }, {
+      tag: [tags$1.heading, tags$1.typeName],
+      color: '#ffc66d'
+    }, {
+      tag: [tags$1.attributeName],
+      color: '#a9b7c6'
+    }, {
+      tag: [tags$1.emphasis],
+      fontStyle: 'italic'
+    }, ...styles]
+  });
+};
+var androidstudio = androidstudioInit();
+
+var config$7 = {
+  background: '#23262E',
+  foreground: '#D5CED9',
+  selection: '#db45a280',
+  selectionMatch: '#db45a280',
+  cursor: '#FFF',
+  dropdownBackground: '#2b303b',
+  dropdownBorder: '#363c49',
+  activeLine: '#596a992e',
+  matchingBracket: '#746f77',
+  keyword: '#c74ded',
+  storage: '#c74ded',
+  variable: '#00e8c6',
+  parameter: '#00e8c6',
+  function: '#FFE66D',
+  string: '#96E072',
+  constant: '#ee5d43',
+  type: '#FFE66D',
+  class: '#FFE66D',
+  number: '#ee5d43',
+  comment: '#A0A1A7cc',
+  heading: '#ff00aa',
+  invalid: null,
+  regexp: '#96E072',
+  tag: '#f92672'
+};
+
+var defaultSettingsAndromeda = {
+  background: config$7.background,
+  foreground: config$7.foreground,
+  caret: config$7.cursor,
+  selection: config$7.selection,
+  selectionMatch: config$7.selectionMatch,
+  gutterBackground: config$7.background,
+  gutterForeground: config$7.foreground,
+  lineHighlight: config$7.activeLine
+};
+var andromedaInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsAndromeda, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: config$7.keyword
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
+      color: config$7.variable
+    }, {
+      tag: [tags$1.propertyName],
+      color: config$7.function
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
+      color: config$7.string
+    }, {
+      tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
+      color: config$7.function
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: config$7.constant
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: config$7.variable
+    }, {
+      tag: [tags$1.className],
+      color: config$7.class
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: config$7.number
+    }, {
+      tag: [tags$1.typeName],
+      color: config$7.type,
+      fontStyle: config$7.type
+    }, {
+      tag: [tags$1.operator],
+      color: config$7.keyword
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
+      color: config$7.regexp
+    }, {
+      tag: [tags$1.meta, tags$1.comment],
+      color: config$7.comment
+    }, {
+      tag: tags$1.tagName,
+      color: config$7.tag
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.link,
+      textDecoration: 'underline'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: config$7.heading
+    }, {
+      tag: [tags$1.atom, tags$1.special(tags$1.variableName)],
+      color: config$7.variable
+    }, {
+      tag: tags$1.invalid,
+      color: config$7.invalid
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, {
+      tag: [tags$1.operatorKeyword, tags$1.bool, tags$1.null, tags$1.variableName],
+      color: config$7.constant
+    }, ...styles]
+  });
+};
+var andromeda = andromedaInit();
+
+var defaultSettingsAtomone = {
+  background: '#272C35',
+  foreground: '#9d9b97',
+  caret: '#797977',
+  selection: '#3d4c64',
+  selectionMatch: '#3d4c64',
+  gutterBackground: '#272C35',
+  gutterForeground: '#465063',
+  gutterBorder: 'transparent',
+  lineHighlight: '#2e3f5940'
+};
+var atomoneInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsAtomone, settings),
+    styles: [{
+      tag: [tags$1.function(tags$1.variableName), tags$1.function(tags$1.propertyName), tags$1.url, tags$1.processingInstruction],
+      color: 'hsl(207, 82%, 66%)'
+    }, {
+      tag: [tags$1.tagName, tags$1.heading],
+      color: '#e06c75'
+    }, {
+      tag: tags$1.comment,
+      color: '#54636D'
+    }, {
+      tag: [tags$1.propertyName],
+      color: 'hsl(220, 14%, 71%)'
+    }, {
+      tag: [tags$1.attributeName, tags$1.number],
+      color: 'hsl( 29, 54%, 61%)'
+    }, {
+      tag: tags$1.className,
+      color: 'hsl( 39, 67%, 69%)'
+    }, {
+      tag: tags$1.keyword,
+      color: 'hsl(286, 60%, 67%)'
+    }, {
+      tag: [tags$1.string, tags$1.regexp, tags$1.special(tags$1.propertyName)],
+      color: '#98c379'
+    }, ...styles]
+  });
+};
+var atomone = atomoneInit();
+
+var defaultSettingsAura = {
+  background: '#21202e',
+  foreground: '#edecee',
+  caret: '#a277ff',
+  selection: '#5a51898f',
+  selectionMatch: '#5a51898f',
+  gutterBackground: '#21202e',
+  gutterForeground: '#edecee',
+  gutterBorder: 'transparent',
+  lineHighlight: '#a394f033'
+};
+var auraInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsAura, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: '#a277ff'
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
+      color: '#edecee'
+    }, {
+      tag: [tags$1.propertyName],
+      color: '#ffca85'
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
+      color: '#61ffca'
+    }, {
+      tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
+      color: '#ffca85'
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: '#61ffca'
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: '#edecee'
+    }, {
+      tag: [tags$1.className],
+      color: '#82e2ff'
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: '#61ffca'
+    }, {
+      tag: [tags$1.typeName],
+      color: '#82e2ff'
+    }, {
+      tag: [tags$1.operator, tags$1.operatorKeyword],
+      color: '#a277ff'
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
+      color: '#61ffca'
+    }, {
+      tag: [tags$1.meta, tags$1.comment],
+      color: '#6d6d6d'
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.link,
+      textDecoration: 'underline'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: '#a277ff'
+    }, {
+      tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
+      color: '#edecee'
+    }, {
+      tag: tags$1.invalid,
+      color: '#ff6767'
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, ...styles]
+  });
+};
+var aura = auraInit();
+
+var defaultSettingsBbedit = {
+  background: '#FFFFFF',
+  foreground: '#000000',
+  caret: '#FBAC52',
+  selection: '#FFD420',
+  selectionMatch: '#FFD420',
+  gutterBackground: '#f5f5f5',
+  gutterForeground: '#4D4D4C',
+  gutterBorder: 'transparent',
+  lineHighlight: '#00000012'
+};
+var bbeditInit = options => {
+  var {
+    theme = 'light',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsBbedit, settings),
+    styles: [{
+      tag: [tags$1.meta, tags$1.comment],
+      color: '#804000'
+    }, {
+      tag: [tags$1.keyword, tags$1.strong],
+      color: '#0000FF'
+    }, {
+      tag: [tags$1.number],
+      color: '#FF0080'
+    }, {
+      tag: [tags$1.string],
+      color: '#FF0080'
+    }, {
+      tag: [tags$1.variableName],
+      color: '#006600'
+    }, {
+      tag: [tags$1.escape],
+      color: '#33CC33'
+    }, {
+      tag: [tags$1.tagName],
+      color: '#1C02FF'
+    }, {
+      tag: [tags$1.heading],
+      color: '#0C07FF'
+    }, {
+      tag: [tags$1.quote],
+      color: '#000000'
+    }, {
+      tag: [tags$1.list],
+      color: '#B90690'
+    }, {
+      tag: [tags$1.documentMeta],
+      color: '#888888'
+    }, {
+      tag: [tags$1.function(tags$1.variableName)],
+      color: '#0000A2'
+    }, {
+      tag: [tags$1.definition(tags$1.typeName), tags$1.typeName],
+      color: '#6D79DE'
+    }, ...styles]
+  });
+};
+var bbedit = bbeditInit();
+
+var defaultSettingsBasicDark = {
+  background: '#2E3235',
+  foreground: '#DDDDDD',
+  caret: '#DDDDDD',
+  selection: '#202325',
+  selectionMatch: '#202325',
+  gutterBackground: '#292d30',
+  gutterForeground: '#808080',
+  gutterBorder: '1px solid #ffffff10',
+  lineHighlight: '#B9D2FF30'
+};
+var basicDarkInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsBasicDark, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: '#fda331'
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.propertyName, tags$1.macroName],
+      color: '#b5bd68'
+    }, {
+      tag: [tags$1.variableName],
+      color: '#6fb3d2'
+    }, {
+      tag: [tags$1.function(tags$1.variableName)],
+      color: '#fda331'
+    }, {
+      tag: [tags$1.labelName],
+      color: '#fc6d24'
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: '#fda331'
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: '#cc99cc'
+    }, {
+      tag: [tags$1.brace],
+      color: '#cc99cc'
+    }, {
+      tag: [tags$1.annotation],
+      color: '#fc6d24'
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: '#fda331'
+    }, {
+      tag: [tags$1.typeName, tags$1.className],
+      color: '#6fb3d2'
+    }, {
+      tag: [tags$1.operator, tags$1.operatorKeyword],
+      color: '#cc99cc'
+    }, {
+      tag: [tags$1.tagName],
+      color: '#fda331'
+    }, {
+      tag: [tags$1.squareBracket],
+      color: '#cc99cc'
+    }, {
+      tag: [tags$1.angleBracket],
+      color: '#cc99cc'
+    }, {
+      tag: [tags$1.attributeName],
+      color: '#6fb3d2'
+    }, {
+      tag: [tags$1.regexp],
+      color: '#fda331'
+    }, {
+      tag: [tags$1.quote],
+      color: '#DDDDDD'
+    }, {
+      tag: [tags$1.string],
+      color: '#b5bd68'
+    }, {
+      tag: tags$1.link,
+      color: '#6987AF',
+      textDecoration: 'underline',
+      textUnderlinePosition: 'under'
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.special(tags$1.string)],
+      color: '#8abeb7'
+    }, {
+      tag: [tags$1.meta],
+      color: '#A54543'
+    }, {
+      tag: [tags$1.comment],
+      color: '#808080',
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.monospace,
+      color: '#DDDDDD'
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold',
+      color: '#fda331'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic',
+      color: '#6fb3d2'
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: '#DDDDDD'
+    }, {
+      tag: tags$1.special(tags$1.heading1),
+      fontWeight: 'bold',
+      color: '#DDDDDD'
+    }, {
+      tag: tags$1.heading1,
+      fontWeight: 'bold',
+      color: '#DDDDDD'
+    }, {
+      tag: [tags$1.heading2, tags$1.heading3, tags$1.heading4],
+      fontWeight: 'bold',
+      color: '#DDDDDD'
+    }, {
+      tag: [tags$1.heading5, tags$1.heading6],
+      color: '#DDDDDD'
+    }, {
+      tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
+      color: '#8abeb7'
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.inserted],
+      color: '#8abeb7'
+    }, {
+      tag: [tags$1.contentSeparator],
+      color: '#6fb3d2'
+    }, {
+      tag: tags$1.invalid,
+      color: '#B9D2FF',
+      borderBottom: "1px dotted " + '#fc6d24'
+    }, ...styles]
+  });
+};
+var basicDark = basicDarkInit();
+
+var defaultSettingsBasicLight = {
+  background: '#ffffff',
+  foreground: '#2e3440',
+  caret: '#3b4252',
+  selection: '#eceff4',
+  selectionMatch: '#e5e9f0',
+  gutterBackground: '#eceff4',
+  gutterForeground: '#2e3440',
+  gutterBorder: 'none',
+  lineHighlight: '#02255f11'
+};
+var basicLightInit = options => {
+  var {
+    theme = 'light',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsBasicLight, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: '#5e81ac'
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.propertyName, tags$1.macroName],
+      color: '#d08770'
+    }, {
+      tag: [tags$1.variableName],
+      color: '#d08770'
+    }, {
+      tag: [tags$1.function(tags$1.variableName)],
+      color: '#5e81ac'
+    }, {
+      tag: [tags$1.labelName],
+      color: '#81a1c1'
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: '#5e81ac'
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: '#a3be8c'
+    }, {
+      tag: [tags$1.brace],
+      color: '#8fbcbb'
+    }, {
+      tag: [tags$1.annotation],
+      color: '#d30102'
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: '#88c0d0'
+    }, {
+      tag: [tags$1.typeName, tags$1.className],
+      color: '#ebcb8b'
+    }, {
+      tag: [tags$1.operator, tags$1.operatorKeyword],
+      color: '#a3be8c'
+    }, {
+      tag: [tags$1.tagName],
+      color: '#b48ead'
+    }, {
+      tag: [tags$1.squareBracket],
+      color: '#bf616a'
+    }, {
+      tag: [tags$1.angleBracket],
+      color: '#d08770'
+    }, {
+      tag: [tags$1.attributeName],
+      color: '#ebcb8b'
+    }, {
+      tag: [tags$1.regexp],
+      color: '#5e81ac'
+    }, {
+      tag: [tags$1.quote],
+      color: '#3b4252'
+    }, {
+      tag: [tags$1.string],
+      color: '#d08770'
+    }, {
+      tag: tags$1.link,
+      color: '#8fbcbb',
+      textDecoration: 'underline',
+      textUnderlinePosition: 'under'
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.special(tags$1.string)],
+      color: '#d08770'
+    }, {
+      tag: [tags$1.meta],
+      color: '#88c0d0'
+    }, {
+      tag: [tags$1.comment],
+      color: '#434c5e',
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold',
+      color: '#5e81ac'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic',
+      color: '#5e81ac'
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: '#5e81ac'
+    }, {
+      tag: tags$1.special(tags$1.heading1),
+      fontWeight: 'bold',
+      color: '#5e81ac'
+    }, {
+      tag: tags$1.heading1,
+      fontWeight: 'bold',
+      color: '#5e81ac'
+    }, {
+      tag: [tags$1.heading2, tags$1.heading3, tags$1.heading4],
+      fontWeight: 'bold',
+      color: '#5e81ac'
+    }, {
+      tag: [tags$1.heading5, tags$1.heading6],
+      color: '#5e81ac'
+    }, {
+      tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
+      color: '#d08770'
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.inserted],
+      color: '#8fbcbb'
+    }, {
+      tag: [tags$1.contentSeparator],
+      color: '#ebcb8b'
+    }, {
+      tag: tags$1.invalid,
+      color: '#434c5e',
+      borderBottom: '1px dotted #d30102'
+    }, ...styles]
+  });
+};
+var basicLight = basicLightInit();
+
+var config$6 = {
+  background: '#232a2f',
+  foreground: '#939da5',
+  selection: '#204062',
+  selectionMatch: '#204062',
+  cursor: '#939da5',
+  dropdownBackground: '#1a2023',
+  activeLine: '#4469832b',
+  matchingBracket: '#204062',
+  keyword: '#ba8ef7',
+  storage: '#ba8ef7',
+  variable: '#939da5',
+  parameter: '#939da5',
+  function: '#ffea6b',
+  string: '#5bec95',
+  constant: '#939da5',
+  type: '#89ddff',
+  class: '#ffea6b',
+  number: '#89ddff',
+  comment: '#707a84',
+  heading: '#5bec95',
+  invalid: '#ff6a80',
+  regexp: '#56adb7',
+  tag: '#ff6a80'
+};
+
+var defaultSettingsCopilot = {
+  background: config$6.background,
+  foreground: config$6.foreground,
+  caret: config$6.cursor,
+  selection: config$6.selection,
+  selectionMatch: config$6.selectionMatch,
+  gutterBackground: config$6.background,
+  gutterForeground: config$6.foreground,
+  lineHighlight: config$6.activeLine
+};
+var copilotInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsCopilot, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: config$6.keyword
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
+      color: config$6.variable
+    }, {
+      tag: [tags$1.propertyName],
+      color: config$6.function
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
+      color: config$6.string
+    }, {
+      tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
+      color: config$6.function
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: config$6.constant
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: config$6.variable
+    }, {
+      tag: [tags$1.className],
+      color: config$6.class
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: config$6.number
+    }, {
+      tag: [tags$1.typeName],
+      color: config$6.type,
+      fontStyle: config$6.type
+    }, {
+      tag: [tags$1.operator],
+      color: config$6.keyword
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
+      color: config$6.regexp
+    }, {
+      tag: [tags$1.meta, tags$1.comment],
+      color: config$6.comment
+    }, {
+      tag: tags$1.tagName,
+      color: config$6.tag
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.link,
+      textDecoration: 'underline'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: config$6.heading
+    }, {
+      tag: [tags$1.atom, tags$1.special(tags$1.variableName)],
+      color: config$6.variable
+    }, {
+      tag: tags$1.invalid,
+      color: config$6.invalid
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, {
+      tag: [tags$1.operatorKeyword, tags$1.bool, tags$1.null, tags$1.variableName],
+      color: config$6.constant
+    }, ...styles]
+  });
+};
+var copilot = copilotInit();
+
+var defaultSettingsDarcula = {
+  background: '#2B2B2B',
+  foreground: '#f8f8f2',
+  caret: '#FFFFFF',
+  selection: 'rgba(255, 255, 255, 0.1)',
+  selectionMatch: 'rgba(255, 255, 255, 0.2)',
+  gutterBackground: 'rgba(255, 255, 255, 0.1)',
+  gutterForeground: '#999',
+  gutterBorder: 'transparent',
+  lineHighlight: 'rgba(255, 255, 255, 0.1)'
+};
+var darculaInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsDarcula, settings),
+    styles: [{
+      tag: [tags$1.atom, tags$1.number],
+      color: '#bd93f9'
+    }, {
+      tag: [tags$1.comment],
+      color: '#61A151'
+    }, {
+      tag: [tags$1.string],
+      color: '#6A8759'
+    }, {
+      tag: [tags$1.variableName, tags$1.operator],
+      color: '#A9B7C6'
+    }, {
+      tag: [tags$1.meta, tags$1.className],
+      color: '#A9B7C6'
+    }, {
+      tag: [tags$1.propertyName],
+      color: '#FFC66D'
+    }, {
+      tag: [tags$1.keyword],
+      color: '#CC7832'
+    }, {
+      tag: [tags$1.tagName],
+      color: '#ff79c6'
+    }, {
+      tag: [tags$1.typeName],
+      color: '#ffb86c'
+    }, ...styles]
+  });
+};
+var darcula = darculaInit();
+
+var defaultSettingsDuotoneLight = {
+  background: '#faf8f5',
+  foreground: '#b29762',
+  caret: '#93abdc',
+  selection: '#e3dcce',
+  selectionMatch: '#e3dcce',
+  gutterBackground: '#faf8f5',
+  gutterForeground: '#cdc4b1',
+  gutterBorder: 'transparent',
+  lineHighlight: '#ddceb154'
+};
+var duotoneLightInit = options => {
+  var {
+    theme = 'light',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsDuotoneLight, settings),
+    styles: [{
+      tag: [tags$1.comment, tags$1.bracket],
+      color: '#b6ad9a'
+    }, {
+      tag: [tags$1.atom, tags$1.number, tags$1.keyword, tags$1.link, tags$1.attributeName, tags$1.quote],
+      color: '#063289'
+    }, {
+      tag: [tags$1.emphasis, tags$1.heading, tags$1.tagName, tags$1.propertyName, tags$1.variableName],
+      color: '#2d2006'
+    }, {
+      tag: [tags$1.typeName, tags$1.url, tags$1.string],
+      color: '#896724'
+    }, {
+      tag: [tags$1.operator, tags$1.string],
+      color: '#1659df'
+    }, {
+      tag: [tags$1.propertyName],
+      color: '#b29762'
+    }, {
+      tag: [tags$1.unit, tags$1.punctuation],
+      color: '#063289'
+    }, ...styles]
+  });
+};
+var duotoneLight = duotoneLightInit();
+var defaultSettingsDuotoneDark = {
+  background: '#2a2734',
+  foreground: '#6c6783',
+  caret: '#ffad5c',
+  selection: '#91ff6c26',
+  selectionMatch: '#91ff6c26',
+  gutterBackground: '#2a2734',
+  gutterForeground: '#545167',
+  lineHighlight: '#36334280'
+};
+var duotoneDarkInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsDuotoneDark, settings),
+    styles: [{
+      tag: [tags$1.comment, tags$1.bracket],
+      color: '#6c6783'
+    }, {
+      tag: [tags$1.atom, tags$1.number, tags$1.keyword, tags$1.link, tags$1.attributeName, tags$1.quote],
+      color: '#ffcc99'
+    }, {
+      tag: [tags$1.emphasis, tags$1.heading, tags$1.tagName, tags$1.propertyName, tags$1.className, tags$1.variableName],
+      color: '#eeebff'
+    }, {
+      tag: [tags$1.typeName, tags$1.url],
+      color: '#7a63ee'
+    }, {
+      tag: tags$1.operator,
+      color: '#ffad5c'
+    }, {
+      tag: tags$1.string,
+      color: '#ffb870'
+    }, {
+      tag: [tags$1.propertyName],
+      color: '#9a86fd'
+    }, {
+      tag: [tags$1.unit, tags$1.punctuation],
+      color: '#e09142'
+    }, ...styles]
+  });
+};
+var duotoneDark = duotoneDarkInit();
+
+var defaultSettingsEclipse = {
+  background: '#fff',
+  foreground: '#000',
+  caret: '#FFFFFF',
+  selection: '#d7d4f0',
+  selectionMatch: '#d7d4f0',
+  gutterBackground: '#f7f7f7',
+  gutterForeground: '#999',
+  lineHighlight: '#006fff1c',
+  gutterBorder: 'transparent'
+};
+var eclipseInit = options => {
+  var {
+    theme = 'light',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsEclipse, settings),
+    styles: [{
+      tag: [tags$1.comment],
+      color: '#3F7F5F'
+    }, {
+      tag: [tags$1.documentMeta],
+      color: '#FF1717'
+    }, {
+      tag: tags$1.keyword,
+      color: '#7F0055',
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.atom,
+      color: '#00f'
+    }, {
+      tag: tags$1.number,
+      color: '#164'
+    }, {
+      tag: tags$1.propertyName,
+      color: '#164'
+    }, {
+      tag: [tags$1.variableName, tags$1.definition(tags$1.variableName)],
+      color: '#0000C0'
+    }, {
+      tag: tags$1.function(tags$1.variableName),
+      color: '#0000C0'
+    }, {
+      tag: tags$1.string,
+      color: '#2A00FF'
+    }, {
+      tag: tags$1.operator,
+      color: 'black'
+    }, {
+      tag: tags$1.tagName,
+      color: '#170'
+    }, {
+      tag: tags$1.attributeName,
+      color: '#00c'
+    }, {
+      tag: tags$1.link,
+      color: '#219'
+    }, ...styles]
+  });
+};
+var eclipse = eclipseInit();
+
+var defaultSettingsGruvboxDark = {
+  background: '#282828',
+  foreground: '#ebdbb2',
+  caret: '#ebdbb2',
+  selection: '#b99d555c',
+  selectionMatch: '#b99d555c',
+  lineHighlight: '#baa1602b',
+  gutterBackground: '#282828',
+  gutterForeground: '#7c6f64'
+};
+var gruvboxDarkInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsGruvboxDark, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: '#fb4934'
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.propertyName, tags$1.macroName],
+      color: '#8ec07c'
+    }, {
+      tag: [tags$1.variableName],
+      color: '#83a598'
+    }, {
+      tag: [tags$1.function(tags$1.variableName)],
+      color: '#b8bb26',
+      fontStyle: 'bold'
+    }, {
+      tag: [tags$1.labelName],
+      color: '#ebdbb2'
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: '#d3869b'
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: '#ebdbb2'
+    }, {
+      tag: [tags$1.brace],
+      color: '#ebdbb2'
+    }, {
+      tag: [tags$1.annotation],
+      color: '#fb4934d'
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: '#d3869b'
+    }, {
+      tag: [tags$1.typeName, tags$1.className],
+      color: '#fabd2f'
+    }, {
+      tag: [tags$1.operator, tags$1.operatorKeyword],
+      color: '#fb4934'
+    }, {
+      tag: [tags$1.tagName],
+      color: '#8ec07c',
+      fontStyle: 'bold'
+    }, {
+      tag: [tags$1.squareBracket],
+      color: '#fe8019'
+    }, {
+      tag: [tags$1.angleBracket],
+      color: '#83a598'
+    }, {
+      tag: [tags$1.attributeName],
+      color: '#8ec07c'
+    }, {
+      tag: [tags$1.regexp],
+      color: '#8ec07c'
+    }, {
+      tag: [tags$1.quote],
+      color: '#928374'
+    }, {
+      tag: [tags$1.string],
+      color: '#ebdbb2'
+    }, {
+      tag: tags$1.link,
+      color: '#a89984',
+      textDecoration: 'underline',
+      textUnderlinePosition: 'under'
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.special(tags$1.string)],
+      color: '#d3869b'
+    }, {
+      tag: [tags$1.meta],
+      color: '#fabd2f'
+    }, {
+      tag: [tags$1.comment],
+      color: '#928374',
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold',
+      color: '#fe8019'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic',
+      color: '#b8bb26'
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: '#b8bb26'
+    }, {
+      tag: [tags$1.heading1, tags$1.heading2],
+      fontWeight: 'bold',
+      color: '#b8bb26'
+    }, {
+      tag: [tags$1.heading3, tags$1.heading4],
+      fontWeight: 'bold',
+      color: '#fabd2f'
+    }, {
+      tag: [tags$1.heading5, tags$1.heading6],
+      color: '#fabd2f'
+    }, {
+      tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
+      color: '#d3869b'
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.inserted],
+      color: '#83a598'
+    }, {
+      tag: [tags$1.contentSeparator],
+      color: '#fb4934'
+    }, {
+      tag: tags$1.invalid,
+      color: '#fe8019',
+      borderBottom: "1px dotted #fb4934d"
+    }, ...styles]
+  });
+};
+var gruvboxDark = gruvboxDarkInit();
+var defaultSettingsGruvboxLight = {
+  background: '#fbf1c7',
+  foreground: '#3c3836',
+  caret: '#af3a03',
+  selection: '#bdae9391',
+  selectionMatch: '#bdae9391',
+  lineHighlight: '#a37f2238',
+  gutterBackground: '#ebdbb2',
+  gutterForeground: '#665c54',
+  gutterBorder: 'transparent'
+};
+var gruvboxLightInit = options => {
+  var {
+    theme = 'light',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsGruvboxLight, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: '#9d0006'
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.propertyName, tags$1.macroName],
+      color: '#427b58'
+    }, {
+      tag: [tags$1.variableName],
+      color: '#076678'
+    }, {
+      tag: [tags$1.function(tags$1.variableName)],
+      color: '#79740e',
+      fontStyle: 'bold'
+    }, {
+      tag: [tags$1.labelName],
+      color: '#3c3836'
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: '#8f3f71'
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: '#3c3836'
+    }, {
+      tag: [tags$1.brace],
+      color: '#3c3836'
+    }, {
+      tag: [tags$1.annotation],
+      color: '#9d0006'
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: '#8f3f71'
+    }, {
+      tag: [tags$1.typeName, tags$1.className],
+      color: '#b57614'
+    }, {
+      tag: [tags$1.operator, tags$1.operatorKeyword],
+      color: '#9d0006'
+    }, {
+      tag: [tags$1.tagName],
+      color: '#427b58',
+      fontStyle: 'bold'
+    }, {
+      tag: [tags$1.squareBracket],
+      color: '#af3a03'
+    }, {
+      tag: [tags$1.angleBracket],
+      color: '#076678'
+    }, {
+      tag: [tags$1.attributeName],
+      color: '#427b58'
+    }, {
+      tag: [tags$1.regexp],
+      color: '#427b58'
+    }, {
+      tag: [tags$1.quote],
+      color: '#928374'
+    }, {
+      tag: [tags$1.string],
+      color: '#3c3836'
+    }, {
+      tag: tags$1.link,
+      color: '#7c6f64',
+      textDecoration: 'underline',
+      textUnderlinePosition: 'under'
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.special(tags$1.string)],
+      color: '#8f3f71'
+    }, {
+      tag: [tags$1.meta],
+      color: '#b57614'
+    }, {
+      tag: [tags$1.comment],
+      color: '#928374',
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold',
+      color: '#af3a03'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic',
+      color: '#79740e'
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: '#79740e'
+    }, {
+      tag: [tags$1.heading1, tags$1.heading2],
+      fontWeight: 'bold',
+      color: '#79740e'
+    }, {
+      tag: [tags$1.heading3, tags$1.heading4],
+      fontWeight: 'bold',
+      color: '#b57614'
+    }, {
+      tag: [tags$1.heading5, tags$1.heading6],
+      color: '#b57614'
+    }, {
+      tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
+      color: '#8f3f71'
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.inserted],
+      color: '#076678'
+    }, {
+      tag: [tags$1.contentSeparator],
+      color: '#9d0006'
+    }, {
+      tag: tags$1.invalid,
+      color: '#af3a03',
+      borderBottom: "1px dotted #9d0006"
+    }, ...styles]
+  });
+};
+var gruvboxLight = gruvboxLightInit();
+
+var defaultSettingsMaterial = {
+  background: '#2e3235',
+  foreground: '#bdbdbd',
+  caret: '#a0a4ae',
+  selection: '#d7d4f063',
+  selectionMatch: '#d7d4f063',
+  gutterBackground: '#2e3235',
+  gutterForeground: '#999',
+  gutterActiveForeground: '#4f5b66',
+  lineHighlight: '#545b6130'
+};
+var materialInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsMaterial, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: '#cf6edf'
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
+      color: '#56c8d8'
+    }, {
+      tag: [tags$1.propertyName],
+      color: '#facf4e'
+    }, {
+      tag: [tags$1.variableName],
+      color: '#bdbdbd'
+    }, {
+      tag: [tags$1.function(tags$1.variableName)],
+      color: '#56c8d8'
+    }, {
+      tag: [tags$1.labelName],
+      color: '#cf6edf'
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: '#facf4e'
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: '#fa5788'
+    }, {
+      tag: [tags$1.brace],
+      color: '#cf6edf'
+    }, {
+      tag: [tags$1.annotation],
+      color: '#ff5f52'
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: '#ffad42'
+    }, {
+      tag: [tags$1.typeName, tags$1.className],
+      color: '#ffad42'
+    }, {
+      tag: [tags$1.operator, tags$1.operatorKeyword],
+      color: '#7186f0'
+    }, {
+      tag: [tags$1.tagName],
+      color: '#99d066'
+    }, {
+      tag: [tags$1.squareBracket],
+      color: '#ff5f52'
+    }, {
+      tag: [tags$1.angleBracket],
+      color: '#606f7a'
+    }, {
+      tag: [tags$1.attributeName],
+      color: '#bdbdbd'
+    }, {
+      tag: [tags$1.regexp],
+      color: '#ff5f52'
+    }, {
+      tag: [tags$1.quote],
+      color: '#6abf69'
+    }, {
+      tag: [tags$1.string],
+      color: '#99d066'
+    }, {
+      tag: tags$1.link,
+      color: '#56c8d8',
+      textDecoration: 'underline',
+      textUnderlinePosition: 'under'
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.special(tags$1.string)],
+      color: '#facf4e'
+    }, {
+      tag: [tags$1.meta],
+      color: '#707d8b'
+    }, {
+      tag: [tags$1.comment],
+      color: '#707d8b',
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.monospace,
+      color: '#bdbdbd'
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold',
+      color: '#ff5f52'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic',
+      color: '#99d066'
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: '#facf4e'
+    }, {
+      tag: tags$1.heading1,
+      fontWeight: 'bold',
+      color: '#facf4e'
+    }, {
+      tag: [tags$1.heading2, tags$1.heading3, tags$1.heading4],
+      fontWeight: 'bold',
+      color: '#facf4e'
+    }, {
+      tag: [tags$1.heading5, tags$1.heading6],
+      color: '#facf4e'
+    }, {
+      tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
+      color: '#56c8d8'
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.inserted],
+      color: '#ff5f52'
+    }, {
+      tag: [tags$1.contentSeparator],
+      color: '#56c8d8'
+    }, {
+      tag: tags$1.invalid,
+      color: '#606f7a',
+      borderBottom: "1px dotted #ff5f52"
+    }, ...styles]
+  });
+};
+var materialDark = materialInit();
+materialInit();
+var defaultSettingsMaterialLight = {
+  background: '#FAFAFA',
+  foreground: '#90A4AE',
+  caret: '#272727',
+  selection: '#80CBC440',
+  selectionMatch: '#80CBC440',
+  gutterBackground: '#FAFAFA',
+  gutterForeground: '#90A4AE',
+  gutterBorder: 'transparent',
+  lineHighlight: '#CCD7DA50'
+};
+var materialLightInit = options => {
+  var {
+    theme = 'light',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsMaterialLight, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: '#39ADB5'
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
+      color: '#90A4AE'
+    }, {
+      tag: [tags$1.propertyName],
+      color: '#6182B8'
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
+      color: '#91B859'
+    }, {
+      tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
+      color: '#6182B8'
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: '#39ADB5'
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: '#90A4AE'
+    }, {
+      tag: [tags$1.className],
+      color: '#E2931D'
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: '#F76D47'
+    }, {
+      tag: [tags$1.typeName],
+      color: '#E2931D',
+      fontStyle: '#E2931D'
+    }, {
+      tag: [tags$1.operator, tags$1.operatorKeyword],
+      color: '#39ADB5'
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
+      color: '#91B859'
+    }, {
+      tag: [tags$1.meta, tags$1.comment],
+      color: '#90A4AE'
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.link,
+      textDecoration: 'underline'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: '#39ADB5'
+    }, {
+      tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
+      color: '#90A4AE'
+    }, {
+      tag: tags$1.invalid,
+      color: '#E5393570'
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, ...styles]
+  });
+};
+var materialLight = materialLightInit();
+
+var config$5 = {
+  background: '#1e1e1e',
+  foreground: '#c5c8c6',
+  selection: '#4747a1',
+  selectionMatch: '#4747a1',
+  cursor: '#c07020',
+  dropdownBackground: '#525252',
+  activeLine: '#30303078',
+  matchingBracket: '#303030',
+  keyword: '#676867',
+  storage: '#676867',
+  variable: '#c7444a',
+  parameter: '#6089B4',
+  function: '#9872A2',
+  string: '#D08442',
+  constant: '#8080FF',
+  type: '#9B0000',
+  class: '#CE6700',
+  number: '#6089B4',
+  comment: '#9A9B99',
+  heading: '#D0B344',
+  invalid: '#FF0B00',
+  regexp: '#D08442',
+  tag: '#6089B4'
+};
+
+var defaultSettingsMonokaiDimmed = {
+  background: config$5.background,
+  foreground: config$5.foreground,
+  caret: config$5.cursor,
+  selection: config$5.selection,
+  selectionMatch: config$5.selection,
+  gutterBackground: config$5.background,
+  gutterForeground: config$5.foreground,
+  lineHighlight: config$5.activeLine
+};
+var monokaiDimmedInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsMonokaiDimmed, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: config$5.keyword
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
+      color: config$5.variable
+    }, {
+      tag: [tags$1.propertyName],
+      color: config$5.function
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
+      color: config$5.string
+    }, {
+      tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
+      color: config$5.function
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: config$5.constant
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: config$5.variable
+    }, {
+      tag: [tags$1.className],
+      color: config$5.class
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: config$5.number
+    }, {
+      tag: [tags$1.typeName],
+      color: config$5.type,
+      fontStyle: config$5.type
+    }, {
+      tag: [tags$1.operator, tags$1.operatorKeyword],
+      color: config$5.keyword
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
+      color: config$5.regexp
+    }, {
+      tag: [tags$1.meta, tags$1.comment],
+      color: config$5.comment
+    }, {
+      tag: tags$1.tagName,
+      color: config$5.tag
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.link,
+      textDecoration: 'underline'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: config$5.heading
+    }, {
+      tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
+      color: config$5.variable
+    }, {
+      tag: tags$1.invalid,
+      color: config$5.invalid
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, ...styles]
+  });
+};
+var monokaiDimmed = monokaiDimmedInit();
+
+var config$4 = {
+  background: '#221a0f',
+  foreground: '#d3af86',
+  selection: '#84613daa',
+  selectionMatch: '#84613daa',
+  cursor: '#d3af86',
+  dropdownBackground: '#51412c',
+  activeLine: '#5e452b52',
+  matchingBracket: '#5e452b',
+  keyword: '#98676a',
+  storage: '#98676a',
+  variable: '#dc3958',
+  parameter: '#dc3958',
+  function: '#7e602c',
+  string: '#889b4a',
+  constant: '#f79a32',
+  type: '#f06431',
+  class: '#f06431',
+  number: '#f79a32',
+  comment: '#a57a4c',
+  heading: '#8ab1b0',
+  invalid: '#dc3958',
+  regexp: '#7e602c',
+  tag: '#dc3958'
+};
+
+var defaultSettingsKimbie = {
+  background: config$4.background,
+  foreground: config$4.foreground,
+  caret: config$4.cursor,
+  selection: config$4.selection,
+  selectionMatch: config$4.selection,
+  gutterBackground: config$4.background,
+  gutterForeground: config$4.foreground,
+  lineHighlight: config$4.activeLine
+};
+var kimbieInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsKimbie, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: config$4.keyword
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
+      color: config$4.variable
+    }, {
+      tag: [tags$1.propertyName],
+      color: config$4.function
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
+      color: config$4.string
+    }, {
+      tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
+      color: config$4.function
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: config$4.constant
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: config$4.variable
+    }, {
+      tag: [tags$1.className],
+      color: config$4.class
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: config$4.number
+    }, {
+      tag: [tags$1.typeName],
+      color: config$4.type,
+      fontStyle: config$4.type
+    }, {
+      tag: [tags$1.operator, tags$1.operatorKeyword],
+      color: config$4.keyword
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
+      color: config$4.regexp
+    }, {
+      tag: [tags$1.meta, tags$1.comment],
+      color: config$4.comment
+    }, {
+      tag: tags$1.tagName,
+      color: config$4.tag
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.link,
+      textDecoration: 'underline'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: config$4.heading
+    }, {
+      tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
+      color: config$4.variable
+    }, {
+      tag: tags$1.invalid,
+      color: config$4.invalid
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, ...styles]
+  });
+};
+var kimbie = kimbieInit();
+
+var defaultSettingsOkaidia = {
+  background: '#272822',
+  foreground: '#FFFFFF',
+  caret: '#FFFFFF',
+  selection: '#49483E',
+  selectionMatch: '#49483E',
+  gutterBackground: '#272822',
+  gutterForeground: '#FFFFFF70',
+  lineHighlight: '#0000003b'
+};
+var okaidiaInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsOkaidia, settings),
+    styles: [{
+      tag: [tags$1.comment, tags$1.documentMeta],
+      color: '#8292a2'
+    }, {
+      tag: [tags$1.number, tags$1.bool, tags$1.null, tags$1.atom],
+      color: '#ae81ff'
+    }, {
+      tag: [tags$1.attributeValue, tags$1.className, tags$1.name],
+      color: '#e6db74'
+    }, {
+      tag: [tags$1.propertyName, tags$1.attributeName],
+      color: '#a6e22e'
+    }, {
+      tag: [tags$1.variableName],
+      color: '#9effff'
+    }, {
+      tag: [tags$1.squareBracket],
+      color: '#bababa'
+    }, {
+      tag: [tags$1.string, tags$1.special(tags$1.brace)],
+      color: '#e6db74'
+    }, {
+      tag: [tags$1.regexp, tags$1.className, tags$1.typeName, tags$1.definition(tags$1.typeName)],
+      color: '#66d9ef'
+    }, {
+      tag: [tags$1.definition(tags$1.variableName), tags$1.definition(tags$1.propertyName), tags$1.function(tags$1.variableName)],
+      color: '#fd971f'
+    },
+    // { tag: t.keyword, color: '#f92672' },
+    {
+      tag: [tags$1.keyword, tags$1.definitionKeyword, tags$1.modifier, tags$1.tagName, tags$1.angleBracket],
+      color: '#f92672'
+    }, ...styles]
+  });
+};
+var okaidia = okaidiaInit();
+
+var config$3 = {
+  background: '#F5F5F5',
+  foreground: '#333333',
+  selection: '#C9D0D9',
+  selectionMatch: '#C9D0D9',
+  cursor: '#54494B',
+  dropdownBackground: '#F5F5F5',
+  activeLine: '#79ff002b',
+  matchingBracket: '#E4F6D4',
+  keyword: '#4B69C6',
+  storage: '#4B69C6',
+  variable: '#7A3E9D',
+  parameter: '#7A3E9D',
+  function: '#AA3731',
+  string: '#448C27',
+  constant: '#9C5D27',
+  type: '#7A3E9D',
+  class: '#AA3731',
+  number: '#9C5D27',
+  comment: '#AAAAAA',
+  heading: '#AA3731',
+  invalid: '#cd3131',
+  regexp: '#4B69C6',
+  tag: '#4B69C6'
+};
+
+var defaultSettingsQuietlight = {
+  background: config$3.background,
+  foreground: config$3.foreground,
+  caret: config$3.cursor,
+  selection: config$3.selection,
+  selectionMatch: config$3.selection,
+  gutterBackground: config$3.background,
+  gutterForeground: config$3.foreground,
+  gutterBorder: 'transparent',
+  lineHighlight: config$3.activeLine
+};
+var quietlightInit = options => {
+  var {
+    theme = 'light',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsQuietlight, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: config$3.keyword
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
+      color: config$3.variable
+    }, {
+      tag: [tags$1.propertyName],
+      color: config$3.function
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
+      color: config$3.string
+    }, {
+      tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
+      color: config$3.function
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: config$3.constant
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: config$3.variable
+    }, {
+      tag: [tags$1.className],
+      color: config$3.class
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: config$3.number
+    }, {
+      tag: [tags$1.typeName],
+      color: config$3.type,
+      fontStyle: config$3.type
+    }, {
+      tag: [tags$1.operator, tags$1.operatorKeyword],
+      color: config$3.keyword
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
+      color: config$3.regexp
+    }, {
+      tag: [tags$1.meta, tags$1.comment],
+      color: config$3.comment
+    }, {
+      tag: tags$1.tagName,
+      color: config$3.tag
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.link,
+      textDecoration: 'underline'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: config$3.heading
+    }, {
+      tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
+      color: config$3.variable
+    }, {
+      tag: tags$1.invalid,
+      color: config$3.invalid
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, ...styles]
+  });
+};
+var quietlight = quietlightInit();
+
+var config$2 = {
+  background: '#390000',
+  foreground: '#F8F8F8',
+  selection: '#750000',
+  selectionMatch: '#750000',
+  cursor: '#970000',
+  dropdownBackground: '#580000',
+  activeLine: '#ff000033',
+  matchingBracket: '#ff000033',
+  keyword: '#f12727ff',
+  storage: '#ff6262ff',
+  variable: '#edef7dff',
+  parameter: '#edef7dff',
+  function: '#ffb454ff',
+  string: '#edef7dff',
+  constant: '#ec0d1e',
+  type: '#9df39fff',
+  class: '#fec758ff',
+  number: '#994646ff',
+  comment: '#e7c0c0ff',
+  heading: '#fec758ff',
+  invalid: '#ffffffff',
+  regexp: '#edef7dff',
+  tag: '#aa5507ff'
+};
+
+var defaultSettingsRed = {
+  background: config$2.background,
+  foreground: config$2.foreground,
+  caret: config$2.cursor,
+  selection: config$2.selection,
+  selectionMatch: config$2.selection,
+  gutterBackground: config$2.background,
+  gutterForeground: config$2.foreground,
+  lineHighlight: config$2.activeLine
+};
+var redInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsRed, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: config$2.keyword
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
+      color: config$2.variable
+    }, {
+      tag: [tags$1.propertyName],
+      color: config$2.function
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
+      color: config$2.string
+    }, {
+      tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
+      color: config$2.function
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: config$2.constant
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: config$2.variable
+    }, {
+      tag: [tags$1.className],
+      color: config$2.class
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: config$2.number
+    }, {
+      tag: [tags$1.typeName],
+      color: config$2.type,
+      fontStyle: config$2.type
+    }, {
+      tag: [tags$1.operator, tags$1.operatorKeyword],
+      color: config$2.keyword
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
+      color: config$2.regexp
+    }, {
+      tag: [tags$1.meta, tags$1.comment],
+      color: config$2.comment
+    }, {
+      tag: tags$1.tagName,
+      color: config$2.tag
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.link,
+      textDecoration: 'underline'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: config$2.heading
+    }, {
+      tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
+      color: config$2.variable
+    }, {
+      tag: tags$1.invalid,
+      color: config$2.invalid
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, ...styles]
+  });
+};
+var red = redInit();
+
+var defaultSettingsSublime = {
+  background: '#303841',
+  foreground: '#FFFFFF',
+  caret: '#FBAC52',
+  selection: '#4C5964',
+  selectionMatch: '#3A546E',
+  gutterBackground: '#303841',
+  gutterForeground: '#FFFFFF70',
+  lineHighlight: '#00000059'
+};
+function sublimeInit(options) {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsSublime, settings),
+    styles: [{
+      tag: [tags$1.meta, tags$1.comment],
+      color: '#A2A9B5'
+    }, {
+      tag: [tags$1.attributeName, tags$1.keyword],
+      color: '#B78FBA'
+    }, {
+      tag: tags$1.function(tags$1.variableName),
+      color: '#5AB0B0'
+    }, {
+      tag: [tags$1.string, tags$1.regexp, tags$1.attributeValue],
+      color: '#99C592'
+    }, {
+      tag: tags$1.operator,
+      color: '#f47954'
+    },
+    // { tag: t.moduleKeyword, color: 'red' },
+    {
+      tag: [tags$1.tagName, tags$1.modifier],
+      color: '#E35F63'
+    }, {
+      tag: [tags$1.number, tags$1.definition(tags$1.tagName), tags$1.className, tags$1.definition(tags$1.variableName)],
+      color: '#fbac52'
+    }, {
+      tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
+      color: '#E35F63'
+    }, {
+      tag: tags$1.variableName,
+      color: '#539ac4'
+    }, {
+      tag: [tags$1.propertyName, tags$1.typeName],
+      color: '#629ccd'
+    }, {
+      tag: tags$1.propertyName,
+      color: '#36b7b5'
+    }, ...styles]
+  });
+}
+var sublime = sublimeInit();
+
+var defaultSettingsTokyoNightDay = {
+  background: '#e1e2e7',
+  foreground: '#3760bf',
+  caret: '#3760bf',
+  selection: '#99a7df',
+  selectionMatch: '#99a7df',
+  gutterBackground: '#e1e2e7',
+  gutterForeground: '#3760bf',
+  gutterBorder: 'transparent',
+  lineHighlight: '#5f5faf11'
+};
+var tokyoNightDayInit = options => {
+  var {
+    theme = 'light',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsTokyoNightDay, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: '#007197'
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
+      color: '#3760bf'
+    }, {
+      tag: [tags$1.propertyName],
+      color: '#3760bf'
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
+      color: '#587539'
+    }, {
+      tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
+      color: '#3760bf'
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: '#3760bf'
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: '#3760bf'
+    }, {
+      tag: [tags$1.className],
+      color: '#3760bf'
+    }, {
+      tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+      color: '#b15c00'
+    }, {
+      tag: [tags$1.typeName],
+      color: '#007197',
+      fontStyle: '#007197'
+    }, {
+      tag: [tags$1.operator, tags$1.operatorKeyword],
+      color: '#007197'
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
+      color: '#587539'
+    }, {
+      tag: [tags$1.meta, tags$1.comment],
+      color: '#848cb5'
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.link,
+      textDecoration: 'underline'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: '#b15c00'
+    }, {
+      tag: [tags$1.atom, tags$1.bool, tags$1.special(tags$1.variableName)],
+      color: '#3760bf'
+    }, {
+      tag: tags$1.invalid,
+      color: '#f52a65'
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, ...styles]
+  });
+};
+var tokyoNightDay = tokyoNightDayInit();
+
+var config$1 = {
+  background: '#000',
+  foreground: '#fff',
+  selection: '#7d46fc3f',
+  selectionMatch: '#7d46fc7f',
+  cursor: '#7d46fc',
+  dropdownBackground: '#0a0b0f',
+  dropdownBorder: '#1e1d27',
+  activeLine: '#00346eb0',
+  matchingBracket: '#7d46fc7f',
+  keyword: null,
+  storage: null,
+  variable: null,
+  parameter: null,
+  function: null,
+  string: '#a8a8b1',
+  constant: null,
+  type: null,
+  class: null,
+  number: null,
+  comment: '#2e2e37',
+  heading: null,
+  invalid: null,
+  regexp: '#a8a8b1',
+  tag: null
+};
+
+var defaultSettingsWhiteDark = {
+  background: config$1.background,
+  foreground: config$1.foreground,
+  caret: config$1.cursor,
+  selection: config$1.selection,
+  selectionMatch: config$1.selectionMatch,
+  gutterBackground: config$1.background,
+  gutterForeground: config$1.foreground,
+  lineHighlight: config$1.activeLine
+};
+var whiteDarkInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsWhiteDark, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: config$1.keyword,
+      fontWeight: 'bold'
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
+      color: config$1.variable
+    }, {
+      tag: [tags$1.propertyName],
+      color: config$1.function
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
+      color: config$1.string
+    }, {
+      tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
+      color: config$1.function
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: config$1.constant
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: config$1.variable
+    }, {
+      tag: [tags$1.className],
+      color: config$1.class
+    }, {
+      tag: [tags$1.typeName],
+      color: config$1.type,
+      fontStyle: config$1.type
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
+      color: config$1.regexp
+    }, {
+      tag: [tags$1.meta, tags$1.comment],
+      color: config$1.comment
+    }, {
+      tag: tags$1.tagName,
+      color: config$1.tag
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.link,
+      textDecoration: 'underline'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: config$1.heading
+    }, {
+      tag: [tags$1.atom, tags$1.special(tags$1.variableName)],
+      color: config$1.variable
+    }, {
+      tag: tags$1.invalid,
+      color: config$1.invalid
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, {
+      tag: [tags$1.operatorKeyword, tags$1.bool, tags$1.null, tags$1.variableName],
+      color: config$1.constant
+    }, {
+      tag: [tags$1.operator],
+      color: '#bb9af7'
+    }, {
+      tag: [tags$1.number],
+      color: '#a8a8b1'
+    }, {
+      tag: [tags$1.bracket],
+      color: '#bb9af7'
+    }, ...styles]
+  });
+};
+var whiteDark = whiteDarkInit();
+
+var config = {
+  background: '#fff',
+  foreground: '#000',
+  selection: '#0064ff26',
+  selectionMatch: '#0064ff4c',
+  cursor: '#004bff',
+  dropdownBackground: '#f4f6fc',
+  dropdownBorder: '#e7ecf2',
+  activeLine: '#0064ff0c',
+  matchingBracket: '#0064ff4c',
+  keyword: null,
+  storage: null,
+  variable: null,
+  parameter: null,
+  function: null,
+  string: '#6b7a88',
+  constant: null,
+  type: null,
+  class: null,
+  number: null,
+  comment: '#bec9d3',
+  heading: null,
+  invalid: null,
+  regexp: '#6b7a88',
+  tag: null
+};
+
+var defaultSettingsWhiteLight = {
+  background: config.background,
+  foreground: config.foreground,
+  caret: config.cursor,
+  selection: config.selection,
+  selectionMatch: config.selectionMatch,
+  gutterBackground: config.background,
+  gutterForeground: config.foreground,
+  lineHighlight: config.activeLine
+};
+var whiteLightInit = options => {
+  var {
+    theme = 'light',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsWhiteLight, settings),
+    styles: [{
+      tag: tags$1.keyword,
+      color: config.keyword,
+      fontWeight: 'bold'
+    }, {
+      tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.macroName],
+      color: config.variable
+    }, {
+      tag: [tags$1.propertyName],
+      color: config.function
+    }, {
+      tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted, tags$1.special(tags$1.string)],
+      color: config.string
+    }, {
+      tag: [tags$1.function(tags$1.variableName), tags$1.labelName],
+      color: config.function
+    }, {
+      tag: [tags$1.color, tags$1.constant(tags$1.name), tags$1.standard(tags$1.name)],
+      color: config.constant
+    }, {
+      tag: [tags$1.definition(tags$1.name), tags$1.separator],
+      color: config.variable
+    }, {
+      tag: [tags$1.className],
+      color: config.class
+    }, {
+      tag: [tags$1.typeName],
+      color: config.type,
+      fontStyle: config.type
+    }, {
+      tag: [tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link],
+      color: config.regexp
+    }, {
+      tag: [tags$1.meta, tags$1.comment],
+      color: config.comment
+    }, {
+      tag: tags$1.tagName,
+      color: config.tag
+    }, {
+      tag: tags$1.strong,
+      fontWeight: 'bold'
+    }, {
+      tag: tags$1.emphasis,
+      fontStyle: 'italic'
+    }, {
+      tag: tags$1.link,
+      textDecoration: 'underline'
+    }, {
+      tag: tags$1.heading,
+      fontWeight: 'bold',
+      color: config.heading
+    }, {
+      tag: [tags$1.atom, tags$1.special(tags$1.variableName)],
+      color: config.variable
+    }, {
+      tag: tags$1.invalid,
+      color: config.invalid
+    }, {
+      tag: tags$1.strikethrough,
+      textDecoration: 'line-through'
+    }, {
+      tag: [tags$1.operatorKeyword, tags$1.bool, tags$1.null, tags$1.variableName],
+      color: config.constant
+    }, {
+      tag: [tags$1.operator],
+      color: '#0431fa'
+    }, {
+      tag: [tags$1.number],
+      color: '#a8a8b1'
+    }, {
+      tag: [tags$1.bracket],
+      color: '#0431fa'
+    }, ...styles]
+  });
+};
+var whiteLight = whiteLightInit();
+
+var defaultSettingsXcodeLight = {
+  background: '#fff',
+  foreground: '#3D3D3D',
+  selection: '#BBDFFF',
+  selectionMatch: '#BBDFFF',
+  gutterBackground: '#fff',
+  gutterForeground: '#AFAFAF',
+  lineHighlight: '#d5e6ff69'
+};
+function xcodeLightInit(options) {
+  var {
+    theme = 'light',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsXcodeLight, settings),
+    styles: [{
+      tag: [tags$1.comment, tags$1.quote],
+      color: '#707F8D'
+    }, {
+      tag: [tags$1.typeName, tags$1.typeOperator],
+      color: '#aa0d91'
+    }, {
+      tag: [tags$1.keyword],
+      color: '#aa0d91',
+      fontWeight: 'bold'
+    }, {
+      tag: [tags$1.string, tags$1.meta],
+      color: '#D23423'
+    }, {
+      tag: [tags$1.name],
+      color: '#032f62'
+    }, {
+      tag: [tags$1.typeName],
+      color: '#522BB2'
+    }, {
+      tag: [tags$1.variableName],
+      color: '#23575C'
+    }, {
+      tag: [tags$1.definition(tags$1.variableName)],
+      color: '#327A9E'
+    }, {
+      tag: [tags$1.regexp, tags$1.link],
+      color: '#0e0eff'
+    }, ...styles]
+  });
+}
+var xcodeLight = xcodeLightInit();
+var defaultSettingsXcodeDark = {
+  background: '#292A30',
+  foreground: '#CECFD0',
+  caret: '#fff',
+  selection: '#727377',
+  selectionMatch: '#727377',
+  lineHighlight: '#ffffff0f'
+};
+var xcodeDarkInit = options => {
+  var {
+    theme = 'dark',
+    settings = {},
+    styles = []
+  } = options || {};
+  return createTheme({
+    theme: theme,
+    settings: _extends({}, defaultSettingsXcodeDark, settings),
+    styles: [{
+      tag: [tags$1.comment, tags$1.quote],
+      color: '#7F8C98'
+    }, {
+      tag: [tags$1.keyword],
+      color: '#FF7AB2',
+      fontWeight: 'bold'
+    }, {
+      tag: [tags$1.string, tags$1.meta],
+      color: '#FF8170'
+    }, {
+      tag: [tags$1.typeName],
+      color: '#DABAFF'
+    }, {
+      tag: [tags$1.definition(tags$1.variableName)],
+      color: '#6BDFFF'
+    }, {
+      tag: [tags$1.name],
+      color: '#6BAA9F'
+    }, {
+      tag: [tags$1.variableName],
+      color: '#ACF2E4'
+    }, {
+      tag: [tags$1.regexp, tags$1.link],
+      color: '#FF8170'
+    }, ...styles]
+  });
+};
+var xcodeDark = xcodeDarkInit();
+
 /**
  * Return the thememirror theme Extension matching the supplied string
  * @param themeName
@@ -37057,22 +39735,80 @@ function getTheme(themeName) {
             return dracula;
         case "OneDark":
             return oneDark;
+        case "Abcdef":
+            return abcdef;
+        case "Abyss":
+            return abyss;
+        case "AndroidStudio":
+            return androidstudio;
+        case "Andromeda":
+            return andromeda;
+        case "AtomOne":
+            return atomone;
+        case "Aura":
+            return aura;
+        case "Bbedit":
+            return bbedit;
+        case "BasicLight":
+            return basicLight;
+        case "BasicDark":
+            return basicDark;
+        case "copilot":
+            return copilot;
+        case "Darcula":
+            return darcula;
+        case "DuotoneDark":
+            return duotoneDark;
+        case "DuotoneLight":
+            return duotoneLight;
+        case "Eclipse":
+            return eclipse;
         case "GithubDark":
             return githubDark;
         case "GithubLight":
             return githubLight;
+        case "GruvboxDark":
+            return gruvboxDark;
+        case "GruvboxLight":
+            return gruvboxLight;
+        case "MaterialDark":
+            return materialDark;
+        case "MaterialLight":
+            return materialLight;
         case "Monokai":
             return monokai;
         case "Nord":
             return nord;
+        case "MonokaiDimmed":
+            return monokaiDimmed;
+        case "Kimbie":
+            return kimbie;
+        case "Okaidia":
+            return okaidia;
         case "SolarizedDark":
             return solarizedDark;
+        case "QuietLight":
+            return quietlight;
+        case "Red":
+            return red;
+        case "Sublime":
+            return sublime;
         case "TokyoNight":
             return tokyoNight;
+        case "TokyoNightDay":
+            return tokyoNightDay;
         case "TokyoNightStorm":
             return tokyoNightStorm;
         case "VSCode":
             return vscodeDark;
+        case "WhiteLight":
+            return whiteLight;
+        case "WhiteDark":
+            return whiteDark;
+        case "XCodeDark":
+            return xcodeDark;
+        case "XCodeLight":
+            return xcodeLight;
         default:
             return EditorView.baseTheme({});
     }
@@ -72424,6 +75160,95 @@ function htmlViewPlugin(enabled) {
     });
 }
 
+function getFileUploadExtensions(id, setup) {
+    const overlayId = `${id}-file-upload`;
+    // check if the document already contains the overlay
+    if (document.getElementById(overlayId))
+        return [];
+    const overlay = document.createElement("div");
+    overlay.id = overlayId;
+    overlay.innerHTML = `<i class="${setup.fileIcon} me-2"></i> Drop files here`;
+    overlay.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        pointer-events: none;
+        font-size: x-large;
+    `;
+    // Append the overlay to your CodeMirror container
+    const editorContainer = document.getElementById(id); // Replace with your actual container ID
+    editorContainer.style.position = 'relative';
+    editorContainer.appendChild(overlay);
+    const dragAndDropHandler = EditorView.domEventHandlers({
+        dragenter(event, view) {
+            console.log("Drag enter");
+            overlay.style.display = 'flex';
+        },
+        dragover(event, view) {
+            console.log("Drag over");
+        },
+        dragleave(event, view) {
+            // Check if the relatedTarget is outside the editor container
+            if (!editorContainer.contains(event.relatedTarget)) {
+                console.log("Drag leave");
+                overlay.style.display = 'none';
+            }
+        },
+        drop(event, view) {
+            console.log("Drop");
+            overlay.style.display = 'none';
+            event.preventDefault();
+            event.stopPropagation();
+            const transfer = event.dataTransfer;
+            if (transfer?.files) {
+                uploadFiles(transfer.files, view);
+            }
+        }
+    });
+    const pasteHandler = EditorView.domEventHandlers({
+        paste(event, view) {
+            const transfer = event.clipboardData;
+            if (transfer?.files && transfer.files.length > 0) {
+                event.preventDefault();
+                uploadFiles(transfer.files, view);
+            }
+        }
+    });
+    async function uploadFiles(files, view) {
+        const fileUrls = [];
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const fileUrl = await uploadFileWithDotnet(id, file);
+            fileUrls.push(fileUrl);
+            console.log("Uploaded file:", fileUrl);
+            const fileName = files[0].name;
+            var imageChar = file.type.indexOf("image/") === 0 ? "!" : "";
+            var imageLink = `\n${imageChar}[${fileName}](${fileUrl})\n`;
+            view.dispatch({
+                changes: { from: view.state.selection.main.from, insert: imageLink }
+            });
+        }
+        return fileUrls;
+    }
+    async function uploadFileWithDotnet(id, file) {
+        const arrayBuffer = await file.arrayBuffer();
+        const byteArray = new Uint8Array(arrayBuffer);
+        const lastModifiedDate = new Date(file.lastModified);
+        return await CMInstances[id].dotNetHelper.invokeMethodAsync('UploadFileFromJS', byteArray, file.name, file.type, lastModifiedDate);
+    }
+    return [
+        dragAndDropHandler, pasteHandler, //selectionField
+    ];
+}
+
 /**
  * Initialize a new CodeMirror instance
  * @param dotnetHelper
@@ -72528,15 +75353,27 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
     extensions.push(linter(async (view) => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()));
     if (setup.allowMultipleSelections === true)
         extensions.push(EditorState.allowMultipleSelections.of(true));
+    extensions.push(...getFileUploadExtensions(id, setup));
     await minDelay;
+    const scrollToEndEffect = EditorView.scrollIntoView(initialConfig.doc ? initialConfig.doc.length : 0, { y: 'end' });
+    const docLines = initialConfig.doc?.split(/\r\n|\r|\n/) ?? [];
+    const text = Text.of(docLines);
+    const textLength = text?.length ?? 0;
     CMInstances[id].state = EditorState.create({
         doc: initialConfig.doc,
         extensions: extensions,
+        selection: {
+            anchor: setup.scrollToEnd === true ? textLength : 0,
+        },
     });
     CMInstances[id].view = new EditorView({
         state: CMInstances[id].state,
         parent: document.getElementById(id),
+        scrollTo: setup.scrollToEnd === true ? scrollToEndEffect : null,
     });
+    if (setup.scrollToEnd === true) {
+        CMInstances[id].view.focus();
+    }
     // Hide the placeholder once the editor is initialized
     const loadingPlaceholder = document.getElementById(`${id}_Loading`);
     if (loadingPlaceholder) {
@@ -72774,6 +75611,8 @@ function dispatchCommand(id, functionName, ...args) {
  * @param id
  */
 function dispose(id) {
+    CMInstances[id].dotNetHelper.dispose();
+    CMInstances[id].dotNetHelper = undefined;
     CMInstances[id].view.destroy();
     CMInstances[id] = undefined;
     delete CMInstances[id];
