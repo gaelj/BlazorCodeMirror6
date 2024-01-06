@@ -28,6 +28,7 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [x] insert text at cursor / at position
 - [x] allow undo / redo toolbar buttons
 - [x] configure which plugins are active at startup
+- [x] optionally scroll to the bottom of the document & place the cursor on the last line
 - [ ] toolbar with toolbar button template
 - [ ] support soft line wrapping
 - [ ] support read-only paragraphs

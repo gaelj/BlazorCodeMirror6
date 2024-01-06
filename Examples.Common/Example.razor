@@ -1,4 +1,4 @@
-<h1>Code Mirror 6 Wrapper Demo</h1>
+﻿<h1>Code Mirror 6 Wrapper Demo</h1>
 
 <label for="Theme">Theme</label>
 <select @bind=@Theme id="Theme">
@@ -201,6 +201,7 @@ Result:
         LineNumbers = true,
         HighlightActiveLineGutter = false,
         HighlightSelectionMatches = false,
+        ScrollToEnd = true,
     };
     private string ButtonClass(CodeMirrorState state, string docStyleTag) => ButtonClass(state.MarkdownStylesAtSelections?.Contains(docStyleTag) == true);
     private string ButtonClass(bool enabled) => enabled
