@@ -28,10 +28,10 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [x] insert text at cursor / at position
 - [x] allow undo / redo toolbar buttons
 - [x] configure which plugins are active at startup
-- [ ] add a toolbar with toolbar button template
+- [ ] toolbar with toolbar button template
 - [ ] support soft line wrapping
 - [ ] support read-only paragraphs
-- [ ] Add a diff viewer
+- [ ] diff viewer
 - [ ] Implement cursor tooltips
 - [ ] Implement Copilot/AI style suggestions
 - [ ] allow setting the [Starting selection](https://codemirror.net/docs/ref/#state.EditorStateConfig.selection)
@@ -61,6 +61,7 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [x] style Markdown quote lines and paragraphs
 - [x] add increase / decrease selected header (#) level
 - [x] format inline html
+- [x] support file uploads
 - [ ] better highlight markdown inline code and code blocks
 - [ ] format links, make them clickable
 - [ ] use latest header
@@ -71,7 +72,6 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [ ] Toggling-off a Markdown style should always select the whole styled text block
 - [ ] Add mermaid language highlighting
 - [ ] Implement kroki / mermaid preview
-- [ ] support file upload
 - [ ] add color picker extension
 
 ## Screenshots

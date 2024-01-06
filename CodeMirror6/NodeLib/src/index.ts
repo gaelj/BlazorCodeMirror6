@@ -47,6 +47,8 @@ import { viewEmojiExtension } from "./CmEmojiView"
 import { emojiCompletionExtension } from "./CmEmojiCompletion"
 import { indentationMarkers } from '@replit/codemirror-indentation-markers'
 import { htmlViewPlugin } from "./CmHtml"
+import { getFileUploadExtensions } from "./CmFileUpload"
+import { DotNet } from "@microsoft/dotnet-js-interop"
 
 /**
  * Initialize a new CodeMirror instance
@@ -56,7 +58,7 @@ import { htmlViewPlugin } from "./CmHtml"
  */
 export async function initCodeMirror(
     id: string,
-    dotnetHelper: any,
+    dotnetHelper: DotNet.DotNetObject,
     initialConfig: CmConfiguration,
     setup: CmSetup
 ) {
@@ -157,6 +159,8 @@ export async function initCodeMirror(
     extensions.push(linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()))
     if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
 
+    extensions.push(...getFileUploadExtensions(id, setup))
+
     await minDelay
 
 
@@ -176,11 +180,12 @@ export async function initCodeMirror(
     if (loadingPlaceholder) {
         loadingPlaceholder.style.display = 'none'
     }
+
     // add a class to allow resizing of the editor
     setResize(id, initialConfig.resize)
 }
 
-async function updateListenerExtension(dotnetHelper: any, update: ViewUpdate) {
+async function updateListenerExtension(dotnetHelper: DotNet.DotNetObject, update: ViewUpdate) {
     if (update.docChanged) {
         await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
     }
@@ -355,6 +360,8 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
  * @param id
  */
 export function dispose(id: string) {
+    CMInstances[id].dotNetHelper.dispose()
+    CMInstances[id].dotNetHelper = undefined
     CMInstances[id].view.destroy()
     CMInstances[id] = undefined
     delete CMInstances[id]

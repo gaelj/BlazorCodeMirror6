@@ -1,13 +1,14 @@
 import { EditorView } from "@codemirror/view"
 import { EditorState, Compartment } from "@codemirror/state"
 import { CmSetup } from "./CmSetup"
+import { DotNet } from "@microsoft/dotnet-js-interop"
 
 /**
  * Stores the state of a CodeMirror instance and allow dynamic changes to the state
  */
 export class CmInstance
 {
-    public dotNetHelper: any
+    public dotNetHelper: DotNet.DotNetObject
     public state: EditorState
     public view: EditorView
     public setup: CmSetup
