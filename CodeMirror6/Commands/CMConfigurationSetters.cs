@@ -122,4 +122,9 @@ internal class CMSetters(
         "setResize",
         config.Resize
     );
+
+    internal Task SetLineWrapping() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setLineWrapping",
+        config.LineWrapping
+    );
 }

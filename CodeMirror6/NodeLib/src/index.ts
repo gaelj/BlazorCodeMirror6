@@ -97,6 +97,7 @@ export async function initCodeMirror(
             CMInstances[id].emojiReplacerCompartment.of(replaceEmojiExtension(initialConfig.replaceEmojiCodes)),
             lastOperationWasUndo,
             indentationMarkers(),
+            CMInstances[id].lineWrappingCompartment.of(initialConfig.lineWrapping ? EditorView.lineWrapping : []),
 
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
             keymap.of([
@@ -261,6 +262,12 @@ export function setReadOnly(id: string, readOnly: boolean) {
 export function setEditable(id: string, editable: boolean) {
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].editableCompartment.reconfigure(EditorView.editable.of(editable))
+    })
+}
+
+export function setLineWrapping(id: string, lineWrapping: boolean) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].lineWrappingCompartment.reconfigure(lineWrapping ? EditorView.lineWrapping : [])
     })
 }
 

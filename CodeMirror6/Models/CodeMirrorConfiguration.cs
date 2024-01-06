@@ -17,6 +17,7 @@ namespace CodeMirror6.Models;
 /// <param name="autoFormatMarkdown"></param>
 /// <param name="replaceEmojiCodes"></param>
 /// <param name="resize">none, vertical, horizontal or both</param>
+/// <param name="lineWrapping"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -28,7 +29,8 @@ public class CodeMirrorConfiguration(
     string? languageName,
     bool autoFormatMarkdown,
     bool replaceEmojiCodes,
-    string resize)
+    string resize,
+    bool lineWrapping)
 {
 
     /// <summary>
@@ -86,4 +88,9 @@ public class CodeMirrorConfiguration(
     /// Controls whether the editor should have a resize handle like a textarea
     /// </summary>
     [JsonPropertyName("resize")] public string Resize { get; internal set; } = resize;
+
+    /// <summary>
+    /// Controls whether the editor wraps long lines of text, versus using scroll-bars
+    /// </summary>
+    [JsonPropertyName("lineWrapping")] public bool LineWrapping { get; internal set; } = lineWrapping;
 }

@@ -68,7 +68,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
         /// Methods to invoke JS CodeMirror commands.
         /// </summary>
         /// <returns></returns>
-        internal CMCommandDispatcher Commands => _commands ??= new(this);
+        internal CMCommandDispatcher CommandDispatcher => _commands ??= new(this);
 
         /// <summary>
         /// Dispose Javascript modules
