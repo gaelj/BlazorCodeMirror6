@@ -87,12 +87,12 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// Content to be rendered before the editor
     /// </summary>
     /// <value></value>
-    [Parameter] public RenderFragment<(CMCommands Commands, CodeMirrorConfiguration Config, CodeMirrorState State)>? ContentBefore { get; set; }
+    [Parameter] public RenderFragment<(CMCommandDispatcher Commands, CodeMirrorConfiguration Config, CodeMirrorState State)>? ContentBefore { get; set; }
     /// <summary>
     /// Content to be rendered after the editor
     /// </summary>
     /// <value></value>
-    [Parameter] public RenderFragment<(CMCommands Commands, CodeMirrorConfiguration Config, CodeMirrorState State)>? ContentAfter { get; set; }
+    [Parameter] public RenderFragment<(CMCommandDispatcher Commands, CodeMirrorConfiguration Config, CodeMirrorState State)>? ContentAfter { get; set; }
     /// <summary>
     /// The active markdown styles at the current selection(s)
     /// </summary>
@@ -147,7 +147,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// Methods to invoke JS CodeMirror commands.
     /// </summary>
     /// <returns></returns>
-    public CMCommands? Commands => CmJsInterop?.Commands;
+    public CMCommandDispatcher? Commands => CmJsInterop?.Commands;
 
     private string LoadingDivId => $"{Id}_Loading";
 

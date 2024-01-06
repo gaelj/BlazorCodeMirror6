@@ -208,7 +208,7 @@ Result:
         ? "btn btn-sm btn-primary"
         : "btn btn-sm btn-outline-secondary";
 
-    private async Task ToggleEmojis(CMCommands commands)
+    private async Task ToggleEmojis(CMCommandDispatcher commands)
     {
         ReplaceEmojiCodes = !ReplaceEmojiCodes;
         await commands.Dispatch(CodeMirrorSimpleCommand.Focus);

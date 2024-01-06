@@ -102,7 +102,7 @@ See `Examples.Common/Example.razor`
 
 JS / CSS resources are loaded automatically (nothing to add in `_Host.cshtml` / `index.html`).
 
-Just add `@using CodeMirror6` in `_Imports.razor` or in your razor page / component and use `<CodeMirror6Wrapper />` as in the examples.
+Just add `@using CodeMirror6`, `@using CodeMirror6.Commands` and `@using CodeMirror6.Models` in `_Imports.razor` or in your razor page / component and use `<CodeMirror6Wrapper />` as in the examples.
 
 ## Modification
 
