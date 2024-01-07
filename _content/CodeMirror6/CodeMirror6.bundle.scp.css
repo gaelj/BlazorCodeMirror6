@@ -45,6 +45,21 @@
     border-radius: 3px;
 }
 
+[b-v1cccotw35] .cm-md-link {
+    color: cornflowerblue;
+}
+
+[b-v1cccotw35] .cm-md-link-detail {
+    padding-left: .5em;
+    padding-right: .5em;
+    margin-left: .25em;
+    margin-right: .25em;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    text-decoration: underline;
+    color: cornflowerblue;
+}
+
 [b-v1cccotw35] .cm-blockquote {
     /* background-color: #f0f0f0; */
     border-left: 0.25rem solid currentColor;
