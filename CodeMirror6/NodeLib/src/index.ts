@@ -88,7 +88,7 @@ export async function initCodeMirror(
                 listsExtension(initialConfig.autoFormatMarkdown),
                 blockquote(),
                 viewEmojiExtension(initialConfig.autoFormatMarkdown),
-                markdownLinkExtension(true),
+                markdownLinkExtension(initialConfig.autoFormatMarkdown),
                 hyperLink, hyperLinkStyle,
                 htmlViewPlugin(initialConfig.autoFormatMarkdown),
             ]),

@@ -1,11 +1,10 @@
-import { Extension, Range, RangeSetBuilder } from "@codemirror/state"
-import { EditorView, Decoration, DecorationSet, ViewPlugin, ViewUpdate } from "@codemirror/view"
-import { syntaxTree } from "@codemirror/language"
+import { Extension, RangeSetBuilder } from "@codemirror/state"
+import { EditorView, Decoration, ViewPlugin } from "@codemirror/view"
 import { isCursorInRange, isInCodeBlock } from "./CmHelpers"
 import { buildWidget } from "./lib/codemirror-kit"
 import { markdownLanguage } from "@codemirror/lang-markdown"
 
-const linkRegex = /\[([^\]]+)\]\([^\)]+\)/g
+const linkRegex = /\!?\[([^\]]*)\]\([^\)]+\)/g
 
 export function createMarkdownLinkExtension(): Extension {
     return ViewPlugin.define(
@@ -23,11 +22,8 @@ export function createMarkdownLinkExtension(): Extension {
                                 const isCode = isInCodeBlock(view.state, start)
                                 if (!isCode) {
                                     const linkName = match[1]
-                                    if (!linkName || linkName === "") continue
-                                    if (linkName) {
-                                        const widget = createMarkdownLinkWidget(match[0], linkName)
-                                        builder.add(start, end, widget)
-                                    }
+                                    const widget = createMarkdownLinkWidget(match[0], linkName)
+                                    builder.add(start, end, widget)
                                 }
                             }
                         }
@@ -49,7 +45,8 @@ function createMarkdownLinkWidget(rawLinkText: string, linkName: string) {
             toDOM: () => {
                 const span = document.createElement("span")
                 span.textContent = linkName
-                span.className = "cm-md-link-detail"
+                if (linkName)
+                    span.className = "cm-md-link-detail"
                 return span
             },
             ignoreEvent: () => false,
@@ -92,7 +89,7 @@ function createMarkdownLinkDecorationPlugin(): Extension {
 
 // Combine the extension with the mention plugin
 export const markdownLinkExtension = (stylingEnabled: boolean) => [
-    createMarkdownLinkExtension(),
+    stylingEnabled ? createMarkdownLinkExtension() : [],
     stylingEnabled ? createMarkdownLinkDecorationPlugin() : [],
 ]
 
