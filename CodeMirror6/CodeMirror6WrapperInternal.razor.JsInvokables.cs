@@ -7,7 +7,7 @@ namespace CodeMirror6;
 /// <summary>
 /// Code-behind for the CodeMirror6Wrapper component
 /// </summary>
-public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
+public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposable
 {
     /// <summary>
     /// State of the CodeMirror6 editor

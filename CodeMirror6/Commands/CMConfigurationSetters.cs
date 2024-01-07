@@ -7,10 +7,10 @@ namespace CodeMirror6.Commands;
 /// Apply the CodeMirror configuration to the JS CodeMirror instance
 /// </summary>
 internal class CMSetters(
-    DotNetObjectReference<CodeMirror6Wrapper> _dotnetHelperRef,
+    DotNetObjectReference<CodeMirror6WrapperInternal> _dotnetHelperRef,
     CodeMirrorConfiguration config,
     CodeMirrorSetup setup,
-    CodeMirror6Wrapper.CodeMirrorJsInterop cmJsInterop
+    CodeMirror6WrapperInternal.CodeMirrorJsInterop cmJsInterop
 )
 {
     /// <summary>

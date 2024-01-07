@@ -5,7 +5,7 @@ using Microsoft.JSInterop;
 
 namespace CodeMirror6;
 
-public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
+public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposable
 {
     /// <summary>
     /// Wraps JavaScript functionality in a .NET class for easy consumption.
@@ -20,14 +20,14 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     /// <param name="cm6WrapperComponent"></param>
     internal class CodeMirrorJsInterop(
         IJSRuntime jsRuntime,
-        CodeMirror6Wrapper cm6WrapperComponent
+        CodeMirror6WrapperInternal cm6WrapperComponent
     ) : IAsyncDisposable
     {
         private readonly Lazy<Task<IJSObjectReference>> _moduleTask =
             new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
                 "import", "./_content/CodeMirror6/index.js").AsTask()
             );
-        private readonly DotNetObjectReference<CodeMirror6Wrapper> _dotnetHelperRef = DotNetObjectReference.Create(cm6WrapperComponent);
+        private readonly DotNetObjectReference<CodeMirror6WrapperInternal> _dotnetHelperRef = DotNetObjectReference.Create(cm6WrapperComponent);
         private CMSetters _setters = null!;
         private CMCommandDispatcher _commands = null!;
 
