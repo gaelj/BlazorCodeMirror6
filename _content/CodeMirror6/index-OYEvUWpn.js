@@ -34683,7 +34683,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-0DafqMgE.js').then(m => m.less());
+            return import('./index-PQsBTd_Q.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34709,7 +34709,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-2aA-IxEc.js').then(m => m.php());
+            return import('./index-eGEzQx0d.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34778,7 +34778,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-eXiOdMvQ.js').then(m => m.wast());
+            return import('./index-EAKu2ODF.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -35589,13 +35589,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-Hnn3iHCe.js').then(m => m.vue());
+            return import('./index-zlaXbugT.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-kCaObXpK.js').then(m => m.angular());
+            return import('./index-7Gpcz8Wh.js').then(m => m.angular());
         }
     })
 ];
@@ -76593,6 +76593,73 @@ function getFileUploadExtensions(id, setup) {
     ];
 }
 
+function markdownTableToHTML(markdownTable) {
+    const rows = markdownTable.trim().split(/\r?\n/);
+    let htmlTable = "";
+    rows.forEach((row, index) => {
+        const isHeader = index === 0;
+        const tag = isHeader ? "th" : "td";
+        const cells = row.split('|').filter(cell => cell.trim() !== '').map(cell => cell.trim().replace(/-/g, ''));
+        if (cells.join('').trim() !== '')
+            htmlTable += `  <tr>${cells.map(cell => `<${tag}>${cell}</${tag}>`).join('')}</tr>\n`;
+    });
+    return htmlTable;
+}
+const tableWidget = (innerHTML) => buildWidget({
+    eq: () => {
+        return false;
+    },
+    toDOM: () => {
+        const table = document.createElement('table');
+        const tbody = document.createElement('tbody');
+        table.appendChild(tbody);
+        tbody.innerHTML = innerHTML;
+        return table;
+    },
+});
+const markdownTableExtension = (enabled = true) => {
+    const tableDecoration = (innerHTML) => Decoration.replace({
+        widget: tableWidget(innerHTML),
+    });
+    const decorate = (state) => {
+        if (!enabled) {
+            // If the extension is disabled, return an empty extension
+            return Decoration.none;
+        }
+        const widgets = [];
+        syntaxTree(state).iterate({
+            enter: ({ type, from, to }) => {
+                if (type.name === 'Table' && !isCursorInRange(state, from, to)) {
+                    const tableMarkdown = state.sliceDoc(from, to);
+                    console.log('tableMarkdown:');
+                    console.log(tableMarkdown);
+                    const tableHtml = markdownTableToHTML(tableMarkdown);
+                    console.log('tableHtml:');
+                    console.log(tableHtml);
+                    widgets.push(tableDecoration(tableHtml).range(from, to));
+                }
+            },
+        });
+        return widgets.length > 0 ? RangeSet.of(widgets) : Decoration.none;
+    };
+    const viewPlugin = ViewPlugin.define(() => ({}), {});
+    const stateField = StateField.define({
+        create(state) {
+            return decorate(state);
+        },
+        update(_references, { state }) {
+            return decorate(state);
+        },
+        provide(field) {
+            return EditorView.decorations.from(field);
+        },
+    });
+    return [
+        viewPlugin,
+        stateField,
+    ];
+};
+
 /**
  * Initialize a new CodeMirror instance
  * @param dotnetHelper
@@ -76625,6 +76692,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
                 markdownLinkExtension(initialConfig.autoFormatMarkdown),
                 hyperLink, hyperLinkStyle,
                 htmlViewPlugin(initialConfig.autoFormatMarkdown),
+                markdownTableExtension(initialConfig.autoFormatMarkdown),
             ]),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
             CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -76835,6 +76903,7 @@ function setAutoFormatMarkdown(id, autoFormatMarkdown) {
             htmlViewPlugin(autoFormatMarkdown),
             hyperLink, hyperLinkStyle,
             markdownLinkExtension(autoFormatMarkdown),
+            markdownTableExtension(autoFormatMarkdown),
         ])
     });
 }
