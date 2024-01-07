@@ -109,3 +109,29 @@
     animation: shimmer 1.5s infinite linear;
     border-radius: 4px;
 }
+
+/* html tables */
+::deep .cm-line table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid #2f2f2f;
+    border-inline: 1px solid #2f2f2f;
+    width: fit-content;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    background-color: #10101010;
+}
+
+::deep .cm-line table td, ::deep .cm-line table th {
+    border: 1px solid #2f2f2f;
+    padding: 0.5rem;
+}
+
+::deep .cm-line table th {
+    background-color: #2f2f2f80;
+}
+
+::deep .cm-line table tr:nth-child(even) {
+    background-color: #7f7f7f30;
+}
+
