@@ -88,7 +88,7 @@ export async function initCodeMirror(
                 listsExtension(initialConfig.autoFormatMarkdown),
                 blockquote(),
                 viewEmojiExtension(initialConfig.autoFormatMarkdown),
-                markdownLinkExtension(true),
+                markdownLinkExtension(initialConfig.autoFormatMarkdown),
                 hyperLink, hyperLinkStyle,
                 htmlViewPlugin(initialConfig.autoFormatMarkdown),
             ]),
@@ -201,6 +201,8 @@ export async function initCodeMirror(
         // add a class to allow resizing of the editor
         setResize(id, initialConfig.resize)
 
+        forceRedraw(id)
+
     } catch (error) {
         console.error(`Error in initializing CodeMirror`, error)
     }
@@ -294,6 +296,10 @@ export function setMentionCompletions(id: string, mentionCompletions: Completion
 
 export function forceRedraw(id: string) {
     const view = CMInstances[id].view
+
+    view.requestMeasure()
+    view.update([])
+
     const changes = view.state.changeByRange((range: SelectionRange) => {
         return { range }
     })
