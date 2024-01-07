@@ -101,6 +101,12 @@
             <button class=@ButtonClass(LineWrapping) @onclick=@(() => LineWrapping = !LineWrapping) title="Toggle long line wrapping">
                 <i class="fas fa-paragraph"></i>
             </button>
+            <button class=@ButtonClass(c.State, "") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.Undo)) title="Undo (Ctrl-Z)">
+                <i class="fas fa-undo"></i>
+            </button>
+            <button class=@ButtonClass(c.State, "") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.Redo)) title="Redo (Ctrl-Y)">
+                <i class="fas fa-redo"></i>
+            </button>
         </div>
     </ContentBefore>
 </CodeMirror6Wrapper>
