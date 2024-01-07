@@ -51,6 +51,7 @@ import { markdownLinkExtension } from "./CmMarkdownLink"
 import { htmlViewPlugin } from "./CmHtml"
 import { getFileUploadExtensions } from "./CmFileUpload"
 import { DotNet } from "@microsoft/dotnet-js-interop"
+import { markdownTableExtension } from "./CmMarkdownTable"
 
 /**
  * Initialize a new CodeMirror instance
@@ -91,6 +92,7 @@ export async function initCodeMirror(
                 markdownLinkExtension(initialConfig.autoFormatMarkdown),
                 hyperLink, hyperLinkStyle,
                 htmlViewPlugin(initialConfig.autoFormatMarkdown),
+                markdownTableExtension(initialConfig.autoFormatMarkdown),
             ]),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
             CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -322,6 +324,7 @@ export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
             htmlViewPlugin(autoFormatMarkdown),
             hyperLink, hyperLinkStyle,
             markdownLinkExtension(autoFormatMarkdown),
+            markdownTableExtension(autoFormatMarkdown),
         ])
     })
 }

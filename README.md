@@ -46,6 +46,7 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [ ] automatic translation
 - [ ] update doc in dotnet either on text changes or on blur / add GetText()
 - [ ] deleting a file link deletes the file from the server
+- [ ] button (visible when editor is hovered), to copy raw editor content to clipboard
 
 ### For Markdown language
 
@@ -65,9 +66,9 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [x] support file uploads
 - [x] format links, make them clickable
 - [x] support mermaid language highlighting
+- [x] format tables
 - [ ] better highlight markdown inline code and code blocks
 - [ ] use latest header
-- [ ] format tables
 - [ ] customize markdown header sizes
 - [ ] support toolbar toggling of checklist items even if checked
 - [ ] Apply Markdown style toggles to whole words
