@@ -33770,7 +33770,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-p8XJtVs2.js').then(m => m.less());
+            return import('./index-TCB_qgXU.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -33796,7 +33796,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-lf0PBVqL.js').then(m => m.php());
+            return import('./index-ODgsssQF.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -33865,7 +33865,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-5PDK5F4R.js').then(m => m.wast());
+            return import('./index-9zDEncHk.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34676,13 +34676,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-myt2tTU7.js').then(m => m.vue());
+            return import('./index-1GzufbeS.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-vLlJnblB.js').then(m => m.angular());
+            return import('./index-YHD7XZEZ.js').then(m => m.angular());
         }
     })
 ];
@@ -75367,7 +75367,7 @@ var hyperLinkStyle = EditorView.baseTheme({
 });
 var hyperLink = [hyperLinkExtension(), hyperLinkStyle];
 
-const linkRegex = /\[([^\]]+)\]\([^\)]+\)/g;
+const linkRegex = /\!?\[([^\]]*)\]\([^\)]+\)/g;
 function createMarkdownLinkExtension() {
     return ViewPlugin.define((view) => {
         return {
@@ -75383,12 +75383,8 @@ function createMarkdownLinkExtension() {
                             const isCode = isInCodeBlock(view.state, start);
                             if (!isCode) {
                                 const linkName = match[1];
-                                if (!linkName || linkName === "")
-                                    continue;
-                                if (linkName) {
-                                    const widget = createMarkdownLinkWidget(match[0], linkName);
-                                    builder.add(start, end, widget);
-                                }
+                                const widget = createMarkdownLinkWidget(match[0], linkName);
+                                builder.add(start, end, widget);
                             }
                         }
                     }
@@ -75407,7 +75403,8 @@ function createMarkdownLinkWidget(rawLinkText, linkName) {
             toDOM: () => {
                 const span = document.createElement("span");
                 span.textContent = linkName;
-                span.className = "cm-md-link-detail";
+                if (linkName)
+                    span.className = "cm-md-link-detail";
                 return span;
             },
             ignoreEvent: () => false,
@@ -75443,7 +75440,7 @@ function createMarkdownLinkDecorationPlugin() {
 }
 // Combine the extension with the mention plugin
 const markdownLinkExtension = (stylingEnabled) => [
-    createMarkdownLinkExtension(),
+    stylingEnabled ? createMarkdownLinkExtension() : [],
     stylingEnabled ? createMarkdownLinkDecorationPlugin() : [],
 ];
 /* // Function to create the Markdown link extension
@@ -75675,7 +75672,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
                 listsExtension(initialConfig.autoFormatMarkdown),
                 blockquote(),
                 viewEmojiExtension(initialConfig.autoFormatMarkdown),
-                markdownLinkExtension(true),
+                markdownLinkExtension(initialConfig.autoFormatMarkdown),
                 hyperLink, hyperLinkStyle,
                 htmlViewPlugin(initialConfig.autoFormatMarkdown),
             ]),
@@ -75782,6 +75779,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         }
         // add a class to allow resizing of the editor
         setResize(id, initialConfig.resize);
+        forceRedraw(id);
     }
     catch (error) {
         console.error(`Error in initializing CodeMirror`, error);
@@ -75864,6 +75862,8 @@ function setMentionCompletions(id, mentionCompletions) {
 }
 function forceRedraw(id) {
     const view = CMInstances[id].view;
+    view.requestMeasure();
+    view.update([]);
     const changes = view.state.changeByRange((range) => {
         return { range };
     });
