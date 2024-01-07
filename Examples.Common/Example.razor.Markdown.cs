@@ -32,6 +32,11 @@ https://www.google.com
 
 Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line
 
+```mermaid
+flowchart TB
+{tab}A & B--> C & D
+```
+
 ---
 
 - [ ] task 1
