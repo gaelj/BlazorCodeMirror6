@@ -46,6 +46,8 @@ import { mentionDecorationExtension } from "./CmMentionsView"
 import { viewEmojiExtension } from "./CmEmojiView"
 import { emojiCompletionExtension } from "./CmEmojiCompletion"
 import { indentationMarkers } from '@replit/codemirror-indentation-markers'
+import { hyperLink, hyperLinkStyle } from '@uiw/codemirror-extensions-hyper-link'
+import { markdownLinkExtension } from "./CmMarkdownLink"
 import { htmlViewPlugin } from "./CmHtml"
 import { getFileUploadExtensions } from "./CmFileUpload"
 import { DotNet } from "@microsoft/dotnet-js-interop"
@@ -86,6 +88,8 @@ export async function initCodeMirror(
                 listsExtension(initialConfig.autoFormatMarkdown),
                 blockquote(),
                 viewEmojiExtension(initialConfig.autoFormatMarkdown),
+                markdownLinkExtension(true),
+                hyperLink, hyperLinkStyle,
                 htmlViewPlugin(initialConfig.autoFormatMarkdown),
             ]),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
@@ -310,6 +314,8 @@ export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
             blockquote(),
             viewEmojiExtension(autoFormatMarkdown),
             htmlViewPlugin(autoFormatMarkdown),
+            hyperLink, hyperLinkStyle,
+            markdownLinkExtension(autoFormatMarkdown),
         ])
     })
 }

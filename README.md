@@ -63,8 +63,8 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [x] add increase / decrease selected header (#) level
 - [x] format inline html
 - [x] support file uploads
+- [x] format links, make them clickable
 - [ ] better highlight markdown inline code and code blocks
-- [ ] format links, make them clickable
 - [ ] use latest header
 - [ ] format tables
 - [ ] customize markdown header sizes
