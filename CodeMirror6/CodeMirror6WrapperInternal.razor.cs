@@ -2,16 +2,17 @@ using System.Collections.ObjectModel;
 using CodeMirror6.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
+using Microsoft.JSInterop;
 
 namespace CodeMirror6;
 
 /// <summary>
-/// Code-behind for the CodeMirror6Wrapper component
+/// Code-behind for the CodeMirror6WrapperInternal component
 /// </summary>
-public partial class CodeMirror6Wrapper : ComponentBase
+public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposable
 {
+    [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
     /// <summary>
     /// /// Gets or sets the unique identifier for the CodeMirror6 editor.
     /// Defaults to CodeMirror6_Editor_{NewGuid}.
@@ -152,17 +153,147 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// Methods to invoke JS CodeMirror commands.
     /// </summary>
     /// <returns></returns>
-    public CMCommandDispatcher? CommandDispatcher => CodeMirror6WrapperInternalRef.CmJsInterop?.CommandDispatcher;
+    public CMCommandDispatcher? CommandDispatcher => CmJsInterop?.CommandDispatcher;
 
-    private CodeMirror6WrapperInternal CodeMirror6WrapperInternalRef = null!;
-    private ErrorBoundary? ErrorBoundary;
+    private string LoadingDivId => $"{Id}_Loading";
+    private string ResizeStyle => AllowVerticalResize && AllowHorizontalResize
+        ? "both"
+        : AllowVerticalResize ? "vertical"
+        : AllowHorizontalResize ? "horizontal"
+        : "none";
 
     /// <summary>
-    /// Component parameters have been set
+    /// JavaScript interop instance
     /// </summary>
-    protected override void OnParametersSet()
+    internal CodeMirrorJsInterop? CmJsInterop = null;
+    internal CodeMirrorConfiguration Config = null!;
+    private bool shouldRender = true;
+
+    /// <summary>
+    /// Life-cycle method invoked when the component is initialized.
+    /// </summary>
+    protected override async Task OnInitializedAsync()
     {
-        base.OnParametersSet();
-        ErrorBoundary?.Recover();
+        Config = new(
+            Doc,
+            Placeholder,
+            Theme?.ToString(),
+            TabSize,
+            IndentationUnit,
+            ReadOnly,
+            Editable,
+            Language?.ToString(),
+            AutoFormatMarkdown,
+            ReplaceEmojiCodes,
+            ResizeStyle,
+            LineWrapping
+        );
+        try {
+            await OnAfterRenderAsync(true); // try early initialization for Blazor WASM
+        }
+        catch (Exception) {
+        }
+    }
+
+    /// <summary>
+    /// Life-cycle method invoked when the component is ready to start, having received its initial parameters from its parent in the render tree.
+    /// </summary>
+    /// <param name="firstRender"></param>
+    /// <returns></returns>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) {
+            if (CmJsInterop is null) {
+                CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
+                await CmJsInterop.PropertySetters.InitCodeMirror();
+                if (GetMentionCompletions is not null) {
+                    var mentionCompletions = await GetMentionCompletions();
+                    await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions);
+                }
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Life-cycle method invoked when the component has received parameters from its parent in the render tree.
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        shouldRender = true;
+        if (CmJsInterop is null) return;
+        shouldRender = false;
+        if (Config.TabSize != TabSize) {
+            Config.TabSize = TabSize;
+            await CmJsInterop.PropertySetters.SetTabSize();
+        }
+        if (Config.IndentationUnit != IndentationUnit) {
+            Config.IndentationUnit = IndentationUnit;
+            await CmJsInterop.PropertySetters.SetIndentUnit();
+        }
+        if (Config.Doc?.Replace("\r", "") != Doc?.Replace("\r", "")) {
+            Config.Doc = Doc;
+            await CmJsInterop.PropertySetters.SetDoc();
+        }
+        if (Config.Placeholder != Placeholder) {
+            Config.Placeholder = Placeholder;
+            await CmJsInterop.PropertySetters.SetPlaceholderText();
+        }
+        if (Config.ThemeName != Theme?.ToString()) {
+            Config.ThemeName = Theme?.ToString();
+            await CmJsInterop.PropertySetters.SetTheme();
+        }
+        if (Config.ReadOnly != ReadOnly) {
+            Config.ReadOnly = ReadOnly;
+            await CmJsInterop.PropertySetters.SetReadOnly();
+        }
+        if (Config.Editable != Editable) {
+            Config.Editable = Editable;
+            await CmJsInterop.PropertySetters.SetEditable();
+        }
+        if (Config.LanguageName != Language?.ToString()) {
+            Config.LanguageName = Language?.ToString();
+            await CmJsInterop.PropertySetters.SetLanguage();
+        }
+        if (Config.AutoFormatMarkdown != AutoFormatMarkdown) {
+            Config.AutoFormatMarkdown = AutoFormatMarkdown;
+            await CmJsInterop.PropertySetters.SetAutoFormatMarkdown();
+        }
+        if (Config.ReplaceEmojiCodes != ReplaceEmojiCodes) {
+            Config.ReplaceEmojiCodes = ReplaceEmojiCodes;
+            await CmJsInterop.PropertySetters.SetReplaceEmojiCodes();
+        }
+        if (Config.Resize != ResizeStyle) {
+            Config.Resize = ResizeStyle;
+            await CmJsInterop.PropertySetters.SetResize();
+        }
+        if (Config.LineWrapping != LineWrapping) {
+            Config.LineWrapping = LineWrapping;
+            await CmJsInterop.PropertySetters.SetLineWrapping();
+        }
+        shouldRender = true;
+    }
+
+    /// <summary>
+    /// Life-cycle method checking if the component is allowed to render.
+    /// </summary>
+    /// <returns></returns>
+    protected override bool ShouldRender() => shouldRender;
+
+    /// <summary>
+    /// Dispose resources
+    /// </summary>
+    /// <returns></returns>
+    public async ValueTask DisposeAsync()
+    {
+        if (CmJsInterop is not null)
+            await CmJsInterop.DisposeAsync();
+        try {
+            LinterCancellationTokenSource.Cancel();
+            LinterCancellationTokenSource.Dispose();
+        }
+        catch (ObjectDisposedException) {}
+        GC.SuppressFinalize(this);
     }
 }

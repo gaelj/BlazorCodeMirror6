@@ -5,9 +5,9 @@ namespace CodeMirror6.Models;
 /// </summary>
 public class CMCommandDispatcher
 {
-    private readonly CodeMirror6Wrapper.CodeMirrorJsInterop cmJsInterop;
+    private readonly CodeMirror6WrapperInternal.CodeMirrorJsInterop cmJsInterop;
 
-    internal CMCommandDispatcher(CodeMirror6Wrapper.CodeMirrorJsInterop cmJsInterop) => this.cmJsInterop = cmJsInterop;
+    internal CMCommandDispatcher(CodeMirror6WrapperInternal.CodeMirrorJsInterop cmJsInterop) => this.cmJsInterop = cmJsInterop;
 
     /// <summary>
     /// Invoke a built-in CodeMirror command

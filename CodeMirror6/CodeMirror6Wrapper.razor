@@ -1,29 +1,35 @@
 ﻿<ErrorBoundary @ref=@ErrorBoundary>
     <ChildContent>
-        @if (ContentBefore is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
-            @ContentBefore((CommandDispatcher, Config, State))
-        }
-        <div
-            id=@LoadingDivId
-            @attributes=@AdditionalAttributes
-            class="editor-loading"
-        >
-            @for (var i = 0; i < (Doc?.Split("\n").Length ?? 10); i++) {
-                var randomWidth = new Random().Next(20, 80);
-                <div class="loading-animation" style=@($"width: {randomWidth}%")></div>
-            }
-        </div>
-
-        <div>
-            <div
-                id=@Id
-                @attributes=@AdditionalAttributes
-            >
-            </div>
-        </div>
-        @if (ContentAfter is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
-            @ContentAfter((CommandDispatcher, Config, State))
-        }
+        <CodeMirror6WrapperInternal
+            @ref=@CodeMirror6WrapperInternalRef
+            AdditionalAttributes="@AdditionalAttributes"
+            AllowHorizontalResize="@AllowHorizontalResize"
+            AllowVerticalResize="@AllowVerticalResize"
+            AutoFormatMarkdown="@AutoFormatMarkdown"
+            ContentAfter="@ContentAfter"
+            ContentBefore="@ContentBefore"
+            Doc="@Doc"
+            DocChanged="@DocChanged"
+            Editable="@Editable"
+            FocusChanged="@FocusChanged"
+            GetMentionCompletions="@GetMentionCompletions"
+            Id="@Id"
+            IndentationUnit="@IndentationUnit"
+            Language="@Language"
+            LineWrapping="@LineWrapping"
+            LintDocument="@LintDocument"
+            MarkdownStylesAtSelectionsChanged="@MarkdownStylesAtSelectionsChanged"
+            Placeholder="@Placeholder"
+            ReadOnly="@ReadOnly"
+            ReplaceEmojiCodes="@ReplaceEmojiCodes"
+            Selection="@Selection"
+            SelectionChanged="@SelectionChanged"
+            Setup="@Setup"
+            TabSize="@TabSize"
+            Theme="@Theme"
+            UploadBrowserFile="@UploadBrowserFile"
+            UploadFile="@UploadFile"
+        />
     </ChildContent>
     <ErrorContent>
         <p class="alert alert-danger" role="alert">
