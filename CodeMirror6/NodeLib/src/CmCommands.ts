@@ -83,7 +83,6 @@ function toggleCharactersAroundRanges(view: EditorView, controlChar: string): bo
         return toggleCharactersAroundRange(controlChar, view.state, range)
     })
     view.dispatch(view.state.update(changes, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), }))
-    view.focus()
     return true
 }
 
@@ -137,7 +136,6 @@ function toggleCharactersAtStartOfLines(view: EditorView, controlChar: string, e
         }
     })
     view.dispatch(view.state.update(changes, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), }))
-    view.focus()
     return true
 }
 
@@ -175,7 +173,6 @@ function modifyHeaderLevelAtSelections(view: EditorView, delta: number): boolean
         }
     })
     view.dispatch(view.state.update(changes, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), }))
-    view.focus()
     return true
 }
 
@@ -216,7 +213,6 @@ export function insertOrReplaceText(view: EditorView, textToInsert: string) {
     view.dispatch(
         view.state.update(transactionSpec, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), })
     )
-    view.focus()
 }
 
 export function insertTextAboveCommand(view: EditorView, textToInsert: string) {
@@ -234,6 +230,4 @@ export function insertTextAboveCommand(view: EditorView, textToInsert: string) {
     view.dispatch(
         view.state.update(changeSpec, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), })
     )
-    view.focus()
 }
-

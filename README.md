@@ -64,6 +64,7 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [x] format inline html
 - [x] support file uploads
 - [x] format links, make them clickable
+- [x] support mermaid language highlighting
 - [ ] better highlight markdown inline code and code blocks
 - [ ] use latest header
 - [ ] format tables
@@ -71,7 +72,6 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [ ] support toolbar toggling of checklist items even if checked
 - [ ] Apply Markdown style toggles to whole words
 - [ ] Toggling-off a Markdown style should always select the whole styled text block
-- [ ] Add mermaid language highlighting
 - [ ] Implement kroki / mermaid preview
 - [ ] add color picker extension
 

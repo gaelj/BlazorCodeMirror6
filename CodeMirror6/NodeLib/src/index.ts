@@ -380,10 +380,11 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
             case 'LineUncomment': lineUncomment(view); break;
             case 'ToggleLineComment': toggleLineComment(view); break;
 
-            case 'Focus': view.focus(); break;
+            case 'Focus': break;
 
             default: throw new Error(`Function ${functionName} does not exist.`);
         }
+        view.focus()
     }
     catch (error) {
         console.error(`Error in calling the function ${functionName}`, error);

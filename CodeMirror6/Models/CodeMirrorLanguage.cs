@@ -42,6 +42,10 @@ public enum CodeMirrorLanguage
     /// </summary>
     Markdown,
     /// <summary>
+    /// Mermaid
+    /// </summary>
+    Mermaid,
+    /// <summary>
     /// Python
     /// </summary>
     Python,

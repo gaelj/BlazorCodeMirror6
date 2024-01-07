@@ -1,11 +1,11 @@
 import { EditorView } from "@codemirror/view"
+import { EditorSelection } from '@codemirror/state'
 import { CmSetup } from "./CmSetup"
 import { CMInstances } from "./CmInstance"
 
 
 export function getFileUploadExtensions(id: string, setup: CmSetup)
 {
-
     const overlayId = `${id}-file-upload`
     // check if the document already contains the overlay
     if (document.getElementById(overlayId)) return []
@@ -28,6 +28,7 @@ export function getFileUploadExtensions(id: string, setup: CmSetup)
         pointer-events: none;
         font-size: x-large;
     `
+    let depth = 0
 
     // Append the overlay to your CodeMirror container
     const editorContainer = document.getElementById(id) // Replace with your actual container ID
@@ -36,28 +37,37 @@ export function getFileUploadExtensions(id: string, setup: CmSetup)
 
     const dragAndDropHandler = EditorView.domEventHandlers({
         dragenter(event, view) {
-            console.log("Drag enter")
+            event.preventDefault()
             overlay.style.display = 'flex'
-        },
-        dragover(event, view) {
-            console.log("Drag over")
+            depth++
         },
         dragleave(event, view) {
-            // Check if the relatedTarget is outside the editor container
-            if (!editorContainer.contains(event.relatedTarget as Node)) {
-                console.log("Drag leave")
+            event.preventDefault();
+            depth--
+            if (depth === 0) {
                 overlay.style.display = 'none'
             }
         },
-        drop(event, view) {
-            console.log("Drop")
-            overlay.style.display = 'none'
+        dragover(event, view) {
             event.preventDefault()
-            event.stopPropagation()
+            overlay.style.display = 'flex'
+        },
+        drop(event, view) {
             const transfer = event.dataTransfer
-
             if (transfer?.files) {
+                overlay.style.display = 'none'
+                event.preventDefault()
+                event.stopPropagation()
+                const { clientX, clientY } = event
+                const pos = view.posAtCoords({ x: clientX, y: clientY })
+                if (pos !== null) {
+                    let newSelection = EditorSelection.single(pos)
+                    view.dispatch({
+                        selection: newSelection
+                    });
+                }
                 uploadFiles(transfer.files, view)
+                depth = 0
             }
         }
     })
@@ -82,9 +92,18 @@ export function getFileUploadExtensions(id: string, setup: CmSetup)
             const fileName = files[0].name
             var imageChar = file.type.indexOf("image/") === 0 ? "!" : ""
             var imageLink = `\n${imageChar}[${fileName}](${fileUrl})\n`
-            view.dispatch({
-                changes: { from: view.state.selection.main.from, insert: imageLink }
-            })
+            const ranges = view.state.selection.ranges;
+            const lastRange = ranges[ranges.length - 1];
+
+            view.dispatch(
+                {
+                    changes: { from: view.state.selection.main.from, insert: imageLink },
+                    selection: { anchor: lastRange.from + imageLink.length, head: lastRange.from + imageLink.length }
+                },
+                {
+                    scrollIntoView: true
+                }
+            )
         }
         return fileUrls
     }
