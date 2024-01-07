@@ -12,6 +12,7 @@ import { sql, MSSQL } from "@codemirror/lang-sql"
 import { rust, rustLanguage } from "@codemirror/lang-rust"
 import { sass, sassLanguage } from "@codemirror/lang-sass"
 import { xml, xmlLanguage } from "@codemirror/lang-xml"
+import { csharp, csharpLanguage } from "@replit/codemirror-lang-csharp"
 import { languages } from "@codemirror/language-data"
 import { Language } from "@codemirror/language"
 import { StateEffect } from "@codemirror/state"
@@ -29,6 +30,8 @@ export const languageChangeEffect = StateEffect.define<Language>()
  */
 export function getLanguage(languageName: string): LanguageSupport {
     switch (languageName) {
+        case "Csharp":
+            return csharp()
         case "Cpp":
             return cpp()
         case "Css":
@@ -54,7 +57,9 @@ export function getLanguage(languageName: string): LanguageSupport {
         case "Xml":
             return xml()
         case "Markdown":
+            return markdown({ base: markdownLanguage, codeLanguages: languages, addKeymap: true })
         default:
+            console.log("Language not found: " + languageName)
             return markdown({ base: markdownLanguage, codeLanguages: languages, addKeymap: true })
     }
 }
@@ -66,6 +71,8 @@ export function getLanguage(languageName: string): LanguageSupport {
  */
 export function getLanguageKeyMaps(languageName: string) {
     switch (languageName) {
+        case "Csharp":
+            return []
         case "Cpp":
             return []
         case "Css":
@@ -91,7 +98,7 @@ export function getLanguageKeyMaps(languageName: string) {
         case "Xml":
             return []
         case "Markdown":
-        default:
+            default:
             return customMarkdownKeymap
     }
 }
