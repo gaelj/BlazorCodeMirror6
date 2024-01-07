@@ -6,6 +6,10 @@ namespace CodeMirror6.Models;
 public enum CodeMirrorLanguage
 {
     /// <summary>
+    /// C#
+    /// </summary>
+    Csharp,
+    /// <summary>
     /// C++
     /// </summary>
     Cpp,

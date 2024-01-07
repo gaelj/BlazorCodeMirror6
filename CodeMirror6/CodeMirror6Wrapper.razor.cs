@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CodeMirror6.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.JSInterop;
 
@@ -168,6 +169,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
     internal CodeMirrorJsInterop? CmJsInterop = null;
     internal CodeMirrorConfiguration Config = null!;
     private bool shouldRender = true;
+    private ErrorBoundary? ErrorBoundary;
 
     /// <summary>
     /// Life-cycle method invoked when the component is initialized.
@@ -272,6 +274,7 @@ public partial class CodeMirror6Wrapper : ComponentBase, IAsyncDisposable
             Config.LineWrapping = LineWrapping;
             await CmJsInterop.PropertySetters.SetLineWrapping();
         }
+        ErrorBoundary?.Recover();
         shouldRender = true;
     }
 

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace Examples.Common;
 
@@ -26,6 +26,9 @@ function Demo() {{
 
 Bats with <span style=""color: red"">red teeth</span> and <span style=""color: blue"">blue eyes</span> !
 
+https://www.google.com
+
+[Google](https://www.google.com)
 
 Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line
 

@@ -1,4 +1,4 @@
-﻿<ErrorBoundary>
+﻿<ErrorBoundary @ref=@ErrorBoundary>
     <ChildContent>
         @if (ContentBefore is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
             @ContentBefore((CommandDispatcher, Config, State))

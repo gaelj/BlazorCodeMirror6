@@ -30,6 +30,8 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [x] configure which plugins are active at startup
 - [x] optionally scroll to the bottom of the document & place the cursor on the last line
 - [x] support long line wrapping
+- [x] support C# language
+- [ ] Search & replace toolbar button
 - [ ] toolbar with toolbar button template
 - [ ] support read-only paragraphs
 - [ ] diff viewer
@@ -37,11 +39,9 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [ ] Implement Copilot/AI style suggestions
 - [ ] allow setting the [Starting selection](https://codemirror.net/docs/ref/#state.EditorStateConfig.selection)
 - [ ] Retrieve keybindings
-- [ ] Implement search & replace
 - [ ] Highlight edited lines
 - [ ] Allow toggling console debug mode
 - [ ] collaborative editing
-- [ ] Add C# language needs a backend, see [mirrorsharp](https://github.com/ashmind/mirrorsharp)
 - [ ] voice recognition
 - [ ] automatic translation
 - [ ] update doc in dotnet either on text changes or on blur / add GetText()
@@ -63,8 +63,8 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [x] add increase / decrease selected header (#) level
 - [x] format inline html
 - [x] support file uploads
+- [x] format links, make them clickable
 - [ ] better highlight markdown inline code and code blocks
-- [ ] format links, make them clickable
 - [ ] use latest header
 - [ ] format tables
 - [ ] customize markdown header sizes
