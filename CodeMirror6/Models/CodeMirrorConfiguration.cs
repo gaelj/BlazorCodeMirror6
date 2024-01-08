@@ -21,12 +21,12 @@ namespace CodeMirror6.Models;
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
-    string? themeName,
+    ThemeMirrorTheme? themeName,
     int tabSize,
     int indentationUnit,
     bool readOnly,
     bool editable,
-    string? languageName,
+    CodeMirrorLanguage? languageName,
     bool autoFormatMarkdown,
     bool replaceEmojiCodes,
     string resize,
@@ -46,7 +46,7 @@ public class CodeMirrorConfiguration(
     /// <summary>
     /// The theme to use for the editor
     /// </summary>
-    [JsonPropertyName("themeName")] public string? ThemeName { get; internal set; } = themeName;
+    [JsonPropertyName("themeName")] public ThemeMirrorTheme? ThemeName { get; internal set; } = themeName;
 
     /// <summary>
     /// The tab size to use for the editor
@@ -72,7 +72,7 @@ public class CodeMirrorConfiguration(
     /// <summary>
     /// The language to use in the editor
     /// </summary>
-    [JsonPropertyName("languageName")] public string? LanguageName { get; internal set; } = languageName;
+    [JsonPropertyName("languageName")] public CodeMirrorLanguage? LanguageName { get; internal set; } = languageName;
 
     /// <summary>
     /// Whether to automatically format (resize) markdown headers

@@ -1,8 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace CodeMirror6.Models;
 
 /// <summary>
 /// Available languages for the CodeMirror editor
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum CodeMirrorLanguage
 {
     /// <summary>
