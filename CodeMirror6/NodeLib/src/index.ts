@@ -105,7 +105,7 @@ export async function initCodeMirror(
             indentationMarkers(),
             CMInstances[id].lineWrappingCompartment.of(initialConfig.lineWrapping ? EditorView.lineWrapping : []),
 
-            EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update) }),
+            EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
             keymap.of([
                 ...closeBracketsKeymap,
 
@@ -164,7 +164,8 @@ export async function initCodeMirror(
         if (setup.highlightActiveLine === true) extensions.push(highlightActiveLine())
         if (setup.highlightSelectionMatches === true) extensions.push(highlightSelectionMatches())
 
-        extensions.push(linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()))
+        if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput")
+            extensions.push(linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()))
         if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
 
         extensions.push(...getFileUploadExtensions(id, setup))
@@ -210,13 +211,16 @@ export async function initCodeMirror(
     }
 }
 
-async function updateListenerExtension(dotnetHelper: DotNet.DotNetObject, update: ViewUpdate) {
+async function updateListenerExtension(id: string, update: ViewUpdate) {
+    const dotnetHelper = CMInstances[id].dotNetHelper
+    const setup = CMInstances[id].setup
     if (update.docChanged) {
-        await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
+        if (setup.bindValueMode === 'OnInput')
+            await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
     }
     if (update.focusChanged) {
         await dotnetHelper.invokeMethodAsync("FocusChangedFromJS", update.view.hasFocus)
-        if (!update.view.hasFocus)
+        if (!update.view.hasFocus && (setup.bindValueMode === 'OnLostFocus' || setup.bindValueMode === 'OnDelayedInput'))
             await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
     }
     if (update.selectionSet) {

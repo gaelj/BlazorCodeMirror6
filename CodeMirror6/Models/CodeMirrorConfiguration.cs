@@ -18,19 +18,21 @@ namespace CodeMirror6.Models;
 /// <param name="replaceEmojiCodes"></param>
 /// <param name="resize">none, vertical, horizontal or both</param>
 /// <param name="lineWrapping"></param>
+/// <param name="lintingEnabled"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
-    string? themeName,
+    ThemeMirrorTheme? themeName,
     int tabSize,
     int indentationUnit,
     bool readOnly,
     bool editable,
-    string? languageName,
+    CodeMirrorLanguage? languageName,
     bool autoFormatMarkdown,
     bool replaceEmojiCodes,
     string resize,
-    bool lineWrapping)
+    bool lineWrapping,
+    bool lintingEnabled)
 {
 
     /// <summary>
@@ -46,7 +48,7 @@ public class CodeMirrorConfiguration(
     /// <summary>
     /// The theme to use for the editor
     /// </summary>
-    [JsonPropertyName("themeName")] public string? ThemeName { get; internal set; } = themeName;
+    [JsonPropertyName("themeName")] public ThemeMirrorTheme? ThemeName { get; internal set; } = themeName;
 
     /// <summary>
     /// The tab size to use for the editor
@@ -72,7 +74,7 @@ public class CodeMirrorConfiguration(
     /// <summary>
     /// The language to use in the editor
     /// </summary>
-    [JsonPropertyName("languageName")] public string? LanguageName { get; internal set; } = languageName;
+    [JsonPropertyName("languageName")] public CodeMirrorLanguage? LanguageName { get; internal set; } = languageName;
 
     /// <summary>
     /// Whether to automatically format (resize) markdown headers
@@ -93,4 +95,9 @@ public class CodeMirrorConfiguration(
     /// Controls whether the editor wraps long lines of text, versus using scroll-bars
     /// </summary>
     [JsonPropertyName("lineWrapping")] public bool LineWrapping { get; internal set; } = lineWrapping;
+
+    /// <summary>
+    /// Did the user provide a linting callback (internal use)
+    /// </summary>
+    [JsonPropertyName("lintingEnabled")] internal bool LintingEnabled { get; set; } = lintingEnabled;
 }

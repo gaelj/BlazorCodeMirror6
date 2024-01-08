@@ -1,18 +1,18 @@
-import { Diagnostic } from "@codemirror/lint";
-import { DotNet } from "@microsoft/dotnet-js-interop";
-import { EditorView } from "codemirror";
+import { Diagnostic } from "@codemirror/lint"
+import { DotNet } from "@microsoft/dotnet-js-interop"
+import { EditorView } from "codemirror"
 
 /**
  * A function that fetches diagnostics from the Blazor component.
  */
 export async function externalLintSource(view: EditorView, dotnetHelper: DotNet.DotNetObject): Promise<readonly Diagnostic[]> {
     try {
-        const code = view.state.doc.toString();
+        const code = view.state.doc.toString()
         const errors: Diagnostic[] = await dotnetHelper.invokeMethodAsync("LintingRequestedFromJS", code)
-        console.log('Linter found:', errors);
-        return errors;
+        console.log('Linter found:', errors)
+        return errors
     } catch (error) {
-        console.error('Linter error:', error);
+        console.error('Linter error:', error)
         return
     }
 }

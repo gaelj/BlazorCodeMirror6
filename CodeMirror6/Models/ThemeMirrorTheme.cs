@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace CodeMirror6.Models;
 
 /// <summary>
@@ -7,6 +9,7 @@ namespace CodeMirror6.Models;
 /// <remarks>
 /// See https://github.com/vadimdemedes/thememirror
 /// </remarks>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ThemeMirrorTheme
 {
     /// <summary>

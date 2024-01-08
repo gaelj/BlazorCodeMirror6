@@ -117,7 +117,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// Find any errors in the document
     /// </summary>
     /// <value></value>
-    [Parameter] public Func<string, CancellationToken, Task<List<CodeMirrorDiagnostic>>> LintDocument { get; set; } = (_, _) => Task.FromResult(new List<CodeMirrorDiagnostic>());
+    [Parameter] public Func<string, CancellationToken, Task<List<CodeMirrorDiagnostic>>>? LintDocument { get; set; }
     /// <summary>
     /// The CodeMirror setup
     /// </summary>
@@ -177,16 +177,17 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         Config = new(
             Doc,
             Placeholder,
-            Theme?.ToString(),
+            Theme,
             TabSize,
             IndentationUnit,
             ReadOnly,
             Editable,
-            Language?.ToString(),
+            Language,
             AutoFormatMarkdown,
             ReplaceEmojiCodes,
             ResizeStyle,
-            LineWrapping
+            LineWrapping,
+            LintDocument is not null
         );
         try {
             await OnAfterRenderAsync(true); // try early initialization for Blazor WASM
@@ -240,8 +241,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             Config.Placeholder = Placeholder;
             await CmJsInterop.PropertySetters.SetPlaceholderText();
         }
-        if (Config.ThemeName != Theme?.ToString()) {
-            Config.ThemeName = Theme?.ToString();
+        if (Config.ThemeName != Theme) {
+            Config.ThemeName = Theme;
             await CmJsInterop.PropertySetters.SetTheme();
         }
         if (Config.ReadOnly != ReadOnly) {
@@ -252,8 +253,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             Config.Editable = Editable;
             await CmJsInterop.PropertySetters.SetEditable();
         }
-        if (Config.LanguageName != Language?.ToString()) {
-            Config.LanguageName = Language?.ToString();
+        if (Config.LanguageName != Language) {
+            Config.LanguageName = Language;
             await CmJsInterop.PropertySetters.SetLanguage();
         }
         if (Config.AutoFormatMarkdown != AutoFormatMarkdown) {
