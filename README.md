@@ -19,7 +19,7 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [x] 2-way-binding of the document contents
 - [x] setting tab size & indentation unit
 - [x] setting a placeholder text
-- [x] applying preset [themes](https://github.com/vadimdemedes/thememirror)
+- [x] applying preset themes
 - [x] setting ReadOnly and Editable attributes
 - [x] applying syntax highlighting and auto-completion for 13 different languages
 - [x] manual resizing of the editor (similar to html `textarea`)
@@ -31,7 +31,7 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [x] optionally scroll to the bottom of the document & place the cursor on the last line
 - [x] support long line wrapping
 - [x] support C# language
-- [ ] Search & replace toolbar button
+- [ ] search & replace toolbar button
 - [ ] toolbar with toolbar button template
 - [ ] support read-only paragraphs
 - [ ] diff viewer
