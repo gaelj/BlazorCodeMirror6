@@ -216,6 +216,7 @@ Result:
         HighlightActiveLineGutter = false,
         HighlightSelectionMatches = false,
         ScrollToEnd = true,
+        BindMode = DocumentBindMode.OnDelayedInput,
     };
     private string ButtonClass(CodeMirrorState state, string docStyleTag) => ButtonClass(state.MarkdownStylesAtSelections?.Contains(docStyleTag) == true);
     private string ButtonClass(bool enabled) => enabled

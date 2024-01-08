@@ -14,4 +14,5 @@ export class CmConfiguration {
     public replaceEmojiCodes: boolean
     public resize: string
     public lineWrapping: boolean
+    public lintingEnabled: boolean
 }

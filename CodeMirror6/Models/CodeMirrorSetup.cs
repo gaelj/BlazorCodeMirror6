@@ -119,4 +119,9 @@ public readonly record struct CodeMirrorSetup
     /// The file icon css class to use for the editor
     /// </summary>
     [JsonPropertyName("fileIcon")] public string? FileIcon { get; init; } = "fa fa-file";
+
+    /// <summary>
+    /// Bind value mode of the text area
+    /// </summary>
+    [JsonPropertyName("bindValueMode")] public DocumentBindMode BindMode { get; init; } = DocumentBindMode.OnLostFocus;
 }

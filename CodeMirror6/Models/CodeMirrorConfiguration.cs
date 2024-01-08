@@ -18,6 +18,7 @@ namespace CodeMirror6.Models;
 /// <param name="replaceEmojiCodes"></param>
 /// <param name="resize">none, vertical, horizontal or both</param>
 /// <param name="lineWrapping"></param>
+/// <param name="lintingEnabled"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -30,7 +31,8 @@ public class CodeMirrorConfiguration(
     bool autoFormatMarkdown,
     bool replaceEmojiCodes,
     string resize,
-    bool lineWrapping)
+    bool lineWrapping,
+    bool lintingEnabled)
 {
 
     /// <summary>
@@ -93,4 +95,9 @@ public class CodeMirrorConfiguration(
     /// Controls whether the editor wraps long lines of text, versus using scroll-bars
     /// </summary>
     [JsonPropertyName("lineWrapping")] public bool LineWrapping { get; internal set; } = lineWrapping;
+
+    /// <summary>
+    /// Did the user provide a linting callback (internal use)
+    /// </summary>
+    [JsonPropertyName("lintingEnabled")] internal bool LintingEnabled { get; set; } = lintingEnabled;
 }
