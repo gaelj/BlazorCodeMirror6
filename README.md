@@ -82,7 +82,7 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 
 ## Try It Out
 
-Experience Blazor CodeMirror 6 in action! Visit the live demo at https://gaelj.github.io/BlazorCodeMirror6/ to see the component's capabilities.
+Experience Blazor CodeMirror 6 in action! Visit the [live demo](https://gaelj.github.io/BlazorCodeMirror6/) to see the component's capabilities.
 
 ## Quick Start
 
