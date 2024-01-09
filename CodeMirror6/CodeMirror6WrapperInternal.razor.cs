@@ -144,6 +144,11 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     [Parameter] public Func<IBrowserFile, Task<string>>? UploadBrowserFile { get; set; }
 
     /// <summary>
+    /// Define whether the component is used in a WASM or Server app. In a WASM app, JS interop can start sooner
+    /// </summary>
+    [Parameter] public bool IsWASM { get; set; }
+
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     /// <value></value>
@@ -190,7 +195,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             LintDocument is not null
         );
         try {
-            await OnAfterRenderAsync(true); // try early initialization for Blazor WASM
+            if (IsWASM)
+                await InitializeJsInterop();
         }
         catch (Exception) {
         }
@@ -204,15 +210,21 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender) {
-            if (CmJsInterop is null) {
-                CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
-                await CmJsInterop.PropertySetters.InitCodeMirror();
-                if (GetMentionCompletions is not null) {
-                    var mentionCompletions = await GetMentionCompletions();
-                    await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions);
-                }
-                await InvokeAsync(StateHasChanged);
+            if (!IsWASM)
+                await InitializeJsInterop();
+        }
+    }
+
+    private async Task InitializeJsInterop()
+    {
+        if (CmJsInterop is null) {
+            CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
+            await CmJsInterop.PropertySetters.InitCodeMirror();
+            if (GetMentionCompletions is not null) {
+                var mentionCompletions = await GetMentionCompletions();
+                await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions);
             }
+            await InvokeAsync(StateHasChanged);
         }
     }
 
@@ -288,7 +300,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     public async ValueTask DisposeAsync()
     {
-        if (CmJsInterop is not null)
+        if (CmJsInterop?.IsJSReady == true)
             await CmJsInterop.DisposeAsync();
         try {
             LinterCancellationTokenSource.Cancel();

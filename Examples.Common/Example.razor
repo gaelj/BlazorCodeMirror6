@@ -30,6 +30,7 @@
 >Reset text</button>
 
 <CodeMirror6Wrapper
+    IsWASM=@IsWASM
     @bind-Doc=@Text
     Placeholder="Enter your code.... (1)"
     TabSize=@TabSize
@@ -129,6 +130,7 @@ Result:
 }
 
 <CodeMirror6Wrapper
+    IsWASM=@IsWASM
     Placeholder="Enter your code.... (2)"
     @bind-Doc=@Text2
     @bind-Selection=@selectionRanges2
@@ -158,6 +160,7 @@ Result:
 }
 
 <CodeMirror6Wrapper
+    IsWASM=@IsWASM
     @bind-Doc=@Text3
     Placeholder=@PlaceHolderText
     @bind-Selection=@selectionRanges3
@@ -196,6 +199,7 @@ Result:
 
 @code
 {
+    [Parameter] public bool IsWASM { get; set; }
     private string? Text = code;
     private string? Text2 = "# Example 2";
     private string? Text3;
