@@ -34683,7 +34683,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-PQsBTd_Q.js').then(m => m.less());
+            return import('./index-wUJZOUzt.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34709,7 +34709,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-eGEzQx0d.js').then(m => m.php());
+            return import('./index-enH8CspD.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34778,7 +34778,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-EAKu2ODF.js').then(m => m.wast());
+            return import('./index-4bBtv2M9.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -35589,13 +35589,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-zlaXbugT.js').then(m => m.vue());
+            return import('./index-DW4HdPKM.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-7Gpcz8Wh.js').then(m => m.angular());
+            return import('./index-J7c0fjFG.js').then(m => m.angular());
         }
     })
 ];
@@ -35861,28 +35861,34 @@ function getLanguage(languageName) {
         case "Markdown":
             return markdown({
                 base: markdownLanguage,
-                codeLanguages: [...languages, mermaidLanguageDescription,
+                codeLanguages: [
+                    ...languages,
+                    mermaidLanguageDescription,
                     mindmapLanguageDescription,
                     pieLanguageDescription,
                     flowchartLanguageDescription,
                     sequenceLanguageDescription,
                     journeyLanguageDescription,
                     requirementLanguageDescription,
-                    ganttLanguageDescription],
+                    ganttLanguageDescription
+                ],
                 addKeymap: true
             });
         default:
-            console.log("Language not found: " + languageName);
+            console.error("Language not found: " + languageName);
             return markdown({
                 base: markdownLanguage,
-                codeLanguages: [...languages, mermaidLanguageDescription,
+                codeLanguages: [
+                    ...languages,
+                    mermaidLanguageDescription,
                     mindmapLanguageDescription,
                     pieLanguageDescription,
                     flowchartLanguageDescription,
                     sequenceLanguageDescription,
                     journeyLanguageDescription,
                     requirementLanguageDescription,
-                    ganttLanguageDescription],
+                    ganttLanguageDescription
+                ],
                 addKeymap: true
             });
     }
@@ -76631,11 +76637,7 @@ const markdownTableExtension = (enabled = true) => {
             enter: ({ type, from, to }) => {
                 if (type.name === 'Table' && !isCursorInRange(state, from, to)) {
                     const tableMarkdown = state.sliceDoc(from, to);
-                    console.log('tableMarkdown:');
-                    console.log(tableMarkdown);
                     const tableHtml = markdownTableToHTML(tableMarkdown);
-                    console.log('tableHtml:');
-                    console.log(tableHtml);
                     widgets.push(tableDecoration(tableHtml).range(from, to));
                 }
             },
@@ -76704,7 +76706,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             lastOperationWasUndo,
             indentationMarkers(),
             CMInstances[id].lineWrappingCompartment.of(initialConfig.lineWrapping ? EditorView.lineWrapping : []),
-            EditorView.updateListener.of(async (update) => { await updateListenerExtension(dotnetHelper, update); }),
+            EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update); }),
             keymap.of([
                 ...closeBracketsKeymap,
                 //...defaultKeymap,
@@ -76766,7 +76768,8 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             extensions.push(highlightActiveLine());
         if (setup.highlightSelectionMatches === true)
             extensions.push(highlightSelectionMatches());
-        extensions.push(linter(async (view) => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()));
+        if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput")
+            extensions.push(linter(async (view) => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()));
         if (setup.allowMultipleSelections === true)
             extensions.push(EditorState.allowMultipleSelections.of(true));
         extensions.push(...getFileUploadExtensions(id, setup));
@@ -76803,13 +76806,16 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         console.error(`Error in initializing CodeMirror`, error);
     }
 }
-async function updateListenerExtension(dotnetHelper, update) {
+async function updateListenerExtension(id, update) {
+    const dotnetHelper = CMInstances[id].dotNetHelper;
+    const setup = CMInstances[id].setup;
     if (update.docChanged) {
-        await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString());
+        if (setup.bindValueMode === 'OnInput')
+            await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString());
     }
     if (update.focusChanged) {
         await dotnetHelper.invokeMethodAsync("FocusChangedFromJS", update.view.hasFocus);
-        if (!update.view.hasFocus)
+        if (!update.view.hasFocus && (setup.bindValueMode === 'OnLostFocus' || setup.bindValueMode === 'OnDelayedInput'))
             await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString());
     }
     if (update.selectionSet) {
