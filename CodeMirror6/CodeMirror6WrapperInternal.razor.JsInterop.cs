@@ -30,6 +30,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         private readonly DotNetObjectReference<CodeMirror6WrapperInternal> _dotnetHelperRef = DotNetObjectReference.Create(cm6WrapperComponent);
         private CMSetters _setters = null!;
         private CMCommandDispatcher _commands = null!;
+        public bool IsJSReady => _moduleTask.IsValueCreated && _moduleTask.Value.IsCompletedSuccessfully;
 
         internal async Task ModuleInvokeVoidAsync(string method, params object?[] args)
         {
@@ -76,10 +77,13 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         /// <returns></returns>
         public async ValueTask DisposeAsync()
         {
-            if (_moduleTask.IsValueCreated) {
+            if (IsJSReady) {
                 var module = await _moduleTask.Value;
-                await module.DisposeAsync();
-            }
+                try {
+                    await module.DisposeAsync();
+                }
+                catch (ObjectDisposedException) {}
+                }
             GC.SuppressFinalize(this);
         }
     }

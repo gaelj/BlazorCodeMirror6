@@ -116,7 +116,7 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// Find any errors in the document
     /// </summary>
     /// <value></value>
-    [Parameter] public Func<string, CancellationToken, Task<List<CodeMirrorDiagnostic>>> LintDocument { get; set; } = (_, _) => Task.FromResult(new List<CodeMirrorDiagnostic>());
+    [Parameter] public Func<string, CancellationToken, Task<List<CodeMirrorDiagnostic>>>? LintDocument { get; set; }
     /// <summary>
     /// The CodeMirror setup
     /// </summary>

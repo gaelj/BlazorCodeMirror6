@@ -25,4 +25,5 @@ export class CmSetup
     public allowMentions: boolean
     public scrollToEnd: boolean
     public fileIcon: string
+    public bindValueMode: string
 }

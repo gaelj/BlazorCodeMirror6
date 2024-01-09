@@ -30,6 +30,7 @@
 >Reset text</button>
 
 <CodeMirror6Wrapper
+    IsWASM=@IsWASM
     @bind-Doc=@Text
     Placeholder="Enter your code.... (1)"
     TabSize=@TabSize
@@ -129,6 +130,7 @@ Result:
 }
 
 <CodeMirror6Wrapper
+    IsWASM=@IsWASM
     Placeholder="Enter your code.... (2)"
     @bind-Doc=@Text2
     @bind-Selection=@selectionRanges2
@@ -158,6 +160,7 @@ Result:
 }
 
 <CodeMirror6Wrapper
+    IsWASM=@IsWASM
     @bind-Doc=@Text3
     Placeholder=@PlaceHolderText
     @bind-Selection=@selectionRanges3
@@ -196,6 +199,7 @@ Result:
 
 @code
 {
+    [Parameter] public bool IsWASM { get; set; }
     private string? Text = code;
     private string? Text2 = "# Example 2";
     private string? Text3;
@@ -216,6 +220,7 @@ Result:
         HighlightActiveLineGutter = false,
         HighlightSelectionMatches = false,
         ScrollToEnd = true,
+        BindMode = DocumentBindMode.OnDelayedInput,
     };
     private string ButtonClass(CodeMirrorState state, string docStyleTag) => ButtonClass(state.MarkdownStylesAtSelections?.Contains(docStyleTag) == true);
     private string ButtonClass(bool enabled) => enabled
@@ -234,16 +239,22 @@ Result:
         var position = 0;
         foreach (var line in code.Split('\n')) {
             cancellationToken.ThrowIfCancellationRequested();
-            if (line.Contains("error")) {
+            var subLine = line;
+            var offset = 0;
+            while (subLine.Contains("error")) {
+                var indexOfError = subLine.IndexOf("error");
+                var errorLength = "error".Length;
                 result.Add(
                     new CodeMirrorDiagnostic {
-                        From = position + line.IndexOf("error"),
-                        To = position + line.IndexOf("error") + "error".Length,
+                        From = position + indexOfError + offset,
+                        To = position + indexOfError + errorLength + offset,
                         Severity = "error",
                         Message = "Error message",
                         Source = "Custom linter"
                     }
                 );
+                offset += indexOfError + errorLength;
+                subLine = subLine.Substring(indexOfError + errorLength);
             }
             position += line.Length + 1;
         }

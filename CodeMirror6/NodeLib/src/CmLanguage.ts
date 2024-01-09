@@ -13,7 +13,7 @@ import { rust, rustLanguage } from "@codemirror/lang-rust"
 import { sass, sassLanguage } from "@codemirror/lang-sass"
 import { xml, xmlLanguage } from "@codemirror/lang-xml"
 import { csharp, csharpLanguage } from "@replit/codemirror-lang-csharp"
-import { flowchartLanguageDescription, ganttLanguageDescription, journeyLanguageDescription, mermaid, mermaidLanguage, mermaidLanguageDescription, mindmapLanguageDescription, pieLanguageDescription, requirementLanguageDescription, sequenceLanguageDescription } from "codemirror-lang-mermaid"
+import { mermaid, mermaidLanguage, flowchartLanguageDescription, ganttLanguageDescription, journeyLanguageDescription, mermaidLanguageDescription, mindmapLanguageDescription, pieLanguageDescription, requirementLanguageDescription, sequenceLanguageDescription } from "codemirror-lang-mermaid"
 import { languages } from "@codemirror/language-data"
 import { Language } from "@codemirror/language"
 import { StateEffect } from "@codemirror/state"
@@ -62,7 +62,9 @@ export function getLanguage(languageName: string): LanguageSupport {
         case "Markdown":
             return markdown({
                 base: markdownLanguage,
-                codeLanguages: [...languages, mermaidLanguageDescription,
+                codeLanguages: [
+                    ...languages,
+                    mermaidLanguageDescription,
                     mindmapLanguageDescription,
                     pieLanguageDescription,
                     flowchartLanguageDescription,
@@ -70,12 +72,15 @@ export function getLanguage(languageName: string): LanguageSupport {
                     journeyLanguageDescription,
                     requirementLanguageDescription,
                     ganttLanguageDescription],
-                addKeymap: true })
+                addKeymap: true
+            })
         default:
-            console.log("Language not found: " + languageName)
+            console.error("Language not found: " + languageName)
             return markdown({
                 base: markdownLanguage,
-                codeLanguages: [...languages, mermaidLanguageDescription,
+                codeLanguages: [
+                    ...languages,
+                    mermaidLanguageDescription,
                     mindmapLanguageDescription,
                     pieLanguageDescription,
                     flowchartLanguageDescription,
@@ -83,7 +88,8 @@ export function getLanguage(languageName: string): LanguageSupport {
                     journeyLanguageDescription,
                     requirementLanguageDescription,
                     ganttLanguageDescription],
-                addKeymap: true })
+                addKeymap: true
+            })
     }
 }
 

@@ -53,11 +53,7 @@ export const markdownTableExtension = (enabled: boolean = true): Extension => {
             enter: ({ type, from, to }) => {
                 if (type.name === 'Table' && !isCursorInRange(state, from, to)) {
                     const tableMarkdown = state.sliceDoc(from, to)
-                    console.log('tableMarkdown:')
-                    console.log(tableMarkdown)
                     const tableHtml = markdownTableToHTML(tableMarkdown)
-                    console.log('tableHtml:')
-                    console.log(tableHtml)
                     widgets.push(tableDecoration(tableHtml).range(from, to))
                 }
             },

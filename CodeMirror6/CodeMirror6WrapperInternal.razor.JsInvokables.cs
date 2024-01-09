@@ -38,7 +38,6 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         if (State.HasFocus == value) return;
         State.HasFocus = value;
         await FocusChanged.InvokeAsync(State.HasFocus);
-        // if (!State.HasFocus) await SelectionChanged.InvokeAsync(null);
     }
 
     /// <summary>
@@ -66,22 +65,27 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <summary>
     /// CodeMirror requested linting of the document
     /// </summary>
-    /// <param name="code"></param>
+    /// <param name="document"></param>
     /// <returns></returns>
-    [JSInvokable] public async Task<List<CodeMirrorDiagnostic>> LintingRequestedFromJS(string code)
+    [JSInvokable] public async Task<List<CodeMirrorDiagnostic>> LintingRequestedFromJS(string document)
     {
-        try {
-            LinterCancellationTokenSource.Cancel();
+        if (Setup.BindMode == DocumentBindMode.OnDelayedInput) {
+            await DocChangedFromJS(document);
         }
-        catch (ObjectDisposedException) { }
-        LinterCancellationTokenSource = new();
-        var token = LinterCancellationTokenSource.Token;
-        try {
-            return await LintDocument(code, token);
+        if (LintDocument is not null) {
+            try {
+                LinterCancellationTokenSource.Cancel();
+            }
+            catch (ObjectDisposedException) { }
+            LinterCancellationTokenSource = new();
+            var token = LinterCancellationTokenSource.Token;
+            try {
+                return await LintDocument(document, token);
+            }
+            catch (OperationCanceledException) {
+            }
         }
-        catch (OperationCanceledException) {
-            return [];
-        }
+        return [];
     }
 
     private CancellationTokenSource LinterCancellationTokenSource = new();

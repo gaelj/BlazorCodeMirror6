@@ -31,9 +31,23 @@
             UploadFile="@UploadFile"
         />
     </ChildContent>
-    <ErrorContent>
-        <p class="alert alert-danger" role="alert">
-            An error occurred while loading the editor.
+    <ErrorContent Context="c">
+        <p class="alert alert-danger my-2" role="alert">
+            An error occurred while loading the editor:
+            <p>
+                Message:
+                @c.Message
+            </p>
+            <p>
+                Source:
+                @(c.Source)
+            </p>
+            <p>
+                StackTrace:
+                <pre>
+                    @(c.StackTrace)
+                </pre>
+            </p>
         </p>
     </ErrorContent>
 </ErrorBoundary>

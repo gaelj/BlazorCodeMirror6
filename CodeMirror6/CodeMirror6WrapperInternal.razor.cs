@@ -117,7 +117,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// Find any errors in the document
     /// </summary>
     /// <value></value>
-    [Parameter] public Func<string, CancellationToken, Task<List<CodeMirrorDiagnostic>>> LintDocument { get; set; } = (_, _) => Task.FromResult(new List<CodeMirrorDiagnostic>());
+    [Parameter] public Func<string, CancellationToken, Task<List<CodeMirrorDiagnostic>>>? LintDocument { get; set; }
     /// <summary>
     /// The CodeMirror setup
     /// </summary>
@@ -142,6 +142,11 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// Upload an IBrowserFile to a server and returns the URL to the file
     /// </summary>
     [Parameter] public Func<IBrowserFile, Task<string>>? UploadBrowserFile { get; set; }
+
+    /// <summary>
+    /// Define whether the component is used in a WASM or Server app. In a WASM app, JS interop can start sooner
+    /// </summary>
+    [Parameter] public bool IsWASM { get; set; }
 
     /// <summary>
     /// Additional attributes to be applied to the container element
@@ -177,19 +182,21 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         Config = new(
             Doc,
             Placeholder,
-            Theme?.ToString(),
+            Theme,
             TabSize,
             IndentationUnit,
             ReadOnly,
             Editable,
-            Language?.ToString(),
+            Language,
             AutoFormatMarkdown,
             ReplaceEmojiCodes,
             ResizeStyle,
-            LineWrapping
+            LineWrapping,
+            LintDocument is not null
         );
         try {
-            await OnAfterRenderAsync(true); // try early initialization for Blazor WASM
+            if (IsWASM)
+                await InitializeJsInterop();
         }
         catch (Exception) {
         }
@@ -203,15 +210,21 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender) {
-            if (CmJsInterop is null) {
-                CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
-                await CmJsInterop.PropertySetters.InitCodeMirror();
-                if (GetMentionCompletions is not null) {
-                    var mentionCompletions = await GetMentionCompletions();
-                    await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions);
-                }
-                await InvokeAsync(StateHasChanged);
+            if (!IsWASM)
+                await InitializeJsInterop();
+        }
+    }
+
+    private async Task InitializeJsInterop()
+    {
+        if (CmJsInterop is null) {
+            CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
+            await CmJsInterop.PropertySetters.InitCodeMirror();
+            if (GetMentionCompletions is not null) {
+                var mentionCompletions = await GetMentionCompletions();
+                await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions);
             }
+            await InvokeAsync(StateHasChanged);
         }
     }
 
@@ -240,8 +253,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             Config.Placeholder = Placeholder;
             await CmJsInterop.PropertySetters.SetPlaceholderText();
         }
-        if (Config.ThemeName != Theme?.ToString()) {
-            Config.ThemeName = Theme?.ToString();
+        if (Config.ThemeName != Theme) {
+            Config.ThemeName = Theme;
             await CmJsInterop.PropertySetters.SetTheme();
         }
         if (Config.ReadOnly != ReadOnly) {
@@ -252,8 +265,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             Config.Editable = Editable;
             await CmJsInterop.PropertySetters.SetEditable();
         }
-        if (Config.LanguageName != Language?.ToString()) {
-            Config.LanguageName = Language?.ToString();
+        if (Config.LanguageName != Language) {
+            Config.LanguageName = Language;
             await CmJsInterop.PropertySetters.SetLanguage();
         }
         if (Config.AutoFormatMarkdown != AutoFormatMarkdown) {
@@ -287,7 +300,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     public async ValueTask DisposeAsync()
     {
-        if (CmJsInterop is not null)
+        if (CmJsInterop?.IsJSReady == true)
             await CmJsInterop.DisposeAsync();
         try {
             LinterCancellationTokenSource.Cancel();
