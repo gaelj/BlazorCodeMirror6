@@ -34683,7 +34683,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-t-L5s-hk.js').then(m => m.less());
+            return import('./index-qNkH494w.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34709,7 +34709,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-HXeZE_14.js').then(m => m.php());
+            return import('./index-pwVPKeQ4.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34778,7 +34778,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-FrsBZfgS.js').then(m => m.wast());
+            return import('./index-wphFVs6E.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -35589,13 +35589,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-ckleV3vg.js').then(m => m.vue());
+            return import('./index-IAWkvHTY.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-TVQbybDE.js').then(m => m.angular());
+            return import('./index-WzUjQdiZ.js').then(m => m.angular());
         }
     })
 ];
@@ -35972,7 +35972,7 @@ function dynamicMarkdownHeaderStyling() {
                             let headerLevel = line.indexOf(' ');
                             if (headerLevel === -1)
                                 headerLevel = line.length;
-                            const fontSize = `${1 + 0.7 * (7 - headerLevel)}em`;
+                            const fontSize = `${1.2 + 0.3 * (6 - headerLevel)}em`;
                             decorations.push(Decoration.line({
                                 attributes: { style: `font-size: ${fontSize};` }
                             }).range(node.from, node.from));
@@ -62548,7 +62548,7 @@ const dynamicHrExtension = (enabled = true) => {
                         const lineText = state.doc.sliceString(line.from, line.to);
                         const hrRegex = /^-{3,}$/;
                         if (hrRegex.test(lineText)) {
-                            widgets.push(createHRDecorationWidget().range(line.from, line.to));
+                            widgets.push(createHRDecorationWidget().range(from, to));
                         }
                     }
                 },
@@ -76398,7 +76398,7 @@ function createHtmlDecorationWidget(content) {
         widget: buildWidget({
             eq: (other) => other.content === content,
             toDOM: () => {
-                const container = document.createElement('span');
+                const container = document.createElement("span");
                 container.innerHTML = content;
                 return container;
             },
@@ -76417,10 +76417,9 @@ function htmlViewPlugin(enabled) {
                 for (const { from, to } of view.visibleRanges) {
                     const text = view.state.doc.sliceString(from, to);
                     if (markdownLanguage.isActiveAt(view.state, from)) {
-                        // recognize html spans (<span>...</span>) and decorate them
-                        const spanRegex = /<span[^>]*>([^<]*)<\/span>/g;
+                        const htmlTagRegex = /<(?<tagName>[a-z]+)(?<attributes>[^>]*)>(?<content>.*?)<\/\k<tagName>>|<(?<selfClosingTagName>[a-z]+)(?<selfClosingAttributes>[^>]*)\/>/gi;
                         let match;
-                        while ((match = spanRegex.exec(text)) !== null) {
+                        while ((match = htmlTagRegex.exec(text)) !== null) {
                             const start = from + match.index;
                             const end = start + match[0].length;
                             if (!isCursorInRange(view.state, start, end)) {
@@ -76668,15 +76667,21 @@ async function fetchDiagramSvg(view, code, language, krokiUrl) {
     let svgContent = fetchSvgFromCache(code, language);
     if (svgContent)
         return svgContent;
-    const response = await fetch(`${krokiUrl}/${language}/svg`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'text/plain',
-            'Accept': 'image/svg+xml',
-        },
-        body: code
-    });
-    svgContent = { response: await response.text(), error: response.status !== 200 };
+    try {
+        const response = await fetch(`${krokiUrl}/${language}/svg`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain',
+                'Accept': 'image/svg+xml',
+            },
+            body: code
+        });
+        svgContent = { response: await response.text(), error: response.status !== 200 };
+    }
+    catch (error) {
+        console.log("error", error);
+        svgContent = { response: error.toString(), error: true };
+    }
     if (!svgCache.has(key))
         svgCache.set(key, svgContent);
     view.dispatch({
@@ -76725,7 +76730,16 @@ class DiagramWidget extends WidgetType {
         backdrop.className = 'cm-image-backdrop';
         figure.className = 'cm-image-figure';
         image.className = 'cm-image-img';
-        image.innerHTML = this.svgContent ?? `Loading ${this.language} diagram...`;
+        if (this.svgContent === null) {
+            image.innerHTML = `Loading ${this.language} diagram...`;
+            image.style.fontStyle = 'italic';
+            image.style.color = 'gray';
+        }
+        else {
+            image.innerHTML = this.svgContent;
+            image.style.fontStyle = '';
+            image.style.color = '';
+        }
         container.style.paddingBottom = '0.5rem';
         container.style.paddingTop = '0.5rem';
         backdrop.classList.add('cm-image-backdrop');
@@ -76866,6 +76880,56 @@ const dynamicDiagramsExtension = (enabled = true, krokiUrl = "https://kroki.io")
     ];
 };
 
+const hideWidget = () => buildWidget({
+    eq: () => false,
+    toDOM: () => {
+        const span = document.createElement('span');
+        return span;
+    },
+});
+const hideMarksExtension = (enabled = true) => {
+    if (!enabled)
+        return [];
+    const hideDecoration = () => Decoration.replace({
+        widget: hideWidget(),
+    });
+    const decorate = (state) => {
+        const widgets = [];
+        if (enabled) {
+            syntaxTree(state).iterate({
+                enter: ({ type, from, to }) => {
+                    if (type.name.endsWith('Mark')) {
+                        const mark = state.sliceDoc(from, to);
+                        const line = state.doc.lineAt(from);
+                        if (mark.startsWith('#')) {
+                            to += 1; // Hide the space character after the #'s
+                        }
+                        if (!isCursorInRange(state, line.from, line.to))
+                            widgets.push(hideDecoration().range(from, to));
+                    }
+                },
+            });
+        }
+        return widgets.length > 0 ? RangeSet.of(widgets) : Decoration.none;
+    };
+    const viewPlugin = ViewPlugin.define(() => ({}), {});
+    const stateField = StateField.define({
+        create(state) {
+            return decorate(state);
+        },
+        update(_references, { state }) {
+            return decorate(state);
+        },
+        provide(field) {
+            return EditorView.decorations.from(field);
+        },
+    });
+    return [
+        viewPlugin,
+        stateField,
+    ];
+};
+
 /**
  * Initialize a new CodeMirror instance
  * @param dotnetHelper
@@ -76900,6 +76964,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
                 hyperLink, hyperLinkStyle,
                 htmlViewPlugin(initialConfig.autoFormatMarkdown),
                 markdownTableExtension(initialConfig.autoFormatMarkdown),
+                hideMarksExtension(initialConfig.autoFormatMarkdown),
             ]),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
             CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -77117,6 +77182,7 @@ const autoFormatMarkdownExtensions = (id, autoFormatMarkdown = true) => [
     hyperLink, hyperLinkStyle,
     markdownLinkExtension(autoFormatMarkdown),
     markdownTableExtension(autoFormatMarkdown),
+    hideMarksExtension(autoFormatMarkdown),
 ];
 function setAutoFormatMarkdown(id, autoFormatMarkdown) {
     CMInstances[id].view.dispatch({

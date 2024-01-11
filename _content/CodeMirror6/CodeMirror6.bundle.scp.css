@@ -1,10 +1,4 @@
 /* _content/CodeMirror6/CodeMirror6WrapperInternal.razor.rz.scp.css */
-[b-x8tnr46zfs] :root {
-    --ink-internal-border-radius: 0.25rem;
-    --ink-internal-block-background-color: #f0f0f0;
-    --ink-internal-block-padding: 0.5rem;
-}
-
 [b-x8tnr46zfs] .cm-editor {
     overflow: auto;
     max-height: inherit;
@@ -61,7 +55,6 @@
 }
 
 [b-x8tnr46zfs] .cm-blockquote {
-    /* background-color: #f0f0f0; */
     border-left: 0.25rem solid currentColor;
     padding: 0 0.5rem;
 }
@@ -135,4 +128,3 @@
 [b-x8tnr46zfs] .cm-line table tr:nth-child(even) {
     background-color: #7f7f7f30;
 }
-

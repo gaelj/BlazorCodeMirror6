@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Examples.BlazorWasm",
   "resources": {
-    "hash": "sha256-dqpyqOvwn6jnuvKloroA89iqVZP+51yaMS85ZJwHVuI=",
+    "hash": "sha256-Ko1Zie3CJ96FtKqXbUTOL5ReKpUOjvy0vCWP2D4bA4g=",
     "jsModuleNative": {
       "dotnet.native.8.0.1.ahpp78valh.js": "sha256-SGOlISx+3G4kkvpC9Uq3qoPGsnjxGmW61QBev0lyI5U="
     },
@@ -17,9 +17,9 @@
       "icudt_no_CJK.dat": "sha256-L7sV7NEYP37/Qr2FPCePo5cJqRgTXRwGHuwF5Q+0Nfs="
     },
     "assembly": {
-      "CodeMirror6.wasm": "sha256-RaIM80BOlPzHLqCvvGwI1LwY41CD/XMpvSuoVQo94bc=",
-      "Examples.BlazorWasm.wasm": "sha256-ljGlBdca+kRX688Nxo+PLOKtIXdY622tfxq8PDIOeO0=",
-      "Examples.Common.wasm": "sha256-oSdONG5t6V+N0NWaVBmg5g938s4HyQs8tqf1ukmbrDM=",
+      "CodeMirror6.wasm": "sha256-7Ag61LgOXSyWLtvAULwACEmCU+Fuy5tk0c3GC+CaVbk=",
+      "Examples.BlazorWasm.wasm": "sha256-bZDBBBY1c/FXHu+SyNms33kmZmblyXxDbdt3yl3YeGA=",
+      "Examples.Common.wasm": "sha256-Yes5ex00x8OM0Gab4XsJ7ZKLbNqN09+uk6itj0ceKoA=",
       "Microsoft.AspNetCore.Components.wasm": "sha256-yuR1i8MpHV8t5nuV2k198hCOiF/rORcGQSwbuHIX4HA=",
       "Microsoft.AspNetCore.Components.Web.wasm": "sha256-UrDVTj0F1FP3HuUlKW2n0QzFgqDJ/PuP36ronNQof/E=",
       "Microsoft.AspNetCore.Components.WebAssembly.wasm": "sha256-oCeWpWyW5jMNiMdahmvdLvPeLueqGaKJugsiGHqyheI=",
@@ -41,7 +41,7 @@
       "Microsoft.Extensions.Options.ConfigurationExtensions.wasm": "sha256-SW0avffuKChJHJjJHCriTncZr34yMg1XdbAZZdNnOuA=",
       "Microsoft.Extensions.Options.wasm": "sha256-daj5vN1mFtjFFrz6DxZyOFiUcuEsE8vIFC4JO8x0Rhs=",
       "Microsoft.Extensions.Primitives.wasm": "sha256-PHNLIxt11ZcpjajGFjfMoDbDp0CoBnjXj/AV4J/onCc=",
-      "Microsoft.JSInterop.wasm": "sha256-lXwhdv0Is9FMH/j0+WH3zoNWAGLbVaONtGucJ/4URQ0=",
+      "Microsoft.JSInterop.wasm": "sha256-EtJO0POenyod5M2fB0fS97fOwqWAHYxciSYpGqqItvE=",
       "Microsoft.JSInterop.WebAssembly.wasm": "sha256-CQVLCKiSxLN5ghyJZG3mhnMGRROdqrbNUjtAXB0nWb8=",
       "Microsoft.Net.Http.Headers.wasm": "sha256-b59APrldqivzbOYVb0CV+lGgWn4HyUPjMa/cplEp2x8=",
       "netstandard.wasm": "sha256-eS424v45b7oEsWLF8EL8QgeVvREBuuLfcUw+2qr38lc=",
