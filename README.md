@@ -132,3 +132,36 @@ Blazor CodeMirror 6 is released under the MIT License. See the LICENSE for more 
 ## Contact
 
 File an [issue](https://github.com/gaelj/BlazorCodeMirror6/issues) or open a [discussion](https://github.com/gaelj/BlazorCodeMirror6/discussions)
+
+## Error reporting
+
+Disclaimer: when a runtime error occurs in one of the demo / example projects, its details are sent to my private account on `Sentry.io`.
+
+This is to help me detect and fix errors occurring on mobile platforms without the need for USB debugging, and to be informed of any errors that other users of the demo / example projects might encounter.
+
+The component itself does not contain any tracking.
+
+If you run the example projects locally and a runtime error occurs, some personal information will be sent to Sentry (OS, browser details, full path of the source file where the error occurred...)
+
+If this makes you feel uncomfortable but you still wish to run the examples locally, you can disable Sentry by deleting:
+
+- in `Program.cs`:
+
+```csharp
+builder.WebHost.UseSentry(o => {
+    o.Dsn = "https://d0ab79eee7b999c61d2c01fdf3958eeb@o4505402784546816.ingest.sentry.io/4506525909909504";
+    // When configuring for the first time, to see what the SDK is doing:
+    o.Debug = true;
+    // Set TracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+    // We recommend adjusting this value in production.
+    o.TracesSampleRate = 1.0;
+});
+```
+- in `Examples.BlazorWasm/wwwroot/index.html` (WASM example) or in `Examples.BlazorServer/Pages/_Host.cshtml` (Blazor Server example):
+
+```html
+<script
+    src="https://js.sentry-cdn.com/d0ab79eee7b999c61d2c01fdf3958eeb.min.js"
+    crossorigin="anonymous"
+></script>
+```
