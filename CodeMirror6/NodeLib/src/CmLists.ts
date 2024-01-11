@@ -71,7 +71,8 @@ export const listsExtension = (enabled: boolean = true): Extension => {
 
         syntaxTree(state).iterate({
             enter: ({ type, from, to }) => {
-                if (type.name === 'ListMark' && !isCursorInRange(state, from, to)) {
+                const line = state.doc.lineAt(from)
+                if (type.name === 'ListMark' && !isCursorInRange(state, line.from, line.to)) {
                     const task = state.sliceDoc(to + 1, to + 4)
 
                     if (!['[ ]', '[x]'].includes(task)) {
@@ -83,7 +84,7 @@ export const listsExtension = (enabled: boolean = true): Extension => {
                     }
                 }
 
-                if (type.name === 'TaskMarker' && !isCursorInRange(state, from - 2, to)) {
+                if (type.name === 'TaskMarker' && !isCursorInRange(state, line.from, line.to)) {
                     const task = state.sliceDoc(from, to)
 
                     widgets.push(taskDecoration(task === '[x]').range(from - 2, to))
