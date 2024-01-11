@@ -21,7 +21,7 @@ class ImageWidget extends WidgetType {
         return imageWidget.url === this.url
     }
 
-    toDOM() {
+    toDOM(view: EditorView) {
         const container = document.createElement('div')
         const backdrop = container.appendChild(document.createElement('div'))
         const figure = backdrop.appendChild(document.createElement('figure'))
@@ -49,11 +49,19 @@ class ImageWidget extends WidgetType {
         figure.style.margin = '0'
 
         image.style.display = 'block'
-        image.style.maxHeight = '80vh'
+        image.style.maxHeight = '800px'
         image.style.maxWidth = '100%'
         image.style.width = '100%'
 
         return container
+    }
+
+    get lineBreaks(): number {
+        return 1
+    }
+
+    get estimatedHeight(): number {
+        return 800
     }
 }
 

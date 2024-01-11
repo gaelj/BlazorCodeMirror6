@@ -28,7 +28,7 @@ export const hideMarksExtension = (enabled: boolean = true): Extension => {
         if (enabled) {
             syntaxTree(state).iterate({
                 enter: ({ type, from, to }) => {
-                    if (type.name.endsWith('Mark')) {
+                    if (type.name.endsWith('Mark') && type.name !== 'ListMark') {
                         const mark = state.sliceDoc(from, to)
                         const line = state.doc.lineAt(from)
                         if (mark.startsWith('#')) {
