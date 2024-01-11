@@ -34683,7 +34683,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-wUJZOUzt.js').then(m => m.less());
+            return import('./index-FQ_fJs73.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34709,7 +34709,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-enH8CspD.js').then(m => m.php());
+            return import('./index-MWlumuX_.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34778,7 +34778,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-4bBtv2M9.js').then(m => m.wast());
+            return import('./index-7hfODsX6.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -35589,13 +35589,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-DW4HdPKM.js').then(m => m.vue());
+            return import('./index-ez0xWo9Q.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-J7c0fjFG.js').then(m => m.angular());
+            return import('./index-o6aRztWX.js').then(m => m.angular());
         }
     })
 ];
@@ -40943,41 +40943,41 @@ const dynamicImagesExtension = (enabled = true) => {
         return [];
     }
     const imageRegex = /!\[.*?\]\((?<url>.*?)\)/;
-    const imageWidget = (imageWidgetParams) => Decoration.widget({
+    const imageDecoration = (imageWidgetParams) => Decoration.widget({
         widget: new ImageWidget(imageWidgetParams),
         side: -1,
         block: true,
     });
     const decorate = (state) => {
-        const widgets = [];
+        const decorations = [];
         if (enabled) {
             syntaxTree(state).iterate({
                 enter: ({ type, from, to }) => {
                     if (type.name === 'Image') {
                         const result = imageRegex.exec(state.doc.sliceString(from, to));
                         if (result && result.groups && result.groups.url)
-                            widgets.push(imageWidget({ url: result.groups.url }).range(state.doc.lineAt(from).from));
+                            decorations.push(imageDecoration({ url: result.groups.url }).range(state.doc.lineAt(from).from));
                     }
                 },
             });
         }
-        return widgets.length > 0 ? RangeSet.of(widgets) : Decoration.none;
+        return decorations.length > 0 ? RangeSet.of(decorations) : Decoration.none;
     };
-    const imagesField = StateField.define({
+    const decorationStateField = StateField.define({
         create(state) {
             return decorate(state);
         },
-        update(images, transaction) {
+        update(value, transaction) {
             if (transaction.docChanged)
                 return decorate(transaction.state);
-            return images.map(transaction.changes);
+            return value.map(transaction.changes);
         },
         provide(field) {
             return EditorView.decorations.from(field);
         },
     });
     return [
-        imagesField,
+        decorationStateField,
     ];
 };
 
@@ -62694,9 +62694,9 @@ function createMentionDecorationPlugin() {
     });
 }
 // Combine the extension with the mention plugin
-const mentionDecorationExtension = (stylingEnabled) => [
+const mentionDecorationExtension = (enabled) => [
     createMentionDecorationPlugin(),
-    stylingEnabled ? createMentionDetailsPlugin() : [],
+    enabled ? createMentionDetailsPlugin() : [],
 ];
 
 const emojiWidget = (emoji) => buildWidget({
@@ -76383,65 +76383,6 @@ const markdownLinkExtension = (stylingEnabled) => [
     stylingEnabled ? createMarkdownLinkExtension() : [],
     stylingEnabled ? createMarkdownLinkDecorationPlugin() : [],
 ];
-/* // Function to create the Markdown link extension
-export function markdownLinkExtension(): Extension {
-    const linkDecoration = (linkText: string, linkName: string) => Decoration.replace({
-        widget: buildWidget({
-            eq: (other) => other.linkText === linkText,
-            toDOM: () => {
-                const span = document.createElement("span")
-                span.textContent = linkName
-                span.className = "cm-md-link"
-                return span
-            },
-            ignoreEvent: () => false,
-            linkText: linkText
-        }),
-    })
-
-    function extractLinkName(text: string): string {
-        const match = text.match(linkRegex);
-        return match ? match[1] : "";
-    }
-
-
-    return ViewPlugin.fromClass(class {
-        decorations: DecorationSet;
-
-        constructor(view: EditorView) {
-            this.decorations = this.buildDecorations(view);
-        }
-
-        update(update: ViewUpdate) {
-            if (update.docChanged || update.selectionSet) {
-                this.decorations = this.buildDecorations(update.view);
-            }
-        }
-
-        buildDecorations(view: EditorView): DecorationSet {
-            const decorations: Range<Decoration>[] = [];
-
-            syntaxTree(view.state).iterate({
-                enter: ({ type, from, to }) => {
-                    if (type.name === "Link") {
-                        // Ignore image links
-                        const linkText = view.state.doc.sliceString(from, to);
-                        if (!linkText.startsWith('!')) {
-                            const isNear = isCursorInRange(view.state, from, to);
-                            if (!isNear) {
-                                // Create a decoration for link text
-                                decorations.push(linkDecoration(linkText, extractLinkName(linkText)).range(from, to));
-                            }
-                        }
-                    }
-                }
-            });
-
-            return Decoration.set(decorations);
-        }
-    });
-}
- */
 
 function createHtmlDecorationWidget(content) {
     return Decoration.replace({
@@ -76662,6 +76603,195 @@ const markdownTableExtension = (enabled = true) => {
     ];
 };
 
+const supportedLanguages = [
+    'actdiag', 'blockdiag', 'bpmn', 'graphviz', 'meme', 'nomnoml', 'packetdiag',
+    'rackdiag', 'c4plantuml', 'seqdiag', 'svgbob',
+    'umlet', 'vega', 'vegalite', 'wavedrom', 'asciimath', 'bytefield', 'ditaa', 'erd',
+    'jcckit', 'mathml', 'mermaid', 'plantuml',
+    'websequencediagrams', 'excalidraw'
+];
+const svgCache = new Map();
+function fetchSvgFromCache(code, language) {
+    const key = `${language}\n${code}`;
+    const cached = svgCache.get(key);
+    if (cached)
+        return cached;
+    return null;
+}
+async function fetchDiagramSvg(view, code, language, krokiUrl) {
+    const key = `${language}\n${code}`;
+    let svgContent = fetchSvgFromCache(code, language);
+    if (svgContent)
+        return svgContent;
+    const response = await fetch(`${krokiUrl}/${language}/svg`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain', 'Accept': 'image/svg+xml' },
+        body: code
+    });
+    svgContent = { response: await response.text(), error: response.status !== 200 };
+    if (!svgCache.has(key))
+        svgCache.set(key, svgContent);
+    view.dispatch({
+        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response })
+    });
+    return svgContent;
+}
+function detectDiagramLanguage(code) {
+    const lines = code.split('\n');
+    if (lines.length === 0) {
+        return undefined;
+    }
+    const firstLine = lines[0];
+    if (firstLine.startsWith('```')) {
+        const language = firstLine.substring(3);
+        if (supportedLanguages.includes(language)) {
+            return language;
+        }
+    }
+    return undefined;
+}
+const updateDiagramEffect = StateEffect.define();
+class DiagramWidget extends WidgetType {
+    constructor({ language, code, svgContent = null }) {
+        super();
+        this.language = language;
+        this.code = code;
+        this.svgContent = svgContent;
+        if (!this.svgContent) {
+            const cached = fetchSvgFromCache(code, language);
+            if (cached)
+                this.svgContent = cached.response;
+        }
+    }
+    eq(imageWidget) {
+        return imageWidget.language === this.language && imageWidget.code === this.code && imageWidget.svgContent === this.svgContent;
+    }
+    toDOM() {
+        const container = document.createElement('div');
+        const backdrop = container.appendChild(document.createElement('div'));
+        const figure = backdrop.appendChild(document.createElement('figure'));
+        const image = figure.appendChild(document.createElement('div'));
+        container.setAttribute('aria-hidden', 'true');
+        container.className = 'cm-image-container';
+        backdrop.className = 'cm-image-backdrop';
+        figure.className = 'cm-image-figure';
+        image.className = 'cm-image-img';
+        image.innerHTML = this.svgContent ?? `Loading ${this.language} diagram...`;
+        container.style.paddingBottom = '0.5rem';
+        container.style.paddingTop = '0.5rem';
+        backdrop.classList.add('cm-image-backdrop');
+        backdrop.style.borderRadius = '0px';
+        backdrop.style.display = 'flex';
+        backdrop.style.alignItems = 'center';
+        backdrop.style.justifyContent = 'center';
+        backdrop.style.overflow = 'hidden';
+        backdrop.style.maxWidth = '100%';
+        figure.style.margin = '0';
+        image.style.display = 'block';
+        image.style.maxHeight = '80vh';
+        image.style.maxWidth = '100%';
+        image.style.width = '100%';
+        return container;
+    }
+    update(update) {
+        if (this.svgContent !== update.svgContent) {
+            this.svgContent = update.svgContent;
+            return true;
+        }
+        return false;
+    }
+}
+function getLanguageAndCode(state, node) {
+    const { from, to } = node;
+    const codeAndLanguage = state.doc.sliceString(from, to);
+    const language = detectDiagramLanguage(codeAndLanguage);
+    const code = codeAndLanguage.split('\n').slice(1, -1).join('\n');
+    return { language, code };
+}
+const diagramPlugin = (krokiUrl) => ViewPlugin.fromClass(class {
+    constructor(view) {
+        this.view = view;
+        this.parseDocumentAndLoadDiagrams(this.view);
+    }
+    update(update) {
+        update.transactions.forEach(tr => {
+            if (tr.docChanged) {
+                this.parseDocumentAndLoadDiagrams(this.view);
+            }
+        });
+    }
+    parseDocumentAndLoadDiagrams(view) {
+        syntaxTree(view.state).iterate({
+            enter: (node) => {
+                if (node.type.name === 'FencedCode') {
+                    const { language, code } = getLanguageAndCode(view.state, node);
+                    if (language) {
+                        fetchDiagramSvg(view, code, language, krokiUrl);
+                    }
+                }
+            },
+        });
+    }
+});
+const dynamicDiagramsExtension = (enabled = true, krokiUrl = "https://kroki.io") => {
+    if (!enabled) {
+        return [];
+    }
+    const diagramDecoration = (diagramWidgetParams) => Decoration.widget({
+        widget: new DiagramWidget(diagramWidgetParams),
+        side: -1,
+        block: true,
+    });
+    const decorate = (state, updatedCode, updatedLanguage, updatedSvgContent) => {
+        const decorations = [];
+        if (enabled) {
+            syntaxTree(state).iterate({
+                enter: (node) => {
+                    const { type, from, to } = node;
+                    if (type.name === 'FencedCode') {
+                        const { language, code } = getLanguageAndCode(state, node);
+                        if (language) {
+                            if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
+                                decorations.push(diagramDecoration({ language, code, svgContent: updatedSvgContent }).range(state.doc.lineAt(from).from));
+                            }
+                            else {
+                                const svgContent = fetchSvgFromCache(code, language);
+                                decorations.push(diagramDecoration({ language, code, svgContent: svgContent?.response }).range(state.doc.lineAt(from).from));
+                            }
+                        }
+                    }
+                },
+            });
+        }
+        return decorations.length > 0 ? RangeSet.of(decorations) : Decoration.none;
+    };
+    const decorationStateField = StateField.define({
+        create(state) {
+            return decorate(state);
+        },
+        update(value, transaction) {
+            // Apply the effect to update diagram content
+            for (const effect of transaction.effects) {
+                if (effect.is(updateDiagramEffect)) {
+                    const { code, language, svgContent } = effect.value;
+                    return decorate(transaction.state, code, language, svgContent);
+                }
+            }
+            if (transaction.docChanged) {
+                return decorate(transaction.state);
+            }
+            return value.map(transaction.changes);
+        },
+        provide(field) {
+            return EditorView.decorations.from(field);
+        },
+    });
+    return [
+        diagramPlugin(krokiUrl),
+        decorationStateField,
+    ];
+};
+
 /**
  * Initialize a new CodeMirror instance
  * @param dotnetHelper
@@ -76681,6 +76811,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
                 getDynamicHeaderStyling(initialConfig.autoFormatMarkdown),
                 dynamicHrExtension(initialConfig.autoFormatMarkdown),
                 dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
+                dynamicDiagramsExtension(initialConfig.autoFormatMarkdown, setup.krokiUrl.replace(/\/$/, '')),
                 autocompletion({
                     override: [
                         ...mentionCompletionExtension(setup.allowMentions),
@@ -76886,6 +77017,8 @@ function setMentionCompletions(id, mentionCompletions) {
 }
 function forceRedraw(id) {
     const view = CMInstances[id].view;
+    if (!view)
+        return;
     view.requestMeasure();
     view.update([]);
     const changes = view.state.changeByRange((range) => {
@@ -76899,6 +77032,7 @@ function setAutoFormatMarkdown(id, autoFormatMarkdown) {
             getDynamicHeaderStyling(autoFormatMarkdown),
             dynamicHrExtension(autoFormatMarkdown),
             dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
+            dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
             autocompletion({
                 override: [...mentionCompletionExtension(CMInstances[id].setup.allowMentions)]
             }),
