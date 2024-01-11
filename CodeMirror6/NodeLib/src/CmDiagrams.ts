@@ -54,15 +54,22 @@ async function fetchDiagramSvg(view: EditorView, code: string, language: string,
     let svgContent = fetchSvgFromCache(code, language)
     if (svgContent) return svgContent
 
-    const response = await fetch(`${krokiUrl}/${language}/svg`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'text/plain',
-            'Accept': 'image/svg+xml',
-    },
-        body: code
-    })
-    svgContent = { response: await response.text(), error: response.status !== 200 }
+    try {
+        const response = await fetch(`${krokiUrl}/${language}/svg`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain',
+                'Accept': 'image/svg+xml',
+            },
+            body: code
+        })
+        svgContent = { response: await response.text(), error: response.status !== 200 }
+    }
+    catch (error) {
+        console.log("error", error)
+        svgContent = { response: error.toString(), error: true }
+    }
+
     if (!svgCache.has(key))
         svgCache.set(key, svgContent)
     view.dispatch({
@@ -131,7 +138,16 @@ class DiagramWidget extends WidgetType {
         backdrop.className = 'cm-image-backdrop'
         figure.className = 'cm-image-figure'
         image.className = 'cm-image-img'
-        image.innerHTML = this.svgContent ?? `Loading ${this.language} diagram...`
+        if (this.svgContent === null) {
+            image.innerHTML = `Loading ${this.language} diagram...`
+            image.style.fontStyle = 'italic'
+            image.style.color = 'gray'
+        }
+        else {
+            image.innerHTML = this.svgContent
+            image.style.fontStyle = ''
+            image.style.color = ''
+        }
 
         container.style.paddingBottom = '0.5rem'
         container.style.paddingTop = '0.5rem'
