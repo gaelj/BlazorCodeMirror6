@@ -43,7 +43,7 @@ function dynamicMarkdownHeaderStyling() {
                             let headerLevel = line.indexOf(' ')
                             if (headerLevel === -1)
                                 headerLevel = line.length
-                            const fontSize = `${1 + 0.7 * (7 - headerLevel)}em`
+                            const fontSize = `${1.2 + 0.3 * (6 - headerLevel)}em`
                             decorations.push(Decoration.line({
                                 attributes: { style: `font-size: ${fontSize};` }
                             }).range(node.from, node.from))
