@@ -69,6 +69,7 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [x] format tables
 - [x] support toolbar toggling of checklist items even if checked
 - [x] Implement kroki / mermaid preview
+- [ ] hide markdown control characters unless the selection is in the line
 - [ ] better highlight markdown inline code and code blocks
 - [ ] use latest header
 - [ ] customize markdown header sizes
