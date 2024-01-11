@@ -128,6 +128,14 @@ class DiagramWidget extends WidgetType {
     }
 }
 
+function getLanguageAndCode(state: EditorState, node: SyntaxNodeRef) {
+    const { from, to, type } = node;
+    const codeAndLanguage = state.doc.sliceString(from, to);
+    const language = detectDiagramLanguage(codeAndLanguage);
+    const code = codeAndLanguage.split('\n').slice(1, -1).join('\n');
+    return { language, code };
+}
+
 export const dynamicDiagramsExtension = (enabled: boolean = true): Extension => {
     if (!enabled) {
         // If the extension is disabled, return an empty extension
@@ -139,14 +147,6 @@ export const dynamicDiagramsExtension = (enabled: boolean = true): Extension => 
         side: -1,
         block: true,
     })
-
-    function getLanguageAndCode(state: EditorState, node: SyntaxNodeRef) {
-        const { from, to, type } = node;
-        const codeAndLanguage = state.doc.sliceString(from, to);
-        const language = detectDiagramLanguage(codeAndLanguage);
-        const code = codeAndLanguage.split('\n').slice(1, -1).join('\n');
-        return { language, code };
-    }
 
     const decorate = (state: EditorState, updatedCode?: string, updatedLanguage?: string, updatedSvgContent?: string) => {
         const decorations: Range<Decoration>[] = []
