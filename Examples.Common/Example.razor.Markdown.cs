@@ -30,6 +30,10 @@ https://www.google.com
 
 [Google](https://www.google.com)
 
+<a href=""google.com"">google</a>
+
+<img src=""https://img.shields.io/badge/any_text-you_like-blue""></img>
+
 Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line, Long line
 
 ```mermaid
