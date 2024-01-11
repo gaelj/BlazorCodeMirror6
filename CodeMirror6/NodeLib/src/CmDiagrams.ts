@@ -155,7 +155,7 @@ class DiagramWidget extends WidgetType {
             container.onclick = () => {
                 container.style.cursor = 'default'
                 container.title = ''
-                const pos = this.from // Assuming you want to place the cursor at the end of the document
+                const pos = this.from
                 const transaction = view.state.update({selection: {anchor: pos}})
                 view.dispatch(transaction)
             }
