@@ -293,6 +293,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// </summary>
     /// <returns></returns>
     protected override bool ShouldRender() => shouldRender;
+    /// <summary>
+    /// Is the JS CodeMirror instance ready?
+    /// </summary>
+    public bool IsLoaded => CmJsInterop?.IsJSReady == true;
 
     /// <summary>
     /// Dispose resources
