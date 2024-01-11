@@ -65,14 +65,14 @@ export const dynamicImagesExtension = (enabled: boolean = true): Extension => {
 
     const imageRegex = /!\[.*?\]\((?<url>.*?)\)/
 
-    const imageWidget = (imageWidgetParams: ImageWidgetParams) => Decoration.widget({
+    const imageDecoration = (imageWidgetParams: ImageWidgetParams) => Decoration.widget({
         widget: new ImageWidget(imageWidgetParams),
         side: -1,
         block: true,
     })
 
     const decorate = (state: EditorState) => {
-        const widgets: Range<Decoration>[] = []
+        const decorations: Range<Decoration>[] = []
 
         if (enabled) {
             syntaxTree(state).iterate({
@@ -81,24 +81,24 @@ export const dynamicImagesExtension = (enabled: boolean = true): Extension => {
                         const result = imageRegex.exec(state.doc.sliceString(from, to))
 
                         if (result && result.groups && result.groups.url)
-                            widgets.push(imageWidget({ url: result.groups.url }).range(state.doc.lineAt(from).from))
+                            decorations.push(imageDecoration({ url: result.groups.url }).range(state.doc.lineAt(from).from))
                     }
                 },
             })
         }
 
-        return widgets.length > 0 ? RangeSet.of(widgets) : Decoration.none
+        return decorations.length > 0 ? RangeSet.of(decorations) : Decoration.none
     }
 
-    const imagesField = StateField.define<DecorationSet>({
+    const decorationStateField = StateField.define<DecorationSet>({
         create(state) {
             return decorate(state)
         },
-        update(images, transaction) {
+        update(value, transaction) {
             if (transaction.docChanged)
                 return decorate(transaction.state)
 
-            return images.map(transaction.changes)
+            return value.map(transaction.changes)
         },
         provide(field) {
             return EditorView.decorations.from(field)
@@ -106,6 +106,6 @@ export const dynamicImagesExtension = (enabled: boolean = true): Extension => {
     })
 
     return [
-        imagesField,
+        decorationStateField,
     ]
 }
