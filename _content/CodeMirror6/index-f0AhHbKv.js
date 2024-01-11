@@ -34683,7 +34683,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-FQ_fJs73.js').then(m => m.less());
+            return import('./index-FS13SRez.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34709,7 +34709,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-MWlumuX_.js').then(m => m.php());
+            return import('./index-gyv4tTjW.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34778,7 +34778,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-7hfODsX6.js').then(m => m.wast());
+            return import('./index-vkwpmHvl.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -35589,13 +35589,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-ez0xWo9Q.js').then(m => m.vue());
+            return import('./index-blFaWAFh.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-o6aRztWX.js').then(m => m.angular());
+            return import('./index-tuunXFq3.js').then(m => m.angular());
         }
     })
 ];
@@ -76604,11 +76604,36 @@ const markdownTableExtension = (enabled = true) => {
 };
 
 const supportedLanguages = [
-    'actdiag', 'blockdiag', 'bpmn', 'graphviz', 'meme', 'nomnoml', 'packetdiag',
-    'rackdiag', 'c4plantuml', 'seqdiag', 'svgbob',
-    'umlet', 'vega', 'vegalite', 'wavedrom', 'asciimath', 'bytefield', 'ditaa', 'erd',
-    'jcckit', 'mathml', 'mermaid', 'plantuml',
-    'websequencediagrams', 'excalidraw'
+    'actdiag',
+    'blockdiag',
+    'bpmn',
+    'bytefield',
+    'c4plantuml',
+    'd2',
+    'dbml',
+    'diagramsnet',
+    'ditaa',
+    'dot',
+    'erd',
+    'excalidraw',
+    'graphviz',
+    'mermaid',
+    'nomnoml',
+    'nwdiag',
+    'packetdiag',
+    'pikchr',
+    'plantuml',
+    'rackdiag',
+    'seqdiag',
+    'structurizr',
+    'svgbob',
+    'symbolator',
+    'tikz',
+    'umlet',
+    'vega',
+    'vegalite',
+    'wavedrom',
+    'wireviz',
 ];
 const svgCache = new Map();
 function fetchSvgFromCache(code, language) {
@@ -76632,7 +76657,7 @@ async function fetchDiagramSvg(view, code, language, krokiUrl) {
     if (!svgCache.has(key))
         svgCache.set(key, svgContent);
     view.dispatch({
-        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response })
+        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response, from: null })
     });
     return svgContent;
 }
@@ -76652,10 +76677,11 @@ function detectDiagramLanguage(code) {
 }
 const updateDiagramEffect = StateEffect.define();
 class DiagramWidget extends WidgetType {
-    constructor({ language, code, svgContent = null }) {
+    constructor({ language, code, svgContent = null, from }) {
         super();
         this.language = language;
         this.code = code;
+        this.from = from;
         this.svgContent = svgContent;
         if (!this.svgContent) {
             const cached = fetchSvgFromCache(code, language);
@@ -76666,7 +76692,7 @@ class DiagramWidget extends WidgetType {
     eq(imageWidget) {
         return imageWidget.language === this.language && imageWidget.code === this.code && imageWidget.svgContent === this.svgContent;
     }
-    toDOM() {
+    toDOM(view) {
         const container = document.createElement('div');
         const backdrop = container.appendChild(document.createElement('div'));
         const figure = backdrop.appendChild(document.createElement('figure'));
@@ -76687,18 +76713,22 @@ class DiagramWidget extends WidgetType {
         backdrop.style.overflow = 'hidden';
         backdrop.style.maxWidth = '100%';
         figure.style.margin = '0';
-        image.style.display = 'block';
+        image.style.display = 'flex';
         image.style.maxHeight = '80vh';
         image.style.maxWidth = '100%';
         image.style.width = '100%';
-        return container;
-    }
-    update(update) {
-        if (this.svgContent !== update.svgContent) {
-            this.svgContent = update.svgContent;
-            return true;
+        if (this.from !== null) {
+            container.style.cursor = 'pointer';
+            container.title = 'Click to edit diagram';
+            container.onclick = () => {
+                container.style.cursor = 'default';
+                container.title = '';
+                const pos = this.from; // Assuming you want to place the cursor at the end of the document
+                const transaction = view.state.update({ selection: { anchor: pos } });
+                view.dispatch(transaction);
+            };
         }
-        return false;
+        return container;
     }
 }
 function getLanguageAndCode(state, node) {
@@ -76737,13 +76767,20 @@ const dynamicDiagramsExtension = (enabled = true, krokiUrl = "https://kroki.io")
     if (!enabled) {
         return [];
     }
-    const diagramDecoration = (diagramWidgetParams) => Decoration.widget({
+    const diagramReplacementDecoration = (diagramWidgetParams) => Decoration.replace({
         widget: new DiagramWidget(diagramWidgetParams),
         side: -1,
         block: true,
+        inclusive: false,
+    });
+    const diagramWidgetDecoration = (diagramWidgetParams) => Decoration.widget({
+        widget: new DiagramWidget(diagramWidgetParams),
+        side: -1,
+        block: true,
+        inclusive: false,
     });
     const decorate = (state, updatedCode, updatedLanguage, updatedSvgContent) => {
-        const decorations = [];
+        const decorationsRange = [];
         if (enabled) {
             syntaxTree(state).iterate({
                 enter: (node) => {
@@ -76751,19 +76788,31 @@ const dynamicDiagramsExtension = (enabled = true, krokiUrl = "https://kroki.io")
                     if (type.name === 'FencedCode') {
                         const { language, code } = getLanguageAndCode(state, node);
                         if (language) {
-                            if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
-                                decorations.push(diagramDecoration({ language, code, svgContent: updatedSvgContent }).range(state.doc.lineAt(from).from));
+                            const cursorInRange = isCursorInRange(state, from, to);
+                            if (!cursorInRange) {
+                                if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
+                                    decorationsRange.push(diagramReplacementDecoration({ language, code, svgContent: updatedSvgContent, from }).range(from, to));
+                                }
+                                else {
+                                    const svgContent = fetchSvgFromCache(code, language);
+                                    decorationsRange.push(diagramReplacementDecoration({ language, code, svgContent: svgContent?.response, from }).range(from, to));
+                                }
                             }
                             else {
-                                const svgContent = fetchSvgFromCache(code, language);
-                                decorations.push(diagramDecoration({ language, code, svgContent: svgContent?.response }).range(state.doc.lineAt(from).from));
+                                if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
+                                    decorationsRange.push(diagramWidgetDecoration({ language, code, svgContent: updatedSvgContent, from: null }).range(state.doc.lineAt(from).from));
+                                }
+                                else {
+                                    const svgContent = fetchSvgFromCache(code, language);
+                                    decorationsRange.push(diagramWidgetDecoration({ language, code, svgContent: svgContent?.response, from: null }).range(state.doc.lineAt(from).from));
+                                }
                             }
                         }
                     }
                 },
             });
         }
-        return decorations.length > 0 ? RangeSet.of(decorations) : Decoration.none;
+        return decorationsRange.length > 0 ? RangeSet.of(decorationsRange) : Decoration.none;
     };
     const decorationStateField = StateField.define({
         create(state) {
@@ -76771,13 +76820,15 @@ const dynamicDiagramsExtension = (enabled = true, krokiUrl = "https://kroki.io")
         },
         update(value, transaction) {
             // Apply the effect to update diagram content
-            for (const effect of transaction.effects) {
-                if (effect.is(updateDiagramEffect)) {
-                    const { code, language, svgContent } = effect.value;
-                    return decorate(transaction.state, code, language, svgContent);
+            if (transaction.effects.some(_ => true)) {
+                for (const effect of transaction.effects) {
+                    if (effect.is(updateDiagramEffect)) {
+                        const { code, language, svgContent } = effect.value;
+                        return decorate(transaction.state, code, language, svgContent);
+                    }
                 }
             }
-            if (transaction.docChanged) {
+            else {
                 return decorate(transaction.state);
             }
             return value.map(transaction.changes);
