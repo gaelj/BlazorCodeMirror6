@@ -75,6 +75,7 @@ Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.ne
 - [ ] Toggling-off a Markdown style should always select the whole styled text block
 - [ ] Implement kroki / mermaid preview
 - [ ] add color picker extension
+- [ ] support badges
 
 ## Screenshots
 

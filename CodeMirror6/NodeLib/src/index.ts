@@ -80,7 +80,7 @@ export async function initCodeMirror(
                 getDynamicHeaderStyling(initialConfig.autoFormatMarkdown),
                 dynamicHrExtension(initialConfig.autoFormatMarkdown),
                 dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
-                dynamicDiagramsExtension(),
+                dynamicDiagramsExtension(initialConfig.autoFormatMarkdown, setup.krokiUrl.replace(/\/$/, '')),
                 autocompletion({
                     override: [
                         ...mentionCompletionExtension(setup.allowMentions),
@@ -321,6 +321,7 @@ export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
             getDynamicHeaderStyling(autoFormatMarkdown),
             dynamicHrExtension(autoFormatMarkdown),
             dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
+            dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
             autocompletion({
                 override: [...mentionCompletionExtension(CMInstances[id].setup.allowMentions)]
             }),

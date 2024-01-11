@@ -13,47 +13,48 @@ const supportedLanguages = [
     'websequencediagrams', 'excalidraw'
 ]
 
-const svgCache = new Map<string, { response: string, error: boolean }>();
+const svgCache = new Map<string, { response: string, error: boolean }>()
 
 function fetchSvgFromCache(code: string, language: string): { response: string, error: boolean } {
     const key = `${language}\n${code}`
-    const cached = svgCache.get(key);
+    const cached = svgCache.get(key)
     if (cached)
-        return cached;
-    return null;
+        return cached
+    return null
 }
-async function fetchDiagramSvg(view: EditorView, code: string, language: string): Promise<{ response: string, error: boolean }> {
-    const key = `${language}\n${code}`
-    let svgContent = fetchSvgFromCache(code, language);
-    if (svgContent) return svgContent;
 
-    const response = await fetch(`https://kroki.io/${language}/svg`, {
+async function fetchDiagramSvg(view: EditorView, code: string, language: string, krokiUrl: string): Promise<{ response: string, error: boolean }> {
+    const key = `${language}\n${code}`
+    let svgContent = fetchSvgFromCache(code, language)
+    if (svgContent) return svgContent
+
+    const response = await fetch(`${krokiUrl}/${language}/svg`, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain', 'Accept': 'image/svg+xml' },
         body: code
-    });
-    svgContent = { response: await response.text(), error: response.status !== 200 };
+    })
+    svgContent = { response: await response.text(), error: response.status !== 200 }
     if (!svgCache.has(key))
-        svgCache.set(key, svgContent);
+        svgCache.set(key, svgContent)
     view.dispatch({
         effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response })
-    });
-    return svgContent;
+    })
+    return svgContent
 }
 
 function detectDiagramLanguage(code: string): string | undefined {
-    const lines = code.split('\n');
+    const lines = code.split('\n')
     if (lines.length === 0) {
-        return undefined;
+        return undefined
     }
-    const firstLine = lines[0];
+    const firstLine = lines[0]
     if (firstLine.startsWith('```')) {
-        const language = firstLine.substring(3);
+        const language = firstLine.substring(3)
         if (supportedLanguages.includes(language)) {
-            return language;
+            return language
         }
     }
-    return undefined;
+    return undefined
 }
 
 interface DiagramWidgetParams {
@@ -62,7 +63,7 @@ interface DiagramWidgetParams {
     svgContent: string,
 }
 
-const updateDiagramEffect = StateEffect.define<{ code: string, language: string, svgContent: string }>();
+const updateDiagramEffect = StateEffect.define<{ code: string, language: string, svgContent: string }>()
 
 class DiagramWidget extends WidgetType {
     readonly language: string
@@ -74,16 +75,17 @@ class DiagramWidget extends WidgetType {
 
         this.language = language
         this.code = code
-        this.svgContent = svgContent;
+        this.svgContent = svgContent
+
         if (!this.svgContent) {
-            const cached = fetchSvgFromCache(code, language);
+            const cached = fetchSvgFromCache(code, language)
             if (cached)
-                this.svgContent = cached.response;
+                this.svgContent = cached.response
         }
     }
 
     eq(imageWidget: DiagramWidget) {
-        return imageWidget.language === this.language && imageWidget.code === this.code && imageWidget.svgContent === this.svgContent;
+        return imageWidget.language === this.language && imageWidget.code === this.code && imageWidget.svgContent === this.svgContent
     }
 
     toDOM() {
@@ -97,7 +99,7 @@ class DiagramWidget extends WidgetType {
         backdrop.className = 'cm-image-backdrop'
         figure.className = 'cm-image-figure'
         image.className = 'cm-image-img'
-        image.innerHTML = this.svgContent ?? `Loading ${this.language} diagram...`;
+        image.innerHTML = this.svgContent ?? `Loading ${this.language} diagram...`
 
         container.style.paddingBottom = '0.5rem'
         container.style.paddingTop = '0.5rem'
@@ -123,26 +125,26 @@ class DiagramWidget extends WidgetType {
 
     update(update: { svgContent: string }) {
         if (this.svgContent !== update.svgContent) {
-            this.svgContent = update.svgContent;
-            return true;
+            this.svgContent = update.svgContent
+            return true
         }
-        return false;
+        return false
     }
 }
 
 function getLanguageAndCode(state: EditorState, node: SyntaxNodeRef) {
-    const { from, to, type } = node;
-    const codeAndLanguage = state.doc.sliceString(from, to);
-    const language = detectDiagramLanguage(codeAndLanguage);
-    const code = codeAndLanguage.split('\n').slice(1, -1).join('\n');
-    return { language, code };
+    const { from, to } = node
+    const codeAndLanguage = state.doc.sliceString(from, to)
+    const language = detectDiagramLanguage(codeAndLanguage)
+    const code = codeAndLanguage.split('\n').slice(1, -1).join('\n')
+    return { language, code }
 }
 
-const diagramPlugin = ViewPlugin.fromClass(class {
-    view: EditorView;
+const diagramPlugin = (krokiUrl: string) => ViewPlugin.fromClass(class {
+    view: EditorView
 
     constructor(view: EditorView) {
-        this.view = view;
+        this.view = view
         this.parseDocumentAndLoadDiagrams(this.view)
     }
 
@@ -151,26 +153,24 @@ const diagramPlugin = ViewPlugin.fromClass(class {
             if (tr.docChanged) {
                 this.parseDocumentAndLoadDiagrams(this.view)
             }
-        });
+        })
     }
 
     parseDocumentAndLoadDiagrams(view: EditorView) {
         syntaxTree(view.state).iterate({
             enter: (node) => {
-                const { type, from, to } = node
-                if (type.name === 'FencedCode') {
+                if (node.type.name === 'FencedCode') {
                     const { language, code } = getLanguageAndCode(view.state, node)
                     if (language) {
-                        fetchDiagramSvg(view, code, language)
+                        fetchDiagramSvg(view, code, language, krokiUrl)
                     }
                 }
             },
         })
     }
-});
+})
 
-
-export const dynamicDiagramsExtension = (enabled: boolean = true): Extension => {
+export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: string = "https://kroki.io"): Extension => {
     if (!enabled) {
         return []
     }
@@ -187,15 +187,15 @@ export const dynamicDiagramsExtension = (enabled: boolean = true): Extension => 
         if (enabled) {
             syntaxTree(state).iterate({
                 enter: (node) => {
-                    const { type, from, to } = node;
+                    const { type, from, to } = node
                     if (type.name === 'FencedCode') {
-                        const { language, code } = getLanguageAndCode(state, node);
+                        const { language, code } = getLanguageAndCode(state, node)
                         if (language) {
                             if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
-                                decorations.push(diagramDecoration({ language, code, svgContent: updatedSvgContent }).range(state.doc.lineAt(from).from));
+                                decorations.push(diagramDecoration({ language, code, svgContent: updatedSvgContent }).range(state.doc.lineAt(from).from))
                             } else {
-                                const svgContent = fetchSvgFromCache(code, language);
-                                decorations.push(diagramDecoration({ language, code, svgContent: svgContent?.response }).range(state.doc.lineAt(from).from));
+                                const svgContent = fetchSvgFromCache(code, language)
+                                decorations.push(diagramDecoration({ language, code, svgContent: svgContent?.response }).range(state.doc.lineAt(from).from))
                             }
                         }
                     }
@@ -214,8 +214,8 @@ export const dynamicDiagramsExtension = (enabled: boolean = true): Extension => 
             // Apply the effect to update diagram content
             for (const effect of transaction.effects) {
                 if (effect.is(updateDiagramEffect)) {
-                    const { code, language, svgContent } = effect.value;
-                    return decorate(transaction.state, code, language, svgContent);
+                    const { code, language, svgContent } = effect.value
+                    return decorate(transaction.state, code, language, svgContent)
                 }
             }
 
@@ -223,7 +223,7 @@ export const dynamicDiagramsExtension = (enabled: boolean = true): Extension => 
                 return decorate(transaction.state)
             }
 
-            return value.map(transaction.changes);
+            return value.map(transaction.changes)
         },
         provide(field) {
             return EditorView.decorations.from(field)
@@ -231,7 +231,7 @@ export const dynamicDiagramsExtension = (enabled: boolean = true): Extension => 
     })
 
     return [
-        diagramPlugin,
+        diagramPlugin(krokiUrl),
         decorationStateField,
     ]
 }

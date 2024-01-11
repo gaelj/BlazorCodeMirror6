@@ -121,6 +121,11 @@ public readonly record struct CodeMirrorSetup
     [JsonPropertyName("fileIcon")] public string? FileIcon { get; init; } = "fa fa-file";
 
     /// <summary>
+    /// URL of the Kroki server to use for rendering diagrams
+    /// </summary>
+    [JsonPropertyName("krokiUrl")] public string? KrokiUrl { get; init; } = "https://kroki.io";
+
+    /// <summary>
     /// Bind value mode of the text area
     /// </summary>
     [JsonPropertyName("bindValueMode")] public DocumentBindMode BindMode { get; init; } = DocumentBindMode.OnLostFocus;
