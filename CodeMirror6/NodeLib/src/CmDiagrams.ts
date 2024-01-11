@@ -75,13 +75,15 @@ class DiagramWidget extends WidgetType {
         this.language = language
         this.code = code
         this.svgContent = svgContent;
-        const cached = fetchSvgFromCache(code, language);
-        if (cached)
-            this.svgContent = cached.response;
+        if (!this.svgContent) {
+            const cached = fetchSvgFromCache(code, language);
+            if (cached)
+                this.svgContent = cached.response;
+        }
     }
 
     eq(imageWidget: DiagramWidget) {
-        return imageWidget.language === this.language && imageWidget.code === this.code
+        return imageWidget.language === this.language && imageWidget.code === this.code && imageWidget.svgContent === this.svgContent;
     }
 
     toDOM() {
@@ -136,9 +138,40 @@ function getLanguageAndCode(state: EditorState, node: SyntaxNodeRef) {
     return { language, code };
 }
 
+const diagramPlugin = ViewPlugin.fromClass(class {
+    view: EditorView;
+
+    constructor(view: EditorView) {
+        this.view = view;
+        this.parseDocumentAndLoadDiagrams(this.view)
+    }
+
+    update(update: ViewUpdate) {
+        update.transactions.forEach(tr => {
+            if (tr.docChanged) {
+                this.parseDocumentAndLoadDiagrams(this.view)
+            }
+        });
+    }
+
+    parseDocumentAndLoadDiagrams(view: EditorView) {
+        syntaxTree(view.state).iterate({
+            enter: (node) => {
+                const { type, from, to } = node
+                if (type.name === 'FencedCode') {
+                    const { language, code } = getLanguageAndCode(view.state, node)
+                    if (language) {
+                        fetchDiagramSvg(view, code, language)
+                    }
+                }
+            },
+        })
+    }
+});
+
+
 export const dynamicDiagramsExtension = (enabled: boolean = true): Extension => {
     if (!enabled) {
-        // If the extension is disabled, return an empty extension
         return []
     }
 
@@ -157,13 +190,11 @@ export const dynamicDiagramsExtension = (enabled: boolean = true): Extension => 
                     const { type, from, to } = node;
                     if (type.name === 'FencedCode') {
                         const { language, code } = getLanguageAndCode(state, node);
-                        if (language)
-                            fetchDiagramSvg(view, code, language);
-
-                        if (language === updatedLanguage && code === updatedCode) {
+                        if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
                             decorations.push(diagramDecoration({ language, code, svgContent: updatedSvgContent }).range(state.doc.lineAt(from).from));
                         } else {
-                            decorations.push(diagramDecoration({ language, code, svgContent: null }).range(state.doc.lineAt(from).from));
+                            const svgContent = fetchSvgFromCache(code, language);
+                            decorations.push(diagramDecoration({ language, code, svgContent: svgContent?.response }).range(state.doc.lineAt(from).from));
                         }
                     }
                 },
@@ -186,8 +217,9 @@ export const dynamicDiagramsExtension = (enabled: boolean = true): Extension => 
                 }
             }
 
-            if (transaction.docChanged)
+            if (transaction.docChanged) {
                 return decorate(transaction.state)
+            }
 
             return value.map(transaction.changes);
         },
@@ -197,6 +229,7 @@ export const dynamicDiagramsExtension = (enabled: boolean = true): Extension => 
     })
 
     return [
+        diagramPlugin,
         decorationStateField,
     ]
 }
