@@ -53,6 +53,7 @@ import { getFileUploadExtensions } from "./CmFileUpload"
 import { DotNet } from "@microsoft/dotnet-js-interop"
 import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
+import { hideMarksExtension } from "./CmHideMarkdownMarks"
 
 /**
  * Initialize a new CodeMirror instance
@@ -95,6 +96,7 @@ export async function initCodeMirror(
                 hyperLink, hyperLinkStyle,
                 htmlViewPlugin(initialConfig.autoFormatMarkdown),
                 markdownTableExtension(initialConfig.autoFormatMarkdown),
+                hideMarksExtension(initialConfig.autoFormatMarkdown),
             ]),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
             CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -332,6 +334,7 @@ const autoFormatMarkdownExtensions = (id: string, autoFormatMarkdown: boolean = 
     hyperLink, hyperLinkStyle,
     markdownLinkExtension(autoFormatMarkdown),
     markdownTableExtension(autoFormatMarkdown),
+    hideMarksExtension(autoFormatMarkdown),
 ]
 
 export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {

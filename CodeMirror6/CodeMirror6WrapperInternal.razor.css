@@ -1,10 +1,4 @@
-﻿::deep :root {
-    --ink-internal-border-radius: 0.25rem;
-    --ink-internal-block-background-color: #f0f0f0;
-    --ink-internal-block-padding: 0.5rem;
-}
-
-::deep .cm-editor {
+﻿::deep .cm-editor {
     overflow: auto;
     max-height: inherit;
     max-width: 100%;
@@ -60,7 +54,6 @@
 }
 
 ::deep .cm-blockquote {
-    /* background-color: #f0f0f0; */
     border-left: 0.25rem solid currentColor;
     padding: 0 0.5rem;
 }
@@ -134,4 +127,3 @@
 ::deep .cm-line table tr:nth-child(even) {
     background-color: #7f7f7f30;
 }
-

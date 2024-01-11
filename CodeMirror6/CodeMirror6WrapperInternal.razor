@@ -1,16 +1,18 @@
 ﻿@if (ContentBefore is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
     @ContentBefore((CommandDispatcher, Config, State))
 }
-<div
-    id=@LoadingDivId
-    @attributes=@AdditionalAttributes
-    class="editor-loading"
->
-    @for (var i = 0; i < (Doc?.Split("\n").Length ?? 10); i++) {
-        var randomWidth = new Random().Next(20, 80);
-        <div class="loading-animation" style=@($"width: {randomWidth}%")></div>
-    }
-</div>
+@if (!IsLoaded) {
+    <div
+        id=@LoadingDivId
+        @attributes=@AdditionalAttributes
+        class="editor-loading"
+    >
+        @for (var i = 0; i < (Doc?.Split("\n").Length ?? 10); i++) {
+            var randomWidth = new Random().Next(20, 80);
+            <div class="loading-animation" style=@($"width: {randomWidth}%")></div>
+        }
+    </div>
+}
 
 <div>
     <div

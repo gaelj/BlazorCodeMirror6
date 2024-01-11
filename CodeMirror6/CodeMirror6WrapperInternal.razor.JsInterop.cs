@@ -82,8 +82,9 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
                 try {
                     await module.DisposeAsync();
                 }
-                catch (ObjectDisposedException) {}
-                }
+                catch (ObjectDisposedException) { }
+                catch (JSDisconnectedException) { }
+            }
             GC.SuppressFinalize(this);
         }
     }

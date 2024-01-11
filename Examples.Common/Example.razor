@@ -112,8 +112,7 @@
     </ContentBefore>
 </CodeMirror6Wrapper>
 
-Result:
-<pre>@Text</pre>
+<pre>@Text?.Split("\n").Count() Line(s)</pre>
 <hr />
 
 @if (selectionRanges1 is not null) {
@@ -142,8 +141,7 @@ Result:
     AllowVerticalResize=false
 />
 
-Result:
-<pre>@Text2</pre>
+<pre>@Text2?.Split("\n").Count() Line(s)</pre>
 <hr />
 
 @if (selectionRanges2 is not null) {
@@ -172,8 +170,7 @@ Result:
     AllowVerticalResize=false
 />
 
-Result:
-<pre>@Text3</pre>
+<pre>@Text3?.Split("\n").Count() Line(s)</pre>
 <hr />
 
 @if (selectionRanges3 is not null) {
@@ -189,7 +186,7 @@ Result:
     <hr />
 }
 
-<button class="btn"
+<button class="btn btn-sm btn-primary"
     @onclick=@(async () => {
         PlaceHolderText = NewPlaceHolderText;
         await InvokeAsync(StateHasChanged);
