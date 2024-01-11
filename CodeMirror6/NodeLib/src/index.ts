@@ -290,9 +290,10 @@ export function setLanguage(id: string, languageName: string) {
     const customKeyMap = getLanguageKeyMaps(languageName)
     CMInstances[id].view.dispatch({
         effects: [
-            CMInstances[id].languageCompartment.reconfigure(language),
+            CMInstances[id].languageCompartment.reconfigure(language ?? []),
             CMInstances[id].keymapCompartment.reconfigure(keymap.of(customKeyMap)),
-            languageChangeEffect.of(language.language)
+            languageChangeEffect.of(language?.language),
+            CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, languageName === 'Markdown'))
         ]
     })
 }
@@ -315,25 +316,27 @@ export function forceRedraw(id: string) {
     view.dispatch(view.state.update(changes))
 }
 
+const autoFormatMarkdownExtensions = (id: string, autoFormatMarkdown: boolean = true) => [
+    getDynamicHeaderStyling(autoFormatMarkdown),
+    dynamicHrExtension(autoFormatMarkdown),
+    dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
+    dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
+    autocompletion({
+        override: [...mentionCompletionExtension(CMInstances[id].setup.allowMentions)]
+    }),
+    mentionDecorationExtension(autoFormatMarkdown),
+    listsExtension(autoFormatMarkdown),
+    blockquote(),
+    viewEmojiExtension(autoFormatMarkdown),
+    htmlViewPlugin(autoFormatMarkdown),
+    hyperLink, hyperLinkStyle,
+    markdownLinkExtension(autoFormatMarkdown),
+    markdownTableExtension(autoFormatMarkdown),
+]
+
 export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
     CMInstances[id].view.dispatch({
-        effects: CMInstances[id].markdownStylingCompartment.reconfigure([
-            getDynamicHeaderStyling(autoFormatMarkdown),
-            dynamicHrExtension(autoFormatMarkdown),
-            dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
-            dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
-            autocompletion({
-                override: [...mentionCompletionExtension(CMInstances[id].setup.allowMentions)]
-            }),
-            mentionDecorationExtension(autoFormatMarkdown),
-            listsExtension(autoFormatMarkdown),
-            blockquote(),
-            viewEmojiExtension(autoFormatMarkdown),
-            htmlViewPlugin(autoFormatMarkdown),
-            hyperLink, hyperLinkStyle,
-            markdownLinkExtension(autoFormatMarkdown),
-            markdownTableExtension(autoFormatMarkdown),
-        ])
+        effects: CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, autoFormatMarkdown))
     })
 }
 

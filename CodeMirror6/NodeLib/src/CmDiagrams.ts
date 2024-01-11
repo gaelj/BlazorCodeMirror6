@@ -56,7 +56,10 @@ async function fetchDiagramSvg(view: EditorView, code: string, language: string,
 
     const response = await fetch(`${krokiUrl}/${language}/svg`, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain', 'Accept': 'image/svg+xml' },
+        headers: {
+            'Content-Type': 'text/plain',
+            'Accept': 'image/svg+xml',
+    },
         body: code
     })
     svgContent = { response: await response.text(), error: response.status !== 200 }
