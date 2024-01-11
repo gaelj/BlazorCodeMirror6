@@ -37,6 +37,11 @@ flowchart TB
 {tab}A & B--> C & D
 ```
 
+```graphviz
+digraph G {{
+  Hello->World
+}}
+```
 ---
 
 - [ ] task 1

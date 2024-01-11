@@ -52,6 +52,7 @@ import { htmlViewPlugin } from "./CmHtml"
 import { getFileUploadExtensions } from "./CmFileUpload"
 import { DotNet } from "@microsoft/dotnet-js-interop"
 import { markdownTableExtension } from "./CmMarkdownTable"
+import { dynamicDiagramsExtension } from "./CmDiagrams"
 
 /**
  * Initialize a new CodeMirror instance
@@ -79,6 +80,7 @@ export async function initCodeMirror(
                 getDynamicHeaderStyling(initialConfig.autoFormatMarkdown),
                 dynamicHrExtension(initialConfig.autoFormatMarkdown),
                 dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
+                dynamicDiagramsExtension(),
                 autocompletion({
                     override: [
                         ...mentionCompletionExtension(setup.allowMentions),
