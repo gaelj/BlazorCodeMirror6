@@ -89,7 +89,7 @@ interface DiagramWidgetParams {
     svgContent: string,
 }
 
-const updateDiagramEffect = StateEffect.define<{ code: string, language: string, svgContent: string }>()
+const updateDiagramEffect = StateEffect.define<DiagramWidgetParams>()
 
 class DiagramWidget extends WidgetType {
     readonly language: string
@@ -197,7 +197,13 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
         return []
     }
 
-    const diagramDecoration = (diagramWidgetParams: DiagramWidgetParams) => Decoration.replace({
+    const diagramReplacementDecoration = (diagramWidgetParams: DiagramWidgetParams) => Decoration.replace({
+        widget: new DiagramWidget(diagramWidgetParams),
+        side: -1,
+        block: true,
+    })
+
+    const diagramWidgetDecoration = (diagramWidgetParams: DiagramWidgetParams) => Decoration.widget({
         widget: new DiagramWidget(diagramWidgetParams),
         side: -1,
         block: true,
@@ -211,14 +217,23 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
                 enter: (node) => {
                     const { type, from, to } = node
                     if (type.name === 'FencedCode') {
-                        if (!isCursorInRange(state, from - 1, to + 1)) {
-                            const { language, code } = getLanguageAndCode(state, node)
-                            if (language) {
+                        const { language, code } = getLanguageAndCode(state, node)
+                        if (language) {
+                            const cursorInRange = isCursorInRange(state, from - 1, to + 1)
+                            if (!cursorInRange) {
                                 if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
-                                    decorationsRange.push(diagramDecoration({ language, code, svgContent: updatedSvgContent }).range(from, to))
+                                    decorationsRange.push(diagramReplacementDecoration({ language, code, svgContent: updatedSvgContent }).range(from, to))
                                 } else {
                                     const svgContent = fetchSvgFromCache(code, language)
-                                    decorationsRange.push(diagramDecoration({ language, code, svgContent: svgContent?.response }).range(from, to))
+                                    decorationsRange.push(diagramReplacementDecoration({ language, code, svgContent: svgContent?.response }).range(from, to))
+                                }
+                            }
+                            else {
+                                if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
+                                    decorationsRange.push(diagramWidgetDecoration({ language, code, svgContent: updatedSvgContent }).range(state.doc.lineAt(from).from))
+                                } else {
+                                    const svgContent = fetchSvgFromCache(code, language)
+                                    decorationsRange.push(diagramWidgetDecoration({ language, code, svgContent: svgContent?.response }).range(state.doc.lineAt(from).from))
                                 }
                             }
                         }
