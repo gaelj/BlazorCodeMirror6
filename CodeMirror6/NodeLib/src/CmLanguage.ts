@@ -31,6 +31,8 @@ export const languageChangeEffect = StateEffect.define<Language>()
  */
 export function getLanguage(languageName: string): LanguageSupport {
     switch (languageName) {
+        case "PlainText":
+            return null
         case "Csharp":
             return csharp()
         case "Cpp":
@@ -100,6 +102,8 @@ export function getLanguage(languageName: string): LanguageSupport {
  */
 export function getLanguageKeyMaps(languageName: string) {
     switch (languageName) {
+        case "PlainText":
+            return []
         case "Csharp":
             return []
         case "Cpp":
