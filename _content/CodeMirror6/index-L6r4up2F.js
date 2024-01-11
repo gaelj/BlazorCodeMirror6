@@ -34683,7 +34683,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-qNkH494w.js').then(m => m.less());
+            return import('./index-Xw5r9f8G.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34709,7 +34709,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-pwVPKeQ4.js').then(m => m.php());
+            return import('./index-UPbxgzfm.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34778,7 +34778,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-wphFVs6E.js').then(m => m.wast());
+            return import('./index-4i-SGNPe.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -35589,13 +35589,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-IAWkvHTY.js').then(m => m.vue());
+            return import('./index-JBVLKM9P.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-WzUjQdiZ.js').then(m => m.angular());
+            return import('./index-cgKZKs6Q.js').then(m => m.angular());
         }
     })
 ];
@@ -40917,7 +40917,7 @@ class ImageWidget extends WidgetType {
     eq(imageWidget) {
         return imageWidget.url === this.url;
     }
-    toDOM() {
+    toDOM(view) {
         const container = document.createElement('div');
         const backdrop = container.appendChild(document.createElement('div'));
         const figure = backdrop.appendChild(document.createElement('figure'));
@@ -40939,10 +40939,16 @@ class ImageWidget extends WidgetType {
         backdrop.style.maxWidth = '100%';
         figure.style.margin = '0';
         image.style.display = 'block';
-        image.style.maxHeight = '80vh';
+        image.style.maxHeight = '800px';
         image.style.maxWidth = '100%';
         image.style.width = '100%';
         return container;
+    }
+    get lineBreaks() {
+        return 1;
+    }
+    get estimatedHeight() {
+        return 800;
     }
 }
 const dynamicImagesExtension = (enabled = true) => {
@@ -62474,7 +62480,8 @@ const listsExtension = (enabled = true) => {
         const widgets = [];
         syntaxTree(state).iterate({
             enter: ({ type, from, to }) => {
-                if (type.name === 'ListMark' && !isCursorInRange(state, from, to)) {
+                const line = state.doc.lineAt(from);
+                if (type.name === 'ListMark' && !isCursorInRange(state, line.from, line.to)) {
                     const task = state.sliceDoc(to + 1, to + 4);
                     if (!['[ ]', '[x]'].includes(task)) {
                         const marker = state.sliceDoc(from, to);
@@ -62483,7 +62490,7 @@ const listsExtension = (enabled = true) => {
                         }
                     }
                 }
-                if (type.name === 'TaskMarker' && !isCursorInRange(state, from - 2, to)) {
+                if (type.name === 'TaskMarker' && !isCursorInRange(state, line.from, line.to)) {
                     const task = state.sliceDoc(from, to);
                     widgets.push(taskDecoration(task === '[x]').range(from - 2, to));
                 }
@@ -76898,7 +76905,7 @@ const hideMarksExtension = (enabled = true) => {
         if (enabled) {
             syntaxTree(state).iterate({
                 enter: ({ type, from, to }) => {
-                    if (type.name.endsWith('Mark')) {
+                    if (type.name.endsWith('Mark') && type.name !== 'ListMark') {
                         const mark = state.sliceDoc(from, to);
                         const line = state.doc.lineAt(from);
                         if (mark.startsWith('#')) {
