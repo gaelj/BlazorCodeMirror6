@@ -25,6 +25,7 @@ export const dynamicHrExtension = (enabled: boolean = true): Extension => {
                 return hr
             },
             ignoreEvent: () => false,
+            inclusive: false,
         }),
     })
 

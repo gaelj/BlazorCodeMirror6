@@ -91,11 +91,15 @@ function toggleCharactersAtStartOfLines(view: EditorView, controlChar: string, e
         if (!markdownLanguage.isActiveAt(view.state, range.from)) return { range }
         const fullControlChar = `${controlChar} `
         const lineAtFrom = view.state.doc.lineAt(range.from)
-        const wasStyled = lineAtFrom.text.trimStart().startsWith(exactMatch ? `${controlChar} ` : controlChar[0]);
+        const wasStyled = !exactMatch
+            ? lineAtFrom.text.trimStart().startsWith(controlChar[0])
+            : controlChar !== "- [ ]"
+                ? lineAtFrom.text.trimStart().startsWith(`${controlChar} `)
+                : (lineAtFrom.text.trimStart().startsWith(`${controlChar} `) || lineAtFrom.text.trimStart().startsWith("- [x] "));
         const changes = [];
         const indexOfSpace = exactMatch ? fullControlChar.length : lineAtFrom.text.indexOf(' ') + 1
         const oldStyleLength = wasStyled ? indexOfSpace === 0 ? lineAtFrom.text.length : indexOfSpace : 0
-        const wasSameStyle = wasStyled && lineAtFrom.text.trimStart().startsWith(fullControlChar)
+        const wasSameStyle = wasStyled && (lineAtFrom.text.trimStart().startsWith(fullControlChar) || (controlChar === "- [ ]" && lineAtFrom.text.trimStart().startsWith("- [x] ")))
         let newFrom = range.from
         let newTo = range.to
 
