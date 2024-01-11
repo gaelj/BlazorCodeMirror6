@@ -5,8 +5,6 @@ import type { EditorState, Extension, Range } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
 import { buildWidget } from './lib/codemirror-kit'
 import { isCursorInRange } from './CmHelpers'
-import { markdown } from "@codemirror/lang-markdown";
-
 
 function markdownTableToHTML(markdownTable: string): string {
     const rows = markdownTable.trim().split(/\r?\n/);
@@ -23,22 +21,34 @@ function markdownTableToHTML(markdownTable: string): string {
     return htmlTable;
 }
 
-const tableWidget = (innerHTML: string) => buildWidget({
+const tableWidget = (innerHTML: string, from: number) => buildWidget({
     eq: () => {
         return false
     },
-    toDOM: () => {
+    toDOM: (view: EditorView) => {
         const table = document.createElement('table')
         const tbody = document.createElement('tbody')
         table.appendChild(tbody)
         tbody.innerHTML = innerHTML
+
+        if (from !== null) {
+            table.style.cursor = 'pointer'
+            table.title = 'Click to edit table'
+            table.onclick = () => {
+                table.style.cursor = 'default'
+                table.title = ''
+                const pos = from
+                const transaction = view.state.update({selection: {anchor: pos}})
+                view.dispatch(transaction)
+            }
+        }
         return table
     },
 })
 
 export const markdownTableExtension = (enabled: boolean = true): Extension => {
-    const tableDecoration = (innerHTML: string) => Decoration.replace({
-        widget: tableWidget(innerHTML),
+    const tableDecoration = (innerHTML: string, from: number) => Decoration.replace({
+        widget: tableWidget(innerHTML, from),
     })
 
     const decorate = (state: EditorState) => {
@@ -54,7 +64,7 @@ export const markdownTableExtension = (enabled: boolean = true): Extension => {
                 if (type.name === 'Table' && !isCursorInRange(state, from, to)) {
                     const tableMarkdown = state.sliceDoc(from, to)
                     const tableHtml = markdownTableToHTML(tableMarkdown)
-                    widgets.push(tableDecoration(tableHtml).range(from, to))
+                    widgets.push(tableDecoration(tableHtml, from).range(from, to))
                 }
             },
         })
