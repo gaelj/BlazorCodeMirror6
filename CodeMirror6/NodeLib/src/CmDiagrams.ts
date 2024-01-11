@@ -6,11 +6,36 @@ import { syntaxTree } from "@codemirror/language"
 import { SyntaxNodeRef } from "@lezer/common"
 
 const supportedLanguages = [
-    'actdiag', 'blockdiag', 'bpmn', 'graphviz', 'meme', 'nomnoml', 'packetdiag',
-    'rackdiag', 'c4plantuml', 'seqdiag', 'svgbob',
-    'umlet', 'vega', 'vegalite', 'wavedrom', 'asciimath', 'bytefield', 'ditaa', 'erd',
-    'jcckit', 'mathml', 'mermaid', 'plantuml',
-    'websequencediagrams', 'excalidraw'
+    'actdiag',
+    'blockdiag',
+    'bpmn',
+    'bytefield',
+    'c4plantuml',
+    'd2',
+    'dbml',
+    'diagramsnet',
+    'ditaa',
+    'dot',
+    'erd',
+    'excalidraw',
+    'graphviz',
+    'mermaid',
+    'nomnoml',
+    'nwdiag',
+    'packetdiag',
+    'pikchr',
+    'plantuml',
+    'rackdiag',
+    'seqdiag',
+    'structurizr',
+    'svgbob',
+    'symbolator',
+    'tikz',
+    'umlet',
+    'vega',
+    'vegalite',
+    'wavedrom',
+    'wireviz',
 ]
 
 const svgCache = new Map<string, { response: string, error: boolean }>()
