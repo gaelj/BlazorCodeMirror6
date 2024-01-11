@@ -20,23 +20,25 @@ function fetchSvgFromCache(code: string, language: string): { response: string, 
     const cached = svgCache.get(key);
     if (cached)
         return cached;
+    return null;
 }
 async function fetchDiagramSvg(view: EditorView, code: string, language: string): Promise<{ response: string, error: boolean }> {
     const key = `${language}\n${code}`
-    const cached = fetchSvgFromCache(code, language);
-    if (cached) return cached;
+    let svgContent = fetchSvgFromCache(code, language);
+    if (svgContent) return svgContent;
+
     const response = await fetch(`https://kroki.io/${language}/svg`, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain', 'Accept': 'image/svg+xml' },
         body: code
     });
-    const ret = { response: await response.text(), error: response.status !== 200 };
+    svgContent = { response: await response.text(), error: response.status !== 200 };
     if (!svgCache.has(key))
-        svgCache.set(key, ret);
+        svgCache.set(key, svgContent);
     view.dispatch({
-        effects: updateDiagramEffect.of({ code, language, svgContent: ret.response })
+        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response })
     });
-    return ret;
+    return svgContent;
 }
 
 function detectDiagramLanguage(code: string): string | undefined {
