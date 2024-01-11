@@ -63,7 +63,7 @@ async function fetchDiagramSvg(view: EditorView, code: string, language: string,
     if (!svgCache.has(key))
         svgCache.set(key, svgContent)
     view.dispatch({
-        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response })
+        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response, from: null })
     })
     return svgContent
 }
@@ -87,6 +87,7 @@ interface DiagramWidgetParams {
     language: string,
     code: string,
     svgContent: string,
+    from: number,
 }
 
 const updateDiagramEffect = StateEffect.define<DiagramWidgetParams>()
@@ -94,13 +95,15 @@ const updateDiagramEffect = StateEffect.define<DiagramWidgetParams>()
 class DiagramWidget extends WidgetType {
     readonly language: string
     readonly code: string
+    readonly from: number
     public svgContent: string | null
 
-    constructor({ language, code, svgContent = null }: DiagramWidgetParams) {
+    constructor({ language, code, svgContent = null, from }: DiagramWidgetParams) {
         super()
 
         this.language = language
         this.code = code
+        this.from = from
         this.svgContent = svgContent
 
         if (!this.svgContent) {
@@ -114,7 +117,7 @@ class DiagramWidget extends WidgetType {
         return imageWidget.language === this.language && imageWidget.code === this.code && imageWidget.svgContent === this.svgContent
     }
 
-    toDOM() {
+    toDOM(view: EditorView) {
         const container = document.createElement('div')
         const backdrop = container.appendChild(document.createElement('div'))
         const figure = backdrop.appendChild(document.createElement('figure'))
@@ -145,6 +148,18 @@ class DiagramWidget extends WidgetType {
         image.style.maxHeight = '80vh'
         image.style.maxWidth = '100%'
         image.style.width = '100%'
+
+        if (this.from !== null) {
+            container.style.cursor = 'pointer'
+            container.title = 'Click to edit diagram'
+            container.onclick = () => {
+                container.style.cursor = 'default'
+                container.title = ''
+                const pos = this.from // Assuming you want to place the cursor at the end of the document
+                const transaction = view.state.update({selection: {anchor: pos}})
+                view.dispatch(transaction)
+            }
+        }
 
         return container
     }
@@ -201,12 +216,14 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
         widget: new DiagramWidget(diagramWidgetParams),
         side: -1,
         block: true,
+        inclusive: false,
     })
 
     const diagramWidgetDecoration = (diagramWidgetParams: DiagramWidgetParams) => Decoration.widget({
         widget: new DiagramWidget(diagramWidgetParams),
         side: -1,
         block: true,
+        inclusive: false,
     })
 
     const decorate = (state: EditorState, updatedCode?: string, updatedLanguage?: string, updatedSvgContent?: string) => {
@@ -219,21 +236,21 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
                     if (type.name === 'FencedCode') {
                         const { language, code } = getLanguageAndCode(state, node)
                         if (language) {
-                            const cursorInRange = isCursorInRange(state, from - 1, to + 1)
+                            const cursorInRange = isCursorInRange(state, from, to)
                             if (!cursorInRange) {
                                 if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
-                                    decorationsRange.push(diagramReplacementDecoration({ language, code, svgContent: updatedSvgContent }).range(from, to))
+                                    decorationsRange.push(diagramReplacementDecoration({ language, code, svgContent: updatedSvgContent, from }).range(from, to))
                                 } else {
                                     const svgContent = fetchSvgFromCache(code, language)
-                                    decorationsRange.push(diagramReplacementDecoration({ language, code, svgContent: svgContent?.response }).range(from, to))
+                                    decorationsRange.push(diagramReplacementDecoration({ language, code, svgContent: svgContent?.response, from }).range(from, to))
                                 }
                             }
                             else {
                                 if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
-                                    decorationsRange.push(diagramWidgetDecoration({ language, code, svgContent: updatedSvgContent }).range(state.doc.lineAt(from).from))
+                                    decorationsRange.push(diagramWidgetDecoration({ language, code, svgContent: updatedSvgContent, from: null }).range(state.doc.lineAt(from).from))
                                 } else {
                                     const svgContent = fetchSvgFromCache(code, language)
-                                    decorationsRange.push(diagramWidgetDecoration({ language, code, svgContent: svgContent?.response }).range(state.doc.lineAt(from).from))
+                                    decorationsRange.push(diagramWidgetDecoration({ language, code, svgContent: svgContent?.response, from: null }).range(state.doc.lineAt(from).from))
                                 }
                             }
                         }
