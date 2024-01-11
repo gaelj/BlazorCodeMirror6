@@ -7,7 +7,11 @@ public partial class Example : ComponentBase
     private const string tab = "\t";
     private const string code = $@"# Demo
 
-## WYSIWYG Markdown editor for Blazor
+## Markdown editor for Blazor
+### Title 3
+#### Title 4
+##### Title 5
+###### Title 6
 
 ### Code
 
