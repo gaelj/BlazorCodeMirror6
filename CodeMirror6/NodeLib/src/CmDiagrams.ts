@@ -4,6 +4,7 @@ import type { DecorationSet } from '@codemirror/view'
 import { Decoration, EditorView, ViewUpdate, WidgetType, ViewPlugin } from "@codemirror/view"
 import { syntaxTree } from "@codemirror/language"
 import { SyntaxNodeRef } from "@lezer/common"
+import { isCursorInRange } from "./CmHelpers"
 
 const supportedLanguages = [
     'actdiag',
@@ -140,7 +141,7 @@ class DiagramWidget extends WidgetType {
 
         figure.style.margin = '0'
 
-        image.style.display = 'block'
+        image.style.display = 'flex'
         image.style.maxHeight = '80vh'
         image.style.maxWidth = '100%'
         image.style.width = '100%'
@@ -148,13 +149,7 @@ class DiagramWidget extends WidgetType {
         return container
     }
 
-    update(update: { svgContent: string }) {
-        if (this.svgContent !== update.svgContent) {
-            this.svgContent = update.svgContent
-            return true
-        }
-        return false
-    }
+    ignoreEvent: () => false
 }
 
 function getLanguageAndCode(state: EditorState, node: SyntaxNodeRef) {
@@ -165,62 +160,66 @@ function getLanguageAndCode(state: EditorState, node: SyntaxNodeRef) {
     return { language, code }
 }
 
-const diagramPlugin = (krokiUrl: string) => ViewPlugin.fromClass(class {
-    view: EditorView
+const diagramPlugin = (krokiUrl: string) => ViewPlugin.fromClass(
+    class {
+        view: EditorView
 
-    constructor(view: EditorView) {
-        this.view = view
-        this.parseDocumentAndLoadDiagrams(this.view)
-    }
+        constructor(view: EditorView) {
+            this.view = view
+            this.parseDocumentAndLoadDiagrams(this.view)
+        }
 
-    update(update: ViewUpdate) {
-        update.transactions.forEach(tr => {
-            if (tr.docChanged) {
-                this.parseDocumentAndLoadDiagrams(this.view)
-            }
-        })
-    }
-
-    parseDocumentAndLoadDiagrams(view: EditorView) {
-        syntaxTree(view.state).iterate({
-            enter: (node) => {
-                if (node.type.name === 'FencedCode') {
-                    const { language, code } = getLanguageAndCode(view.state, node)
-                    if (language) {
-                        fetchDiagramSvg(view, code, language, krokiUrl)
-                    }
+        update(update: ViewUpdate) {
+            update.transactions.forEach(tr => {
+                if (tr.docChanged) {
+                    this.parseDocumentAndLoadDiagrams(this.view)
                 }
-            },
-        })
-    }
-})
+            })
+        }
+
+        parseDocumentAndLoadDiagrams(view: EditorView) {
+            syntaxTree(view.state).iterate({
+                enter: (node) => {
+                    if (node.type.name === 'FencedCode') {
+                        const { language, code } = getLanguageAndCode(view.state, node)
+                        if (language) {
+                            fetchDiagramSvg(view, code, language, krokiUrl)
+                        }
+                    }
+                },
+            })
+        }
+    },
+)
 
 export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: string = "https://kroki.io"): Extension => {
     if (!enabled) {
         return []
     }
 
-    const diagramDecoration = (diagramWidgetParams: DiagramWidgetParams) => Decoration.widget({
+    const diagramDecoration = (diagramWidgetParams: DiagramWidgetParams) => Decoration.replace({
         widget: new DiagramWidget(diagramWidgetParams),
         side: -1,
         block: true,
     })
 
     const decorate = (state: EditorState, updatedCode?: string, updatedLanguage?: string, updatedSvgContent?: string) => {
-        const decorations: Range<Decoration>[] = []
+        const decorationsRange: Range<Decoration>[] = []
 
         if (enabled) {
             syntaxTree(state).iterate({
                 enter: (node) => {
                     const { type, from, to } = node
                     if (type.name === 'FencedCode') {
-                        const { language, code } = getLanguageAndCode(state, node)
-                        if (language) {
-                            if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
-                                decorations.push(diagramDecoration({ language, code, svgContent: updatedSvgContent }).range(state.doc.lineAt(from).from))
-                            } else {
-                                const svgContent = fetchSvgFromCache(code, language)
-                                decorations.push(diagramDecoration({ language, code, svgContent: svgContent?.response }).range(state.doc.lineAt(from).from))
+                        if (!isCursorInRange(state, from - 1, to + 1)) {
+                            const { language, code } = getLanguageAndCode(state, node)
+                            if (language) {
+                                if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
+                                    decorationsRange.push(diagramDecoration({ language, code, svgContent: updatedSvgContent }).range(from, to))
+                                } else {
+                                    const svgContent = fetchSvgFromCache(code, language)
+                                    decorationsRange.push(diagramDecoration({ language, code, svgContent: svgContent?.response }).range(from, to))
+                                }
                             }
                         }
                     }
@@ -228,7 +227,7 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
             })
         }
 
-        return decorations.length > 0 ? RangeSet.of(decorations) : Decoration.none
+        return decorationsRange.length > 0 ? RangeSet.of(decorationsRange) : Decoration.none
     }
 
     const decorationStateField = StateField.define<DecorationSet>({
@@ -237,14 +236,15 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
         },
         update(value, transaction) {
             // Apply the effect to update diagram content
-            for (const effect of transaction.effects) {
-                if (effect.is(updateDiagramEffect)) {
-                    const { code, language, svgContent } = effect.value
-                    return decorate(transaction.state, code, language, svgContent)
+            if (transaction.effects.some(_ => true)) {
+                for (const effect of transaction.effects) {
+                    if (effect.is(updateDiagramEffect)) {
+                        const { code, language, svgContent } = effect.value
+                        return decorate(transaction.state, code, language, svgContent)
+                    }
                 }
             }
-
-            if (transaction.docChanged) {
+            else {
                 return decorate(transaction.state)
             }
 
