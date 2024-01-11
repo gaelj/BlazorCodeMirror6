@@ -190,11 +190,13 @@ export const dynamicDiagramsExtension = (enabled: boolean = true): Extension => 
                     const { type, from, to } = node;
                     if (type.name === 'FencedCode') {
                         const { language, code } = getLanguageAndCode(state, node);
-                        if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
-                            decorations.push(diagramDecoration({ language, code, svgContent: updatedSvgContent }).range(state.doc.lineAt(from).from));
-                        } else {
-                            const svgContent = fetchSvgFromCache(code, language);
-                            decorations.push(diagramDecoration({ language, code, svgContent: svgContent?.response }).range(state.doc.lineAt(from).from));
+                        if (language) {
+                            if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
+                                decorations.push(diagramDecoration({ language, code, svgContent: updatedSvgContent }).range(state.doc.lineAt(from).from));
+                            } else {
+                                const svgContent = fetchSvgFromCache(code, language);
+                                decorations.push(diagramDecoration({ language, code, svgContent: svgContent?.response }).range(state.doc.lineAt(from).from));
+                            }
                         }
                     }
                 },
