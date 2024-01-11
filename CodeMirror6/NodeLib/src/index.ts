@@ -52,6 +52,7 @@ import { htmlViewPlugin } from "./CmHtml"
 import { getFileUploadExtensions } from "./CmFileUpload"
 import { DotNet } from "@microsoft/dotnet-js-interop"
 import { markdownTableExtension } from "./CmMarkdownTable"
+import { dynamicDiagramsExtension } from "./CmDiagrams"
 
 /**
  * Initialize a new CodeMirror instance
@@ -79,6 +80,7 @@ export async function initCodeMirror(
                 getDynamicHeaderStyling(initialConfig.autoFormatMarkdown),
                 dynamicHrExtension(initialConfig.autoFormatMarkdown),
                 dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
+                dynamicDiagramsExtension(initialConfig.autoFormatMarkdown, setup.krokiUrl.replace(/\/$/, '')),
                 autocompletion({
                     override: [
                         ...mentionCompletionExtension(setup.allowMentions),
@@ -302,6 +304,7 @@ export function setMentionCompletions(id: string, mentionCompletions: Completion
 
 export function forceRedraw(id: string) {
     const view = CMInstances[id].view
+    if (!view) return
 
     view.requestMeasure()
     view.update([])
@@ -318,6 +321,7 @@ export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
             getDynamicHeaderStyling(autoFormatMarkdown),
             dynamicHrExtension(autoFormatMarkdown),
             dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
+            dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
             autocompletion({
                 override: [...mentionCompletionExtension(CMInstances[id].setup.allowMentions)]
             }),

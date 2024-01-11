@@ -26,4 +26,5 @@ export class CmSetup
     public scrollToEnd: boolean
     public fileIcon: string
     public bindValueMode: string
+    public krokiUrl: string
 }

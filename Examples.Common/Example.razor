@@ -69,10 +69,10 @@
             <button class=@ButtonClass(c.State, "Blockquote") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownQuote)) title="Toggle quoted text">
                 <i class="fa fa-quote-right"></i>
             </button>
-            <button class=@ButtonClass(c.State, "ATXHeading") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.IncreaseMarkdownHeadingLevel)) title="Increase Markdown heading level">
+            <button class=@ButtonClass(c.State) @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.IncreaseMarkdownHeadingLevel)) title="Increase Markdown heading level">
                 <i class="fa fa-heading"></i> +
             </button>
-            <button class=@ButtonClass(c.State, "ATXHeading") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.DecreaseMarkdownHeadingLevel)) title="Decrease Markdown heading level">
+            <button class=@ButtonClass(c.State) @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.DecreaseMarkdownHeadingLevel)) title="Decrease Markdown heading level">
                 <i class="fa fa-heading"></i> -
             </button>
             @for (var i = 1; i <= 6; i++) {
@@ -222,7 +222,7 @@ Result:
         ScrollToEnd = true,
         BindMode = DocumentBindMode.OnDelayedInput,
     };
-    private string ButtonClass(CodeMirrorState state, string docStyleTag) => ButtonClass(state.MarkdownStylesAtSelections?.Contains(docStyleTag) == true);
+    private string ButtonClass(CodeMirrorState state, string docStyleTag = "") => ButtonClass(state.MarkdownStylesAtSelections?.Contains(docStyleTag) == true);
     private string ButtonClass(bool enabled) => enabled
         ? "btn btn-sm btn-primary"
         : "btn btn-sm btn-outline-secondary";

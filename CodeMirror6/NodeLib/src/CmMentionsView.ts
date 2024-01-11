@@ -1,5 +1,5 @@
 import { markdownLanguage } from "@codemirror/lang-markdown"
-import { EditorState, RangeSetBuilder, Extension } from '@codemirror/state'
+import { RangeSetBuilder, Extension } from '@codemirror/state'
 import { EditorView, ViewPlugin, Decoration } from "@codemirror/view"
 import { buildWidget } from "./lib/codemirror-kit"
 import { cachedCompletions } from "./CmMentionsCompletion"
@@ -99,7 +99,7 @@ function createMentionDecorationPlugin(): Extension {
 }
 
 // Combine the extension with the mention plugin
-export const mentionDecorationExtension = (stylingEnabled: boolean) => [
+export const mentionDecorationExtension = (enabled: boolean) => [
     createMentionDecorationPlugin(),
-    stylingEnabled ? createMentionDetailsPlugin() : [],
+    enabled ? createMentionDetailsPlugin() : [],
 ]
