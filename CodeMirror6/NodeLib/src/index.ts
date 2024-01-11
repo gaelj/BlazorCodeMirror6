@@ -304,6 +304,7 @@ export function setMentionCompletions(id: string, mentionCompletions: Completion
 
 export function forceRedraw(id: string) {
     const view = CMInstances[id].view
+    if (!view) return
 
     view.requestMeasure()
     view.update([])
