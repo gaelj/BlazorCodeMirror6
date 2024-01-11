@@ -157,6 +157,7 @@ builder.WebHost.UseSentry(o => {
     o.TracesSampleRate = 1.0;
 });
 ```
+
 - in `Examples.BlazorWasm/wwwroot/index.html` (WASM example) or in `Examples.BlazorServer/Pages/_Host.cshtml` (Blazor Server example):
 
 ```html
