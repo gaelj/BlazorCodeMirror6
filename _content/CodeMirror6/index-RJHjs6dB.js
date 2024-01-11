@@ -34683,7 +34683,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-FS13SRez.js').then(m => m.less());
+            return import('./index-p-wrpGUi.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34709,7 +34709,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-gyv4tTjW.js').then(m => m.php());
+            return import('./index-WXRSvR9g.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34778,7 +34778,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-vkwpmHvl.js').then(m => m.wast());
+            return import('./index-bhsavLSj.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -35589,13 +35589,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-blFaWAFh.js').then(m => m.vue());
+            return import('./index-kV8sbhwb.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-tuunXFq3.js').then(m => m.angular());
+            return import('./index-1mLft6I3.js').then(m => m.angular());
         }
     })
 ];
@@ -35679,11 +35679,15 @@ function toggleCharactersAtStartOfLines(view, controlChar, exactMatch) {
             return { range };
         const fullControlChar = `${controlChar} `;
         const lineAtFrom = view.state.doc.lineAt(range.from);
-        const wasStyled = lineAtFrom.text.trimStart().startsWith(exactMatch ? `${controlChar} ` : controlChar[0]);
+        const wasStyled = !exactMatch
+            ? lineAtFrom.text.trimStart().startsWith(controlChar[0])
+            : controlChar !== "- [ ]"
+                ? lineAtFrom.text.trimStart().startsWith(`${controlChar} `)
+                : (lineAtFrom.text.trimStart().startsWith(`${controlChar} `) || lineAtFrom.text.trimStart().startsWith("- [x] "));
         const changes = [];
         const indexOfSpace = exactMatch ? fullControlChar.length : lineAtFrom.text.indexOf(' ') + 1;
         const oldStyleLength = wasStyled ? indexOfSpace === 0 ? lineAtFrom.text.length : indexOfSpace : 0;
-        const wasSameStyle = wasStyled && lineAtFrom.text.trimStart().startsWith(fullControlChar);
+        const wasSameStyle = wasStyled && (lineAtFrom.text.trimStart().startsWith(fullControlChar) || (controlChar === "- [ ]" && lineAtFrom.text.trimStart().startsWith("- [x] ")));
         let newFrom = range.from;
         let newTo = range.to;
         if (wasSameStyle) {
@@ -62527,6 +62531,7 @@ const dynamicHrExtension = (enabled = true) => {
                 return hr;
             },
             ignoreEvent: () => false,
+            inclusive: false,
         }),
     });
     const decorate = (state) => {
@@ -76552,21 +76557,32 @@ function markdownTableToHTML(markdownTable) {
     });
     return htmlTable;
 }
-const tableWidget = (innerHTML) => buildWidget({
+const tableWidget = (innerHTML, from) => buildWidget({
     eq: () => {
         return false;
     },
-    toDOM: () => {
+    toDOM: (view) => {
         const table = document.createElement('table');
         const tbody = document.createElement('tbody');
         table.appendChild(tbody);
         tbody.innerHTML = innerHTML;
+        if (from !== null) {
+            table.style.cursor = 'pointer';
+            table.title = 'Click to edit table';
+            table.onclick = () => {
+                table.style.cursor = 'default';
+                table.title = '';
+                const pos = from;
+                const transaction = view.state.update({ selection: { anchor: pos } });
+                view.dispatch(transaction);
+            };
+        }
         return table;
     },
 });
 const markdownTableExtension = (enabled = true) => {
-    const tableDecoration = (innerHTML) => Decoration.replace({
-        widget: tableWidget(innerHTML),
+    const tableDecoration = (innerHTML, from) => Decoration.replace({
+        widget: tableWidget(innerHTML, from),
     });
     const decorate = (state) => {
         if (!enabled) {
@@ -76579,7 +76595,7 @@ const markdownTableExtension = (enabled = true) => {
                 if (type.name === 'Table' && !isCursorInRange(state, from, to)) {
                     const tableMarkdown = state.sliceDoc(from, to);
                     const tableHtml = markdownTableToHTML(tableMarkdown);
-                    widgets.push(tableDecoration(tableHtml).range(from, to));
+                    widgets.push(tableDecoration(tableHtml, from).range(from, to));
                 }
             },
         });
@@ -76723,7 +76739,7 @@ class DiagramWidget extends WidgetType {
             container.onclick = () => {
                 container.style.cursor = 'default';
                 container.title = '';
-                const pos = this.from; // Assuming you want to place the cursor at the end of the document
+                const pos = this.from;
                 const transaction = view.state.update({ selection: { anchor: pos } });
                 view.dispatch(transaction);
             };
