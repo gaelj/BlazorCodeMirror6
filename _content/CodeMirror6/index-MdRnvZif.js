@@ -34683,7 +34683,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-p-wrpGUi.js').then(m => m.less());
+            return import('./index-t-L5s-hk.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34709,7 +34709,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-WXRSvR9g.js').then(m => m.php());
+            return import('./index-HXeZE_14.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34778,7 +34778,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-bhsavLSj.js').then(m => m.wast());
+            return import('./index-FrsBZfgS.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -35589,13 +35589,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-kV8sbhwb.js').then(m => m.vue());
+            return import('./index-ckleV3vg.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-1mLft6I3.js').then(m => m.angular());
+            return import('./index-TVQbybDE.js').then(m => m.angular());
         }
     })
 ];
@@ -35834,6 +35834,8 @@ const languageChangeEffect = StateEffect.define();
  */
 function getLanguage(languageName) {
     switch (languageName) {
+        case "PlainText":
+            return null;
         case "Csharp":
             return csharp();
         case "Cpp":
@@ -35904,6 +35906,8 @@ function getLanguage(languageName) {
  */
 function getLanguageKeyMaps(languageName) {
     switch (languageName) {
+        case "PlainText":
+            return [];
         case "Csharp":
             return [];
         case "Cpp":
@@ -76666,7 +76670,10 @@ async function fetchDiagramSvg(view, code, language, krokiUrl) {
         return svgContent;
     const response = await fetch(`${krokiUrl}/${language}/svg`, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain', 'Accept': 'image/svg+xml' },
+        headers: {
+            'Content-Type': 'text/plain',
+            'Accept': 'image/svg+xml',
+        },
         body: code
     });
     svgContent = { response: await response.text(), error: response.status !== 200 };
@@ -77072,9 +77079,10 @@ function setLanguage(id, languageName) {
     const customKeyMap = getLanguageKeyMaps(languageName);
     CMInstances[id].view.dispatch({
         effects: [
-            CMInstances[id].languageCompartment.reconfigure(language),
+            CMInstances[id].languageCompartment.reconfigure(language ?? []),
             CMInstances[id].keymapCompartment.reconfigure(keymap.of(customKeyMap)),
-            languageChangeEffect.of(language.language)
+            languageChangeEffect.of(language?.language),
+            CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, languageName === 'Markdown'))
         ]
     });
 }
@@ -77093,25 +77101,26 @@ function forceRedraw(id) {
     });
     view.dispatch(view.state.update(changes));
 }
+const autoFormatMarkdownExtensions = (id, autoFormatMarkdown = true) => [
+    getDynamicHeaderStyling(autoFormatMarkdown),
+    dynamicHrExtension(autoFormatMarkdown),
+    dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
+    dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
+    autocompletion({
+        override: [...mentionCompletionExtension(CMInstances[id].setup.allowMentions)]
+    }),
+    mentionDecorationExtension(autoFormatMarkdown),
+    listsExtension(autoFormatMarkdown),
+    blockquote(),
+    viewEmojiExtension(autoFormatMarkdown),
+    htmlViewPlugin(autoFormatMarkdown),
+    hyperLink, hyperLinkStyle,
+    markdownLinkExtension(autoFormatMarkdown),
+    markdownTableExtension(autoFormatMarkdown),
+];
 function setAutoFormatMarkdown(id, autoFormatMarkdown) {
     CMInstances[id].view.dispatch({
-        effects: CMInstances[id].markdownStylingCompartment.reconfigure([
-            getDynamicHeaderStyling(autoFormatMarkdown),
-            dynamicHrExtension(autoFormatMarkdown),
-            dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
-            dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
-            autocompletion({
-                override: [...mentionCompletionExtension(CMInstances[id].setup.allowMentions)]
-            }),
-            mentionDecorationExtension(autoFormatMarkdown),
-            listsExtension(autoFormatMarkdown),
-            blockquote(),
-            viewEmojiExtension(autoFormatMarkdown),
-            htmlViewPlugin(autoFormatMarkdown),
-            hyperLink, hyperLinkStyle,
-            markdownLinkExtension(autoFormatMarkdown),
-            markdownTableExtension(autoFormatMarkdown),
-        ])
+        effects: CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, autoFormatMarkdown))
     });
 }
 function setReplaceEmojiCodes(id, replaceEmojiCodes) {
