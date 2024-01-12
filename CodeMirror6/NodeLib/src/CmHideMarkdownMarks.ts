@@ -27,14 +27,26 @@ export const hideMarksExtension = (enabled: boolean = true): Extension => {
 
         if (enabled) {
             syntaxTree(state).iterate({
-                enter: ({ type, from, to }) => {
+                enter: ({ node, type, from, to }) => {
                     if (type.name.endsWith('Mark') && type.name !== 'ListMark') {
+                        if (type.name === 'CodeMark') {
+                            const eFC = node.parent
+                            if (eFC.type.name === 'FencedCode') {
+                                const cursorFrom = state.doc.lineAt(eFC.from).from
+                                const cursorTo = state.doc.lineAt(eFC.to).to
+                                if (isCursorInRange(state, cursorFrom, cursorTo)) {
+                                    return
+                                }
+                            }
+                        }
+
+                        let cursorRange: { from: number, to: number }
                         const mark = state.sliceDoc(from, to)
-                        const line = state.doc.lineAt(from)
+                        cursorRange = state.doc.lineAt(from)
                         if (mark.startsWith('#')) {
                             to += 1 // Hide the space character after the #'s
                         }
-                        if (!isCursorInRange(state, line.from, line.to))
+                        if (!isCursorInRange(state, cursorRange.from, cursorRange.to))
                             widgets.push(hideDecoration().range(from, to))
                     }
                 },
