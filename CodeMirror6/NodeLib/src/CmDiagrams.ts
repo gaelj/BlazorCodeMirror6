@@ -81,10 +81,10 @@ async function fetchDiagramSvg(view: EditorView, code: string, language: string,
 
     svgCache.set(key, svgContent)
 
-    const { width, height } = readSvgDimensions(svgContent.response)
+    const { height } = readSvgDimensions(svgContent.response)
 
     view.dispatch({
-        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response, from: null, width, height })
+        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response, from: null, to: null, height })
     })
 }
 
@@ -109,6 +109,7 @@ interface DiagramWidgetParams {
     svgContent: string,
     from: number,
     height: number,
+    to: number,
 }
 
 const updateDiagramEffect = StateEffect.define<DiagramWidgetParams>()
@@ -117,15 +118,17 @@ class DiagramWidget extends WidgetType {
     readonly language: string
     readonly code: string
     readonly from: number
+    readonly to: number
     readonly height: number
     public svgContent: string | null
 
-    constructor({ language, code, svgContent = null, from, height }: DiagramWidgetParams) {
+    constructor({ language, code, svgContent = null, from, to, height }: DiagramWidgetParams) {
         super()
 
         this.language = language
         this.code = code
         this.from = from
+        this.to = to
         this.height = height
         this.svgContent = svgContent
 
@@ -185,13 +188,23 @@ class DiagramWidget extends WidgetType {
             container.style.cursor = 'pointer'
             container.title = 'Click to edit diagram'
             container.onclick = () => {
-                container.style.cursor = 'default'
-                container.title = ''
+                container.title = 'Click to close diagram edition'
                 const pos = this.from
                 const transaction = view.state.update({selection: {anchor: pos}})
                 view.dispatch(transaction)
             }
         }
+        else {
+            container.style.cursor = 'pointer'
+            container.title = 'Click to close diagram edition'
+            container.onclick = () => {
+                container.title = 'Click to edit diagram'
+                const pos = this.to + 1
+                const transaction = view.state.update({selection: {anchor: pos}})
+                view.dispatch(transaction)
+            }
+        }
+        view.requestMeasure()
 
         return container
     }
@@ -272,11 +285,11 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
                 let params: DiagramWidgetParams
                 if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
                     const { height } = updatedSvgContent ? readSvgDimensions(updatedSvgContent) : { height: null }
-                    params = { language, code, svgContent: updatedSvgContent, from: cursorInRange ? null : from, height }
+                    params = { language, code, svgContent: updatedSvgContent, from: cursorInRange ? null : from, to, height }
                 } else {
                     const svgContent = fetchSvgFromCache(code, language)
                     const { height } = svgContent?.response ? readSvgDimensions(svgContent?.response) : { height: null }
-                    params = { language, code, svgContent: svgContent?.response, from: cursorInRange ? null : from, height }
+                    params = { language, code, svgContent: svgContent?.response, from: cursorInRange ? null : from, to, height }
                 }
 
                 if (cursorInRange)
