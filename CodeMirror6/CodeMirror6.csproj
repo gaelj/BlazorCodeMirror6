@@ -14,7 +14,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TrimUnusedDependencies>false</TrimUnusedDependencies>
-    <PackageProjectUrl>https://github.com/gaelj/BlazorCodeMirror6</PackageProjectUrl>
+    <PackageProjectUrl>https://gaelj.github.io/BlazorCodeMirror6/</PackageProjectUrl>
     <Authors>Gaël James</Authors>
     <Copyright>Copyright © 2024 Gaël James</Copyright>
     <Title>GaelJ.BlazorCodeMirror6</Title>
