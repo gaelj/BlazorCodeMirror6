@@ -16,6 +16,7 @@
     <TrimUnusedDependencies>false</TrimUnusedDependencies>
     <PackageProjectUrl>https://github.com/gaelj/BlazorCodeMirror6</PackageProjectUrl>
     <Authors>Gaël James</Authors>
+    <Copyright>Copyright © 2024 Gaël James</Copyright>
     <Title>GaelJ.BlazorCodeMirror6</Title>
     <Description>
       Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.net/)
@@ -27,6 +28,9 @@
     <PackageTags>Blazor;CodeMirror6;Markdown</PackageTags>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/gaelj/BlazorCodeMirror6</RepositoryUrl>
+    <PackageReadmeFile>..\README.md</PackageReadmeFile>
+    <PackageIcon>..\icon.png</PackageIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
     <SupportedPlatform Include="browser" />
@@ -50,4 +54,7 @@
   </Target>
   <Target Name="BeforeClean" BeforeTargets="Clean" DependsOnTargets="RemoveNodeModulesTarget"></Target>
   <Target Name="BeforeBuild" BeforeTargets="Build" DependsOnTargets="NpmInstallTarget;RollupBuildTarget"></Target>
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
 </Project>
