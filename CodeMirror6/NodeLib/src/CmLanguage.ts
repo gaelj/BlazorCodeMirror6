@@ -1,4 +1,4 @@
-import { LanguageSupport } from "@codemirror/language";
+import { LanguageSupport, Language } from "@codemirror/language"
 import { cpp, cppLanguage } from "@codemirror/lang-cpp"
 import { css, cssLanguage } from "@codemirror/lang-css"
 import { html, htmlLanguage } from "@codemirror/lang-html"
@@ -15,7 +15,6 @@ import { xml, xmlLanguage } from "@codemirror/lang-xml"
 import { csharp, csharpLanguage } from "@replit/codemirror-lang-csharp"
 import { mermaid, mermaidLanguage, flowchartLanguageDescription, ganttLanguageDescription, journeyLanguageDescription, mermaidLanguageDescription, mindmapLanguageDescription, pieLanguageDescription, requirementLanguageDescription, sequenceLanguageDescription } from "codemirror-lang-mermaid"
 import { languages } from "@codemirror/language-data"
-import { Language } from "@codemirror/language"
 import { StateEffect } from "@codemirror/state"
 import { customMarkdownKeymap } from "./CmKeymap"
 
