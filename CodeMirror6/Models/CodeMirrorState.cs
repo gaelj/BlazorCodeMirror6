@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-namespace CodeMirror6.Models;
+namespace GaelJ.BlazorCodeMirror6.Models;
 
 /// <summary>
 /// Represents the current state of the CodeMirror6 editor

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace CodeMirror6.Models;
+namespace GaelJ.BlazorCodeMirror6.Models;
 
 /// <summary>
 /// Stores the configuration of a CodeMirror instance (what plugins to load).

@@ -1,0 +1,45 @@
+name: Publish to NuGet
+
+on:
+  push:
+    tags:
+      - '[0-9]+\.[0-9]+\.[0-9]+(-.+\.[0-9]+)?'
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.2.0
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '21'
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore $SOLUTION
+
+    - name: build library
+      run: dotnet build CodeMirror6
+
+    # Update version in .csproj
+    - name: Update project version
+      run: |
+        VERSION_TAG=${GITHUB_REF#refs/tags/}
+        dotnet tool run dotnet-setversion -r $VERSION_TAG
+
+    # Build and pack
+    - name: Build and pack
+      run: dotnet pack --configuration Release --include-symbols --include-source
+
+    # Publish to NuGet
+    - name: Publish to NuGet
+      run: dotnet nuget push "**/*.nupkg" --source "https://api.nuget.org/v3/index.json" -k ${{ secrets.NUGET_API_KEY }}

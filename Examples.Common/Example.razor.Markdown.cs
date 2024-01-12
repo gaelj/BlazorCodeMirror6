@@ -111,8 +111,6 @@ Long line, Long line, Long line, Long line, Long line, Long line, Long line, Lon
 
 ### Diagrams preview
 
-> Mermaid preview by [kroki.io](https://kroki.io) is currently broken
-
 Click on a diagram or move the cursor / selection next to it to see the diagram code.
 
 ```mermaid
