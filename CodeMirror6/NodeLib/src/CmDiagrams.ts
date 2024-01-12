@@ -44,15 +44,23 @@ const svgCache = new Map<string, { response: string, error: boolean }>()
 function fetchSvgFromCache(code: string, language: string): { response: string, error: boolean } {
     const key = `${language}\n${code}`
     const cached = svgCache.get(key)
-    if (cached)
-        return cached
+    if (cached) return cached
     return null
+}
+
+function readSvgDimensions(svgContent: string): { width: number, height: number } {
+    const parser = new DOMParser()
+    const svg = parser.parseFromString(svgContent, "image/svg+xml")
+    const svgElement = svg.getElementsByTagName("svg")[0]
+    const width = svgElement.getAttribute("width")
+    const height = svgElement.getAttribute("height")
+    return { width: parseInt(width), height: parseInt(height) }
 }
 
 async function fetchDiagramSvg(view: EditorView, code: string, language: string, krokiUrl: string): Promise<{ response: string, error: boolean }> {
     const key = `${language}\n${code}`
-    let svgContent = fetchSvgFromCache(code, language)
-    if (svgContent) return svgContent
+    if (svgCache.has(key)) return
+    let svgContent: { response: string, error: boolean }
 
     try {
         const response = await fetch(`${krokiUrl}/${language}/svg`, {
@@ -66,16 +74,18 @@ async function fetchDiagramSvg(view: EditorView, code: string, language: string,
         svgContent = { response: await response.text(), error: response.status !== 200 }
     }
     catch (error) {
-        console.log("error", error)
+        console.error(error)
         svgContent = { response: error.toString(), error: true }
     }
+    if (svgCache.has(key)) return
 
-    if (!svgCache.has(key))
-        svgCache.set(key, svgContent)
+    svgCache.set(key, svgContent)
+
+    const { width, height } = readSvgDimensions(svgContent.response)
+
     view.dispatch({
-        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response, from: null })
+        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response, from: null, width, height })
     })
-    return svgContent
 }
 
 function detectDiagramLanguage(code: string): string | undefined {
@@ -98,6 +108,7 @@ interface DiagramWidgetParams {
     code: string,
     svgContent: string,
     from: number,
+    height: number,
 }
 
 const updateDiagramEffect = StateEffect.define<DiagramWidgetParams>()
@@ -106,14 +117,16 @@ class DiagramWidget extends WidgetType {
     readonly language: string
     readonly code: string
     readonly from: number
+    readonly height: number
     public svgContent: string | null
 
-    constructor({ language, code, svgContent = null, from }: DiagramWidgetParams) {
+    constructor({ language, code, svgContent = null, from, height }: DiagramWidgetParams) {
         super()
 
         this.language = language
         this.code = code
         this.from = from
+        this.height = height
         this.svgContent = svgContent
 
         if (!this.svgContent) {
@@ -184,6 +197,10 @@ class DiagramWidget extends WidgetType {
     }
 
     ignoreEvent: () => false
+
+    get estimatedHeight(): number {
+        return this.height ?? -1
+    }
 }
 
 function getLanguageAndCode(state: EditorState, node: SyntaxNodeRef) {
@@ -245,39 +262,42 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
         inclusive: false,
     })
 
-    const decorate = (state: EditorState, updatedCode?: string, updatedLanguage?: string, updatedSvgContent?: string) => {
+    function getDecorationsRange(state: EditorState, node: SyntaxNodeRef, updatedCode?: string, updatedLanguage?: string, updatedSvgContent?: string, from?: number, to?: number, width?: number, height?: number) {
         const decorationsRange: Range<Decoration>[] = []
+        if (node.type.name === 'FencedCode') {
+            const { language, code } = getLanguageAndCode(state, node)
+            if (language) {
+                const cursorInRange = isCursorInRange(state, from, to)
 
+                let params: DiagramWidgetParams
+                if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
+                    const { height } = updatedSvgContent ? readSvgDimensions(updatedSvgContent) : { height: null }
+                    params = { language, code, svgContent: updatedSvgContent, from: cursorInRange ? null : from, height }
+                } else {
+                    const svgContent = fetchSvgFromCache(code, language)
+                    const { height } = svgContent?.response ? readSvgDimensions(svgContent?.response) : { height: null }
+                    params = { language, code, svgContent: svgContent?.response, from: cursorInRange ? null : from, height }
+                }
+
+                if (cursorInRange)
+                    decorationsRange.push(diagramWidgetDecoration(params).range(state.doc.lineAt(from).from))
+                else
+                    decorationsRange.push(diagramReplacementDecoration(params).range(from, to))
+            }
+        }
+        return decorationsRange
+    }
+
+    const decorate = (state: EditorState, updatedCode?: string, updatedLanguage?: string, updatedSvgContent?: string, width: number = null, height: number = null) => {
+        let decorationsRange: Range<Decoration>[] = []
         if (enabled) {
             syntaxTree(state).iterate({
                 enter: (node) => {
-                    const { type, from, to } = node
-                    if (type.name === 'FencedCode') {
-                        const { language, code } = getLanguageAndCode(state, node)
-                        if (language) {
-                            const cursorInRange = isCursorInRange(state, from, to)
-                            if (!cursorInRange) {
-                                if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
-                                    decorationsRange.push(diagramReplacementDecoration({ language, code, svgContent: updatedSvgContent, from }).range(from, to))
-                                } else {
-                                    const svgContent = fetchSvgFromCache(code, language)
-                                    decorationsRange.push(diagramReplacementDecoration({ language, code, svgContent: svgContent?.response, from }).range(from, to))
-                                }
-                            }
-                            else {
-                                if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
-                                    decorationsRange.push(diagramWidgetDecoration({ language, code, svgContent: updatedSvgContent, from: null }).range(state.doc.lineAt(from).from))
-                                } else {
-                                    const svgContent = fetchSvgFromCache(code, language)
-                                    decorationsRange.push(diagramWidgetDecoration({ language, code, svgContent: svgContent?.response, from: null }).range(state.doc.lineAt(from).from))
-                                }
-                            }
-                        }
-                    }
+                    const { from, to } = node
+                    decorationsRange.push(...getDecorationsRange(state, node, updatedCode, updatedLanguage, updatedSvgContent, from, to, width, height))
                 },
             })
         }
-
         return decorationsRange.length > 0 ? RangeSet.of(decorationsRange) : Decoration.none
     }
 
@@ -290,8 +310,8 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
             if (transaction.effects.some(_ => true)) {
                 for (const effect of transaction.effects) {
                     if (effect.is(updateDiagramEffect)) {
-                        const { code, language, svgContent } = effect.value
-                        return decorate(transaction.state, code, language, svgContent)
+                        const { code, language, svgContent, height } = effect.value
+                        return decorate(transaction.state, code, language, svgContent, height)
                     }
                 }
             }
