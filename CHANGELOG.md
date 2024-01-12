@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.0.2
+
+- 📝 Update features in README
+- 📝 Add initial CHANGELOG.md (0.0.1)
+- 🔧 ADd a github action to create a release on new semver tags
+- 🔧 Set project URl as github pages demo
+- 💄 Use emojis in action names
+- 📝 Add nuget badge in README.ms
+- 🔧 Follow best practices for nuget deployment
+- 🐛 Don't deploy examples to nuget
+
 ## 0.0.1
 
 - 🐛 Fix usage of set version in ci
