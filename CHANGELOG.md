@@ -2,6 +2,7 @@
 
 ## 0.0.2
 
+- 🐛 Include icon in package
 - 📝 Update features in README
 - 📝 Add initial CHANGELOG.md (0.0.1)
 - 🔧 ADd a github action to create a release on new semver tags

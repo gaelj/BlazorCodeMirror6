@@ -28,8 +28,8 @@
     <PackageTags>Blazor;CodeMirror6;Markdown</PackageTags>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/gaelj/BlazorCodeMirror6</RepositoryUrl>
-    <PackageReadmeFile>..\README.md</PackageReadmeFile>
-    <PackageIcon>..\icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
