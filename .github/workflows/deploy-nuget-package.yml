@@ -27,7 +27,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore $SOLUTION
 
-    - name: build library
+    - name: Build library
       run: dotnet build CodeMirror6
 
     # Update version in .csproj
