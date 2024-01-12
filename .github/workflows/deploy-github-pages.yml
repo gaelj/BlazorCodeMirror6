@@ -9,7 +9,8 @@ jobs:
   build_and_publish_to_github_pages:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: 📥 Checkout
+      uses: actions/checkout@v3
 
     - name: 📦 Set up Node.js
       uses: actions/setup-node@v4
