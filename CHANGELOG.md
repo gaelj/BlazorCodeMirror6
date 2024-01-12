@@ -1,0 +1,284 @@
+# Changelog
+
+## 0.0.1
+
+- 🐛 Fix usage of set version in ci
+- 🐛 Fix tag filter in CI
+- 🔧 Set version on all projects
+- 🐛 Fix crash when initial language is plain text (see #58)
+- 👷 Add publish to nuget github action, add dotnet restore to pages action
+- 🚚 Prepare deploy to nuget: rename main namespace to GaelJ.BlazorCodeMirror6, add package Id, description, version tag to csproj & cleanup
+- 🗑️ Cleanup mess in gitignore
+- 🎨 Cleanup imports
+- 📝 Mermaid on kroki is fixed
+- ✨ Show code block marks when inside the code block
+- 💄 Use white background on diagrams, always
+- 📝 Improve README.md
+- 🗑️ Cleanup images
+- ✨ Clicking on diagram toggles edition mode
+- 🎨 Diagrams: retrieve height
+- 🐛 Fix image height to prevent jumping
+- 🎨 Show list markup when cursor is in line
+- 🐛 Don't hide list marks
+- ✨ Hide markdown marks unless editing or selecting the containing line
+- 💄 Just show line count of bound text in examples
+- 💄 Add background to example button
+- 🐛 Fix pre-selected text when clicking on horizontal rule
+- 🗑️ Cleanup CSS
+- 📝 Add all header levels in example
+- ⚡️ Don't show hidden loading page at all once the component is loaded successfully
+- 💄 Use smaller markdown title fonts
+- 📝 Improve example page
+- 🥅 Catch JSDisconnectedException on disposal (CODEMIRROR-6-WRAPPER-3)
+- 🥅 Catch errors when fetching diagrams
+- 📝 Show usage of `a` and `img`html tags in example
+- ✨ Support any 1-liner html tags instead of only span. Tags must be closed explicitly with the syntax `<mytag>xxx</mytag>`
+- ✏️ White space
+- 📝 Add Sentry disclaimer in README.md
+- ✨ Support plain text language as requested in #58
+- ✨ Click on a table to edit it
+- 📝 Update README.md
+- 🐛 Fix toggling of tasks when checked
+- 🔧 Github actions: use setup-node v4
+- ✨ Show the diagram code when clicking on the diagram
+- ✨ Still show the diagram while editing it
+- ✨ Hide diagram code unless cursor is in range
+- 🎨 Cleanup supported diagram languages list
+- ✨ Allow use of a custom Kroki server
+- 🐛 Prevent loading diagrams on regular code blocks
+- ✨ Finish diagrams
+- 🐛 Prevent forceRedraw from crashing when the problem is elsewhere
+- 💄 Show error details in `<pre>`
+- 🚚 Move
+- 🚚 Rename
+- 🚧 Implement kroki diagram extension
+- 🚚 REname variables for clarity
+- 🗑️ Remove useless button class checking parameter Relates to #53
+- 🐛 Ensure compatibility with Blazor Server (add IsWASM parameter, fix disposal)
+- ✨ Implement various bind value modes; don't call linting callback uselessly
+- 🥅 Show detailed error message
+- 📝 Fix link in readme
+- 🎨 Use enums instead of strings
+- 🚚 Cleanup order of imports
+- 🐛 Linting example: allow multiple errors on the same line
+- 🗑️ Cleanup
+- ✨ Format markdown tables
+- 🚚 Move the error boundary to an enclosing component
+- 🚚 Rename main component to CodeMirror6WrapperInternal.razor
+- 🥅 Add Sentry JS reporting to examples
+- 🐛 Write file link at latest cursor location after uploading
+- ✨ Add undo & redo toolbar buttons, ensure editor focus after command dispatched
+- ✨ Support mermaid language highlighting
+- 🎨 Initial force redraw, which now requests measure
+- ✨ Format image and empty links
+- ✨ Implement clickable links and decorated markdown links
+- ✨ Support C# language
+- 🥅 Recover from errors on parameters set
+- 🥅 Add sentry integration to examples
+- 🐛 Add missing property
+- ✨ Implement long line wrapping
+- 🚚 Rename CommandDispatcher
+- 🥅 Move the toolbars inside the ErrorBoundary
+- 🚚 Re-organize some classes for clarity
+- 🥅 Use an ErrorBoundary
+- 🥅 Catch any JS initialization errors and log them to the browser console
+- 🐛 Fix crash when document is empty
+- 🐛 Fix build
+- ✨ Optionally scroll to the bottom of the document & place the cursor on the last line
+- ➕ Add dependency to Microsoft.AspNetCore.Http
+- 💄 Add themes from @uiw
+- ⚡️ Add browser refresh script in example `index.html`
+- ✨ Support file uploads via drag & drop and copy / paste
+- ⚡️ Dispose dotNetHelper
+- 🎨 Use DotNet.DotNetObject instead of any
+- 💚 Fix build error
+- 🐛 Add missing type
+- ✨ Add a loading placeholder panel
+- 🐛 Fix outline: none non applied
+- 🐛 Allow different resize strategies for different instances
+- 💄 Use small toolbar buttons
+- 🎨 Cleanup
+- 🐛 Allow clicking inside a rendered html span to edit it
+- ✨ Implement ForceRedraw(), use it after late update of available mention completions
+- ⚡️ Try early initialization for Blazor WASM
+- 🎨 Use icons in the toolbar example
+- Update README.md
+- Update deploy.yml
+- 💚 Use latest actions versions and build before deploying
+- 🙈 Ignore build directory
+- 💚 Deploy to github pages
+- 🐛 Fix inline html viewer: margins and multiple html tags on the same line
+- 💄 Extract style to css files, fix resizing was broken
+- 📝 Improve README
+- ✨ Format inline html
+- ✨ Add codemirror-indentation-markers
+- ✨ Emojis: add auto-complete
+- 🚚 Move utilities to CmHelpers, don't auto-complete mentions in code blocks or html blocks
+- ✨ Hide mentions when details are shown
+- 📝 Move markdown sections in README
+- 🐛 Fix example emoji
+- 📝 Disable Replace emojis by default; doc
+- 🚚 Rename mentions completion
+- 🐛 Fix create emojis
+- 🐛 Fix replace emojis
+- 🐛 Fix emoji decorations
+- ✨ Implement emoji decoration
+- 🐛 Fix multiple selections was broken
+- ✨ Implement increase / decrease header level
+- 📝 Update features in README
+- ✨ Format markdown lists
+- 💄 Style Markdown quote lines and paragraphs
+- ✨ Make mentions drop-down and formatting configurable
+- 🐛 Don't decoration @mentions when in a code block
+- ✨ Toggle images preview with markdown styling
+- 🐛 Fix toolbar button selection state
+- ✨ Show styled horizontal rule
+- ➕ Add decorations from code mirror kit
+- 🐛 Don't select text inserted above the cursor
+- ✨ Support custom completions, for example @name
+- ➕ Add ink-mde as a git submodule
+- 🎨 Cleanup enums
+- 🚚 Split Get markdown style in 2 functions
+- 🎨 Get latest images.ts from https://github.com/davidmyersdev/ink-mde/blob/main/src/vendor/extensions/images.ts
+- 🐛 Fix selection changed after header size change if cursor is at the end of the line
+- ✨ Expose additional built-in commands
+- 📝 Update README feature list
+- ✨ Support undo-able replacing of :emoji_codes: by their unicode character
+- 🎨 Commands: rewrite using enums rather than individual functions
+- ✨ Implement InsertTextAbove
+- 🚚 Extract Markdown example document
+- 🎨 Hide CmJsInterop, expose Commands directly
+- 📝 Update README
+- ✨ Implement configuration of which plugins are enabled at startup
+- 🚚 Rename class for clarity
+- 🚚 Move code block down
+- ✨ Implement Insert or replace text at position(s)
+- 🔧 Use net8 in launch.json
+- 📝 Document functions
+- 📝 Add tasks in README
+- 🐛 Fix build, clean node_modules directory on clean
+- ✨ Implement linting
+- 🐛 Add missing preset theme tomorrow
+- 🐛 Fix toggling where control string contains spaces
+- 🎨 Use Maths for readability
+- ✨ Implement markdown image preview, stolen from `https://github.com/davidmyersdev/ink-mde/blob/c4758965d91d9e2255d8062e4d7aef7f8b837a29/src/vendor/extensions/images.ts#L62`
+- 🐛 Fix increase nr of header # style: selection get shortened
+- 🐛 Fix toggle style: when toggling bold on the last word of a line, the "to" selection is 2 characters short
+- 📝 Doc, white space
+- ✨ Allow manual resizing of the editor
+- 🐛 Fix some crashes when toggling a style and the cursor is on the style tag
+- ✨ Implement FocusCodeMirrorEditor
+- 🐛 Keep editor focused when clicking a toolbar button
+- 🐛 Fix header level always 7
+- 🐛 Fix toolbar appears only after focusing the editor
+- ✨ Expose Markdown styles active at the current selected range(s)
+- 🚚 Extract updateListenerExtension method
+- 💄 Add more themes
+- 🐛 Fix selection not kept after header toggle
+- ✨ Add more commands
+- 🔒️ Make config setters internal
+- 🐛 Fix crash when disabling headers auto-formatting
+- ✨ Implement additional commands
+- 🚚 Rename file
+- ✨ Expose bold & italic command, add child content that can be before or after
+- 📝 Add MD features to README
+- ✨ Implement dynamic language-dependent keybindings
+- 🎨 Explode basic setup
+- 📝 Document ts
+- ⚡️ Destroy the view on disposal
+- 🚚 Extract language, theme in dedicated ts files
+- 🚚 Extract DynamicMarkdownHeaderStyling.ts
+- 🗑️ Examples: remove useless top bar
+- 🗑️ Examples: remove useless NavMenu
+- ✨ Pass any additional attributes to the container element
+- 🔒️ Make config internal
+- 🚚 Rename variable
+- 🐛 Add inheritance to ComponentBase
+- 🚚 Extract the wrapper code in a cs file, add comments
+- 🎨 Example: move buttons to the top
+- ✨ Make headers auto-formatting optional (opt-in)
+- ✨ Implement dynamic Markdown Header Styling
+- ✏️ White space / styling
+- 📝 Add languages to features list in README
+- 🎨 Use primary constructor
+- ✨ Implement setting other languages
+- 🔧 Ensure C# 12 in csproj
+- 💄 Add One Dark theme
+- 📝 Update readme
+- ✨ Implement Editable and ReadOnly properties
+- 🗑️ Don't persist initial tab size setting
+- 📝 Doc config class
+- 🚚 Move ts config to dedicated file
+- ⚡️ Use a configuration class instead of individual constructor parameters
+- ✨ Allow reset to default theme
+- 📝 Doc js state class
+- ✨ Implement settings ThemeMirror themes
+- 🗑️ Remove semicolons in ts
+- 📝 Add a task list in the README
+- 📝 Document selection range model
+- 🚚 Stick to original names
+- 📝 README: correct reference to the example component
+- ✨ Implement SetIndentUnit
+- ✏️ White space & example title
+- ⬆️ Manually update npm dependencies
+- ⬆️ Run `npm update`
+- 🔒️ Run `npm audit fix`to address 2 vulnerabilities (1 moderate, 1 critical)
+- 🗑️ Improve disposal of a js CM instance
+- ✨ Implement initial and dynamic setting of placeholder text
+- ✨ Allow binding to selection ranges
+- 🐛 Fix dynamically setting the tab size did not have effect on new tabs, only existing ones
+- ⬆️ Update dotnet-outdated-tool to 4.6.0
+- 📝 Add name to rollup config
+- 🎨 Improve tab size selector in example
+- ✏️ Use real tabs in example
+- 🎨 Use record for selection range instead of class
+- 🐛 Fix Demo stops reporting selection ranges after change to document #9
+- 🔧 Target net 7 and net 8
+- 🔧 Add editorconfig
+- 📄 Change license from GPL to MIT in package.json
+- Change license from GPL to MIT (closes #6)
+- 🐛 Set null string instead of null in dotnet Text
+- 📝 Update license
+- 🚚 Move JS invokable functions into component
+- 🚚 Extract CmInstance.ts
+- 📝 Doc
+- 🔧 Run npm install at build
+- 🎨 Cleanup TS
+- ✨ Add SelectionRange & SelectionSet, fix SetText, fix for multiple editors
+- ✨ Implement hasFocus and placeholderText
+- 📝 Dpc: add wasm
+- 🚚 Move duplicated examples in a common project
+- 🎨 Cleanup interop
+- 🚚 Rename component to CodeMirror6Wrapper to prevent collision with project namespace
+- ✨ Colorize markdown language code
+- 📝 Fix description
+- 📝 Add image to README
+- ✨ Pass initial text value
+- ✨ Bind text updates to dotnet
+- 🚨 Fix null ref warning
+- 🔧 Run rollup on build
+- 🌱 Initial implementation
+- 🔧 Add vs code config
+- ✨ Add a second instance in the examples
+- 🔧 Add SupportedPlatform to project files
+- 🔧 Add projects to solution
+- 🙈 Ignore auto generated files
+- 🚨 Fix warnings, document public functions
+- 🐛 Use a div instead of a textarea
+- 🗑️ Remove libman
+- 🚧 First implementation in progress
+- 🌱 Build examples
+- 🔧 Make it packable
+- 🎨 Add imports
+- 🔧 Add CodeMirror6 library
+- 🔧 Restore libman on build
+- 🔧 Add tools dotnet-outdated-tool and libman
+- 🚚 Rename examples to prevent namespace collisions
+- 🗑️ Cleanup example projects
+- 🌱 Add default server example `dotnet new blazorwasm --name CodeMirror6.Examples.BlazorWasm`
+- 🌱 Add default server example `dotnet new blazorserver --name CodeMirror6.Examples.BlazorServer`
+- 🌱 Add default library project `dotnet new razorclasslib --name CodeMirror6`
+- 🔧 Add standard tool manifest file `dotnet new tool-manifest`
+- 🔧 Add standard solution file `dotnet new sln`
+- 🙈 Add standard dotnet gitignore `dotnet new gitignore`
+- Initial commit

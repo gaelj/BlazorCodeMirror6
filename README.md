@@ -120,7 +120,7 @@ We welcome contributions!
 
 ## Changelog
 
-- initial development 🚧
+See the [Changelog](CHANGELOG.md)
 
 ## License
 
