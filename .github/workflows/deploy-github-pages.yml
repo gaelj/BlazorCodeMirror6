@@ -1,4 +1,4 @@
-name: Deploy Blazor App to GitHub Pages
+name: 🚀 Publish Blazor WASM example App to GitHub Pages
 
 on:
   push:
@@ -6,37 +6,37 @@ on:
       - main
 
 jobs:
-  deploy:
+  build_and_publish_to_github_pages:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up Node.js
+    - name: 📦 Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '21'
 
-    - name: Setup .NET
+    - name: 🛠️ Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '8.0.x'
 
-    - name: Restore dependencies
+    - name: 📥 Restore dependencies
       run: dotnet restore $SOLUTION
 
-    - name: build library
+    - name: 🏗️ Build library
       run: dotnet build CodeMirror6
 
-    - name: build wasm app
+    - name: 🏗️ Build wasm app
       run: dotnet build Examples.BlazorWasm
 
-    - name: Publish
+    - name: 🚀 Publish
       run: dotnet publish Examples.BlazorWasm -c Release -o ./build
 
-    - name: set base path
+    - name: 🌍 Set base path
       run: sed -i 's|<base href="/" />|<base href="/BlazorCodeMirror6/" />|g' ./build/wwwroot/index.html
 
-    - name: Deploy to GitHub Pages
+    - name: 🚀 Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
