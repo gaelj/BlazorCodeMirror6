@@ -2,23 +2,16 @@ import { syntaxTree } from '@codemirror/language'
 import type { EditorState, Extension, Range } from '@codemirror/state'
 import { RangeSet, StateField } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
-import { Decoration, EditorView, WidgetType } from '@codemirror/view'
+import { Decoration, EditorView, WidgetType, ViewUpdate } from '@codemirror/view'
 
-interface ImageWidgetParams {
-    url: string,
-}
 
 class ImageWidget extends WidgetType {
-    readonly url
-
-    constructor({ url }: ImageWidgetParams) {
+    constructor(readonly src: string) {
         super()
-
-        this.url = url
     }
 
     eq(imageWidget: ImageWidget) {
-        return imageWidget.url === this.url
+        return imageWidget.src === this.src
     }
 
     toDOM(view: EditorView) {
@@ -32,7 +25,7 @@ class ImageWidget extends WidgetType {
         backdrop.className = 'cm-image-backdrop'
         figure.className = 'cm-image-figure'
         image.className = 'cm-image-img'
-        image.src = this.url
+        image.src = this.src
 
         container.style.paddingBottom = '0.5rem'
         container.style.paddingTop = '0.5rem'
@@ -53,8 +46,12 @@ class ImageWidget extends WidgetType {
         image.style.maxWidth = '100%'
         image.style.width = '100%'
 
+        view.requestMeasure()
+
         return container
     }
+
+    ignoreEvent: () => false
 
     get lineBreaks(): number {
         return 1
@@ -67,14 +64,13 @@ class ImageWidget extends WidgetType {
 
 export const dynamicImagesExtension = (enabled: boolean = true): Extension => {
     if (!enabled) {
-        // If the extension is disabled, return an empty extension
         return []
     }
 
-    const imageRegex = /!\[.*?\]\((?<url>.*?)\)/
+    const imageRegex = /!\[.*?\]\((?<src>.*?)\)/
 
-    const imageDecoration = (imageWidgetParams: ImageWidgetParams) => Decoration.widget({
-        widget: new ImageWidget(imageWidgetParams),
+    const imageDecoration = (src: string) => Decoration.widget({
+        widget: new ImageWidget(src),
         side: -1,
         block: true,
     })
@@ -88,8 +84,8 @@ export const dynamicImagesExtension = (enabled: boolean = true): Extension => {
                     if (type.name === 'Image') {
                         const result = imageRegex.exec(state.doc.sliceString(from, to))
 
-                        if (result && result.groups && result.groups.url)
-                            decorations.push(imageDecoration({ url: result.groups.url }).range(state.doc.lineAt(from).from))
+                        if (result && result.groups && result.groups.src)
+                            decorations.push(imageDecoration(result.groups.src).range(state.doc.lineAt(from).from))
                     }
                 },
             })
