@@ -31,6 +31,7 @@ Visit the [live demo](https://gaelj.github.io/BlazorCodeMirror6/) to see the com
 - [x] optionally scroll to the bottom of the document & place the cursor on the last line
 - [x] support long line wrapping
 - [x] support C# language
+- [x] update doc in dotnet either on text changes or on blur
 - [ ] search & replace toolbar button
 - [ ] toolbar with toolbar button template
 - [ ] support read-only paragraphs
@@ -44,7 +45,6 @@ Visit the [live demo](https://gaelj.github.io/BlazorCodeMirror6/) to see the com
 - [ ] collaborative editing
 - [ ] voice recognition
 - [ ] automatic translation
-- [ ] update doc in dotnet either on text changes or on blur / add GetText()
 - [ ] deleting a file link deletes the file from the server
 - [ ] button (visible when editor is hovered), to copy raw editor content to clipboard
 
@@ -71,11 +71,11 @@ Visit the [live demo](https://gaelj.github.io/BlazorCodeMirror6/) to see the com
 - [x] Implement kroki / mermaid preview
 - [x] support badges
 - [x] hide markdown control characters unless the selection is in the line
+- [ ] Toggling-off a Markdown style should always select the whole styled text block
+- [ ] Apply Markdown style toggles to whole words
 - [ ] better highlight markdown inline code and code blocks
 - [ ] use latest header
 - [ ] customize markdown header sizes
-- [ ] Apply Markdown style toggles to whole words
-- [ ] Toggling-off a Markdown style should always select the whole styled text block
 - [ ] add color picker extension
 
 ## Screenshots
@@ -120,7 +120,7 @@ We welcome contributions!
 
 ## Changelog
 
-- initial development 🚧
+See the [Changelog](CHANGELOG.md)
 
 ## License
 
