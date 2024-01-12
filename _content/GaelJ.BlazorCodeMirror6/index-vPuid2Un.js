@@ -34683,7 +34683,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-Xw5r9f8G.js').then(m => m.less());
+            return import('./index-xueKLeDZ.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34709,7 +34709,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-UPbxgzfm.js').then(m => m.php());
+            return import('./index-F-l6VR84.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34778,7 +34778,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-4i-SGNPe.js').then(m => m.wast());
+            return import('./index-zQV6OOOH.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -35589,13 +35589,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-JBVLKM9P.js').then(m => m.vue());
+            return import('./index-BT8PNlxD.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-cgKZKs6Q.js').then(m => m.angular());
+            return import('./index-KJNfgiTQ.js').then(m => m.angular());
         }
     })
 ];
@@ -35937,8 +35937,9 @@ function getLanguageKeyMaps(languageName) {
         case "Xml":
             return [];
         case "Markdown":
-        default:
             return customMarkdownKeymap;
+        default:
+            return [];
     }
 }
 
@@ -40910,12 +40911,12 @@ function getTheme(themeName) {
 }
 
 class ImageWidget extends WidgetType {
-    constructor({ url }) {
+    constructor(src) {
         super();
-        this.url = url;
+        this.src = src;
     }
     eq(imageWidget) {
-        return imageWidget.url === this.url;
+        return imageWidget.src === this.src;
     }
     toDOM(view) {
         const container = document.createElement('div');
@@ -40927,7 +40928,7 @@ class ImageWidget extends WidgetType {
         backdrop.className = 'cm-image-backdrop';
         figure.className = 'cm-image-figure';
         image.className = 'cm-image-img';
-        image.src = this.url;
+        image.src = this.src;
         container.style.paddingBottom = '0.5rem';
         container.style.paddingTop = '0.5rem';
         backdrop.classList.add('cm-image-backdrop');
@@ -40942,6 +40943,7 @@ class ImageWidget extends WidgetType {
         image.style.maxHeight = '800px';
         image.style.maxWidth = '100%';
         image.style.width = '100%';
+        view.requestMeasure();
         return container;
     }
     get lineBreaks() {
@@ -40953,12 +40955,11 @@ class ImageWidget extends WidgetType {
 }
 const dynamicImagesExtension = (enabled = true) => {
     if (!enabled) {
-        // If the extension is disabled, return an empty extension
         return [];
     }
-    const imageRegex = /!\[.*?\]\((?<url>.*?)\)/;
-    const imageDecoration = (imageWidgetParams) => Decoration.widget({
-        widget: new ImageWidget(imageWidgetParams),
+    const imageRegex = /!\[.*?\]\((?<src>.*?)\)/;
+    const imageDecoration = (src) => Decoration.widget({
+        widget: new ImageWidget(src),
         side: -1,
         block: true,
     });
@@ -40969,8 +40970,8 @@ const dynamicImagesExtension = (enabled = true) => {
                 enter: ({ type, from, to }) => {
                     if (type.name === 'Image') {
                         const result = imageRegex.exec(state.doc.sliceString(from, to));
-                        if (result && result.groups && result.groups.url)
-                            decorations.push(imageDecoration({ url: result.groups.url }).range(state.doc.lineAt(from).from));
+                        if (result && result.groups && result.groups.src)
+                            decorations.push(imageDecoration(result.groups.src).range(state.doc.lineAt(from).from));
                     }
                 },
             });
@@ -76669,11 +76670,19 @@ function fetchSvgFromCache(code, language) {
         return cached;
     return null;
 }
+function readSvgDimensions(svgContent) {
+    const parser = new DOMParser();
+    const svg = parser.parseFromString(svgContent, "image/svg+xml");
+    const svgElement = svg.getElementsByTagName("svg")[0];
+    const width = svgElement.getAttribute("width");
+    const height = svgElement.getAttribute("height");
+    return { width: parseInt(width), height: parseInt(height) };
+}
 async function fetchDiagramSvg(view, code, language, krokiUrl) {
     const key = `${language}\n${code}`;
-    let svgContent = fetchSvgFromCache(code, language);
-    if (svgContent)
-        return svgContent;
+    if (svgCache.has(key))
+        return;
+    let svgContent;
     try {
         const response = await fetch(`${krokiUrl}/${language}/svg`, {
             method: 'POST',
@@ -76686,15 +76695,16 @@ async function fetchDiagramSvg(view, code, language, krokiUrl) {
         svgContent = { response: await response.text(), error: response.status !== 200 };
     }
     catch (error) {
-        console.log("error", error);
+        console.error(error);
         svgContent = { response: error.toString(), error: true };
     }
-    if (!svgCache.has(key))
-        svgCache.set(key, svgContent);
+    if (svgCache.has(key))
+        return;
+    svgCache.set(key, svgContent);
+    const { height } = readSvgDimensions(svgContent.response);
     view.dispatch({
-        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response, from: null })
+        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response, from: null, to: null, height })
     });
-    return svgContent;
 }
 function detectDiagramLanguage(code) {
     const lines = code.split('\n');
@@ -76712,11 +76722,13 @@ function detectDiagramLanguage(code) {
 }
 const updateDiagramEffect = StateEffect.define();
 class DiagramWidget extends WidgetType {
-    constructor({ language, code, svgContent = null, from }) {
+    constructor({ language, code, svgContent = null, from, to, height }) {
         super();
         this.language = language;
         this.code = code;
         this.from = from;
+        this.to = to;
+        this.height = height;
         this.svgContent = svgContent;
         if (!this.svgContent) {
             const cached = fetchSvgFromCache(code, language);
@@ -76746,6 +76758,7 @@ class DiagramWidget extends WidgetType {
             image.innerHTML = this.svgContent;
             image.style.fontStyle = '';
             image.style.color = '';
+            image.style.backgroundColor = 'white';
         }
         container.style.paddingBottom = '0.5rem';
         container.style.paddingTop = '0.5rem';
@@ -76765,14 +76778,27 @@ class DiagramWidget extends WidgetType {
             container.style.cursor = 'pointer';
             container.title = 'Click to edit diagram';
             container.onclick = () => {
-                container.style.cursor = 'default';
-                container.title = '';
+                container.title = 'Click to close diagram edition';
                 const pos = this.from;
                 const transaction = view.state.update({ selection: { anchor: pos } });
                 view.dispatch(transaction);
             };
         }
+        else {
+            container.style.cursor = 'pointer';
+            container.title = 'Click to close diagram edition';
+            container.onclick = () => {
+                container.title = 'Click to edit diagram';
+                const pos = this.to + 1;
+                const transaction = view.state.update({ selection: { anchor: pos } });
+                view.dispatch(transaction);
+            };
+        }
+        view.requestMeasure();
         return container;
+    }
+    get estimatedHeight() {
+        return this.height ?? -1;
     }
 }
 function getLanguageAndCode(state, node) {
@@ -76823,36 +76849,37 @@ const dynamicDiagramsExtension = (enabled = true, krokiUrl = "https://kroki.io")
         block: true,
         inclusive: false,
     });
-    const decorate = (state, updatedCode, updatedLanguage, updatedSvgContent) => {
+    function getDecorationsRange(state, node, updatedCode, updatedLanguage, updatedSvgContent, from, to, width, height) {
         const decorationsRange = [];
+        if (node.type.name === 'FencedCode') {
+            const { language, code } = getLanguageAndCode(state, node);
+            if (language) {
+                const cursorInRange = isCursorInRange(state, from, to);
+                let params;
+                if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
+                    const { height } = updatedSvgContent ? readSvgDimensions(updatedSvgContent) : { height: null };
+                    params = { language, code, svgContent: updatedSvgContent, from: cursorInRange ? null : from, to, height };
+                }
+                else {
+                    const svgContent = fetchSvgFromCache(code, language);
+                    const { height } = svgContent?.response ? readSvgDimensions(svgContent?.response) : { height: null };
+                    params = { language, code, svgContent: svgContent?.response, from: cursorInRange ? null : from, to, height };
+                }
+                if (cursorInRange)
+                    decorationsRange.push(diagramWidgetDecoration(params).range(state.doc.lineAt(from).from));
+                else
+                    decorationsRange.push(diagramReplacementDecoration(params).range(from, to));
+            }
+        }
+        return decorationsRange;
+    }
+    const decorate = (state, updatedCode, updatedLanguage, updatedSvgContent, width = null, height = null) => {
+        let decorationsRange = [];
         if (enabled) {
             syntaxTree(state).iterate({
                 enter: (node) => {
-                    const { type, from, to } = node;
-                    if (type.name === 'FencedCode') {
-                        const { language, code } = getLanguageAndCode(state, node);
-                        if (language) {
-                            const cursorInRange = isCursorInRange(state, from, to);
-                            if (!cursorInRange) {
-                                if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
-                                    decorationsRange.push(diagramReplacementDecoration({ language, code, svgContent: updatedSvgContent, from }).range(from, to));
-                                }
-                                else {
-                                    const svgContent = fetchSvgFromCache(code, language);
-                                    decorationsRange.push(diagramReplacementDecoration({ language, code, svgContent: svgContent?.response, from }).range(from, to));
-                                }
-                            }
-                            else {
-                                if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
-                                    decorationsRange.push(diagramWidgetDecoration({ language, code, svgContent: updatedSvgContent, from: null }).range(state.doc.lineAt(from).from));
-                                }
-                                else {
-                                    const svgContent = fetchSvgFromCache(code, language);
-                                    decorationsRange.push(diagramWidgetDecoration({ language, code, svgContent: svgContent?.response, from: null }).range(state.doc.lineAt(from).from));
-                                }
-                            }
-                        }
-                    }
+                    const { from, to } = node;
+                    decorationsRange.push(...getDecorationsRange(state, node, updatedCode, updatedLanguage, updatedSvgContent, from, to));
                 },
             });
         }
@@ -76867,8 +76894,8 @@ const dynamicDiagramsExtension = (enabled = true, krokiUrl = "https://kroki.io")
             if (transaction.effects.some(_ => true)) {
                 for (const effect of transaction.effects) {
                     if (effect.is(updateDiagramEffect)) {
-                        const { code, language, svgContent } = effect.value;
-                        return decorate(transaction.state, code, language, svgContent);
+                        const { code, language, svgContent, height } = effect.value;
+                        return decorate(transaction.state, code, language, svgContent, height);
                     }
                 }
             }
@@ -76904,14 +76931,25 @@ const hideMarksExtension = (enabled = true) => {
         const widgets = [];
         if (enabled) {
             syntaxTree(state).iterate({
-                enter: ({ type, from, to }) => {
+                enter: ({ node, type, from, to }) => {
                     if (type.name.endsWith('Mark') && type.name !== 'ListMark') {
+                        if (type.name === 'CodeMark') {
+                            const eFC = node.parent;
+                            if (eFC.type.name === 'FencedCode') {
+                                const cursorFrom = state.doc.lineAt(eFC.from).from;
+                                const cursorTo = state.doc.lineAt(eFC.to).to;
+                                if (isCursorInRange(state, cursorFrom, cursorTo)) {
+                                    return;
+                                }
+                            }
+                        }
+                        let cursorRange;
                         const mark = state.sliceDoc(from, to);
-                        const line = state.doc.lineAt(from);
+                        cursorRange = state.doc.lineAt(from);
                         if (mark.startsWith('#')) {
                             to += 1; // Hide the space character after the #'s
                         }
-                        if (!isCursorInRange(state, line.from, line.to))
+                        if (!isCursorInRange(state, cursorRange.from, cursorRange.to))
                             widgets.push(hideDecoration().range(from, to));
                     }
                 },
@@ -76951,28 +76989,8 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         CMInstances[id].setup = setup;
         let extensions = [
             CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName))),
-            CMInstances[id].languageCompartment.of(getLanguage(initialConfig.languageName)),
-            CMInstances[id].markdownStylingCompartment.of([
-                getDynamicHeaderStyling(initialConfig.autoFormatMarkdown),
-                dynamicHrExtension(initialConfig.autoFormatMarkdown),
-                dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
-                dynamicDiagramsExtension(initialConfig.autoFormatMarkdown, setup.krokiUrl.replace(/\/$/, '')),
-                autocompletion({
-                    override: [
-                        ...mentionCompletionExtension(setup.allowMentions),
-                        ...emojiCompletionExtension(true)
-                    ]
-                }),
-                mentionDecorationExtension(initialConfig.autoFormatMarkdown),
-                listsExtension(initialConfig.autoFormatMarkdown),
-                blockquote(),
-                viewEmojiExtension(initialConfig.autoFormatMarkdown),
-                markdownLinkExtension(initialConfig.autoFormatMarkdown),
-                hyperLink, hyperLinkStyle,
-                htmlViewPlugin(initialConfig.autoFormatMarkdown),
-                markdownTableExtension(initialConfig.autoFormatMarkdown),
-                hideMarksExtension(initialConfig.autoFormatMarkdown),
-            ]),
+            CMInstances[id].languageCompartment.of(getLanguage(initialConfig.languageName) ?? []),
+            CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
             CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
             CMInstances[id].placeholderCompartment.of(placeholder(initialConfig.placeholder)),
@@ -77173,24 +77191,6 @@ function forceRedraw(id) {
     });
     view.dispatch(view.state.update(changes));
 }
-const autoFormatMarkdownExtensions = (id, autoFormatMarkdown = true) => [
-    getDynamicHeaderStyling(autoFormatMarkdown),
-    dynamicHrExtension(autoFormatMarkdown),
-    dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
-    dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
-    autocompletion({
-        override: [...mentionCompletionExtension(CMInstances[id].setup.allowMentions)]
-    }),
-    mentionDecorationExtension(autoFormatMarkdown),
-    listsExtension(autoFormatMarkdown),
-    blockquote(),
-    viewEmojiExtension(autoFormatMarkdown),
-    htmlViewPlugin(autoFormatMarkdown),
-    hyperLink, hyperLinkStyle,
-    markdownLinkExtension(autoFormatMarkdown),
-    markdownTableExtension(autoFormatMarkdown),
-    hideMarksExtension(autoFormatMarkdown),
-];
 function setAutoFormatMarkdown(id, autoFormatMarkdown) {
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, autoFormatMarkdown))
@@ -77207,6 +77207,27 @@ function setDoc(id, text) {
     });
     CMInstances[id].view.dispatch(transaction);
 }
+const autoFormatMarkdownExtensions = (id, autoFormatMarkdown = true) => [
+    getDynamicHeaderStyling(autoFormatMarkdown),
+    dynamicHrExtension(autoFormatMarkdown),
+    dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
+    dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
+    autocompletion({
+        override: [
+            ...mentionCompletionExtension(CMInstances[id].setup.allowMentions),
+            ...emojiCompletionExtension(true)
+        ]
+    }),
+    mentionDecorationExtension(autoFormatMarkdown),
+    listsExtension(autoFormatMarkdown),
+    blockquote(),
+    viewEmojiExtension(autoFormatMarkdown),
+    htmlViewPlugin(autoFormatMarkdown),
+    hyperLink, hyperLinkStyle,
+    markdownLinkExtension(autoFormatMarkdown),
+    markdownTableExtension(autoFormatMarkdown),
+    hideMarksExtension(autoFormatMarkdown),
+];
 function dispatchCommand(id, functionName, ...args) {
     const view = CMInstances[id].view;
     try {
