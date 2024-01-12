@@ -89,7 +89,7 @@ To get started with Blazor CodeMirror 6:
 - Clone the repository: `git clone https://github.com/gaelj/BlazorCodeMirror6.git`
 - Reference in your project: `<ProjectReference Include="..\CodeMirror6\CodeMirror6.csproj" />`
 - Install [node.js](https://nodejs.org/) and npx: `npm install npx`
-- Add `@using CodeMirror6` in your `_Imports.razor` or page/component.
+- Add `@using GaelJ.BlazorCodeMirror6` in your `_Imports.razor` or page/component.
 - Use the `<CodeMirror6Wrapper />` component as demonstrated in `Examples.Common/Example.razor`.
 - For build issues: `run dotnet clean` followed by `dotnet build`.
 
@@ -99,7 +99,7 @@ See `Examples.Common/Example.razor`
 
 JS / CSS resources are loaded automatically (nothing to add in `_Host.cshtml` / `index.html`).
 
-Just add `@using CodeMirror6`, `@using CodeMirror6.Commands` and `@using CodeMirror6.Models` in `_Imports.razor` or in your razor page / component and use `<CodeMirror6Wrapper />` as in the examples.
+Just add `@using GaelJ.BlazorCodeMirror6`, `@using GaelJ.BlazorCodeMirror6.Commands` and `@using GaelJ.BlazorCodeMirror6.Models` in `_Imports.razor` or in your razor page / component and use `<CodeMirror6Wrapper />` as in the examples.
 
 ## Modification
 

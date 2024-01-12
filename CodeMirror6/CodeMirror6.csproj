@@ -1,56 +1,53 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
-
   <PropertyGroup>
     <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
     <OutputType>Library</OutputType>
+    <LangVersion>12.0</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>CodeMirror6</AssemblyName>
+    <RootNamespace>GaelJ.BlazorCodeMirror6</RootNamespace>
+    <AssemblyName>GaelJ.BlazorCodeMirror6</AssemblyName>
     <IsPackable>true</IsPackable>
+    <PackageId>GaelJ.BlazorCodeMirror6</PackageId>
+    <Version>0.0.0</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TrimUnusedDependencies>false</TrimUnusedDependencies>
     <PackageProjectUrl>https://github.com/gaelj/BlazorCodeMirror6</PackageProjectUrl>
     <Authors>Gaël James</Authors>
-    <Title>Tools</Title>
-    <Description>See https://github.com/gaelj/BlazorCodeMirror6/blob/main/README.md</Description>
-    <PackageTags>Blazor;CodeMirror6</PackageTags>
+    <Title>GaelJ.BlazorCodeMirror6</Title>
+    <Description>
+      Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.net/)
+      code editor to Blazor, offering a comprehensive .NET 7 / .NET 8 component.
+      It's tailored for both general and specialized use-cases, supporting a range of
+      languages and Markdown editing, extensive support for syntax highlighting,
+      auto-completion, custom linting, themes, Markdown preview, and more.
+    </Description>
+    <PackageTags>Blazor;CodeMirror6;Markdown</PackageTags>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/gaelj/BlazorCodeMirror6</RepositoryUrl>
-    <TrimUnusedDependencies>false</TrimUnusedDependencies>
-    <LangVersion>12.0</LangVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <SupportedPlatform Include="browser" />
     <SupportedPlatform Include="browser-wasm" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0" Condition="'$(TargetFramework)'=='net7.0'" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" Condition="'$(TargetFramework)'=='net8.0'" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
   </ItemGroup>
-
   <Target Name="RemoveNodeModulesTarget">
     <RemoveDir Directories="./NodeLib/node_modules" />
   </Target>
-
   <Target Name="NpmInstallTarget" DependsOnTargets="RemoveNodeModulesTarget">
     <Exec WorkingDirectory="NodeLib" Command="npm install" />
   </Target>
-
   <Target Name="RollupBuildTarget" DependsOnTargets="NpmInstallTarget">
     <Exec WorkingDirectory="NodeLib" Command="npx rollup --config" />
   </Target>
-
-  <Target Name="BeforeClean" BeforeTargets="Clean" DependsOnTargets="RemoveNodeModulesTarget">
-  </Target>
-
-  <Target Name="BeforeBuild" BeforeTargets="Build" DependsOnTargets="NpmInstallTarget;RollupBuildTarget">
-  </Target>
-
+  <Target Name="BeforeClean" BeforeTargets="Clean" DependsOnTargets="RemoveNodeModulesTarget"></Target>
+  <Target Name="BeforeBuild" BeforeTargets="Build" DependsOnTargets="NpmInstallTarget;RollupBuildTarget"></Target>
 </Project>

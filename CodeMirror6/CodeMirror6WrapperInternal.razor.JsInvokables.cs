@@ -1,8 +1,8 @@
-using CodeMirror6.Models;
+using GaelJ.BlazorCodeMirror6.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace CodeMirror6;
+namespace GaelJ.BlazorCodeMirror6;
 
 /// <summary>
 /// Code-behind for the CodeMirror6Wrapper component

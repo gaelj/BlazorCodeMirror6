@@ -1,9 +1,9 @@
-using CodeMirror6.Commands;
-using CodeMirror6.Models;
+using GaelJ.BlazorCodeMirror6.Commands;
+using GaelJ.BlazorCodeMirror6.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace CodeMirror6;
+namespace GaelJ.BlazorCodeMirror6;
 
 public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposable
 {
@@ -23,9 +23,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         CodeMirror6WrapperInternal cm6WrapperComponent
     ) : IAsyncDisposable
     {
+        private static string LibraryName => typeof(CodeMirrorJsInterop).Assembly.GetName().Name!;
         private readonly Lazy<Task<IJSObjectReference>> _moduleTask =
             new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
-                "import", "./_content/CodeMirror6/index.js").AsTask()
+                "import", $"./_content/{LibraryName}/index.js").AsTask()
             );
         private readonly DotNetObjectReference<CodeMirror6WrapperInternal> _dotnetHelperRef = DotNetObjectReference.Create(cm6WrapperComponent);
         private CMSetters _setters = null!;

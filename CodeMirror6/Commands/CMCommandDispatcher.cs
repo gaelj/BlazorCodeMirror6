@@ -1,4 +1,4 @@
-namespace CodeMirror6.Models;
+namespace GaelJ.BlazorCodeMirror6.Models;
 
 /// <summary>
 /// Invoke JS CodeMirror commands

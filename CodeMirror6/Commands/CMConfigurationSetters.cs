@@ -1,7 +1,7 @@
-using CodeMirror6.Models;
+using GaelJ.BlazorCodeMirror6.Models;
 using Microsoft.JSInterop;
 
-namespace CodeMirror6.Commands;
+namespace GaelJ.BlazorCodeMirror6.Commands;
 
 /// <summary>
 /// Apply the CodeMirror configuration to the JS CodeMirror instance
