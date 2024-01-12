@@ -76,28 +76,8 @@ export async function initCodeMirror(
 
         let extensions = [
             CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName))),
-            CMInstances[id].languageCompartment.of(getLanguage(initialConfig.languageName)),
-            CMInstances[id].markdownStylingCompartment.of([
-                getDynamicHeaderStyling(initialConfig.autoFormatMarkdown),
-                dynamicHrExtension(initialConfig.autoFormatMarkdown),
-                dynamicImagesExtension(initialConfig.autoFormatMarkdown && setup.previewImages === true),
-                dynamicDiagramsExtension(initialConfig.autoFormatMarkdown, setup.krokiUrl.replace(/\/$/, '')),
-                autocompletion({
-                    override: [
-                        ...mentionCompletionExtension(setup.allowMentions),
-                        ...emojiCompletionExtension(true)
-                    ]
-                }),
-                mentionDecorationExtension(initialConfig.autoFormatMarkdown),
-                listsExtension(initialConfig.autoFormatMarkdown),
-                blockquote(),
-                viewEmojiExtension(initialConfig.autoFormatMarkdown),
-                markdownLinkExtension(initialConfig.autoFormatMarkdown),
-                hyperLink, hyperLinkStyle,
-                htmlViewPlugin(initialConfig.autoFormatMarkdown),
-                markdownTableExtension(initialConfig.autoFormatMarkdown),
-                hideMarksExtension(initialConfig.autoFormatMarkdown),
-            ]),
+            CMInstances[id].languageCompartment.of(getLanguage(initialConfig.languageName) ?? []),
+            CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
             CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
             CMInstances[id].placeholderCompartment.of(placeholder(initialConfig.placeholder)),
@@ -318,25 +298,6 @@ export function forceRedraw(id: string) {
     view.dispatch(view.state.update(changes))
 }
 
-const autoFormatMarkdownExtensions = (id: string, autoFormatMarkdown: boolean = true) => [
-    getDynamicHeaderStyling(autoFormatMarkdown),
-    dynamicHrExtension(autoFormatMarkdown),
-    dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
-    dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
-    autocompletion({
-        override: [...mentionCompletionExtension(CMInstances[id].setup.allowMentions)]
-    }),
-    mentionDecorationExtension(autoFormatMarkdown),
-    listsExtension(autoFormatMarkdown),
-    blockquote(),
-    viewEmojiExtension(autoFormatMarkdown),
-    htmlViewPlugin(autoFormatMarkdown),
-    hyperLink, hyperLinkStyle,
-    markdownLinkExtension(autoFormatMarkdown),
-    markdownTableExtension(autoFormatMarkdown),
-    hideMarksExtension(autoFormatMarkdown),
-]
-
 export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, autoFormatMarkdown))
@@ -355,6 +316,28 @@ export function setDoc(id: string, text: string) {
     })
     CMInstances[id].view.dispatch(transaction)
 }
+
+const autoFormatMarkdownExtensions = (id: string, autoFormatMarkdown: boolean = true) => [
+    getDynamicHeaderStyling(autoFormatMarkdown),
+    dynamicHrExtension(autoFormatMarkdown),
+    dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
+    dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
+    autocompletion({
+        override: [
+            ...mentionCompletionExtension(CMInstances[id].setup.allowMentions),
+            ...emojiCompletionExtension(true)
+        ]
+    }),
+    mentionDecorationExtension(autoFormatMarkdown),
+    listsExtension(autoFormatMarkdown),
+    blockquote(),
+    viewEmojiExtension(autoFormatMarkdown),
+    htmlViewPlugin(autoFormatMarkdown),
+    hyperLink, hyperLinkStyle,
+    markdownLinkExtension(autoFormatMarkdown),
+    markdownTableExtension(autoFormatMarkdown),
+    hideMarksExtension(autoFormatMarkdown),
+]
 
 export function dispatchCommand(id: string, functionName: string, ...args: any[]) {
     const view = CMInstances[id].view

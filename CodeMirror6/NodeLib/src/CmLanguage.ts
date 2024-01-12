@@ -132,7 +132,8 @@ export function getLanguageKeyMaps(languageName: string) {
         case "Xml":
             return []
         case "Markdown":
-            default:
             return customMarkdownKeymap
+        default:
+            return []
     }
 }
