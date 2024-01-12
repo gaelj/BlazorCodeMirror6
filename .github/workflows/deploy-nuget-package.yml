@@ -34,7 +34,7 @@ jobs:
     - name: Update project version
       run: |
         VERSION_TAG=${GITHUB_REF#refs/tags/}
-        dotnet tool run dotnet-setversion $VERSION_TAG
+        dotnet tool run dotnet-setversion -r $VERSION_TAG
 
     # Build and pack
     - name: Build and pack
