@@ -163,6 +163,7 @@ class DiagramWidget extends WidgetType {
             image.innerHTML = this.svgContent
             image.style.fontStyle = ''
             image.style.color = ''
+            image.style.backgroundColor = 'white'
         }
 
         container.style.paddingBottom = '0.5rem'
