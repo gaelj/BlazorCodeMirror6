@@ -31,6 +31,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <ChangeLog>CHANGELOG.md</ChangeLog>
   </PropertyGroup>
   <ItemGroup>
     <SupportedPlatform Include="browser" />
@@ -55,7 +56,10 @@
   <Target Name="BeforeClean" BeforeTargets="Clean" DependsOnTargets="RemoveNodeModulesTarget"></Target>
   <Target Name="BeforeBuild" BeforeTargets="Build" DependsOnTargets="NpmInstallTarget;RollupBuildTarget"></Target>
   <ItemGroup>
+    <None Include="..\CHANGELOG.md" Pack="true" PackagePath="\" />
+    <None Include="..\NEW_CHANGELOG.md" Pack="true" PackagePath="\" />
     <None Include="..\README.md" Pack="true" PackagePath="\" />
     <None Include="..\icon.png" Pack="true" PackagePath="\" />
+    <None Include="..\codemirror.svg" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>
