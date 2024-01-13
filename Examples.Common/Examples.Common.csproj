@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <Version>0.0.3</Version>
   </PropertyGroup>
   <ItemGroup>
     <SupportedPlatform Include="browser" />
