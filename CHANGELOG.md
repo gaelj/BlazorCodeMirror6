@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.0.2
+## 0.0.2 - 2024-01-12
 
 ### 🐛 Fix a bug
 
@@ -24,7 +24,7 @@
 - Follow best practices for nuget deployment
 - Set project URl as github pages demo
 
-## 0.0.1
+## 0.0.1 - 2024-01-12
 
 ### ⚡️ Improve performance
 
