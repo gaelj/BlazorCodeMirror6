@@ -9,7 +9,7 @@
     <AssemblyName>GaelJ.BlazorCodeMirror6</AssemblyName>
     <IsPackable>true</IsPackable>
     <PackageId>GaelJ.BlazorCodeMirror6</PackageId>
-    <Version>0.0.0</Version>
+    <Version>0.0.3</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -25,12 +25,13 @@
       languages and Markdown editing, extensive support for syntax highlighting,
       auto-completion, custom linting, themes, Markdown preview, and more.
     </Description>
-    <PackageTags>Blazor;CodeMirror6;Markdown</PackageTags>
+    <PackageTags>Blazor;CodeMirror;CodeMirror6;Markdown</PackageTags>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/gaelj/BlazorCodeMirror6</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <ChangeLog>CHANGELOG.md</ChangeLog>
   </PropertyGroup>
   <ItemGroup>
     <SupportedPlatform Include="browser" />
@@ -55,7 +56,10 @@
   <Target Name="BeforeClean" BeforeTargets="Clean" DependsOnTargets="RemoveNodeModulesTarget"></Target>
   <Target Name="BeforeBuild" BeforeTargets="Build" DependsOnTargets="NpmInstallTarget;RollupBuildTarget"></Target>
   <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\"/>
-    <None Include="..\icon.png" Pack="true" PackagePath="\"/>
+    <None Include="..\CHANGELOG.md" Pack="true" PackagePath="\" />
+    <None Include="..\NEW_CHANGELOG.md" Pack="true" PackagePath="\" />
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\icon.png" Pack="true" PackagePath="\" />
+    <None Include="..\codemirror.svg" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>
