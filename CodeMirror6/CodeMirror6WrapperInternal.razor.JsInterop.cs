@@ -85,6 +85,12 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
                 }
                 catch (ObjectDisposedException) { }
                 catch (JSDisconnectedException) { }
+                catch (AggregateException ex) {
+                    if (ex.InnerException is JSDisconnectedException) { }
+                    else if (ex.InnerExceptions.All(e => e is ObjectDisposedException)) { }
+                    else if (ex.InnerExceptions.All(e => e is JSDisconnectedException)) { }
+                    else throw;
+                }
             }
             GC.SuppressFinalize(this);
         }
