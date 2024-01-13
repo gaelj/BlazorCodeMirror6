@@ -46,23 +46,14 @@ jobs:
     - name: 🚀 Publish to NuGet
       run: dotnet nuget push "**/*.nupkg" --source "https://api.nuget.org/v3/index.json" -k ${{ secrets.NUGET_API_KEY }}
 
-    - name: 🛠️ Set up Git
-      run: |
-        git config --local user.name "Gaël James"
-        git config --local user.email "gaeljames@gmail.com"
-
-    - name: Build
-      run: echo ${{ github.sha }} > Release.txt
-    - name: Test
-      run: cat Release.txt
-
     - name: 🚀 Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
         draft: false
         prerelease: false
         tag_name: ${{ github.ref }}
-        name: Release ${{ github.ref }}
-        files: Release.txt
+        name: Release ${{ github.ref_name }}
+        generate_release_notes: true
+        body_path: NEW_CHANGELOG.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
