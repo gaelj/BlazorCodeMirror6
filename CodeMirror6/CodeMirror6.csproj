@@ -25,7 +25,7 @@
       languages and Markdown editing, extensive support for syntax highlighting,
       auto-completion, custom linting, themes, Markdown preview, and more.
     </Description>
-    <PackageTags>Blazor;CodeMirror6;Markdown</PackageTags>
+    <PackageTags>Blazor;CodeMirror;CodeMirror6;Markdown</PackageTags>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/gaelj/BlazorCodeMirror6</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -55,7 +55,7 @@
   <Target Name="BeforeClean" BeforeTargets="Clean" DependsOnTargets="RemoveNodeModulesTarget"></Target>
   <Target Name="BeforeBuild" BeforeTargets="Build" DependsOnTargets="NpmInstallTarget;RollupBuildTarget"></Target>
   <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\"/>
-    <None Include="..\icon.png" Pack="true" PackagePath="\"/>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>
