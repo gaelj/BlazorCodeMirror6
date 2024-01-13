@@ -11,7 +11,7 @@
   "author": "Gaël James",
   "license": "MIT",
   "dependencies": {
-    "@codemirror/autocomplete": "^6.11.1",
+    "@codemirror/autocomplete": "^6.12.0",
     "@codemirror/lang-cpp": "^6.0.2",
     "@codemirror/lang-css": "^6.2.1",
     "@codemirror/lang-html": "^6.4.7",
@@ -69,12 +69,12 @@
     "thememirror": "^2.0.1"
   },
   "devDependencies": {
-    "@babel/runtime": "^7.23.7",
+    "@babel/runtime": "^7.23.8",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-typescript": "^11.1.5",
-    "rollup": "^4.9.2",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "rollup": "^4.9.5",
     "ts-loader": "^9.5.1",
     "tslib": "^2.6.2",
     "typescript": "^5.3.3"
