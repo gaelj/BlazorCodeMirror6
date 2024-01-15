@@ -1,0 +1,50 @@
+name: 🚀 On Merge to Main, create a tag from the version in csproj
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+  tag-version:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout
+      uses: actions/checkout@v3
+
+    - name: 🔍 Extract version from csproj
+      id: extract_version
+      run: |
+        VERSION=$(cat CodeMirror6/CodeMirror6.csproj | grep '<Version>' | sed 's/<\/\?Version>//g' | xargs)
+        if [[ -z "$VERSION" ]]; then
+          echo "Version not found in .csproj file"
+          exit 1
+        fi
+        echo "Extracted version: $VERSION"
+        echo "::set-output name=version::$VERSION"
+
+    - name: 🏷️ Create Tag
+      if: steps.extract_version.outputs.version != ''
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const version = '${{ steps.extract_version.outputs.version }}';
+          if (!version) {
+            console.log("Version is empty, skipping tag creation.");
+            return;
+          }
+          const tagName = version;
+          const ref = 'refs/tags/' + tagName;
+          console.log(`Creating tag: ${tagName}`);
+          github.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: ref,
+            sha: context.sha
+          }).catch(error => {
+            console.error(`Failed to create tag: ${error.message}`);
+            core.setFailed(`Failed to create tag: ${error.message}`);
+          });
