@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0 - 2024-01-15
+
+### 🔖 Release / Version tags
+
+- Bump version to 0.1.0
+- Adding support for targeting .NET 6
+
 ## 0.0.3 - 2024-01-13
 
 ### 👷 Add or update CI build system
