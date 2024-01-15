@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.1 - 2024-01-16
+
+### 👷 Add or update CI build system
+
+- Improvement to make automatic releases
+
+### 🔨 Add or update development scripts
+
+- Add message in make release script
+- Include make changelog in make release script
+
 ## 0.1.0 - 2024-01-15
 
 ### 👷 Add or update CI build system
