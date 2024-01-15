@@ -26,36 +26,13 @@ jobs:
         echo "Extracted version: $VERSION"
         echo "::set-output name=version::$VERSION"
 
-    - name: 🏷️ Create Tag
-      if: steps.extract_version.outputs.version != ''
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const version = '${{ steps.extract_version.outputs.version }}';
-          if (!version) {
-            console.log("Version is empty, skipping tag creation.");
-            return;
-          }
-          const tagName = version;
-          const ref = 'refs/tags/' + tagName;
-          console.log(`Creating tag: ${tagName}`);
-          github.rest.git.createRef({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            ref: 'refs/tags/' + tagName,
-            sha: context.sha
-          }).catch(error => {
-            console.error(`Failed to create tag: ${error.message}`);
-            core.setFailed(`Failed to create tag: ${error.message}`);
-          });
-
-    - name: Configure git
+    - name: 🛠️ Configure git
       if: steps.extract_version.outputs.version != ''
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
 
-    - name: Create and push tag
+    - name: 🏷️ Create and push tag
       if: steps.extract_version.outputs.version != ''
       env:
         GITHUB_TOKEN: ${{ secrets.CI_PAT }}
