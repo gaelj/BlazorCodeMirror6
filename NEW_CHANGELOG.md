@@ -1,8 +1,8 @@
 ### 👷 Add or update CI build system
 
-- Replace github actions with: create tag on merge to main & deploy on tag created
+- Improvement to make automatic releases
 
-### 🔖 Release / Version tags
+### 🔨 Add or update development scripts
 
-- Bump version to 0.1.0
-- Adding support for targeting .NET 6
+- Add message in make release script
+- Include make changelog in make release script

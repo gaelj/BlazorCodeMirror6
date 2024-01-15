@@ -6,6 +6,7 @@
 # Usage: ./make-release.sh
 
 # Ask the user if they want to generate a changelog
+echo "Do you want to generate a changelog?"
 select yn in "Yes" "No"; do
     case $yn in
         Yes ) generate_changelog=true; break;;
