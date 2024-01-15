@@ -1,0 +1,114 @@
+name: 🚀 On Merge to Main, create a tag from the version in csproj
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+  tag-version:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout
+      uses: actions/checkout@v3
+
+    - name: 🔍 Extract version from csproj
+      id: extract_version
+      run: |
+        VERSION=$(cat CodeMirror6/CodeMirror6.csproj | grep '<Version>' | sed 's/<\/\?Version>//g' | xargs)
+        if [[ -z "$VERSION" ]]; then
+          echo "Version not found in .csproj file"
+          exit 1
+        fi
+        echo "Extracted version: $VERSION"
+        echo "::set-output name=version::$VERSION"
+
+    - name: 🏷️ Create Tag
+      if: steps.extract_version.outputs.version != ''
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const version = '${{ steps.extract_version.outputs.version }}';
+          if (!version) {
+            console.log("Version is empty, skipping tag creation.");
+            return;
+          }
+          const tagName = version;
+          const ref = 'refs/tags/' + tagName;
+          console.log(`Creating tag: ${tagName}`);
+          github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'refs/tags/' + tagName,
+            sha: context.sha
+          }).catch(error => {
+            console.error(`Failed to create tag: ${error.message}`);
+            core.setFailed(`Failed to create tag: ${error.message}`);
+          });
+
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 📥 Checkout
+      uses: actions/checkout@v3
+
+    - name: 📦 Setup NuGet
+      uses: NuGet/setup-nuget@v1.2.0
+
+    - name: 🛠️ Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '21'
+
+    - name: 🛠️ Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: 📥 Restore dependencies
+      run: dotnet restore $SOLUTION
+
+    - name: 🏗️ Build library
+      run: dotnet build CodeMirror6
+
+    - name: 🔄 Update project version
+      run: |
+        VERSION_TAG=${GITHUB_REF#refs/tags/}
+        dotnet tool restore
+        dotnet setversion -r $VERSION_TAG
+
+    - name: 🏗️ Build wasm app
+      run: dotnet build Examples.BlazorWasm
+
+    - name: 🚀 Publish
+      run: dotnet publish Examples.BlazorWasm -c Release -o ./build
+
+    - name: 🌍 Set base path
+      run: sed -i 's|<base href="/" />|<base href="/BlazorCodeMirror6/" />|g' ./build/wwwroot/index.html
+
+    - name: 🚀 Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./build/wwwroot
+
+    - name: 📦 Prepare Nuget package
+      run: dotnet pack --configuration Release --include-symbols --include-source
+
+    - name: 🚀 Publish to NuGet
+      run: dotnet nuget push "**/*.nupkg" --source "https://api.nuget.org/v3/index.json" -k ${{ secrets.NUGET_API_KEY }}
+
+    - name: 🚀 Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        draft: false
+        prerelease: false
+        tag_name: ${{ github.ref }}
+        name: Release ${{ github.ref_name }}
+        generate_release_notes: true
+        body_path: NEW_CHANGELOG.md
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
