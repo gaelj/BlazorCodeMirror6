@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2 - 2024-01-16
+
+### 🐛 Fix a bug
+
+- Fix create github release when not using a tag ref
+
 ## 0.1.1 - 2024-01-16
 
 ### 👷 Add or update CI build system

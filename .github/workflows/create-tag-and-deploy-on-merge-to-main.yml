@@ -41,7 +41,7 @@ jobs:
           github.rest.git.createRef({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            ref: 'refs/tags/' + tagName,
+            ref: ref,
             sha: context.sha
           }).catch(error => {
             console.error(`Failed to create tag: ${error.message}`);
@@ -52,12 +52,13 @@ jobs:
       with:
         draft: false
         prerelease: false
-        tag_name: ${{ github.ref }}
-        name: Release ${{ github.ref_name }}
+        tag_name: ${{ env.REF }}
+        name: Release ${{ env.VERSION }}
         generate_release_notes: true
         body_path: NEW_CHANGELOG.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        REF: refs/tags/${{ env.VERSION }}
 
   build-and-deploy:
     runs-on: ubuntu-latest
