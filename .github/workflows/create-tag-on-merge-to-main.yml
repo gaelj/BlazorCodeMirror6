@@ -39,10 +39,10 @@ jobs:
           const tagName = version;
           const ref = 'refs/tags/' + tagName;
           console.log(`Creating tag: ${tagName}`);
-          github.git.createRef({
+          github.rest.git.createRef({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            ref: ref,
+            ref: 'refs/tags/' + tagName,
             sha: context.sha
           }).catch(error => {
             console.error(`Failed to create tag: ${error.message}`);
