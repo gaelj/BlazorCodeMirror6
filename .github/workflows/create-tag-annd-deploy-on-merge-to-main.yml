@@ -74,12 +74,6 @@ jobs:
     - name: 🏗️ Build library
       run: dotnet build CodeMirror6
 
-    - name: 🔄 Update project version
-      run: |
-        VERSION_TAG=${GITHUB_REF#refs/tags/}
-        dotnet tool restore
-        dotnet setversion -r $VERSION_TAG
-
     - name: 🏗️ Build wasm app
       run: dotnet build Examples.BlazorWasm
 
