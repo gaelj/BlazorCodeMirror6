@@ -48,3 +48,17 @@ jobs:
             console.error(`Failed to create tag: ${error.message}`);
             core.setFailed(`Failed to create tag: ${error.message}`);
           });
+
+    - name: Configure git
+      if: steps.extract_version.outputs.version != ''
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+    - name: Create and push tag
+      if: steps.extract_version.outputs.version != ''
+      env:
+        GITHUB_TOKEN: ${{ secrets.CI_PAT }}
+      run: |
+        git tag ${{ steps.extract_version.outputs.version }}
+        git push https://${{ secrets.CI_PAT }}@github.com/${{ github.repository }} --tags
