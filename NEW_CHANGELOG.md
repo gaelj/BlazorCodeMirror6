@@ -1,8 +1,3 @@
-### 👷 Add or update CI build system
+### 🐛 Fix a bug
 
-- Improvement to make automatic releases
-
-### 🔨 Add or update development scripts
-
-- Add message in make release script
-- Include make changelog in make release script
+- Fix create github release when not using a tag ref
