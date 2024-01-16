@@ -1,26 +1,27 @@
+## 0.1.2 - 2024-01-16
+
+### 🐛 Fix a bug
+
+- Fix create github release when not using a tag ref
+
+## 0.1.1 - 2024-01-16
+
 ### 👷 Add or update CI build system
 
-- Github release: fix tag name, replace Release.txt with NEW_CHANGELOG.md
-
-### 📝 Add or update documentation
-
-- Update changelog for 0.0.3
-
-### 🔖 Release / Version tags
-
-- Bump version to 0.0.3
-
-### 🔧 Add or update configuration files
-
-- Add changelog reference in csproj, include documentation and images in release
-- Add date in changelog release titles
-- Cleanup csprojs
+- Improvement to make automatic releases
 
 ### 🔨 Add or update development scripts
 
-- Add make-release.sh script
-- Improve changelog format
+- Add message in make release script
+- Include make changelog in make release script
 
-### 🥅 Catch errors
+## 0.1.0 - 2024-01-15
 
-- Improve exception catching on JSInterop Disposal
+### 👷 Add or update CI build system
+
+- Replace github actions with: create tag on merge to main & deploy on tag created
+
+### 🔖 Release / Version tags
+
+- Bump version to 0.1.0
+- Adding support for targeting .NET 6

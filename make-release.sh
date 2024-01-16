@@ -5,6 +5,23 @@
 
 # Usage: ./make-release.sh
 
+# Ask the user if they want to generate a changelog
+echo "Do you want to generate a changelog?"
+select yn in "Yes" "No"; do
+    case $yn in
+        Yes ) generate_changelog=true; break;;
+        No ) generate_changelog=false; break;;
+    esac
+done
+
+if [ "$generate_changelog" = true ] ; then
+    # generate the changelog
+    ./make-changelog.sh
+    # Ask the user to confirm the changelog contents
+    echo "Please review NEW_CHANGELOG.md"
+    read -r -p "Press enter to continue"
+fi
+
 # print latest tag
 last_version=$(git describe --tags --abbrev=0 "$(git rev-list --tags --max-count=1)")
 echo "Current version: $last_version"
@@ -32,5 +49,3 @@ dotnet setversion -r "$new_version"
 git add ./**/*.csproj
 git commit -m "🔖 Bump version to $new_version"
 
-# Add git tag
-git tag -a "$new_version" -m "🔖 $new_version"

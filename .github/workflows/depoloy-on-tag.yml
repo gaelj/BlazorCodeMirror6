@@ -1,4 +1,4 @@
-name: 🚀 Publish component library to NuGet
+name: 🚀 On tag created, release to Github pages, Nuget and Github Releases
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - '[0-9]+.[0-9]+.[0-9]+**'
 
 jobs:
-  build_and_publish_to_nuget:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
     - name: 📥 Checkout
@@ -31,18 +31,30 @@ jobs:
     - name: 🏗️ Build library
       run: dotnet build CodeMirror6
 
-    # Update version in .csproj
     - name: 🔄 Update project version
       run: |
         VERSION_TAG=${GITHUB_REF#refs/tags/}
         dotnet tool restore
         dotnet setversion -r $VERSION_TAG
 
-    # Build and pack
-    - name: 📦 Build and pack
+    - name: 🏗️ Build wasm app
+      run: dotnet build Examples.BlazorWasm
+
+    - name: 🚀 Publish
+      run: dotnet publish Examples.BlazorWasm -c Release -o ./build
+
+    - name: 🌍 Set base path
+      run: sed -i 's|<base href="/" />|<base href="/BlazorCodeMirror6/" />|g' ./build/wwwroot/index.html
+
+    - name: 🚀 Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./build/wwwroot
+
+    - name: 📦 Prepare Nuget package
       run: dotnet pack --configuration Release --include-symbols --include-source
 
-    # Publish to NuGet
     - name: 🚀 Publish to NuGet
       run: dotnet nuget push "**/*.nupkg" --source "https://api.nuget.org/v3/index.json" -k ${{ secrets.NUGET_API_KEY }}
 
