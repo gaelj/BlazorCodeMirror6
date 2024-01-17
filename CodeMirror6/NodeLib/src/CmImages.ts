@@ -3,64 +3,56 @@ import type { EditorState, Extension, Range } from '@codemirror/state'
 import { RangeSet, StateField } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
 import { Decoration, EditorView, WidgetType, ViewUpdate } from '@codemirror/view'
+import { buildWidget } from './lib/codemirror-kit'
 
 
-class ImageWidget extends WidgetType {
-    constructor(readonly src: string) {
-        super()
-    }
-
-    eq(imageWidget: ImageWidget) {
-        return imageWidget.src === this.src
-    }
+const imageWidget = (src: string, from: number) => buildWidget({
+    src: src,
+    eq(other) {
+        return other.src === src
+    },
 
     toDOM(view: EditorView) {
         const container = document.createElement('div')
-        const backdrop = container.appendChild(document.createElement('div'))
-        const figure = backdrop.appendChild(document.createElement('figure'))
-        const image = figure.appendChild(document.createElement('img'))
-
         container.setAttribute('aria-hidden', 'true')
-        container.className = 'cm-image-container'
-        backdrop.className = 'cm-image-backdrop'
-        figure.className = 'cm-image-figure'
-        image.className = 'cm-image-img'
-        image.src = this.src
+        const image = container.appendChild(document.createElement('img'))
 
-        container.style.paddingBottom = '0.5rem'
-        container.style.paddingTop = '0.5rem'
-
-        backdrop.classList.add('cm-image-backdrop')
-
-        backdrop.style.borderRadius = '0px'
-        backdrop.style.display = 'flex'
-        backdrop.style.alignItems = 'center'
-        backdrop.style.justifyContent = 'center'
-        backdrop.style.overflow = 'hidden'
-        backdrop.style.maxWidth = '100%'
-
-        figure.style.margin = '0'
-
-        image.style.display = 'block'
+        image.setAttribute('aria-hidden', 'true')
+        image.src = src
         image.style.maxHeight = '800px'
-        image.style.maxWidth = '100%'
-        image.style.width = '100%'
+        image.style.maxWidth = 'calc(100% - 2em)'
+        image.style.objectFit = 'scale-down'
+
+        container.style.display = 'flex'
+        container.style.alignItems = 'center'
+        container.style.justifyContent = 'center'
+        container.style.maxWidth = '100%'
+        container.style.overflow = 'hidden'
+
+        container.style.cursor = 'pointer'
+        container.title = 'Click to edit image link'
+        container.onclick = () => {
+            if (from) {
+                const transaction = view.state.update({selection: {anchor: from}, scrollIntoView: true})
+                view.dispatch(transaction)
+            }
+        }
 
         view.requestMeasure()
 
         return container
-    }
+    },
 
-    ignoreEvent: () => false
+    ignoreEvent: () => false,
 
     get lineBreaks(): number {
         return 1
-    }
+    },
 
     get estimatedHeight(): number {
         return 800
-    }
-}
+    },
+})
 
 export const dynamicImagesExtension = (enabled: boolean = true): Extension => {
     if (!enabled) {
@@ -69,8 +61,8 @@ export const dynamicImagesExtension = (enabled: boolean = true): Extension => {
 
     const imageRegex = /!\[.*?\]\((?<src>.*?)\)/
 
-    const imageDecoration = (src: string) => Decoration.widget({
-        widget: new ImageWidget(src),
+    const imageDecoration = (src: string, from: number) => Decoration.widget({
+        widget: imageWidget(src, from),
         side: -1,
         block: true,
     })
@@ -83,9 +75,12 @@ export const dynamicImagesExtension = (enabled: boolean = true): Extension => {
                 enter: ({ type, from, to }) => {
                     if (type.name === 'Image') {
                         const result = imageRegex.exec(state.doc.sliceString(from, to))
-
-                        if (result && result.groups && result.groups.src)
-                            decorations.push(imageDecoration(result.groups.src).range(state.doc.lineAt(from).from))
+                        if (result && result.groups && result.groups.src) {
+                            decorations.push(imageDecoration(
+                                result.groups.src,
+                                to
+                            ).range(state.doc.lineAt(from).from))
+                        }
                     }
                 },
             })
