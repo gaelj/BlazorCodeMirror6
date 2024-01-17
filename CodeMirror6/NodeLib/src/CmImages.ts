@@ -19,7 +19,7 @@ const imageWidget = (src: string, from: number) => buildWidget({
 
         image.setAttribute('aria-hidden', 'true')
         image.src = src
-        image.style.maxHeight = '800px'
+        image.style.maxHeight = '320px'
         image.style.maxWidth = 'calc(100% - 2em)'
         image.style.objectFit = 'scale-down'
 
@@ -45,12 +45,8 @@ const imageWidget = (src: string, from: number) => buildWidget({
 
     ignoreEvent: () => false,
 
-    get lineBreaks(): number {
-        return 1
-    },
-
     get estimatedHeight(): number {
-        return 800
+        return 320
     },
 })
 
