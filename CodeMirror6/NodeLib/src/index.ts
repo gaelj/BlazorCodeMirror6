@@ -16,6 +16,7 @@ import {
     indentUnit, defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
     foldGutter, foldKeymap,
 } from "@codemirror/language"
+import { unifiedMergeView} from "@codemirror/merge"
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap, Completion } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
 import { linter, lintKeymap } from "@codemirror/lint"
@@ -153,6 +154,13 @@ export async function initCodeMirror(
         if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
 
         extensions.push(...getFileUploadExtensions(id, setup))
+        extensions.push(unifiedMergeView({
+            original: initialConfig.doc,
+            gutter: true,
+            highlightChanges: true,
+            mergeControls: true,
+            syntaxHighlightDeletions: true,
+        }))
 
         await minDelay
 

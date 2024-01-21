@@ -27,6 +27,7 @@
     "@codemirror/lang-xml": "^6.0.2",
     "@codemirror/language-data": "^6.3.1",
     "@codemirror/lint": "^6.4.2",
+    "@codemirror/merge": "^6.5.0",
     "@codemirror/theme-one-dark": "^6.1.2",
     "@microsoft/dotnet-js-interop": "^8.0.0",
     "@replit/codemirror-indentation-markers": "^6.5.0",
