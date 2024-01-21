@@ -5,14 +5,7 @@
 
 # Usage: ./make-changelog.sh
 
-##git log --pretty=format:'%d%s' --decorate=short $(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1 --max-count=1))..$(git describe --tags --abbrev=0) > NEW_CHANGELOG.md || echo "Not enough tags for changelog generation" > NEW_CHANGELOG.md
-## git log --pretty=format:'%d%s' --decorate=short > NEW_CHANGELOG.md
 git log --pretty=format:'%s' --decorate=short "$(git describe --tags --abbrev=0 "$(git rev-list --tags --max-count=1)")"..HEAD > NEW_CHANGELOG.md || echo "Not enough tags for changelog generation" > NEW_CHANGELOG.md
-
-#git log --pretty=format:'%s' --decorate=short $(git rev-list --tags --skip=0 --max-count=1)..$(git rev-list --tags --skip=1 --max-count=2) > NEW_CHANGELOG.md || echo "Not enough tags for changelog generation" > NEW_CHANGELOG.md
-
-#git log --pretty=format:'%s' --decorate=short 9d3bceaf29eda2f3731f52caf1af03e70d024cfb..e293607ff0c023e54f42386027c974886284d3e7 > NEW_CHANGELOG.md || echo "Not enough tags for changelog generation" > NEW_CHANGELOG.md
-#git log --pretty=format:'%s' --decorate=short e293607ff0c023e54f42386027c974886284d3e7..96a2bedadb341e4a7e8ead5151c4786e10eb31a9 > NEW_CHANGELOG.md || echo "Not enough tags for changelog generation" > NEW_CHANGELOG.md
 
 # remove duplicate lines
 awk '!seen[$0]++' NEW_CHANGELOG.md > temp.txt && mv temp.txt NEW_CHANGELOG.md

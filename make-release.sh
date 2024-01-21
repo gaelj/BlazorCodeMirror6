@@ -48,4 +48,3 @@ git commit -m "📝 Update changelog for $new_version"
 dotnet setversion -r "$new_version"
 git add ./**/*.csproj
 git commit -m "🔖 Bump version to $new_version"
-

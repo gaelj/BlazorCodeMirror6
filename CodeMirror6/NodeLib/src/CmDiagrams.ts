@@ -145,45 +145,31 @@ class DiagramWidget extends WidgetType {
 
     toDOM(view: EditorView) {
         const container = document.createElement('div')
-        const backdrop = container.appendChild(document.createElement('div'))
-        const figure = backdrop.appendChild(document.createElement('figure'))
-        const image = figure.appendChild(document.createElement('div'))
-
         container.setAttribute('aria-hidden', 'true')
-        container.className = 'cm-image-container'
-        backdrop.className = 'cm-image-backdrop'
-        figure.className = 'cm-image-figure'
-        image.className = 'cm-image-img'
+
         if (this.svgContent === null) {
-            image.innerHTML = `Loading ${this.language} diagram...`
-            image.style.fontStyle = 'italic'
-            image.style.color = 'gray'
+            container.innerHTML = `Loading ${this.language} diagram...`
+            container.style.fontStyle = 'italic'
+            container.style.color = 'gray'
         }
         else {
-            image.innerHTML = this.svgContent
-            image.style.fontStyle = ''
-            image.style.color = ''
-            image.style.backgroundColor = 'white'
+            container.innerHTML = this.svgContent
+            const svgElement = container.getElementsByTagName("svg")[0]
+            svgElement.setAttribute('aria-hidden', 'true')
+            svgElement.style.backgroundColor = 'white'
+            svgElement.style.maxHeight = '800px'
+            svgElement.style.maxWidth = 'calc(100% - 2em)'
+            svgElement.style.objectFit = 'scale-down'
+            container.style.fontStyle = ''
+            container.style.color = ''
+            container.style.backgroundColor = 'transparent'
         }
 
-        container.style.paddingBottom = '0.5rem'
-        container.style.paddingTop = '0.5rem'
-
-        backdrop.classList.add('cm-image-backdrop')
-
-        backdrop.style.borderRadius = '0px'
-        backdrop.style.display = 'flex'
-        backdrop.style.alignItems = 'center'
-        backdrop.style.justifyContent = 'center'
-        backdrop.style.overflow = 'hidden'
-        backdrop.style.maxWidth = '100%'
-
-        figure.style.margin = '0'
-
-        image.style.display = 'flex'
-        image.style.maxHeight = '80vh'
-        image.style.maxWidth = '100%'
-        image.style.width = '100%'
+        container.style.display = 'flex'
+        container.style.alignItems = 'center'
+        container.style.justifyContent = 'center'
+        container.style.maxWidth = '100%'
+        container.style.overflow = 'hidden'
 
         if (this.from !== null) {
             container.style.cursor = 'pointer'
@@ -191,7 +177,7 @@ class DiagramWidget extends WidgetType {
             container.onclick = () => {
                 container.title = 'Click to close diagram edition'
                 const pos = this.from
-                const transaction = view.state.update({selection: {anchor: pos}})
+                const transaction = view.state.update({selection: {anchor: pos}, scrollIntoView: true})
                 view.dispatch(transaction)
             }
         }
@@ -201,7 +187,7 @@ class DiagramWidget extends WidgetType {
             container.onclick = () => {
                 container.title = 'Click to edit diagram'
                 const pos = this.to + 1
-                const transaction = view.state.update({selection: {anchor: pos}})
+                const transaction = view.state.update({selection: {anchor: pos}, scrollIntoView: true})
                 view.dispatch(transaction)
             }
         }
