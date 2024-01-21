@@ -15347,9 +15347,11 @@ function getChildren(node, type, before, after) {
     if (!cur.firstChild())
         return result;
     if (before != null)
-        while (!cur.type.is(before))
+        for (let found = false; !found;) {
+            found = cur.type.is(before);
             if (!cur.nextSibling())
                 return result;
+        }
     for (;;) {
         if (after != null && cur.type.is(after))
             return result;
@@ -21145,6 +21147,7 @@ const completionConfig = /*@__PURE__*/Facet.define({
     combine(configs) {
         return combineConfig(configs, {
             activateOnTyping: true,
+            activateOnTypingDelay: 100,
             selectOnOpen: true,
             override: null,
             closeOnBlur: true,
@@ -21849,6 +21852,7 @@ const completionPlugin = /*@__PURE__*/ViewPlugin.fromClass(class {
         this.debounceUpdate = -1;
         this.running = [];
         this.debounceAccept = -1;
+        this.pendingStart = false;
         this.composing = 0 /* CompositionState.None */;
         for (let active of view.state.field(completionState).active)
             if (active.state == 1 /* State.Pending */)
@@ -21882,8 +21886,11 @@ const completionPlugin = /*@__PURE__*/ViewPlugin.fromClass(class {
         }
         if (this.debounceUpdate > -1)
             clearTimeout(this.debounceUpdate);
+        if (update.transactions.some(tr => tr.effects.some(e => e.is(startCompletionEffect))))
+            this.pendingStart = true;
+        let delay = this.pendingStart ? 50 : update.state.facet(completionConfig).activateOnTypingDelay;
         this.debounceUpdate = cState.active.some(a => a.state == 1 /* State.Pending */ && !this.running.some(q => q.active.source == a.source))
-            ? setTimeout(() => this.startUpdate(), 50) : -1;
+            ? setTimeout(() => this.startUpdate(), delay) : -1;
         if (this.composing != 0 /* CompositionState.None */)
             for (let tr of update.transactions) {
                 if (getUserEvent(tr) == "input")
@@ -21894,6 +21901,7 @@ const completionPlugin = /*@__PURE__*/ViewPlugin.fromClass(class {
     }
     startUpdate() {
         this.debounceUpdate = -1;
+        this.pendingStart = false;
         let { state } = this.view, cState = state.field(completionState);
         for (let active of cState.active) {
             if (active.state == 1 /* State.Pending */ && !this.running.some(r => r.active.source == active.source))
@@ -21973,7 +21981,7 @@ const completionPlugin = /*@__PURE__*/ViewPlugin.fromClass(class {
             if (state && state.tooltip && this.view.state.facet(completionConfig).closeOnBlur) {
                 let dialog = state.open && getTooltip(this.view, state.open.tooltip);
                 if (!dialog || !dialog.dom.contains(event.relatedTarget))
-                    this.view.dispatch({ effects: closeCompletionEffect.of(null) });
+                    setTimeout(() => this.view.dispatch({ effects: closeCompletionEffect.of(null) }), 10);
             }
         },
         compositionstart() {
@@ -22281,11 +22289,11 @@ function snippet(template) {
         let spec = {
             changes: { from, to, insert: Text.of(text) },
             scrollIntoView: true,
-            annotations: completion ? pickedCompletion.of(completion) : undefined
+            annotations: completion ? [pickedCompletion.of(completion), Transaction.userEvent.of("input.complete")] : undefined
         };
         if (ranges.length)
             spec.selection = fieldSelection(ranges, 0);
-        if (ranges.length > 1) {
+        if (ranges.some(r => r.field > 0)) {
             let active = new ActiveSnippet(ranges, 0);
             let effects = spec.effects = [setActive.of(active)];
             if (editor.state.field(snippetState, false) === undefined)
@@ -30694,8 +30702,9 @@ const insertNewlineContinueMarkup = ({ state, dispatch }) => {
         let emptyLine = pos >= (inner.to - inner.spaceAfter.length) && !/\S/.test(line.text.slice(inner.to));
         // Empty line in list
         if (inner.item && emptyLine) {
-            // First list item or blank line before: delete a level of markup
-            if (inner.node.firstChild.to >= pos ||
+            let first = inner.node.firstChild, second = inner.node.getChild("ListItem", "ListItem");
+            // Not second item or blank line before: delete a level of markup
+            if (first.to >= pos || second && second.to < pos ||
                 line.from > 0 && !/[^\s>]/.test(doc.lineAt(line.from - 1).text)) {
                 let next = context.length > 1 ? context[context.length - 2] : null;
                 let delTo, insert = "";
@@ -30713,12 +30722,8 @@ const insertNewlineContinueMarkup = ({ state, dispatch }) => {
                     renumberList(next.item, doc, changes);
                 return { range: EditorSelection.cursor(delTo + insert.length), changes };
             }
-            else { // Move this line down
-                let insert = "";
-                for (let i = 0, e = context.length - 2; i <= e; i++) {
-                    insert += context[i].blank(i < e ? countColumn(line.text, 4, context[i + 1].from) - insert.length : null, i < e);
-                }
-                insert = normalizeIndent(insert, state);
+            else { // Move second item down, making tight two-item list non-tight
+                let insert = blankLine(context, state, line);
                 return { range: EditorSelection.cursor(pos + insert.length + 1),
                     changes: { from: line.from, insert: insert + state.lineBreak } };
             }
@@ -30748,6 +30753,8 @@ const insertNewlineContinueMarkup = ({ state, dispatch }) => {
         while (from > line.from && /\s/.test(line.text.charAt(from - line.from - 1)))
             from--;
         insert = normalizeIndent(insert, state);
+        if (nonTightList(inner.node, state.doc))
+            insert = blankLine(context, state, line) + state.lineBreak + insert;
         changes.push({ from, to: pos, insert: state.lineBreak + insert });
         return { range: EditorSelection.cursor(from + insert.length + 1), changes };
     });
@@ -30758,6 +30765,23 @@ const insertNewlineContinueMarkup = ({ state, dispatch }) => {
 };
 function isMark(node) {
     return node.name == "QuoteMark" || node.name == "ListMark";
+}
+function nonTightList(node, doc) {
+    if (node.name != "OrderedList" && node.name != "BulletList")
+        return false;
+    let first = node.firstChild, second = node.getChild("ListItem", "ListItem");
+    if (!second)
+        return false;
+    let line1 = doc.lineAt(first.to), line2 = doc.lineAt(second.from);
+    let empty = /^[\s>]*$/.test(line1.text);
+    return line1.number + (empty ? 0 : 1) < line2.number;
+}
+function blankLine(context, state, line) {
+    let insert = "";
+    for (let i = 0, e = context.length - 2; i <= e; i++) {
+        insert += context[i].blank(i < e ? countColumn(line.text, 4, context[i + 1].from) - insert.length : null, i < e);
+    }
+    return normalizeIndent(insert, state);
 }
 function contextNodeForDelete(tree, pos) {
     let node = tree.resolveInner(pos, -1), scan = pos;
@@ -34683,7 +34707,7 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-xueKLeDZ.js').then(m => m.less());
+            return import('./index-QP3v2ltS.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34709,7 +34733,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-F-l6VR84.js').then(m => m.php());
+            return import('./index-cIUGzipc.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -34778,7 +34802,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-zQV6OOOH.js').then(m => m.wast());
+            return import('./index-snYeWtX1.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -35589,13 +35613,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-BT8PNlxD.js').then(m => m.vue());
+            return import('./index-MtvspfS9.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-KJNfgiTQ.js').then(m => m.angular());
+            return import('./index-fY38Pjo9.js').then(m => m.angular());
         }
     })
 ];
@@ -40910,56 +40934,76 @@ function getTheme(themeName) {
     }
 }
 
-class ImageWidget extends WidgetType {
-    constructor(src) {
-        super();
-        this.src = src;
-    }
-    eq(imageWidget) {
-        return imageWidget.src === this.src;
-    }
+const buildWidget = (options) => {
+    const eq = (other) => {
+        if (options.eq)
+            return options.eq(other);
+        if (!options.id)
+            return false;
+        return options.id === other.id;
+    };
+    return {
+        compare: (other) => {
+            return eq(other);
+        },
+        coordsAt: () => null,
+        destroy: () => { },
+        eq: (other) => {
+            return eq(other);
+        },
+        estimatedHeight: -1,
+        ignoreEvent: () => true,
+        lineBreaks: 0,
+        toDOM: () => {
+            return document.createElement('span');
+        },
+        updateDOM: () => false,
+        ...options,
+    };
+};
+
+const imageWidget = (src, from) => buildWidget({
+    src: src,
+    eq(other) {
+        return other.src === src;
+    },
     toDOM(view) {
         const container = document.createElement('div');
-        const backdrop = container.appendChild(document.createElement('div'));
-        const figure = backdrop.appendChild(document.createElement('figure'));
-        const image = figure.appendChild(document.createElement('img'));
         container.setAttribute('aria-hidden', 'true');
-        container.className = 'cm-image-container';
-        backdrop.className = 'cm-image-backdrop';
-        figure.className = 'cm-image-figure';
-        image.className = 'cm-image-img';
-        image.src = this.src;
-        container.style.paddingBottom = '0.5rem';
-        container.style.paddingTop = '0.5rem';
-        backdrop.classList.add('cm-image-backdrop');
-        backdrop.style.borderRadius = '0px';
-        backdrop.style.display = 'flex';
-        backdrop.style.alignItems = 'center';
-        backdrop.style.justifyContent = 'center';
-        backdrop.style.overflow = 'hidden';
-        backdrop.style.maxWidth = '100%';
-        figure.style.margin = '0';
-        image.style.display = 'block';
-        image.style.maxHeight = '800px';
-        image.style.maxWidth = '100%';
-        image.style.width = '100%';
+        const image = container.appendChild(document.createElement('img'));
+        image.setAttribute('aria-hidden', 'true');
+        image.src = src;
+        image.style.maxHeight = '320px';
+        image.style.maxWidth = 'calc(100% - 2em)';
+        image.style.objectFit = 'scale-down';
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.justifyContent = 'center';
+        container.style.maxWidth = '100%';
+        container.style.overflow = 'hidden';
+        container.style.cursor = 'pointer';
+        container.title = 'Click to edit image link';
+        container.onclick = () => {
+            if (from) {
+                const transaction = view.state.update({ selection: { anchor: from }, scrollIntoView: true });
+                view.dispatch(transaction);
+            }
+        };
         view.requestMeasure();
         return container;
-    }
-    get lineBreaks() {
-        return 1;
-    }
+    },
+    ignoreEvent: () => false,
     get estimatedHeight() {
-        return 800;
-    }
-}
+        return 320;
+    },
+});
 const dynamicImagesExtension = (enabled = true) => {
     if (!enabled) {
         return [];
     }
     const imageRegex = /!\[.*?\]\((?<src>.*?)\)/;
-    const imageDecoration = (src) => Decoration.widget({
-        widget: new ImageWidget(src),
+    const imageDecoration = (src, from) => Decoration.widget({
+        widget: imageWidget(src, from),
         side: -1,
         block: true,
     });
@@ -40970,8 +41014,9 @@ const dynamicImagesExtension = (enabled = true) => {
                 enter: ({ type, from, to }) => {
                     if (type.name === 'Image') {
                         const result = imageRegex.exec(state.doc.sliceString(from, to));
-                        if (result && result.groups && result.groups.src)
-                            decorations.push(imageDecoration(result.groups.src).range(state.doc.lineAt(from).from));
+                        if (result && result.groups && result.groups.src) {
+                            decorations.push(imageDecoration(result.groups.src, to).range(state.doc.lineAt(from).from));
+                        }
                     }
                 },
             });
@@ -62383,34 +62428,6 @@ const blockquote = () => {
     ];
 };
 
-const buildWidget = (options) => {
-    const eq = (other) => {
-        if (options.eq)
-            return options.eq(other);
-        if (!options.id)
-            return false;
-        return options.id === other.id;
-    };
-    return {
-        compare: (other) => {
-            return eq(other);
-        },
-        coordsAt: () => null,
-        destroy: () => { },
-        eq: (other) => {
-            return eq(other);
-        },
-        estimatedHeight: -1,
-        ignoreEvent: () => true,
-        lineBreaks: 0,
-        toDOM: () => {
-            return document.createElement('span');
-        },
-        updateDOM: () => false,
-        ...options,
-    };
-};
-
 const hasOverlap = (x1, x2, y1, y2) => {
     return Math.max(x1, y1) <= Math.min(x2, y2);
 };
@@ -76741,46 +76758,36 @@ class DiagramWidget extends WidgetType {
     }
     toDOM(view) {
         const container = document.createElement('div');
-        const backdrop = container.appendChild(document.createElement('div'));
-        const figure = backdrop.appendChild(document.createElement('figure'));
-        const image = figure.appendChild(document.createElement('div'));
         container.setAttribute('aria-hidden', 'true');
-        container.className = 'cm-image-container';
-        backdrop.className = 'cm-image-backdrop';
-        figure.className = 'cm-image-figure';
-        image.className = 'cm-image-img';
         if (this.svgContent === null) {
-            image.innerHTML = `Loading ${this.language} diagram...`;
-            image.style.fontStyle = 'italic';
-            image.style.color = 'gray';
+            container.innerHTML = `Loading ${this.language} diagram...`;
+            container.style.fontStyle = 'italic';
+            container.style.color = 'gray';
         }
         else {
-            image.innerHTML = this.svgContent;
-            image.style.fontStyle = '';
-            image.style.color = '';
-            image.style.backgroundColor = 'white';
+            container.innerHTML = this.svgContent;
+            const svgElement = container.getElementsByTagName("svg")[0];
+            svgElement.setAttribute('aria-hidden', 'true');
+            svgElement.style.backgroundColor = 'white';
+            svgElement.style.maxHeight = '800px';
+            svgElement.style.maxWidth = 'calc(100% - 2em)';
+            svgElement.style.objectFit = 'scale-down';
+            container.style.fontStyle = '';
+            container.style.color = '';
+            container.style.backgroundColor = 'transparent';
         }
-        container.style.paddingBottom = '0.5rem';
-        container.style.paddingTop = '0.5rem';
-        backdrop.classList.add('cm-image-backdrop');
-        backdrop.style.borderRadius = '0px';
-        backdrop.style.display = 'flex';
-        backdrop.style.alignItems = 'center';
-        backdrop.style.justifyContent = 'center';
-        backdrop.style.overflow = 'hidden';
-        backdrop.style.maxWidth = '100%';
-        figure.style.margin = '0';
-        image.style.display = 'flex';
-        image.style.maxHeight = '80vh';
-        image.style.maxWidth = '100%';
-        image.style.width = '100%';
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.justifyContent = 'center';
+        container.style.maxWidth = '100%';
+        container.style.overflow = 'hidden';
         if (this.from !== null) {
             container.style.cursor = 'pointer';
             container.title = 'Click to edit diagram';
             container.onclick = () => {
                 container.title = 'Click to close diagram edition';
                 const pos = this.from;
-                const transaction = view.state.update({ selection: { anchor: pos } });
+                const transaction = view.state.update({ selection: { anchor: pos }, scrollIntoView: true });
                 view.dispatch(transaction);
             };
         }
@@ -76790,7 +76797,7 @@ class DiagramWidget extends WidgetType {
             container.onclick = () => {
                 container.title = 'Click to edit diagram';
                 const pos = this.to + 1;
-                const transaction = view.state.update({ selection: { anchor: pos } });
+                const transaction = view.state.update({ selection: { anchor: pos }, scrollIntoView: true });
                 view.dispatch(transaction);
             };
         }
