@@ -143,6 +143,11 @@ public partial class CodeMirror6Wrapper : ComponentBase
     [Parameter] public Func<IBrowserFile, Task<string>>? UploadBrowserFile { get; set; }
 
     /// <summary>
+    /// Define whether the component is used in a WASM or Server app. In a WASM app, JS interop can start sooner
+    /// </summary>
+    [Parameter] public bool IsWASM { get; set; }
+
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     /// <value></value>
