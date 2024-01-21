@@ -1,27 +1,30 @@
-## 0.1.2 - 2024-01-16
+### ✨ Introduce new features
+
+- Diagrams & images: ensure they always fit the width of the editor, scroll into view when clicked, click image to edit its URI
 
 ### 🐛 Fix a bug
 
-- Fix create github release when not using a tag ref
+- Try to fix jumping issue with smaller images
+- Add missing IsWASM property
 
-## 0.1.1 - 2024-01-16
+### 📝 Add or update documentation
 
-### 👷 Add or update CI build system
+- Add 2nd example page to test behavior on navigation
+- Add Blazor Server Interactive rendering mode example
 
-- Improvement to make automatic releases
+### 🚚 Move or rename resources (e.g., files, paths)
+
+- Move layout and menu to shared example project
+
+### ⬆️ Upgrade dependencies
+
+- Npm update: @codemirror/lang-markdown 6.2.4
+- Nugets update: Microsoft.AspNetCore.Components.Web 6.0.26
+- Update all dependencies
+- Update Microsoft nugets to 8.0.1
+- Update rollup to 4.9.6
 
 ### 🔨 Add or update development scripts
 
-- Add message in make release script
-- Include make changelog in make release script
-
-## 0.1.0 - 2024-01-15
-
-### 👷 Add or update CI build system
-
-- Replace github actions with: create tag on merge to main & deploy on tag created
-
-### 🔖 Release / Version tags
-
-- Bump version to 0.1.0
-- Adding support for targeting .NET 6
+- Add update_nugets script
+- Cleanup make-changelog.sh
