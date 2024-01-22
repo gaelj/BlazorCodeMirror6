@@ -23,6 +23,7 @@ export class CmInstance
     public keymapCompartment: Compartment = new Compartment
     public emojiReplacerCompartment: Compartment = new Compartment
     public lineWrappingCompartment: Compartment = new Compartment
+    public unifiedMergeViewCompartment: Compartment = new Compartment
 }
 
 export const CMInstances: { [id: string]: CmInstance}  = {}

@@ -29,6 +29,51 @@
     })
 >Reset text</button>
 
+
+<div class="d-block">
+    <label for="MergeView">Merge View</label>
+    <input id="MergeView" type="checkbox" checked=@MergeViewEnabled @onchange=@(async v => {
+        MergeViewEnabled = (v.Value as bool?) == true;
+        if (MergeViewEnabled) {
+            MergeViewConfiguration = PreviousMergeViewConfiguration ?? new() {
+                Original = code,
+                HighlightChanges = true,
+                Gutter = true,
+                MergeControls = true,
+            };
+        }
+        else {
+            PreviousMergeViewConfiguration = MergeViewConfiguration is null ? null : MergeViewConfiguration with {};
+            MergeViewConfiguration = null;
+        }
+        await InvokeAsync(StateHasChanged);
+    }) />
+
+    @if (MergeViewConfiguration is not null) {
+        <label for="MergeViewHighlightChanges">Highlight Changes</label>
+        <input id="MergeViewHighlightChanges" type="checkbox" checked=@MergeViewConfiguration.HighlightChanges
+             @onchange=@(v => {
+                MergeViewConfiguration = MergeViewConfiguration with { HighlightChanges = v.Value as bool?};
+            })
+        />
+
+        <label for="MergeViewGutter">Gutter</label>
+        <input id="MergeViewGutter" type="checkbox" checked=@MergeViewConfiguration.Gutter
+             @onchange=@(v => {
+                MergeViewConfiguration = MergeViewConfiguration with { Gutter = v.Value as bool?};
+            })
+        />
+
+        <label for="MergeViewMergeControls">Merge Controls</label>
+        <input id="MergeViewMergeControls" type="checkbox" checked=@MergeViewConfiguration.MergeControls
+             @onchange=@(async v => {
+                MergeViewConfiguration = MergeViewConfiguration with { MergeControls = v.Value as bool?};
+            })
+        />
+    }
+</div>
+
+
 <CodeMirror6Wrapper
     IsWASM=@IsWASM
     @bind-Doc=@Text
@@ -47,6 +92,7 @@
     Editable
     ReadOnly=false
     LineWrapping=@LineWrapping
+    MergeViewConfiguration=@MergeViewConfiguration
     style="max-width: 100%; max-height: 60em; "
 >
     <ContentBefore Context="c">
@@ -211,6 +257,7 @@
     private bool AutoFormatMarkdown = true;
     private bool ReplaceEmojiCodes = false;
     private bool LineWrapping = true;
+    private bool MergeViewEnabled = false;
     private readonly CodeMirrorSetup Setup = new() {
         HighlightActiveLine = false,
         LineNumbers = true,
@@ -219,6 +266,8 @@
         ScrollToEnd = true,
         BindMode = DocumentBindMode.OnDelayedInput,
     };
+    private UnifiedMergeConfig? PreviousMergeViewConfiguration;
+    private UnifiedMergeConfig? MergeViewConfiguration;
     private string ButtonClass(CodeMirrorState state, string docStyleTag = "") => ButtonClass(state.MarkdownStylesAtSelections?.Contains(docStyleTag) == true);
     private string ButtonClass(bool enabled) => enabled
         ? "btn btn-sm btn-primary"

@@ -142,12 +142,15 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// Upload an IBrowserFile to a server and returns the URL to the file
     /// </summary>
     [Parameter] public Func<IBrowserFile, Task<string>>? UploadBrowserFile { get; set; }
-
     /// <summary>
     /// Define whether the component is used in a WASM or Server app. In a WASM app, JS interop can start sooner
     /// </summary>
     [Parameter] public bool IsWASM { get; set; }
-
+    /// <summary>
+    /// The unified merge view configuration
+    /// </summary>
+    /// <value></value>
+    [Parameter] public UnifiedMergeConfig? MergeViewConfiguration { get; set; }
     /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
@@ -192,7 +195,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             ReplaceEmojiCodes,
             ResizeStyle,
             LineWrapping,
-            LintDocument is not null
+            LintDocument is not null,
+            MergeViewConfiguration
         );
         try {
             if (IsWASM)
@@ -284,6 +288,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         if (Config.LineWrapping != LineWrapping) {
             Config.LineWrapping = LineWrapping;
             await CmJsInterop.PropertySetters.SetLineWrapping();
+        }
+        if (Config.MergeViewConfiguration != MergeViewConfiguration) {
+            Config.MergeViewConfiguration = MergeViewConfiguration;
+            await CmJsInterop.PropertySetters.SetUnifiedMergeView();
         }
         shouldRender = true;
     }

@@ -16,12 +16,12 @@ import {
     indentUnit, defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
     foldGutter, foldKeymap,
 } from "@codemirror/language"
-import { unifiedMergeView} from "@codemirror/merge"
+import { unifiedMergeView } from "@codemirror/merge"
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap, Completion } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
 import { linter, lintKeymap } from "@codemirror/lint"
 import { CmInstance, CMInstances } from "./CmInstance"
-import { CmConfiguration } from "./CmConfiguration"
+import { CmConfiguration, UnifiedMergeConfig } from "./CmConfiguration"
 import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
 import { getTheme } from "./CmTheme"
 import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLanguage"
@@ -89,6 +89,7 @@ export async function initCodeMirror(
             lastOperationWasUndo,
             indentationMarkers(),
             CMInstances[id].lineWrappingCompartment.of(initialConfig.lineWrapping ? EditorView.lineWrapping : []),
+            CMInstances[id].unifiedMergeViewCompartment.of(initialConfig.mergeViewConfiguration ? unifiedMergeView(initialConfig.mergeViewConfiguration) : []),
 
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
             keymap.of([
@@ -154,13 +155,6 @@ export async function initCodeMirror(
         if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
 
         extensions.push(...getFileUploadExtensions(id, setup))
-        extensions.push(unifiedMergeView({
-            original: initialConfig.doc,
-            gutter: true,
-            highlightChanges: true,
-            mergeControls: true,
-            syntaxHighlightDeletions: true,
-        }))
 
         await minDelay
 
@@ -272,6 +266,12 @@ export function setEditable(id: string, editable: boolean) {
 export function setLineWrapping(id: string, lineWrapping: boolean) {
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].lineWrappingCompartment.reconfigure(lineWrapping ? EditorView.lineWrapping : [])
+    })
+}
+
+export function setUnifiedMergeView(id: string, mergeViewConfiguration: UnifiedMergeConfig) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].unifiedMergeViewCompartment.reconfigure(mergeViewConfiguration ? unifiedMergeView(mergeViewConfiguration) : [])
     })
 }
 

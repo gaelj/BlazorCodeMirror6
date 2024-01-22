@@ -127,4 +127,9 @@ internal class CMSetters(
         "setLineWrapping",
         config.LineWrapping
     );
+
+    internal Task SetUnifiedMergeView() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setUnifiedMergeView",
+        config.MergeViewConfiguration
+    );
 }

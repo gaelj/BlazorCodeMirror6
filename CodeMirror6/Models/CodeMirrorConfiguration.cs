@@ -19,6 +19,7 @@ namespace GaelJ.BlazorCodeMirror6.Models;
 /// <param name="resize">none, vertical, horizontal or both</param>
 /// <param name="lineWrapping"></param>
 /// <param name="lintingEnabled"></param>
+/// <param name="mergeViewConfiguration"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -32,7 +33,8 @@ public class CodeMirrorConfiguration(
     bool replaceEmojiCodes,
     string resize,
     bool lineWrapping,
-    bool lintingEnabled)
+    bool lintingEnabled,
+    UnifiedMergeConfig? mergeViewConfiguration)
 {
 
     /// <summary>
@@ -100,4 +102,9 @@ public class CodeMirrorConfiguration(
     /// Did the user provide a linting callback (internal use)
     /// </summary>
     [JsonPropertyName("lintingEnabled")] internal bool LintingEnabled { get; set; } = lintingEnabled;
+
+    /// <summary>
+    /// Unified merged view configuration
+    /// </summary>
+    [JsonPropertyName("mergeViewConfiguration")] internal UnifiedMergeConfig? MergeViewConfiguration { get; set; } = mergeViewConfiguration;
 }

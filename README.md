@@ -32,10 +32,10 @@ Visit the [live demo](https://gaelj.github.io/BlazorCodeMirror6/) to see the com
 - [x] support long line wrapping
 - [x] support C# language
 - [x] update doc in dotnet either on text changes or on blur
+- [x] diff viewer
 - [ ] search & replace toolbar button
 - [ ] toolbar with toolbar button template
 - [ ] support read-only paragraphs
-- [ ] diff viewer
 - [ ] Implement cursor tooltips
 - [ ] Implement Copilot/AI style suggestions
 - [ ] allow setting the [Starting selection](https://codemirror.net/docs/ref/#state.EditorStateConfig.selection)
