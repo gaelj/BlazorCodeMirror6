@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Sentry.AspNetCore" Version="3.41.3" />
+    <PackageReference Include="Sentry.AspNetCore" Version="3.41.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CodeMirror6\CodeMirror6.csproj" />
