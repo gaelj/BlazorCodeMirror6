@@ -47,6 +47,7 @@ Visit the [live demo](https://gaelj.github.io/BlazorCodeMirror6/) to see the com
 - [ ] automatic translation
 - [ ] deleting a file link deletes the file from the server
 - [ ] button (visible when editor is hovered), to copy raw editor content to clipboard
+- [ ] CSV mode
 
 ### Markdown specific
 
