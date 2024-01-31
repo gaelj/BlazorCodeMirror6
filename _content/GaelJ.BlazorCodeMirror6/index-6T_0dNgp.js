@@ -13060,6 +13060,34 @@ class TabWidget extends WidgetType {
     ignoreEvent() { return false; }
 }
 
+const plugin = /*@__PURE__*/ViewPlugin.fromClass(class {
+    constructor() {
+        this.height = 1000;
+        this.attrs = { style: "padding-bottom: 1000px" };
+    }
+    update(update) {
+        let { view } = update;
+        let height = view.viewState.editorHeight * view.scaleY -
+            view.defaultLineHeight - view.documentPadding.top - 0.5;
+        if (height >= 0 && height != this.height) {
+            this.height = height;
+            this.attrs = { style: `padding-bottom: ${height}px` };
+        }
+    }
+});
+/**
+Returns an extension that makes sure the content has a bottom
+margin equivalent to the height of the editor, minus one line
+height, so that every line in the document can be scrolled to the
+top of the editor.
+
+This is only meaningful when the editor is scrollable, and should
+not be enabled in editors that take the size of their content.
+*/
+function scrollPastEnd() {
+    return [plugin, contentAttributes.of(view => { var _a; return ((_a = view.plugin(plugin)) === null || _a === void 0 ? void 0 : _a.attrs) || null; })];
+}
+
 /**
 Mark lines that have a cursor on them with the `"cm-activeLine"`
 DOM class.
@@ -14543,6 +14571,57 @@ line](https://codemirror.net/6/docs/ref/#view.highlightActiveLine).
 */
 function highlightActiveLineGutter() {
     return activeLineGutterHighlighter;
+}
+
+const WhitespaceDeco = /*@__PURE__*/new Map();
+function getWhitespaceDeco(space) {
+    let deco = WhitespaceDeco.get(space);
+    if (!deco)
+        WhitespaceDeco.set(space, deco = Decoration.mark({
+            attributes: space === "\t" ? {
+                class: "cm-highlightTab",
+            } : {
+                class: "cm-highlightSpace",
+                "data-display": space.replace(/ /g, "·")
+            }
+        }));
+    return deco;
+}
+function matcher(decorator) {
+    return ViewPlugin.define(view => ({
+        decorations: decorator.createDeco(view),
+        update(u) {
+            this.decorations = decorator.updateDeco(u, this.decorations);
+        },
+    }), {
+        decorations: v => v.decorations
+    });
+}
+const whitespaceHighlighter = /*@__PURE__*/matcher(/*@__PURE__*/new MatchDecorator({
+    regexp: /\t| +/g,
+    decoration: match => getWhitespaceDeco(match[0]),
+    boundary: /\S/,
+}));
+/**
+Returns an extension that highlights whitespace, adding a
+`cm-highlightSpace` class to stretches of spaces, and a
+`cm-highlightTab` class to individual tab characters. By default,
+the former are shown as faint dots, and the latter as arrows.
+*/
+function highlightWhitespace() {
+    return whitespaceHighlighter;
+}
+const trailingHighlighter = /*@__PURE__*/matcher(/*@__PURE__*/new MatchDecorator({
+    regexp: /\s+$/g,
+    decoration: /*@__PURE__*/Decoration.mark({ class: "cm-trailingSpace" }),
+    boundary: /\S/,
+}));
+/**
+Returns an extension that adds a `cm-trailingSpace` class to all
+trailing whitespace.
+*/
+function highlightTrailingWhitespace() {
+    return trailingHighlighter;
 }
 
 /**
@@ -20857,6 +20936,1011 @@ this.
 */
 const indentWithTab = { key: "Tab", run: indentMore, shift: indentLess };
 
+function legacy(parser) {
+    return new LanguageSupport(StreamLanguage.define(parser));
+}
+function sql(dialectName) {
+    return import('./index-ZZbX9i6C.js').then(m => m.sql({ dialect: m[dialectName] }));
+}
+/**
+An array of language descriptions for known language packages.
+*/
+const languages = [
+    // New-style language modes
+    /*@__PURE__*/LanguageDescription.of({
+        name: "C",
+        extensions: ["c", "h", "ino"],
+        load() {
+            return import('./index-Y8K4Gt4W.js').then(m => m.cpp());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "C++",
+        alias: ["cpp"],
+        extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
+        load() {
+            return import('./index-Y8K4Gt4W.js').then(m => m.cpp());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "CQL",
+        alias: ["cassandra"],
+        extensions: ["cql"],
+        load() { return sql("Cassandra"); }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "CSS",
+        extensions: ["css"],
+        load() {
+            return Promise.resolve().then(function () { return index$3; }).then(m => m.css());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "HTML",
+        alias: ["xhtml"],
+        extensions: ["html", "htm", "handlebars", "hbs"],
+        load() {
+            return Promise.resolve().then(function () { return index$1; }).then(m => m.html());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Java",
+        extensions: ["java"],
+        load() {
+            return import('./index-wiFp-tOT.js').then(m => m.java());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "JavaScript",
+        alias: ["ecmascript", "js", "node"],
+        extensions: ["js", "mjs", "cjs"],
+        load() {
+            return Promise.resolve().then(function () { return index$2; }).then(m => m.javascript());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "JSON",
+        alias: ["json5"],
+        extensions: ["json", "map"],
+        load() {
+            return import('./index-j1vxx8xd.js').then(m => m.json());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "JSX",
+        extensions: ["jsx"],
+        load() {
+            return Promise.resolve().then(function () { return index$2; }).then(m => m.javascript({ jsx: true }));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "LESS",
+        extensions: ["less"],
+        load() {
+            return import('./index-w1CJyBYB.js').then(m => m.less());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Liquid",
+        extensions: ["liquid"],
+        load() {
+            return import('./index-LOkkyESA.js').then(m => m.liquid());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "MariaDB SQL",
+        load() { return sql("MariaSQL"); }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Markdown",
+        extensions: ["md", "markdown", "mkd"],
+        load() {
+            return Promise.resolve().then(function () { return index; }).then(m => m.markdown());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "MS SQL",
+        load() { return sql("MSSQL"); }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "MySQL",
+        load() { return sql("MySQL"); }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "PHP",
+        extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
+        load() {
+            return import('./index-b5jGDYtE.js').then(m => m.php());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "PLSQL",
+        extensions: ["pls"],
+        load() { return sql("PLSQL"); }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "PostgreSQL",
+        load() { return sql("PostgreSQL"); }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Python",
+        extensions: ["BUILD", "bzl", "py", "pyw"],
+        filename: /^(BUCK|BUILD)$/,
+        load() {
+            return import('./index-34T3OMu_.js').then(m => m.python());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Rust",
+        extensions: ["rs"],
+        load() {
+            return import('./index-M3eTdsH3.js').then(m => m.rust());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Sass",
+        extensions: ["sass"],
+        load() {
+            return import('./index-D1wSpyhC.js').then(m => m.sass({ indented: true }));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "SCSS",
+        extensions: ["scss"],
+        load() {
+            return import('./index-D1wSpyhC.js').then(m => m.sass());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "SQL",
+        extensions: ["sql"],
+        load() { return sql("StandardSQL"); }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "SQLite",
+        load() { return sql("SQLite"); }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "TSX",
+        extensions: ["tsx"],
+        load() {
+            return Promise.resolve().then(function () { return index$2; }).then(m => m.javascript({ jsx: true, typescript: true }));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "TypeScript",
+        alias: ["ts"],
+        extensions: ["ts"],
+        load() {
+            return Promise.resolve().then(function () { return index$2; }).then(m => m.javascript({ typescript: true }));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "WebAssembly",
+        extensions: ["wat", "wast"],
+        load() {
+            return import('./index-kkwUcklc.js').then(m => m.wast());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "XML",
+        alias: ["rss", "wsdl", "xsd"],
+        extensions: ["xml", "xsl", "xsd", "svg"],
+        load() {
+            return import('./index-DHB-P_Ll.js').then(m => m.xml());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "YAML",
+        alias: ["yml"],
+        extensions: ["yaml", "yml"],
+        load() {
+            return import('./index-1WE7SjaX.js').then(m => m.yaml());
+        }
+    }),
+    // Legacy modes ported from CodeMirror 5
+    /*@__PURE__*/LanguageDescription.of({
+        name: "APL",
+        extensions: ["dyalog", "apl"],
+        load() {
+            return import('./apl-eHQxyJFn.js').then(m => legacy(m.apl));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "PGP",
+        alias: ["asciiarmor"],
+        extensions: ["asc", "pgp", "sig"],
+        load() {
+            return import('./asciiarmor-Z-IGYCI4.js').then(m => legacy(m.asciiArmor));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "ASN.1",
+        extensions: ["asn", "asn1"],
+        load() {
+            return import('./asn1-gF7x-q1y.js').then(m => legacy(m.asn1({})));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Asterisk",
+        filename: /^extensions\.conf$/i,
+        load() {
+            return import('./asterisk-swk20ftp.js').then(m => legacy(m.asterisk));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Brainfuck",
+        extensions: ["b", "bf"],
+        load() {
+            return import('./brainfuck-IFQdiQoR.js').then(m => legacy(m.brainfuck));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Cobol",
+        extensions: ["cob", "cpy"],
+        load() {
+            return import('./cobol-fpN1nAnR.js').then(m => legacy(m.cobol));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "C#",
+        alias: ["csharp", "cs"],
+        extensions: ["cs"],
+        load() {
+            return import('./clike-q3hUF2Cx.js').then(m => legacy(m.csharp));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Clojure",
+        extensions: ["clj", "cljc", "cljx"],
+        load() {
+            return import('./clojure-I2Krbr2M.js').then(m => legacy(m.clojure));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "ClojureScript",
+        extensions: ["cljs"],
+        load() {
+            return import('./clojure-I2Krbr2M.js').then(m => legacy(m.clojure));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Closure Stylesheets (GSS)",
+        extensions: ["gss"],
+        load() {
+            return import('./css-hgwYGMKZ.js').then(m => legacy(m.gss));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "CMake",
+        extensions: ["cmake", "cmake.in"],
+        filename: /^CMakeLists\.txt$/,
+        load() {
+            return import('./cmake-ewwXLeuZ.js').then(m => legacy(m.cmake));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "CoffeeScript",
+        alias: ["coffee", "coffee-script"],
+        extensions: ["coffee"],
+        load() {
+            return import('./coffeescript--eTFR-bH.js').then(m => legacy(m.coffeeScript));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Common Lisp",
+        alias: ["lisp"],
+        extensions: ["cl", "lisp", "el"],
+        load() {
+            return import('./commonlisp-XLSwVdLc.js').then(m => legacy(m.commonLisp));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Cypher",
+        extensions: ["cyp", "cypher"],
+        load() {
+            return import('./cypher-bbJyAa-4.js').then(m => legacy(m.cypher));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Cython",
+        extensions: ["pyx", "pxd", "pxi"],
+        load() {
+            return import('./python-3Pv0tnvt.js').then(m => legacy(m.cython));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Crystal",
+        extensions: ["cr"],
+        load() {
+            return import('./crystal-_r3Aa1_a.js').then(m => legacy(m.crystal));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "D",
+        extensions: ["d"],
+        load() {
+            return import('./d-5MyulviS.js').then(m => legacy(m.d));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Dart",
+        extensions: ["dart"],
+        load() {
+            return import('./clike-q3hUF2Cx.js').then(m => legacy(m.dart));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "diff",
+        extensions: ["diff", "patch"],
+        load() {
+            return import('./diff-neOaT_vk.js').then(m => legacy(m.diff));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Dockerfile",
+        filename: /^Dockerfile$/,
+        load() {
+            return import('./dockerfile-lzx42-zz.js').then(m => legacy(m.dockerFile));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "DTD",
+        extensions: ["dtd"],
+        load() {
+            return import('./dtd-FmzPLZcQ.js').then(m => legacy(m.dtd));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Dylan",
+        extensions: ["dylan", "dyl", "intr"],
+        load() {
+            return import('./dylan-1HtRK4GO.js').then(m => legacy(m.dylan));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "EBNF",
+        load() {
+            return import('./ebnf-Nz-pnLHy.js').then(m => legacy(m.ebnf));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "ECL",
+        extensions: ["ecl"],
+        load() {
+            return import('./ecl-lQsZhQz0.js').then(m => legacy(m.ecl));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "edn",
+        extensions: ["edn"],
+        load() {
+            return import('./clojure-I2Krbr2M.js').then(m => legacy(m.clojure));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Eiffel",
+        extensions: ["e"],
+        load() {
+            return import('./eiffel-R_HiEkhx.js').then(m => legacy(m.eiffel));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Elm",
+        extensions: ["elm"],
+        load() {
+            return import('./elm-KYv4VTDg.js').then(m => legacy(m.elm));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Erlang",
+        extensions: ["erl"],
+        load() {
+            return import('./erlang-7YaHCBIe.js').then(m => legacy(m.erlang));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Esper",
+        load() {
+            return import('./sql-dsGfl64h.js').then(m => legacy(m.esper));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Factor",
+        extensions: ["factor"],
+        load() {
+            return import('./factor-opBU9aTK.js').then(m => legacy(m.factor));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "FCL",
+        load() {
+            return import('./fcl-jm31FmFz.js').then(m => legacy(m.fcl));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Forth",
+        extensions: ["forth", "fth", "4th"],
+        load() {
+            return import('./forth-5NKbjnWh.js').then(m => legacy(m.forth));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Fortran",
+        extensions: ["f", "for", "f77", "f90", "f95"],
+        load() {
+            return import('./fortran-dXm_-cb9.js').then(m => legacy(m.fortran));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "F#",
+        alias: ["fsharp"],
+        extensions: ["fs"],
+        load() {
+            return import('./mllike-ZK411xkN.js').then(m => legacy(m.fSharp));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Gas",
+        extensions: ["s"],
+        load() {
+            return import('./gas-nsYVnsy-.js').then(m => legacy(m.gas));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Gherkin",
+        extensions: ["feature"],
+        load() {
+            return import('./gherkin-fzKpjm3M.js').then(m => legacy(m.gherkin));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Go",
+        extensions: ["go"],
+        load() {
+            return import('./go-Pn1qh7yl.js').then(m => legacy(m.go));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Groovy",
+        extensions: ["groovy", "gradle"],
+        filename: /^Jenkinsfile$/,
+        load() {
+            return import('./groovy-DZY-8keZ.js').then(m => legacy(m.groovy));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Haskell",
+        extensions: ["hs"],
+        load() {
+            return import('./haskell-JGh2upDd.js').then(m => legacy(m.haskell));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Haxe",
+        extensions: ["hx"],
+        load() {
+            return import('./haxe-1hvVK-Fy.js').then(m => legacy(m.haxe));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "HXML",
+        extensions: ["hxml"],
+        load() {
+            return import('./haxe-1hvVK-Fy.js').then(m => legacy(m.hxml));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "HTTP",
+        load() {
+            return import('./http-mY1M77wn.js').then(m => legacy(m.http));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "IDL",
+        extensions: ["pro"],
+        load() {
+            return import('./idl-dy_653wH.js').then(m => legacy(m.idl));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "JSON-LD",
+        alias: ["jsonld"],
+        extensions: ["jsonld"],
+        load() {
+            return import('./javascript-TMTz-YQH.js').then(m => legacy(m.jsonld));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Jinja2",
+        extensions: ["j2", "jinja", "jinja2"],
+        load() {
+            return import('./jinja2-sRIdliZK.js').then(m => legacy(m.jinja2));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Julia",
+        extensions: ["jl"],
+        load() {
+            return import('./julia-fK0wmpGL.js').then(m => legacy(m.julia));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Kotlin",
+        extensions: ["kt", "kts"],
+        load() {
+            return import('./clike-q3hUF2Cx.js').then(m => legacy(m.kotlin));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "LiveScript",
+        alias: ["ls"],
+        extensions: ["ls"],
+        load() {
+            return import('./livescript-FRbAot3D.js').then(m => legacy(m.liveScript));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Lua",
+        extensions: ["lua"],
+        load() {
+            return import('./lua-t4FHEjvK.js').then(m => legacy(m.lua));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "mIRC",
+        extensions: ["mrc"],
+        load() {
+            return import('./mirc-PzJ0zKSk.js').then(m => legacy(m.mirc));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Mathematica",
+        extensions: ["m", "nb", "wl", "wls"],
+        load() {
+            return import('./mathematica-sn_KGlYj.js').then(m => legacy(m.mathematica));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Modelica",
+        extensions: ["mo"],
+        load() {
+            return import('./modelica-ZaHlRCbp.js').then(m => legacy(m.modelica));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "MUMPS",
+        extensions: ["mps"],
+        load() {
+            return import('./mumps-M8a87-rl.js').then(m => legacy(m.mumps));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Mbox",
+        extensions: ["mbox"],
+        load() {
+            return import('./mbox-KvVC319E.js').then(m => legacy(m.mbox));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Nginx",
+        filename: /nginx.*\.conf$/i,
+        load() {
+            return import('./nginx-2LJIX23E.js').then(m => legacy(m.nginx));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "NSIS",
+        extensions: ["nsh", "nsi"],
+        load() {
+            return import('./nsis-zvfFgMLi.js').then(m => legacy(m.nsis));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "NTriples",
+        extensions: ["nt", "nq"],
+        load() {
+            return import('./ntriples-tVkHy5bk.js').then(m => legacy(m.ntriples));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Objective-C",
+        alias: ["objective-c", "objc"],
+        extensions: ["m"],
+        load() {
+            return import('./clike-q3hUF2Cx.js').then(m => legacy(m.objectiveC));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Objective-C++",
+        alias: ["objective-c++", "objc++"],
+        extensions: ["mm"],
+        load() {
+            return import('./clike-q3hUF2Cx.js').then(m => legacy(m.objectiveCpp));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "OCaml",
+        extensions: ["ml", "mli", "mll", "mly"],
+        load() {
+            return import('./mllike-ZK411xkN.js').then(m => legacy(m.oCaml));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Octave",
+        extensions: ["m"],
+        load() {
+            return import('./octave-mE4T5MF5.js').then(m => legacy(m.octave));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Oz",
+        extensions: ["oz"],
+        load() {
+            return import('./oz-q-LCsuVg.js').then(m => legacy(m.oz));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Pascal",
+        extensions: ["p", "pas"],
+        load() {
+            return import('./pascal-0IgUAn4C.js').then(m => legacy(m.pascal));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Perl",
+        extensions: ["pl", "pm"],
+        load() {
+            return import('./perl-AqxdYGac.js').then(m => legacy(m.perl));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Pig",
+        extensions: ["pig"],
+        load() {
+            return import('./pig-ESM-IjQj.js').then(m => legacy(m.pig));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "PowerShell",
+        extensions: ["ps1", "psd1", "psm1"],
+        load() {
+            return import('./powershell-CLFP0L55.js').then(m => legacy(m.powerShell));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Properties files",
+        alias: ["ini", "properties"],
+        extensions: ["properties", "ini", "in"],
+        load() {
+            return import('./properties-oWHNzvb9.js').then(m => legacy(m.properties));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "ProtoBuf",
+        extensions: ["proto"],
+        load() {
+            return import('./protobuf-c7eMmdcc.js').then(m => legacy(m.protobuf));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Puppet",
+        extensions: ["pp"],
+        load() {
+            return import('./puppet-FjzvdRJr.js').then(m => legacy(m.puppet));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Q",
+        extensions: ["q"],
+        load() {
+            return import('./q-IImW8da6.js').then(m => legacy(m.q));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "R",
+        alias: ["rscript"],
+        extensions: ["r", "R"],
+        load() {
+            return import('./r-CnEkTvR0.js').then(m => legacy(m.r));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "RPM Changes",
+        load() {
+            return import('./rpm-Q55-fEHj.js').then(m => legacy(m.rpmChanges));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "RPM Spec",
+        extensions: ["spec"],
+        load() {
+            return import('./rpm-Q55-fEHj.js').then(m => legacy(m.rpmSpec));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Ruby",
+        alias: ["jruby", "macruby", "rake", "rb", "rbx"],
+        extensions: ["rb"],
+        filename: /^(Gemfile|Rakefile)$/,
+        load() {
+            return import('./ruby-zhaGB3Kh.js').then(m => legacy(m.ruby));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "SAS",
+        extensions: ["sas"],
+        load() {
+            return import('./sas-Ur9jZIOV.js').then(m => legacy(m.sas));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Scala",
+        extensions: ["scala"],
+        load() {
+            return import('./clike-q3hUF2Cx.js').then(m => legacy(m.scala));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Scheme",
+        extensions: ["scm", "ss"],
+        load() {
+            return import('./scheme-daT5-Rya.js').then(m => legacy(m.scheme));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Shell",
+        alias: ["bash", "sh", "zsh"],
+        extensions: ["sh", "ksh", "bash"],
+        filename: /^PKGBUILD$/,
+        load() {
+            return import('./shell-cwFL0AYP.js').then(m => legacy(m.shell));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Sieve",
+        extensions: ["siv", "sieve"],
+        load() {
+            return import('./sieve-MlNXFFUq.js').then(m => legacy(m.sieve));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Smalltalk",
+        extensions: ["st"],
+        load() {
+            return import('./smalltalk-xrQICp9e.js').then(m => legacy(m.smalltalk));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Solr",
+        load() {
+            return import('./solr-PU3oPgQz.js').then(m => legacy(m.solr));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "SML",
+        extensions: ["sml", "sig", "fun", "smackspec"],
+        load() {
+            return import('./mllike-ZK411xkN.js').then(m => legacy(m.sml));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "SPARQL",
+        alias: ["sparul"],
+        extensions: ["rq", "sparql"],
+        load() {
+            return import('./sparql--u8NRBii.js').then(m => legacy(m.sparql));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Spreadsheet",
+        alias: ["excel", "formula"],
+        load() {
+            return import('./spreadsheet-QCp0LifX.js').then(m => legacy(m.spreadsheet));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Squirrel",
+        extensions: ["nut"],
+        load() {
+            return import('./clike-q3hUF2Cx.js').then(m => legacy(m.squirrel));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Stylus",
+        extensions: ["styl"],
+        load() {
+            return import('./stylus--A5XAqOX.js').then(m => legacy(m.stylus));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Swift",
+        extensions: ["swift"],
+        load() {
+            return import('./swift-qAm73i7G.js').then(m => legacy(m.swift));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "sTeX",
+        load() {
+            return import('./stex-WcLBzvkD.js').then(m => legacy(m.stex));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "LaTeX",
+        alias: ["tex"],
+        extensions: ["text", "ltx", "tex"],
+        load() {
+            return import('./stex-WcLBzvkD.js').then(m => legacy(m.stex));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "SystemVerilog",
+        extensions: ["v", "sv", "svh"],
+        load() {
+            return import('./verilog-PXtXH14C.js').then(m => legacy(m.verilog));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Tcl",
+        extensions: ["tcl"],
+        load() {
+            return import('./tcl-Kdc7qxc-.js').then(m => legacy(m.tcl));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Textile",
+        extensions: ["textile"],
+        load() {
+            return import('./textile--sz8UrIz.js').then(m => legacy(m.textile));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "TiddlyWiki",
+        load() {
+            return import('./tiddlywiki-xNXTeBlQ.js').then(m => legacy(m.tiddlyWiki));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Tiki wiki",
+        load() {
+            return import('./tiki-LCXjrNH3.js').then(m => legacy(m.tiki));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "TOML",
+        extensions: ["toml"],
+        load() {
+            return import('./toml-Ac4tlBMn.js').then(m => legacy(m.toml));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Troff",
+        extensions: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+        load() {
+            return import('./troff-LLW1x1Yz.js').then(m => legacy(m.troff));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "TTCN",
+        extensions: ["ttcn", "ttcn3", "ttcnpp"],
+        load() {
+            return import('./ttcn-ZYZ9FS3u.js').then(m => legacy(m.ttcn));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "TTCN_CFG",
+        extensions: ["cfg"],
+        load() {
+            return import('./ttcn-cfg-qsvf3MfB.js').then(m => legacy(m.ttcnCfg));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Turtle",
+        extensions: ["ttl"],
+        load() {
+            return import('./turtle-wq3TqOth.js').then(m => legacy(m.turtle));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Web IDL",
+        extensions: ["webidl"],
+        load() {
+            return import('./webidl-1f8ATJ66.js').then(m => legacy(m.webIDL));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "VB.NET",
+        extensions: ["vb"],
+        load() {
+            return import('./vb-86M_JuNP.js').then(m => legacy(m.vb));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "VBScript",
+        extensions: ["vbs"],
+        load() {
+            return import('./vbscript-GueAeVug.js').then(m => legacy(m.vbScript));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Velocity",
+        extensions: ["vtl"],
+        load() {
+            return import('./velocity-7PW9GXO2.js').then(m => legacy(m.velocity));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Verilog",
+        extensions: ["v"],
+        load() {
+            return import('./verilog-PXtXH14C.js').then(m => legacy(m.verilog));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "VHDL",
+        extensions: ["vhd", "vhdl"],
+        load() {
+            return import('./vhdl-I8eyK83X.js').then(m => legacy(m.vhdl));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "XQuery",
+        extensions: ["xy", "xquery"],
+        load() {
+            return import('./xquery-IYp28Wx6.js').then(m => legacy(m.xQuery));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Yacas",
+        extensions: ["ys"],
+        load() {
+            return import('./yacas-wkENB05f.js').then(m => legacy(m.yacas));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Z80",
+        extensions: ["z80"],
+        load() {
+            return import('./z80-GaXiLdiV.js').then(m => legacy(m.z80));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "MscGen",
+        extensions: ["mscgen", "mscin", "msc"],
+        load() {
+            return import('./mscgen-Kkq4o4Zm.js').then(m => legacy(m.mscgen));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Xù",
+        extensions: ["xu"],
+        load() {
+            return import('./mscgen-Kkq4o4Zm.js').then(m => legacy(m.xu));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "MsGenny",
+        extensions: ["msgenny"],
+        load() {
+            return import('./mscgen-Kkq4o4Zm.js').then(m => legacy(m.msgenny));
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Vue",
+        extensions: ["vue"],
+        load() {
+            return import('./index-gl7ROpbd.js').then(m => m.vue());
+        }
+    }),
+    /*@__PURE__*/LanguageDescription.of({
+        name: "Angular Template",
+        load() {
+            return import('./index-dL5xaxN8.js').then(m => m.angular());
+        }
+    })
+];
+
 // This algorithm was heavily inspired by Neil Fraser's
 // diff-match-patch library. See https://github.com/google/diff-match-patch/
 /**
@@ -25475,6 +26559,138 @@ const baseTheme = /*@__PURE__*/EditorView.baseTheme({
         }
     }
 });
+function severityWeight(sev) {
+    return sev == "error" ? 4 : sev == "warning" ? 3 : sev == "info" ? 2 : 1;
+}
+class LintGutterMarker extends GutterMarker {
+    constructor(diagnostics) {
+        super();
+        this.diagnostics = diagnostics;
+        this.severity = diagnostics.reduce((max, d) => severityWeight(max) < severityWeight(d.severity) ? d.severity : max, "hint");
+    }
+    toDOM(view) {
+        let elt = document.createElement("div");
+        elt.className = "cm-lint-marker cm-lint-marker-" + this.severity;
+        let diagnostics = this.diagnostics;
+        let diagnosticsFilter = view.state.facet(lintGutterConfig).tooltipFilter;
+        if (diagnosticsFilter)
+            diagnostics = diagnosticsFilter(diagnostics);
+        if (diagnostics.length)
+            elt.onmouseover = () => gutterMarkerMouseOver(view, elt, diagnostics);
+        return elt;
+    }
+}
+function trackHoverOn(view, marker) {
+    let mousemove = (event) => {
+        let rect = marker.getBoundingClientRect();
+        if (event.clientX > rect.left - 10 /* Hover.Margin */ && event.clientX < rect.right + 10 /* Hover.Margin */ &&
+            event.clientY > rect.top - 10 /* Hover.Margin */ && event.clientY < rect.bottom + 10 /* Hover.Margin */)
+            return;
+        for (let target = event.target; target; target = target.parentNode) {
+            if (target.nodeType == 1 && target.classList.contains("cm-tooltip-lint"))
+                return;
+        }
+        window.removeEventListener("mousemove", mousemove);
+        if (view.state.field(lintGutterTooltip))
+            view.dispatch({ effects: setLintGutterTooltip.of(null) });
+    };
+    window.addEventListener("mousemove", mousemove);
+}
+function gutterMarkerMouseOver(view, marker, diagnostics) {
+    function hovered() {
+        let line = view.elementAtHeight(marker.getBoundingClientRect().top + 5 - view.documentTop);
+        const linePos = view.coordsAtPos(line.from);
+        if (linePos) {
+            view.dispatch({ effects: setLintGutterTooltip.of({
+                    pos: line.from,
+                    above: false,
+                    create() {
+                        return {
+                            dom: diagnosticsTooltip(view, diagnostics),
+                            getCoords: () => marker.getBoundingClientRect()
+                        };
+                    }
+                }) });
+        }
+        marker.onmouseout = marker.onmousemove = null;
+        trackHoverOn(view, marker);
+    }
+    let { hoverTime } = view.state.facet(lintGutterConfig);
+    let hoverTimeout = setTimeout(hovered, hoverTime);
+    marker.onmouseout = () => {
+        clearTimeout(hoverTimeout);
+        marker.onmouseout = marker.onmousemove = null;
+    };
+    marker.onmousemove = () => {
+        clearTimeout(hoverTimeout);
+        hoverTimeout = setTimeout(hovered, hoverTime);
+    };
+}
+function markersForDiagnostics(doc, diagnostics) {
+    let byLine = Object.create(null);
+    for (let diagnostic of diagnostics) {
+        let line = doc.lineAt(diagnostic.from);
+        (byLine[line.from] || (byLine[line.from] = [])).push(diagnostic);
+    }
+    let markers = [];
+    for (let line in byLine) {
+        markers.push(new LintGutterMarker(byLine[line]).range(+line));
+    }
+    return RangeSet.of(markers, true);
+}
+const lintGutterExtension = /*@__PURE__*/gutter({
+    class: "cm-gutter-lint",
+    markers: view => view.state.field(lintGutterMarkers),
+});
+const lintGutterMarkers = /*@__PURE__*/StateField.define({
+    create() {
+        return RangeSet.empty;
+    },
+    update(markers, tr) {
+        markers = markers.map(tr.changes);
+        let diagnosticFilter = tr.state.facet(lintGutterConfig).markerFilter;
+        for (let effect of tr.effects) {
+            if (effect.is(setDiagnosticsEffect)) {
+                let diagnostics = effect.value;
+                if (diagnosticFilter)
+                    diagnostics = diagnosticFilter(diagnostics || []);
+                markers = markersForDiagnostics(tr.state.doc, diagnostics.slice(0));
+            }
+        }
+        return markers;
+    }
+});
+const setLintGutterTooltip = /*@__PURE__*/StateEffect.define();
+const lintGutterTooltip = /*@__PURE__*/StateField.define({
+    create() { return null; },
+    update(tooltip, tr) {
+        if (tooltip && tr.docChanged)
+            tooltip = hideTooltip(tr, tooltip) ? null : Object.assign(Object.assign({}, tooltip), { pos: tr.changes.mapPos(tooltip.pos) });
+        return tr.effects.reduce((t, e) => e.is(setLintGutterTooltip) ? e.value : t, tooltip);
+    },
+    provide: field => showTooltip.from(field)
+});
+const lintGutterTheme = /*@__PURE__*/EditorView.baseTheme({
+    ".cm-gutter-lint": {
+        width: "1.4em",
+        "& .cm-gutterElement": {
+            padding: ".2em"
+        }
+    },
+    ".cm-lint-marker": {
+        width: "1em",
+        height: "1em"
+    },
+    ".cm-lint-marker-info": {
+        content: /*@__PURE__*/svg(`<path fill="#aaf" stroke="#77e" stroke-width="6" stroke-linejoin="round" d="M5 5L35 5L35 35L5 35Z"/>`)
+    },
+    ".cm-lint-marker-warning": {
+        content: /*@__PURE__*/svg(`<path fill="#fe8" stroke="#fd7" stroke-width="6" stroke-linejoin="round" d="M20 6L37 35L3 35Z"/>`),
+    },
+    ".cm-lint-marker-error": {
+        content: /*@__PURE__*/svg(`<circle cx="20" cy="20" r="15" fill="#f87" stroke="#f43" stroke-width="6"/>`)
+    },
+});
 const lintExtensions = [
     lintState,
     /*@__PURE__*/EditorView.decorations.compute([lintState], state => {
@@ -25486,6 +26702,23 @@ const lintExtensions = [
     /*@__PURE__*/hoverTooltip(lintTooltip, { hideOn: hideTooltip }),
     baseTheme
 ];
+const lintGutterConfig = /*@__PURE__*/Facet.define({
+    combine(configs) {
+        return combineConfig(configs, {
+            hoverTime: 300 /* Hover.Time */,
+            markerFilter: null,
+            tooltipFilter: null
+        });
+    }
+});
+/**
+Returns an extension that installs a gutter showing markers for
+each line that has diagnostics, which can be hovered over to see
+the diagnostics.
+*/
+function lintGutter(config = {}) {
+    return [lintGutterConfig.of(config), lintGutterMarkers, lintGutterExtension, lintGutterTheme, lintGutterTooltip];
+}
 
 /**
  * Stores the state of a CodeMirror instance and allow dynamic changes to the state
@@ -25504,6 +26737,8 @@ class CmInstance {
         this.emojiReplacerCompartment = new Compartment;
         this.lineWrappingCompartment = new Compartment;
         this.unifiedMergeViewCompartment = new Compartment;
+        this.highlightTrailingWhitespaceCompartment = new Compartment;
+        this.highlightWhitespaceCompartment = new Compartment;
     }
 }
 const CMInstances = {};
@@ -32953,1011 +34188,6 @@ const ganttLanguageDescription = LanguageDescription.of({
     },
 });
 
-function legacy(parser) {
-    return new LanguageSupport(StreamLanguage.define(parser));
-}
-function sql(dialectName) {
-    return import('./index-bd8DA8AB.js').then(m => m.sql({ dialect: m[dialectName] }));
-}
-/**
-An array of language descriptions for known language packages.
-*/
-const languages = [
-    // New-style language modes
-    /*@__PURE__*/LanguageDescription.of({
-        name: "C",
-        extensions: ["c", "h", "ino"],
-        load() {
-            return import('./index-DHwuZB1b.js').then(m => m.cpp());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "C++",
-        alias: ["cpp"],
-        extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
-        load() {
-            return import('./index-DHwuZB1b.js').then(m => m.cpp());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "CQL",
-        alias: ["cassandra"],
-        extensions: ["cql"],
-        load() { return sql("Cassandra"); }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "CSS",
-        extensions: ["css"],
-        load() {
-            return Promise.resolve().then(function () { return index$3; }).then(m => m.css());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "HTML",
-        alias: ["xhtml"],
-        extensions: ["html", "htm", "handlebars", "hbs"],
-        load() {
-            return Promise.resolve().then(function () { return index$1; }).then(m => m.html());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Java",
-        extensions: ["java"],
-        load() {
-            return import('./index-0yGXfdPa.js').then(m => m.java());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "JavaScript",
-        alias: ["ecmascript", "js", "node"],
-        extensions: ["js", "mjs", "cjs"],
-        load() {
-            return Promise.resolve().then(function () { return index$2; }).then(m => m.javascript());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "JSON",
-        alias: ["json5"],
-        extensions: ["json", "map"],
-        load() {
-            return import('./index-RkJtapPg.js').then(m => m.json());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "JSX",
-        extensions: ["jsx"],
-        load() {
-            return Promise.resolve().then(function () { return index$2; }).then(m => m.javascript({ jsx: true }));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "LESS",
-        extensions: ["less"],
-        load() {
-            return import('./index-Fez8HalX.js').then(m => m.less());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Liquid",
-        extensions: ["liquid"],
-        load() {
-            return import('./index-CVbZ0aXY.js').then(m => m.liquid());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "MariaDB SQL",
-        load() { return sql("MariaSQL"); }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Markdown",
-        extensions: ["md", "markdown", "mkd"],
-        load() {
-            return Promise.resolve().then(function () { return index; }).then(m => m.markdown());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "MS SQL",
-        load() { return sql("MSSQL"); }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "MySQL",
-        load() { return sql("MySQL"); }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "PHP",
-        extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
-        load() {
-            return import('./index-2Odut7Pu.js').then(m => m.php());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "PLSQL",
-        extensions: ["pls"],
-        load() { return sql("PLSQL"); }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "PostgreSQL",
-        load() { return sql("PostgreSQL"); }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Python",
-        extensions: ["BUILD", "bzl", "py", "pyw"],
-        filename: /^(BUCK|BUILD)$/,
-        load() {
-            return import('./index-FGAh_6Wp.js').then(m => m.python());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Rust",
-        extensions: ["rs"],
-        load() {
-            return import('./index-mczuDlzC.js').then(m => m.rust());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Sass",
-        extensions: ["sass"],
-        load() {
-            return import('./index-gvKgHjGn.js').then(m => m.sass({ indented: true }));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "SCSS",
-        extensions: ["scss"],
-        load() {
-            return import('./index-gvKgHjGn.js').then(m => m.sass());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "SQL",
-        extensions: ["sql"],
-        load() { return sql("StandardSQL"); }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "SQLite",
-        load() { return sql("SQLite"); }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "TSX",
-        extensions: ["tsx"],
-        load() {
-            return Promise.resolve().then(function () { return index$2; }).then(m => m.javascript({ jsx: true, typescript: true }));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "TypeScript",
-        alias: ["ts"],
-        extensions: ["ts"],
-        load() {
-            return Promise.resolve().then(function () { return index$2; }).then(m => m.javascript({ typescript: true }));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "WebAssembly",
-        extensions: ["wat", "wast"],
-        load() {
-            return import('./index-2zhzHOGD.js').then(m => m.wast());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "XML",
-        alias: ["rss", "wsdl", "xsd"],
-        extensions: ["xml", "xsl", "xsd", "svg"],
-        load() {
-            return import('./index-x6-0RyPh.js').then(m => m.xml());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "YAML",
-        alias: ["yml"],
-        extensions: ["yaml", "yml"],
-        load() {
-            return import('./index-IABHyGUT.js').then(m => m.yaml());
-        }
-    }),
-    // Legacy modes ported from CodeMirror 5
-    /*@__PURE__*/LanguageDescription.of({
-        name: "APL",
-        extensions: ["dyalog", "apl"],
-        load() {
-            return import('./apl-eHQxyJFn.js').then(m => legacy(m.apl));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "PGP",
-        alias: ["asciiarmor"],
-        extensions: ["asc", "pgp", "sig"],
-        load() {
-            return import('./asciiarmor-Z-IGYCI4.js').then(m => legacy(m.asciiArmor));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "ASN.1",
-        extensions: ["asn", "asn1"],
-        load() {
-            return import('./asn1-gF7x-q1y.js').then(m => legacy(m.asn1({})));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Asterisk",
-        filename: /^extensions\.conf$/i,
-        load() {
-            return import('./asterisk-swk20ftp.js').then(m => legacy(m.asterisk));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Brainfuck",
-        extensions: ["b", "bf"],
-        load() {
-            return import('./brainfuck-IFQdiQoR.js').then(m => legacy(m.brainfuck));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Cobol",
-        extensions: ["cob", "cpy"],
-        load() {
-            return import('./cobol-fpN1nAnR.js').then(m => legacy(m.cobol));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "C#",
-        alias: ["csharp", "cs"],
-        extensions: ["cs"],
-        load() {
-            return import('./clike-q3hUF2Cx.js').then(m => legacy(m.csharp));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Clojure",
-        extensions: ["clj", "cljc", "cljx"],
-        load() {
-            return import('./clojure-I2Krbr2M.js').then(m => legacy(m.clojure));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "ClojureScript",
-        extensions: ["cljs"],
-        load() {
-            return import('./clojure-I2Krbr2M.js').then(m => legacy(m.clojure));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Closure Stylesheets (GSS)",
-        extensions: ["gss"],
-        load() {
-            return import('./css-hgwYGMKZ.js').then(m => legacy(m.gss));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "CMake",
-        extensions: ["cmake", "cmake.in"],
-        filename: /^CMakeLists\.txt$/,
-        load() {
-            return import('./cmake-ewwXLeuZ.js').then(m => legacy(m.cmake));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "CoffeeScript",
-        alias: ["coffee", "coffee-script"],
-        extensions: ["coffee"],
-        load() {
-            return import('./coffeescript--eTFR-bH.js').then(m => legacy(m.coffeeScript));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Common Lisp",
-        alias: ["lisp"],
-        extensions: ["cl", "lisp", "el"],
-        load() {
-            return import('./commonlisp-XLSwVdLc.js').then(m => legacy(m.commonLisp));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Cypher",
-        extensions: ["cyp", "cypher"],
-        load() {
-            return import('./cypher-bbJyAa-4.js').then(m => legacy(m.cypher));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Cython",
-        extensions: ["pyx", "pxd", "pxi"],
-        load() {
-            return import('./python-3Pv0tnvt.js').then(m => legacy(m.cython));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Crystal",
-        extensions: ["cr"],
-        load() {
-            return import('./crystal-_r3Aa1_a.js').then(m => legacy(m.crystal));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "D",
-        extensions: ["d"],
-        load() {
-            return import('./d-5MyulviS.js').then(m => legacy(m.d));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Dart",
-        extensions: ["dart"],
-        load() {
-            return import('./clike-q3hUF2Cx.js').then(m => legacy(m.dart));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "diff",
-        extensions: ["diff", "patch"],
-        load() {
-            return import('./diff-neOaT_vk.js').then(m => legacy(m.diff));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Dockerfile",
-        filename: /^Dockerfile$/,
-        load() {
-            return import('./dockerfile-lzx42-zz.js').then(m => legacy(m.dockerFile));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "DTD",
-        extensions: ["dtd"],
-        load() {
-            return import('./dtd-FmzPLZcQ.js').then(m => legacy(m.dtd));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Dylan",
-        extensions: ["dylan", "dyl", "intr"],
-        load() {
-            return import('./dylan-1HtRK4GO.js').then(m => legacy(m.dylan));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "EBNF",
-        load() {
-            return import('./ebnf-Nz-pnLHy.js').then(m => legacy(m.ebnf));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "ECL",
-        extensions: ["ecl"],
-        load() {
-            return import('./ecl-lQsZhQz0.js').then(m => legacy(m.ecl));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "edn",
-        extensions: ["edn"],
-        load() {
-            return import('./clojure-I2Krbr2M.js').then(m => legacy(m.clojure));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Eiffel",
-        extensions: ["e"],
-        load() {
-            return import('./eiffel-R_HiEkhx.js').then(m => legacy(m.eiffel));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Elm",
-        extensions: ["elm"],
-        load() {
-            return import('./elm-KYv4VTDg.js').then(m => legacy(m.elm));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Erlang",
-        extensions: ["erl"],
-        load() {
-            return import('./erlang-7YaHCBIe.js').then(m => legacy(m.erlang));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Esper",
-        load() {
-            return import('./sql-dsGfl64h.js').then(m => legacy(m.esper));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Factor",
-        extensions: ["factor"],
-        load() {
-            return import('./factor-opBU9aTK.js').then(m => legacy(m.factor));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "FCL",
-        load() {
-            return import('./fcl-jm31FmFz.js').then(m => legacy(m.fcl));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Forth",
-        extensions: ["forth", "fth", "4th"],
-        load() {
-            return import('./forth-5NKbjnWh.js').then(m => legacy(m.forth));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Fortran",
-        extensions: ["f", "for", "f77", "f90", "f95"],
-        load() {
-            return import('./fortran-dXm_-cb9.js').then(m => legacy(m.fortran));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "F#",
-        alias: ["fsharp"],
-        extensions: ["fs"],
-        load() {
-            return import('./mllike-ZK411xkN.js').then(m => legacy(m.fSharp));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Gas",
-        extensions: ["s"],
-        load() {
-            return import('./gas-nsYVnsy-.js').then(m => legacy(m.gas));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Gherkin",
-        extensions: ["feature"],
-        load() {
-            return import('./gherkin-fzKpjm3M.js').then(m => legacy(m.gherkin));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Go",
-        extensions: ["go"],
-        load() {
-            return import('./go-Pn1qh7yl.js').then(m => legacy(m.go));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Groovy",
-        extensions: ["groovy", "gradle"],
-        filename: /^Jenkinsfile$/,
-        load() {
-            return import('./groovy-DZY-8keZ.js').then(m => legacy(m.groovy));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Haskell",
-        extensions: ["hs"],
-        load() {
-            return import('./haskell-JGh2upDd.js').then(m => legacy(m.haskell));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Haxe",
-        extensions: ["hx"],
-        load() {
-            return import('./haxe-1hvVK-Fy.js').then(m => legacy(m.haxe));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "HXML",
-        extensions: ["hxml"],
-        load() {
-            return import('./haxe-1hvVK-Fy.js').then(m => legacy(m.hxml));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "HTTP",
-        load() {
-            return import('./http-mY1M77wn.js').then(m => legacy(m.http));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "IDL",
-        extensions: ["pro"],
-        load() {
-            return import('./idl-dy_653wH.js').then(m => legacy(m.idl));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "JSON-LD",
-        alias: ["jsonld"],
-        extensions: ["jsonld"],
-        load() {
-            return import('./javascript-TMTz-YQH.js').then(m => legacy(m.jsonld));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Jinja2",
-        extensions: ["j2", "jinja", "jinja2"],
-        load() {
-            return import('./jinja2-sRIdliZK.js').then(m => legacy(m.jinja2));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Julia",
-        extensions: ["jl"],
-        load() {
-            return import('./julia-fK0wmpGL.js').then(m => legacy(m.julia));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Kotlin",
-        extensions: ["kt", "kts"],
-        load() {
-            return import('./clike-q3hUF2Cx.js').then(m => legacy(m.kotlin));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "LiveScript",
-        alias: ["ls"],
-        extensions: ["ls"],
-        load() {
-            return import('./livescript-FRbAot3D.js').then(m => legacy(m.liveScript));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Lua",
-        extensions: ["lua"],
-        load() {
-            return import('./lua-t4FHEjvK.js').then(m => legacy(m.lua));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "mIRC",
-        extensions: ["mrc"],
-        load() {
-            return import('./mirc-PzJ0zKSk.js').then(m => legacy(m.mirc));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Mathematica",
-        extensions: ["m", "nb", "wl", "wls"],
-        load() {
-            return import('./mathematica-sn_KGlYj.js').then(m => legacy(m.mathematica));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Modelica",
-        extensions: ["mo"],
-        load() {
-            return import('./modelica-ZaHlRCbp.js').then(m => legacy(m.modelica));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "MUMPS",
-        extensions: ["mps"],
-        load() {
-            return import('./mumps-M8a87-rl.js').then(m => legacy(m.mumps));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Mbox",
-        extensions: ["mbox"],
-        load() {
-            return import('./mbox-KvVC319E.js').then(m => legacy(m.mbox));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Nginx",
-        filename: /nginx.*\.conf$/i,
-        load() {
-            return import('./nginx-2LJIX23E.js').then(m => legacy(m.nginx));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "NSIS",
-        extensions: ["nsh", "nsi"],
-        load() {
-            return import('./nsis-zvfFgMLi.js').then(m => legacy(m.nsis));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "NTriples",
-        extensions: ["nt", "nq"],
-        load() {
-            return import('./ntriples-tVkHy5bk.js').then(m => legacy(m.ntriples));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Objective-C",
-        alias: ["objective-c", "objc"],
-        extensions: ["m"],
-        load() {
-            return import('./clike-q3hUF2Cx.js').then(m => legacy(m.objectiveC));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Objective-C++",
-        alias: ["objective-c++", "objc++"],
-        extensions: ["mm"],
-        load() {
-            return import('./clike-q3hUF2Cx.js').then(m => legacy(m.objectiveCpp));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "OCaml",
-        extensions: ["ml", "mli", "mll", "mly"],
-        load() {
-            return import('./mllike-ZK411xkN.js').then(m => legacy(m.oCaml));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Octave",
-        extensions: ["m"],
-        load() {
-            return import('./octave-mE4T5MF5.js').then(m => legacy(m.octave));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Oz",
-        extensions: ["oz"],
-        load() {
-            return import('./oz-q-LCsuVg.js').then(m => legacy(m.oz));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Pascal",
-        extensions: ["p", "pas"],
-        load() {
-            return import('./pascal-0IgUAn4C.js').then(m => legacy(m.pascal));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Perl",
-        extensions: ["pl", "pm"],
-        load() {
-            return import('./perl-AqxdYGac.js').then(m => legacy(m.perl));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Pig",
-        extensions: ["pig"],
-        load() {
-            return import('./pig-ESM-IjQj.js').then(m => legacy(m.pig));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "PowerShell",
-        extensions: ["ps1", "psd1", "psm1"],
-        load() {
-            return import('./powershell-CLFP0L55.js').then(m => legacy(m.powerShell));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Properties files",
-        alias: ["ini", "properties"],
-        extensions: ["properties", "ini", "in"],
-        load() {
-            return import('./properties-oWHNzvb9.js').then(m => legacy(m.properties));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "ProtoBuf",
-        extensions: ["proto"],
-        load() {
-            return import('./protobuf-c7eMmdcc.js').then(m => legacy(m.protobuf));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Puppet",
-        extensions: ["pp"],
-        load() {
-            return import('./puppet-FjzvdRJr.js').then(m => legacy(m.puppet));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Q",
-        extensions: ["q"],
-        load() {
-            return import('./q-IImW8da6.js').then(m => legacy(m.q));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "R",
-        alias: ["rscript"],
-        extensions: ["r", "R"],
-        load() {
-            return import('./r-CnEkTvR0.js').then(m => legacy(m.r));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "RPM Changes",
-        load() {
-            return import('./rpm-Q55-fEHj.js').then(m => legacy(m.rpmChanges));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "RPM Spec",
-        extensions: ["spec"],
-        load() {
-            return import('./rpm-Q55-fEHj.js').then(m => legacy(m.rpmSpec));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Ruby",
-        alias: ["jruby", "macruby", "rake", "rb", "rbx"],
-        extensions: ["rb"],
-        filename: /^(Gemfile|Rakefile)$/,
-        load() {
-            return import('./ruby-zhaGB3Kh.js').then(m => legacy(m.ruby));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "SAS",
-        extensions: ["sas"],
-        load() {
-            return import('./sas-Ur9jZIOV.js').then(m => legacy(m.sas));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Scala",
-        extensions: ["scala"],
-        load() {
-            return import('./clike-q3hUF2Cx.js').then(m => legacy(m.scala));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Scheme",
-        extensions: ["scm", "ss"],
-        load() {
-            return import('./scheme-daT5-Rya.js').then(m => legacy(m.scheme));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Shell",
-        alias: ["bash", "sh", "zsh"],
-        extensions: ["sh", "ksh", "bash"],
-        filename: /^PKGBUILD$/,
-        load() {
-            return import('./shell-cwFL0AYP.js').then(m => legacy(m.shell));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Sieve",
-        extensions: ["siv", "sieve"],
-        load() {
-            return import('./sieve-MlNXFFUq.js').then(m => legacy(m.sieve));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Smalltalk",
-        extensions: ["st"],
-        load() {
-            return import('./smalltalk-xrQICp9e.js').then(m => legacy(m.smalltalk));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Solr",
-        load() {
-            return import('./solr-PU3oPgQz.js').then(m => legacy(m.solr));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "SML",
-        extensions: ["sml", "sig", "fun", "smackspec"],
-        load() {
-            return import('./mllike-ZK411xkN.js').then(m => legacy(m.sml));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "SPARQL",
-        alias: ["sparul"],
-        extensions: ["rq", "sparql"],
-        load() {
-            return import('./sparql--u8NRBii.js').then(m => legacy(m.sparql));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Spreadsheet",
-        alias: ["excel", "formula"],
-        load() {
-            return import('./spreadsheet-QCp0LifX.js').then(m => legacy(m.spreadsheet));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Squirrel",
-        extensions: ["nut"],
-        load() {
-            return import('./clike-q3hUF2Cx.js').then(m => legacy(m.squirrel));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Stylus",
-        extensions: ["styl"],
-        load() {
-            return import('./stylus--A5XAqOX.js').then(m => legacy(m.stylus));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Swift",
-        extensions: ["swift"],
-        load() {
-            return import('./swift-qAm73i7G.js').then(m => legacy(m.swift));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "sTeX",
-        load() {
-            return import('./stex-WcLBzvkD.js').then(m => legacy(m.stex));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "LaTeX",
-        alias: ["tex"],
-        extensions: ["text", "ltx", "tex"],
-        load() {
-            return import('./stex-WcLBzvkD.js').then(m => legacy(m.stex));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "SystemVerilog",
-        extensions: ["v", "sv", "svh"],
-        load() {
-            return import('./verilog-PXtXH14C.js').then(m => legacy(m.verilog));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Tcl",
-        extensions: ["tcl"],
-        load() {
-            return import('./tcl-Kdc7qxc-.js').then(m => legacy(m.tcl));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Textile",
-        extensions: ["textile"],
-        load() {
-            return import('./textile--sz8UrIz.js').then(m => legacy(m.textile));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "TiddlyWiki",
-        load() {
-            return import('./tiddlywiki-xNXTeBlQ.js').then(m => legacy(m.tiddlyWiki));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Tiki wiki",
-        load() {
-            return import('./tiki-LCXjrNH3.js').then(m => legacy(m.tiki));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "TOML",
-        extensions: ["toml"],
-        load() {
-            return import('./toml-Ac4tlBMn.js').then(m => legacy(m.toml));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Troff",
-        extensions: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-        load() {
-            return import('./troff-LLW1x1Yz.js').then(m => legacy(m.troff));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "TTCN",
-        extensions: ["ttcn", "ttcn3", "ttcnpp"],
-        load() {
-            return import('./ttcn-ZYZ9FS3u.js').then(m => legacy(m.ttcn));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "TTCN_CFG",
-        extensions: ["cfg"],
-        load() {
-            return import('./ttcn-cfg-qsvf3MfB.js').then(m => legacy(m.ttcnCfg));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Turtle",
-        extensions: ["ttl"],
-        load() {
-            return import('./turtle-wq3TqOth.js').then(m => legacy(m.turtle));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Web IDL",
-        extensions: ["webidl"],
-        load() {
-            return import('./webidl-1f8ATJ66.js').then(m => legacy(m.webIDL));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "VB.NET",
-        extensions: ["vb"],
-        load() {
-            return import('./vb-86M_JuNP.js').then(m => legacy(m.vb));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "VBScript",
-        extensions: ["vbs"],
-        load() {
-            return import('./vbscript-GueAeVug.js').then(m => legacy(m.vbScript));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Velocity",
-        extensions: ["vtl"],
-        load() {
-            return import('./velocity-7PW9GXO2.js').then(m => legacy(m.velocity));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Verilog",
-        extensions: ["v"],
-        load() {
-            return import('./verilog-PXtXH14C.js').then(m => legacy(m.verilog));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "VHDL",
-        extensions: ["vhd", "vhdl"],
-        load() {
-            return import('./vhdl-I8eyK83X.js').then(m => legacy(m.vhdl));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "XQuery",
-        extensions: ["xy", "xquery"],
-        load() {
-            return import('./xquery-IYp28Wx6.js').then(m => legacy(m.xQuery));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Yacas",
-        extensions: ["ys"],
-        load() {
-            return import('./yacas-wkENB05f.js').then(m => legacy(m.yacas));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Z80",
-        extensions: ["z80"],
-        load() {
-            return import('./z80-GaXiLdiV.js').then(m => legacy(m.z80));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "MscGen",
-        extensions: ["mscgen", "mscin", "msc"],
-        load() {
-            return import('./mscgen-Kkq4o4Zm.js').then(m => legacy(m.mscgen));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Xù",
-        extensions: ["xu"],
-        load() {
-            return import('./mscgen-Kkq4o4Zm.js').then(m => legacy(m.xu));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "MsGenny",
-        extensions: ["msgenny"],
-        load() {
-            return import('./mscgen-Kkq4o4Zm.js').then(m => legacy(m.msgenny));
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Vue",
-        extensions: ["vue"],
-        load() {
-            return import('./index-twKlT00x.js').then(m => m.vue());
-        }
-    }),
-    /*@__PURE__*/LanguageDescription.of({
-        name: "Angular Template",
-        load() {
-            return import('./index-OP9rHArW.js').then(m => m.angular());
-        }
-    })
-];
-
 /**
  * Return the active Markdown styles in the selection
  * @param update
@@ -34203,7 +34433,7 @@ async function getLanguage(languageName, fileNameOrExtension) {
     }
     console.log("getLanguage: " + languageName);
     switch (languageName) {
-        case "PlainText":
+        case "Plain Text":
             return null;
         case "Lezer":
             return lezer();
@@ -74787,11 +75017,15 @@ function getFileUploadExtensions(id, setup) {
     editorContainer.appendChild(overlay);
     const dragAndDropHandler = EditorView.domEventHandlers({
         dragenter(event, view) {
+            if (!event.dataTransfer?.files.length)
+                return;
             event.preventDefault();
             overlay.style.display = 'flex';
             depth++;
         },
         dragleave(event, view) {
+            if (!event.dataTransfer?.files.length)
+                return;
             event.preventDefault();
             depth--;
             if (depth === 0) {
@@ -74799,10 +75033,14 @@ function getFileUploadExtensions(id, setup) {
             }
         },
         dragover(event, view) {
+            if (!event.dataTransfer?.files.length)
+                return;
             event.preventDefault();
             overlay.style.display = 'flex';
         },
         drop(event, view) {
+            if (!event.dataTransfer?.files.length)
+                return;
             const transfer = event.dataTransfer;
             if (transfer?.files) {
                 overlay.style.display = 'none';
@@ -75298,6 +75536,8 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             indentationMarkers(),
             CMInstances[id].lineWrappingCompartment.of(initialConfig.lineWrapping ? EditorView.lineWrapping : []),
             CMInstances[id].unifiedMergeViewCompartment.of(initialConfig.mergeViewConfiguration ? unifiedMergeView(initialConfig.mergeViewConfiguration) : []),
+            CMInstances[id].highlightTrailingWhitespaceCompartment.of(initialConfig.highlightTrailingWhitespace ? highlightTrailingWhitespace() : []),
+            CMInstances[id].highlightWhitespaceCompartment.of(initialConfig.highlightWhitespace ? highlightWhitespace() : []),
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update); }),
             keymap.of([
                 ...closeBracketsKeymap,
@@ -75351,7 +75591,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         if (setup.closeBrackets === true)
             extensions.push(closeBrackets());
         if (setup.autocompletion === true)
-            extensions.push(autocompletion({}));
+            extensions.push(autocompletion());
         if (setup.rectangularSelection === true)
             extensions.push(rectangularSelection());
         if (setup.crossHairSelection === true)
@@ -75360,10 +75600,14 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             extensions.push(highlightActiveLine());
         if (setup.highlightSelectionMatches === true)
             extensions.push(highlightSelectionMatches());
-        if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput")
-            extensions.push(linter(async (view) => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()));
+        if (setup.scrollPastEnd === true)
+            extensions.push(scrollPastEnd());
         if (setup.allowMultipleSelections === true)
             extensions.push(EditorState.allowMultipleSelections.of(true));
+        if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput")
+            extensions.push(linter(async (view) => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()));
+        if (initialConfig.lintingEnabled === true)
+            extensions.push(lintGutter());
         extensions.push(...getFileUploadExtensions(id, setup));
         await minDelay;
         const scrollToEndEffect = EditorView.scrollIntoView(initialConfig.doc ? initialConfig.doc.length : 0, { y: 'end' });
@@ -75484,6 +75728,16 @@ async function setLanguage(id, languageName, fileNameOrExtension) {
 function setMentionCompletions(id, mentionCompletions) {
     setCachedCompletions(mentionCompletions);
     forceRedraw(id);
+}
+function setHighlightTrailingWhitespace(id, value) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].highlightTrailingWhitespaceCompartment.reconfigure(value ? highlightTrailingWhitespace() : [])
+    });
+}
+function setHighlightWhitespace(id, value) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].highlightWhitespaceCompartment.reconfigure(value ? highlightWhitespace() : [])
+    });
 }
 function forceRedraw(id) {
     const view = CMInstances[id].view;
@@ -75663,4 +75917,4 @@ function dispose(id) {
     delete CMInstances[id];
 }
 
-export { setTabSize as A, setIndentUnit as B, ContextTracker as C, setPlaceholderText as D, ExternalTokenizer as E, setTheme as F, setReadOnly as G, setEditable as H, IterMode as I, setLineWrapping as J, setUnifiedMergeView as K, LRLanguage as L, setLanguage as M, NodeWeakMap as N, setMentionCompletions as O, forceRedraw as P, setAutoFormatMarkdown as Q, setReplaceEmojiCodes as R, setDoc as S, dispatchCommand as T, dispose as U, LanguageSupport as a, indentNodeProp as b, completeFromList as c, continuedIndent as d, LRParser as e, foldNodeProp as f, syntaxTree as g, flatIndent as h, ifNotIn as i, delimitedIndent as j, foldInside as k, defineCSSCompletionSource as l, EditorView as m, EditorSelection as n, html as o, parseMixed as p, snippetCompletion as q, bracketMatchingHandle as r, styleTags as s, tags$1 as t, LocalTokenGroup as u, javascriptLanguage as v, initCodeMirror as w, getAllSupportedLanguageNames as x, setResize as y, setClassToParent as z };
+export { setTabSize as A, setIndentUnit as B, ContextTracker as C, setPlaceholderText as D, ExternalTokenizer as E, setTheme as F, setReadOnly as G, setEditable as H, IterMode as I, setLineWrapping as J, setUnifiedMergeView as K, LRLanguage as L, setLanguage as M, NodeWeakMap as N, setMentionCompletions as O, setHighlightTrailingWhitespace as P, setHighlightWhitespace as Q, forceRedraw as R, setAutoFormatMarkdown as S, setReplaceEmojiCodes as T, setDoc as U, dispatchCommand as V, dispose as W, LanguageSupport as a, LRParser as b, continuedIndent as c, ifNotIn as d, completeFromList as e, foldNodeProp as f, syntaxTree as g, flatIndent as h, indentNodeProp as i, delimitedIndent as j, foldInside as k, defineCSSCompletionSource as l, EditorView as m, EditorSelection as n, html as o, parseMixed as p, snippetCompletion as q, bracketMatchingHandle as r, styleTags as s, tags$1 as t, LocalTokenGroup as u, javascriptLanguage as v, initCodeMirror as w, getAllSupportedLanguageNames as x, setResize as y, setClassToParent as z };
