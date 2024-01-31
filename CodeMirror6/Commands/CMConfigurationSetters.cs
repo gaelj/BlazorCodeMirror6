@@ -17,7 +17,7 @@ internal class CMSetters(
     /// Call the Javascript initialization
     /// </summary>
     /// <returns></returns>
-    public Task InitCodeMirror() => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task InitCodeMirror() => cmJsInterop.ModuleInvokeVoidAsync(
         "initCodeMirror",
         _dotnetHelperRef,
         config,
@@ -28,7 +28,7 @@ internal class CMSetters(
     /// Modify the indentation tab size
     /// </summary>
     /// <returns></returns>
-    public Task SetTabSize() => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task SetTabSize() => cmJsInterop.ModuleInvokeVoidAsync(
         "setTabSize",
         config.TabSize
     );
@@ -37,7 +37,7 @@ internal class CMSetters(
     /// Modify the indentation unit
     /// </summary>
     /// <returns></returns>
-    public Task SetIndentUnit() => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task SetIndentUnit() => cmJsInterop.ModuleInvokeVoidAsync(
         "setIndentUnit",
         new string(' ', config.TabSize) // repeat space character by _codeMirror.TabSize
     );
@@ -46,7 +46,7 @@ internal class CMSetters(
     /// Modify the text
     /// </summary>
     /// <returns></returns>
-    public Task SetDoc() => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task SetDoc() => cmJsInterop.ModuleInvokeVoidAsync(
         "setDoc",
         config.Doc?.Replace("\r", "")
     );
@@ -55,7 +55,7 @@ internal class CMSetters(
     /// Set the placeholder text
     /// </summary>
     /// <returns></returns>
-    public Task SetPlaceholderText() => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task SetPlaceholderText() => cmJsInterop.ModuleInvokeVoidAsync(
         "setPlaceholderText",
         config.Placeholder
     );
@@ -64,7 +64,7 @@ internal class CMSetters(
     /// Set the theme
     /// </summary>
     /// <returns></returns>
-    public Task SetTheme() => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task SetTheme() => cmJsInterop.ModuleInvokeVoidAsync(
         "setTheme",
         config.ThemeName
     );
@@ -73,7 +73,7 @@ internal class CMSetters(
     /// Set the read-only state
     /// </summary>
     /// <returns></returns>
-    public Task SetReadOnly() => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task SetReadOnly() => cmJsInterop.ModuleInvokeVoidAsync(
         "setReadOnly",
         config.ReadOnly
     );
@@ -82,7 +82,7 @@ internal class CMSetters(
     /// Set the editable state
     /// </summary>
     /// <returns></returns>
-    public Task SetEditable() => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task SetEditable() => cmJsInterop.ModuleInvokeVoidAsync(
         "setEditable",
         config.Editable
     );
@@ -90,21 +90,22 @@ internal class CMSetters(
     /// <summary>
     /// Set the language
     /// </summary>
-    public Task SetLanguage() => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task SetLanguage() => cmJsInterop.ModuleInvokeVoidAsync(
         "setLanguage",
-        config.LanguageName
+        config.LanguageName,
+        config.FileNameOrExtension
     );
 
     /// <summary>
     /// Set the auto format markdown headers state
     /// </summary>
     /// <returns></returns>
-    public Task SetAutoFormatMarkdown() => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task SetAutoFormatMarkdown() => cmJsInterop.ModuleInvokeVoidAsync(
         "setAutoFormatMarkdown",
         config.AutoFormatMarkdown
     );
 
-    public Task SetReplaceEmojiCodes() => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task SetReplaceEmojiCodes() => cmJsInterop.ModuleInvokeVoidAsync(
         "setReplaceEmojiCodes",
         config.ReplaceEmojiCodes
     );
@@ -126,5 +127,14 @@ internal class CMSetters(
     internal Task SetLineWrapping() => cmJsInterop.ModuleInvokeVoidAsync(
         "setLineWrapping",
         config.LineWrapping
+    );
+
+    internal Task SetUnifiedMergeView() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setUnifiedMergeView",
+        config.MergeViewConfiguration
+    );
+
+    internal Task<List<string>?> GetAllSupportedLanguageNames() => cmJsInterop.ModuleInvokeAsync<List<string>>(
+        "getAllSupportedLanguageNames"
     );
 }

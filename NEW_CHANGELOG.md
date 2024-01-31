@@ -1,30 +1,21 @@
 ### ✨ Introduce new features
 
-- Diagrams & images: ensure they always fit the width of the editor, scroll into view when clicked, click image to edit its URI
+- Implement configurable Unified Merge View
+- Support and dynamically load 145 languages
+- Allow specifying FileNameOrExtension to detect language automatically (instead of specifying Language parameter)
 
-### 🐛 Fix a bug
+### ⚡️ Improve performance
 
-- Try to fix jumping issue with smaller images
-- Add missing IsWASM property
-
-### 📝 Add or update documentation
-
-- Add 2nd example page to test behavior on navigation
-- Add Blazor Server Interactive rendering mode example
-
-### 🚚 Move or rename resources (e.g., files, paths)
-
-- Move layout and menu to shared example project
+- Use record instead of class for interop DTOs: CodeMirrorCompletion/Section, CodeMirrorDiagnostic
 
 ### ⬆️ Upgrade dependencies
 
-- Npm update: @codemirror/lang-markdown 6.2.4
-- Nugets update: Microsoft.AspNetCore.Components.Web 6.0.26
-- Update all dependencies
-- Update Microsoft nugets to 8.0.1
-- Update rollup to 4.9.6
+- Update dependencies: Sentry in examples projects ; languages, merge, babel in js
 
-### 🔨 Add or update development scripts
+### 📝 Add or update documentation
 
-- Add update_nugets script
-- Cleanup make-changelog.sh
+- Add csv mode in README.md todo
+
+### 🚚 Move or rename resources (e.g., files, paths)
+
+- Move GetMentionCompletions in example, to dedicated file

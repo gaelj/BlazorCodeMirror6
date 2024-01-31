@@ -16,11 +16,12 @@ import {
     indentUnit, defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
     foldGutter, foldKeymap,
 } from "@codemirror/language"
+import { unifiedMergeView } from "@codemirror/merge"
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap, Completion } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
 import { linter, lintKeymap } from "@codemirror/lint"
 import { CmInstance, CMInstances } from "./CmInstance"
-import { CmConfiguration } from "./CmConfiguration"
+import { CmConfiguration, UnifiedMergeConfig } from "./CmConfiguration"
 import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
 import { getTheme } from "./CmTheme"
 import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLanguage"
@@ -54,6 +55,7 @@ import { DotNet } from "@microsoft/dotnet-js-interop"
 import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
 import { hideMarksExtension } from "./CmHideMarkdownMarks"
+import { languages } from "@codemirror/language-data"
 
 /**
  * Initialize a new CodeMirror instance
@@ -75,8 +77,8 @@ export async function initCodeMirror(
         CMInstances[id].setup = setup
 
         let extensions = [
-            CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName))),
-            CMInstances[id].languageCompartment.of(getLanguage(initialConfig.languageName) ?? []),
+            CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension))),
+            CMInstances[id].languageCompartment.of(await getLanguage(initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
             CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
             CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -88,6 +90,7 @@ export async function initCodeMirror(
             lastOperationWasUndo,
             indentationMarkers(),
             CMInstances[id].lineWrappingCompartment.of(initialConfig.lineWrapping ? EditorView.lineWrapping : []),
+            CMInstances[id].unifiedMergeViewCompartment.of(initialConfig.mergeViewConfiguration ? unifiedMergeView(initialConfig.mergeViewConfiguration) : []),
 
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
             keymap.of([
@@ -195,6 +198,11 @@ export async function initCodeMirror(
     }
 }
 
+export function getAllSupportedLanguageNames(id: string)
+{
+    return languages.map((language) => language.name)
+}
+
 async function updateListenerExtension(id: string, update: ViewUpdate) {
     const dotnetHelper = CMInstances[id].dotNetHelper
     const setup = CMInstances[id].setup
@@ -267,9 +275,15 @@ export function setLineWrapping(id: string, lineWrapping: boolean) {
     })
 }
 
-export function setLanguage(id: string, languageName: string) {
-    const language = getLanguage(languageName)
-    const customKeyMap = getLanguageKeyMaps(languageName)
+export function setUnifiedMergeView(id: string, mergeViewConfiguration: UnifiedMergeConfig) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].unifiedMergeViewCompartment.reconfigure(mergeViewConfiguration ? unifiedMergeView(mergeViewConfiguration) : [])
+    })
+}
+
+export async function setLanguage(id: string, languageName: string, fileNameOrExtension: string) {
+    const language = await getLanguage(languageName, fileNameOrExtension)
+    const customKeyMap = getLanguageKeyMaps(languageName, fileNameOrExtension)
     CMInstances[id].view.dispatch({
         effects: [
             CMInstances[id].languageCompartment.reconfigure(language ?? []),

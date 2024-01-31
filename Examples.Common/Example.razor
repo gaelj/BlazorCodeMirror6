@@ -10,9 +10,11 @@
 
 <label for="Language">Language</label>
 <select @bind=@Language id="Language">
-    @foreach (var language in Enum.GetValues(typeof(CodeMirrorLanguage)))
+    @foreach (var language in Languages)
     {
-        <option value="@language">@language</option>
+        var languageDisplayName = language.GetType().GetField(language.ToString())?.GetCustomAttribute<GaelJ.BlazorCodeMirror6.Converters.JsonStringValueAttribute>()?.Value;
+
+        <option value="@language">@languageDisplayName</option>
     }
 </select>
 
@@ -28,6 +30,51 @@
         await InvokeAsync(StateHasChanged);
     })
 >Reset text</button>
+
+
+<div class="d-block">
+    <label for="MergeView">Merge View</label>
+    <input id="MergeView" type="checkbox" checked=@MergeViewEnabled @onchange=@(async v => {
+        MergeViewEnabled = (v.Value as bool?) == true;
+        if (MergeViewEnabled) {
+            MergeViewConfiguration = PreviousMergeViewConfiguration ?? new() {
+                Original = code,
+                HighlightChanges = true,
+                Gutter = true,
+                MergeControls = true,
+            };
+        }
+        else {
+            PreviousMergeViewConfiguration = MergeViewConfiguration is null ? null : MergeViewConfiguration with {};
+            MergeViewConfiguration = null;
+        }
+        await InvokeAsync(StateHasChanged);
+    }) />
+
+    @if (MergeViewConfiguration is not null) {
+        <label for="MergeViewHighlightChanges">Highlight Changes</label>
+        <input id="MergeViewHighlightChanges" type="checkbox" checked=@MergeViewConfiguration.HighlightChanges
+             @onchange=@(v => {
+                MergeViewConfiguration = MergeViewConfiguration with { HighlightChanges = v.Value as bool?};
+            })
+        />
+
+        <label for="MergeViewGutter">Gutter</label>
+        <input id="MergeViewGutter" type="checkbox" checked=@MergeViewConfiguration.Gutter
+             @onchange=@(v => {
+                MergeViewConfiguration = MergeViewConfiguration with { Gutter = v.Value as bool?};
+            })
+        />
+
+        <label for="MergeViewMergeControls">Merge Controls</label>
+        <input id="MergeViewMergeControls" type="checkbox" checked=@MergeViewConfiguration.MergeControls
+             @onchange=@(async v => {
+                MergeViewConfiguration = MergeViewConfiguration with { MergeControls = v.Value as bool?};
+            })
+        />
+    }
+</div>
+
 
 <CodeMirror6Wrapper
     IsWASM=@IsWASM
@@ -47,6 +94,7 @@
     Editable
     ReadOnly=false
     LineWrapping=@LineWrapping
+    MergeViewConfiguration=@MergeViewConfiguration
     style="max-width: 100%; max-height: 60em; "
 >
     <ContentBefore Context="c">
@@ -211,6 +259,12 @@
     private bool AutoFormatMarkdown = true;
     private bool ReplaceEmojiCodes = false;
     private bool LineWrapping = true;
+    private bool MergeViewEnabled = false;
+    private List<CodeMirrorLanguage> Languages =>
+        Enum.GetValues<CodeMirrorLanguage>()
+            .OrderBy(l => l == CodeMirrorLanguage.PlainText ? 0 : 1)
+            .ThenBy(l => l.ToString())
+            .ToList();
     private readonly CodeMirrorSetup Setup = new() {
         HighlightActiveLine = false,
         LineNumbers = true,
@@ -219,6 +273,8 @@
         ScrollToEnd = true,
         BindMode = DocumentBindMode.OnDelayedInput,
     };
+    private UnifiedMergeConfig? PreviousMergeViewConfiguration;
+    private UnifiedMergeConfig? MergeViewConfiguration;
     private string ButtonClass(CodeMirrorState state, string docStyleTag = "") => ButtonClass(state.MarkdownStylesAtSelections?.Contains(docStyleTag) == true);
     private string ButtonClass(bool enabled) => enabled
         ? "btn btn-sm btn-primary"
@@ -256,93 +312,6 @@
             position += line.Length + 1;
         }
         return Task.FromResult(result);
-    }
-
-    private static async Task<List<CodeMirrorCompletion>> GetMentionCompletions()
-    {
-        await Task.Delay(1000);
-        return await Task.FromResult<List<CodeMirrorCompletion>>(
-            [
-                new CodeMirrorCompletion {
-                    Label = "abc",
-                    Detail = "Alice",
-                    Info = "Alice is a person",
-                    // Type = "variable"
-                },
-                new CodeMirrorCompletion {
-                    Label = "bcd",
-                    Detail = "Bob",
-                    Info = "Bob is a person",
-                    // Type = "variable"
-                },
-                new CodeMirrorCompletion {
-                    Label = "cde",
-                    Detail = "Carol",
-                    Info = "Carol is a person",
-                    // Type = "variable"
-                },
-                new CodeMirrorCompletion {
-                    Label = "def",
-                    Detail = "Dave",
-                    Info = "Dave is a person",
-                    // Type = "variable"
-                },
-                new CodeMirrorCompletion {
-                    Label = "eee",
-                    Detail = "Eve",
-                    Info = "Eve is a person",
-                    // Type = "variable"
-                },
-                new CodeMirrorCompletion {
-                    Label = "fff",
-                    Detail = "Frank",
-                    Info = "Frank is a person",
-                    // Type = "variable"
-                },
-                new CodeMirrorCompletion {
-                    Label = "ggg",
-                    Detail = "Grace",
-                    Info = "Grace is a person",
-                    // Type = "variable"
-                },
-                new CodeMirrorCompletion {
-                    Label = "hhh",
-                    Detail = "Heidi",
-                    Info = "Heidi is a person",
-                    // Type = "variable"
-                },
-                new CodeMirrorCompletion {
-                    Label = "Ivan",
-                    Detail = "Ivan",
-                    Info = "Ivan is a person",
-                    // Type = "variable"
-                },
-                new CodeMirrorCompletion {
-                    Label = "Judy",
-                    Detail = "Judy",
-                    Info = "Judy is a person",
-                    // Type = "variable"
-                },
-                new CodeMirrorCompletion {
-                    Label = "Mallory",
-                    Detail = "Mallory",
-                    Info = "Mallory is a person",
-                    // Type = "variable"
-                },
-                new CodeMirrorCompletion {
-                    Label = "Oscar",
-                    Detail = "Oscar",
-                    Info = "Oscar is a person",
-                    // Type = "variable"
-                },
-                new CodeMirrorCompletion {
-                    Label = "Peggy",
-                    Detail = "Peggy",
-                    Info = "Peggy is a person",
-                    // Type = "variable"
-                },
-            ]
-        );
     }
 
     private async Task<string> UploadFile(Microsoft.AspNetCore.Http.IFormFile file)

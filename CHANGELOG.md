@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.2.0 - 2024-01-31
+
+### ✨ Introduce new features
+
+- Implement configurable Unified Merge View
+- Support and dynamically load 145 languages
+- Allow specifying FileNameOrExtension to detect language automatically (instead of specifying Language parameter)
+
+### ⚡️ Improve performance
+
+- Use record instead of class for interop DTOs: CodeMirrorCompletion/Section, CodeMirrorDiagnostic
+
+### ⬆️ Upgrade dependencies
+
+- Update dependencies: Sentry in examples projects ; languages, merge, babel in js
+
+### 📝 Add or update documentation
+
+- Add csv mode in README.md todo
+
+### 🚚 Move or rename resources (e.g., files, paths)
+
+- Move GetMentionCompletions in example, to dedicated file
+
 ## 0.1.3 - 2024-01-21
 
 ### ✨ Introduce new features
