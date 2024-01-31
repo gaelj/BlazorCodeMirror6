@@ -10,11 +10,8 @@
 
 <label for="Language">Language</label>
 <select @bind=@Language id="Language">
-    @foreach (var language in Languages)
-    {
-        var languageDisplayName = language.GetType().GetField(language.ToString())?.GetCustomAttribute<GaelJ.BlazorCodeMirror6.Converters.JsonStringValueAttribute>()?.Value;
-
-        <option value="@language">@languageDisplayName</option>
+    @foreach (var language in Languages) {
+        <option value="@language">@language.DisplayName()</option>
     }
 </select>
 

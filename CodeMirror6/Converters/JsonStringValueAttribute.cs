@@ -1,12 +1,15 @@
 namespace GaelJ.BlazorCodeMirror6.Converters;
 
+/// <summary>
+/// Specifies the string value of a field when serialized to JSON.
+/// </summary>
+/// <param name="value"></param>
 [AttributeUsage(AttributeTargets.Field)]
-public class JsonStringValueAttribute : Attribute
+public class JsonStringValueAttribute(string value) : Attribute
 {
-    public string Value { get; }
-
-    public JsonStringValueAttribute(string value)
-    {
-        Value = value;
-    }
+    /// <summary>
+    /// The string value of the field when serialized to JSON.
+    /// </summary>
+    /// <value></value>
+    public string Value { get; } = value;
 }
