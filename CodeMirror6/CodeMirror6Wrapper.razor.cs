@@ -84,6 +84,10 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// <value></value>
     [Parameter] public CodeMirrorLanguage? Language { get; set; } = CodeMirrorLanguage.Markdown;
     /// <summary>
+    /// Define a file name or file extension to be used for automatic language detection / syntax highlighting
+    /// </summary>
+    [Parameter] public string? FileNameOrExtension { get; set; }
+    /// <summary>
     /// Automatically format (resize) markdown headers
     /// </summary>
     /// <value></value>
@@ -141,12 +145,15 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// Upload an IBrowserFile to a server and returns the URL to the file
     /// </summary>
     [Parameter] public Func<IBrowserFile, Task<string>>? UploadBrowserFile { get; set; }
-
     /// <summary>
     /// Define whether the component is used in a WASM or Server app. In a WASM app, JS interop can start sooner
     /// </summary>
     [Parameter] public bool IsWASM { get; set; }
-
+    /// <summary>
+    /// The unified merge view configuration
+    /// </summary>
+    /// <value></value>
+    [Parameter] public UnifiedMergeConfig? MergeViewConfiguration { get; set; }
     /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>

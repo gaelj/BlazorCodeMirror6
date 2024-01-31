@@ -21,7 +21,7 @@ Visit the [live demo](https://gaelj.github.io/BlazorCodeMirror6/) to see the com
 - [x] setting a placeholder text
 - [x] applying preset themes
 - [x] setting ReadOnly and Editable attributes
-- [x] applying syntax highlighting and auto-completion for 13 different languages
+- [x] applying syntax highlighting for 145 different languages
 - [x] manual resizing of the editor (similar to html `textarea`)
 - [x] image preview
 - [x] custom linting
@@ -32,10 +32,10 @@ Visit the [live demo](https://gaelj.github.io/BlazorCodeMirror6/) to see the com
 - [x] support long line wrapping
 - [x] support C# language
 - [x] update doc in dotnet either on text changes or on blur
+- [x] diff viewer
 - [ ] search & replace toolbar button
 - [ ] toolbar with toolbar button template
 - [ ] support read-only paragraphs
-- [ ] diff viewer
 - [ ] Implement cursor tooltips
 - [ ] Implement Copilot/AI style suggestions
 - [ ] allow setting the [Starting selection](https://codemirror.net/docs/ref/#state.EditorStateConfig.selection)
@@ -47,6 +47,7 @@ Visit the [live demo](https://gaelj.github.io/BlazorCodeMirror6/) to see the com
 - [ ] automatic translation
 - [ ] deleting a file link deletes the file from the server
 - [ ] button (visible when editor is hovered), to copy raw editor content to clipboard
+- [ ] CSV mode
 
 ### Markdown specific
 

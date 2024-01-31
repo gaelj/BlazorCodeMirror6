@@ -19,6 +19,8 @@ namespace GaelJ.BlazorCodeMirror6.Models;
 /// <param name="resize">none, vertical, horizontal or both</param>
 /// <param name="lineWrapping"></param>
 /// <param name="lintingEnabled"></param>
+/// <param name="mergeViewConfiguration"></param>
+/// <param name="fileNameOrExtension"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -32,7 +34,9 @@ public class CodeMirrorConfiguration(
     bool replaceEmojiCodes,
     string resize,
     bool lineWrapping,
-    bool lintingEnabled)
+    bool lintingEnabled,
+    UnifiedMergeConfig? mergeViewConfiguration,
+    string? fileNameOrExtension)
 {
 
     /// <summary>
@@ -77,6 +81,11 @@ public class CodeMirrorConfiguration(
     [JsonPropertyName("languageName")] public CodeMirrorLanguage? LanguageName { get; internal set; } = languageName;
 
     /// <summary>
+    /// The language to use in the editor
+    /// </summary>
+    [JsonPropertyName("fileNameOrExtension")] public string? FileNameOrExtension { get; internal set; } = fileNameOrExtension;
+
+    /// <summary>
     /// Whether to automatically format (resize) markdown headers
     /// </summary>
     [JsonPropertyName("autoFormatMarkdown")] public bool AutoFormatMarkdown { get; internal set; } = autoFormatMarkdown;
@@ -100,4 +109,9 @@ public class CodeMirrorConfiguration(
     /// Did the user provide a linting callback (internal use)
     /// </summary>
     [JsonPropertyName("lintingEnabled")] internal bool LintingEnabled { get; set; } = lintingEnabled;
+
+    /// <summary>
+    /// Unified merged view configuration
+    /// </summary>
+    [JsonPropertyName("mergeViewConfiguration")] internal UnifiedMergeConfig? MergeViewConfiguration { get; set; } = mergeViewConfiguration;
 }

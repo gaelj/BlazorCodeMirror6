@@ -4,10 +4,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
-    <Version>0.1.3</Version>
+    <Version>0.2.0</Version>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Sentry.AspNetCore" Version="3.41.3" />
+    <PackageReference Include="Sentry.AspNetCore" Version="3.41.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CodeMirror6\CodeMirror6.csproj" />
