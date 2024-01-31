@@ -1,7 +1,7 @@
 import {
     EditorView, keymap, highlightSpecialChars, drawSelection, highlightActiveLine, dropCursor,
     rectangularSelection, crosshairCursor, ViewUpdate,
-    lineNumbers, highlightActiveLineGutter, placeholder
+    lineNumbers, highlightActiveLineGutter, placeholder, scrollPastEnd,
 } from "@codemirror/view"
 import { EditorState, SelectionRange, Text } from "@codemirror/state"
 import {
@@ -16,10 +16,11 @@ import {
     indentUnit, defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
     foldGutter, foldKeymap,
 } from "@codemirror/language"
+import { languages } from "@codemirror/language-data"
 import { unifiedMergeView } from "@codemirror/merge"
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap, Completion } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
-import { linter, lintKeymap } from "@codemirror/lint"
+import { linter, lintGutter, lintKeymap } from "@codemirror/lint"
 import { CmInstance, CMInstances } from "./CmInstance"
 import { CmConfiguration, UnifiedMergeConfig } from "./CmConfiguration"
 import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
@@ -55,7 +56,6 @@ import { DotNet } from "@microsoft/dotnet-js-interop"
 import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
 import { hideMarksExtension } from "./CmHideMarkdownMarks"
-import { languages } from "@codemirror/language-data"
 
 /**
  * Initialize a new CodeMirror instance
@@ -145,15 +145,18 @@ export async function initCodeMirror(
         if (setup.syntaxHighlighting === true) extensions.push(syntaxHighlighting(defaultHighlightStyle, { fallback: true }))
         if (setup.bracketMatching === true) extensions.push(bracketMatching())
         if (setup.closeBrackets === true) extensions.push(closeBrackets())
-        if (setup.autocompletion === true) extensions.push(autocompletion({}))
+        if (setup.autocompletion === true) extensions.push(autocompletion())
         if (setup.rectangularSelection === true) extensions.push(rectangularSelection())
         if (setup.crossHairSelection === true) extensions.push(crosshairCursor())
         if (setup.highlightActiveLine === true) extensions.push(highlightActiveLine())
         if (setup.highlightSelectionMatches === true) extensions.push(highlightSelectionMatches())
+        if (setup.scrollPastEnd === true) extensions.push(scrollPastEnd())
+        if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
 
         if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput")
             extensions.push(linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()))
-        if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
+        if (initialConfig.lintingEnabled === true)
+            extensions.push(lintGutter())
 
         extensions.push(...getFileUploadExtensions(id, setup))
 

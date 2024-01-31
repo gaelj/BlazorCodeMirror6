@@ -129,4 +129,9 @@ public readonly record struct CodeMirrorSetup
     /// Bind value mode of the text area
     /// </summary>
     [JsonPropertyName("bindValueMode")] public DocumentBindMode BindMode { get; init; } = DocumentBindMode.OnLostFocus;
+
+    /// <summary>
+    /// Can the user scroll past the end of the document
+    /// </summary>
+    [JsonPropertyName("scrollPastEnd")] public bool ScrollPastEnd { get; init; } = false;
 }
