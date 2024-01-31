@@ -156,6 +156,16 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <value></value>
     [Parameter] public UnifiedMergeConfig? MergeViewConfiguration { get; set; }
     /// <summary>
+    /// Whether to allow horizontal resizing similar to a textarea
+    /// </summary>
+    /// <value></value>
+    [Parameter] public bool HighlightTrailingWhitespace { get; set; }
+    /// <summary>
+    /// Whether to allow horizontal resizing similar to a textarea
+    /// </summary>
+    /// <value></value>
+    [Parameter] public bool HighlightWhitespace { get; set; }
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     /// <value></value>
@@ -201,7 +211,9 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             LineWrapping,
             LintDocument is not null,
             MergeViewConfiguration,
-            FileNameOrExtension
+            FileNameOrExtension,
+            HighlightTrailingWhitespace,
+            HighlightWhitespace
         );
         try {
             if (IsWASM)
@@ -301,6 +313,14 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         if (Config.MergeViewConfiguration != MergeViewConfiguration) {
             Config.MergeViewConfiguration = MergeViewConfiguration;
             await CmJsInterop.PropertySetters.SetUnifiedMergeView();
+        }
+        if (Config.HighlightTrailingWhitespace != HighlightTrailingWhitespace) {
+            Config.HighlightTrailingWhitespace = HighlightTrailingWhitespace;
+            await CmJsInterop.PropertySetters.SetHighlightTrailingWhitespace();
+        }
+        if (Config.HighlightWhitespace != HighlightWhitespace) {
+            Config.HighlightWhitespace = HighlightWhitespace;
+            await CmJsInterop.PropertySetters.SetHighlightWhitespace();
         }
         shouldRender = true;
     }

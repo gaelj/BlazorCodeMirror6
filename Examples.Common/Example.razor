@@ -72,6 +72,20 @@
     }
 </div>
 
+<div class="d-block">
+    <label for="HighlightTrailingWhitespace">Highlight Trailing Whitespace</label>
+    <input id="HighlightTrailingWhitespace" type="checkbox" checked=@HighlightTrailingWhitespace @onchange=@(async v => {
+        HighlightTrailingWhitespace = (v.Value as bool?) == true;
+        await InvokeAsync(StateHasChanged);
+    }) />
+
+    <label for="HighlightWhitespace">Highlight Whitespace</label>
+    <input id="HighlightWhitespace" type="checkbox" checked=@HighlightWhitespace @onchange=@(async v => {
+        HighlightWhitespace = (v.Value as bool?) == true;
+        await InvokeAsync(StateHasChanged);
+    }) />
+</div>
+
 
 <CodeMirror6Wrapper
     IsWASM=@IsWASM
@@ -92,6 +106,8 @@
     ReadOnly=false
     LineWrapping=@LineWrapping
     MergeViewConfiguration=@MergeViewConfiguration
+    HighlightTrailingWhitespace=@HighlightTrailingWhitespace
+    HighlightWhitespace=@HighlightWhitespace
     style="max-width: 100%; max-height: 60em; "
 >
     <ContentBefore Context="c">
@@ -257,6 +273,8 @@
     private bool ReplaceEmojiCodes = false;
     private bool LineWrapping = true;
     private bool MergeViewEnabled = false;
+    private bool HighlightTrailingWhitespace = true;
+    private bool HighlightWhitespace = false;
     private List<CodeMirrorLanguage> Languages =>
         Enum.GetValues<CodeMirrorLanguage>()
             .OrderBy(l => l == CodeMirrorLanguage.PlainText ? 0 : 1)

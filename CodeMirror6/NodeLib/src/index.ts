@@ -1,7 +1,7 @@
 import {
     EditorView, keymap, highlightSpecialChars, drawSelection, highlightActiveLine, dropCursor,
-    rectangularSelection, crosshairCursor, ViewUpdate,
-    lineNumbers, highlightActiveLineGutter, placeholder, scrollPastEnd,
+    rectangularSelection, crosshairCursor, ViewUpdate, lineNumbers, highlightActiveLineGutter,
+    placeholder, scrollPastEnd, highlightTrailingWhitespace, highlightWhitespace
 } from "@codemirror/view"
 import { EditorState, SelectionRange, Text } from "@codemirror/state"
 import {
@@ -91,6 +91,8 @@ export async function initCodeMirror(
             indentationMarkers(),
             CMInstances[id].lineWrappingCompartment.of(initialConfig.lineWrapping ? EditorView.lineWrapping : []),
             CMInstances[id].unifiedMergeViewCompartment.of(initialConfig.mergeViewConfiguration ? unifiedMergeView(initialConfig.mergeViewConfiguration) : []),
+            CMInstances[id].highlightTrailingWhitespaceCompartment.of(initialConfig.highlightTrailingWhitespace ? highlightTrailingWhitespace() : []),
+            CMInstances[id].highlightWhitespaceCompartment.of(initialConfig.highlightWhitespace ? highlightWhitespace() : []),
 
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
             keymap.of([
@@ -300,6 +302,18 @@ export async function setLanguage(id: string, languageName: string, fileNameOrEx
 export function setMentionCompletions(id: string, mentionCompletions: Completion[]) {
     setCachedCompletions(mentionCompletions)
     forceRedraw(id)
+}
+
+export function setHighlightTrailingWhitespace(id: string, value: boolean) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].highlightTrailingWhitespaceCompartment.reconfigure(value ? highlightTrailingWhitespace() : [])
+    })
+}
+
+export function setHighlightWhitespace(id: string, value: boolean) {
+    CMInstances[id].view.dispatch({
+        effects: CMInstances[id].highlightWhitespaceCompartment.reconfigure(value ? highlightWhitespace() : [])
+    })
 }
 
 export function forceRedraw(id: string) {

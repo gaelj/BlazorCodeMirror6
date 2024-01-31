@@ -155,6 +155,16 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// <value></value>
     [Parameter] public UnifiedMergeConfig? MergeViewConfiguration { get; set; }
     /// <summary>
+    /// Whether to allow horizontal resizing similar to a textarea
+    /// </summary>
+    /// <value></value>
+    [Parameter] public bool HighlightTrailingWhitespace { get; set; }
+    /// <summary>
+    /// Whether to allow horizontal resizing similar to a textarea
+    /// </summary>
+    /// <value></value>
+    [Parameter] public bool HighlightWhitespace { get; set; }
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     /// <value></value>

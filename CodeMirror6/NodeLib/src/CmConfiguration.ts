@@ -19,6 +19,8 @@ export class CmConfiguration {
     public lineWrapping: boolean
     public lintingEnabled: boolean
     public mergeViewConfiguration: UnifiedMergeConfig | null
+    public highlightTrailingWhitespace: boolean
+    public highlightWhitespace: boolean
 }
 
 export interface UnifiedMergeConfig {

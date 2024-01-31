@@ -21,6 +21,8 @@ namespace GaelJ.BlazorCodeMirror6.Models;
 /// <param name="lintingEnabled"></param>
 /// <param name="mergeViewConfiguration"></param>
 /// <param name="fileNameOrExtension"></param>
+/// <param name="highlightTrailingWhitespace"></param>
+/// <param name="highlightWhitespace"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -36,7 +38,9 @@ public class CodeMirrorConfiguration(
     bool lineWrapping,
     bool lintingEnabled,
     UnifiedMergeConfig? mergeViewConfiguration,
-    string? fileNameOrExtension)
+    string? fileNameOrExtension,
+    bool highlightTrailingWhitespace,
+    bool highlightWhitespace)
 {
 
     /// <summary>
@@ -114,4 +118,14 @@ public class CodeMirrorConfiguration(
     /// Unified merged view configuration
     /// </summary>
     [JsonPropertyName("mergeViewConfiguration")] internal UnifiedMergeConfig? MergeViewConfiguration { get; set; } = mergeViewConfiguration;
+
+    /// <summary>
+    /// Whether to highlight trailing whitespace
+    /// </summary>
+    [JsonPropertyName("highlightTrailingWhitespace")] public bool HighlightTrailingWhitespace { get; internal set; } = highlightTrailingWhitespace;
+
+    /// <summary>
+    /// Whether to highlight whitespace
+    /// </summary>
+    [JsonPropertyName("highlightWhitespace")] public bool HighlightWhitespace { get; internal set; } = highlightWhitespace;
 }
