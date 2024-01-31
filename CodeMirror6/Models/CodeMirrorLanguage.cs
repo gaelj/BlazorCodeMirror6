@@ -607,7 +607,7 @@ public enum CodeMirrorLanguage
     /// <summary>
     /// Lezer
     /// </summary>
-    Lezer,
+    [JsonStringValue("Lezer")] Lezer,
 
     /// <summary>
     /// Markdown
@@ -617,7 +617,7 @@ public enum CodeMirrorLanguage
     /// <summary>
     /// Mermaid
     /// </summary>
-    Mermaid,
+    [JsonStringValue("Mermaid")] Mermaid,
 
     /// <summary>
     /// Python
