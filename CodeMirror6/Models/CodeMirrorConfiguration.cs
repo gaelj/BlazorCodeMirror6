@@ -20,6 +20,7 @@ namespace GaelJ.BlazorCodeMirror6.Models;
 /// <param name="lineWrapping"></param>
 /// <param name="lintingEnabled"></param>
 /// <param name="mergeViewConfiguration"></param>
+/// <param name="fileNameOrExtension"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -34,7 +35,8 @@ public class CodeMirrorConfiguration(
     string resize,
     bool lineWrapping,
     bool lintingEnabled,
-    UnifiedMergeConfig? mergeViewConfiguration)
+    UnifiedMergeConfig? mergeViewConfiguration,
+    string? fileNameOrExtension)
 {
 
     /// <summary>
@@ -77,6 +79,11 @@ public class CodeMirrorConfiguration(
     /// The language to use in the editor
     /// </summary>
     [JsonPropertyName("languageName")] public CodeMirrorLanguage? LanguageName { get; internal set; } = languageName;
+
+    /// <summary>
+    /// The language to use in the editor
+    /// </summary>
+    [JsonPropertyName("fileNameOrExtension")] public string? FileNameOrExtension { get; internal set; } = fileNameOrExtension;
 
     /// <summary>
     /// Whether to automatically format (resize) markdown headers

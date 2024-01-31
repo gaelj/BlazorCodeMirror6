@@ -16,7 +16,17 @@ export const languageChangeEffect = StateEffect.define<Language>()
  * @param languageName
  * @returns
  */
-export async function getLanguage(languageName: string): Promise<LanguageSupport> {
+export async function getLanguage(languageName: string, fileNameOrExtension: string): Promise<LanguageSupport> {
+    if (fileNameOrExtension) {
+        var extension = fileNameOrExtension.split('.').pop()
+        if (extension) {
+            var selectedLanguage = languages.find((language) => language.extensions.includes(extension))
+            if (selectedLanguage) {
+                console.log("loading Language: " + selectedLanguage.name)
+                return await selectedLanguage.load()
+            }
+        }
+    }
     console.log("getLanguage: " + languageName)
     switch (languageName) {
         case "PlainText":
@@ -56,7 +66,14 @@ export async function getLanguage(languageName: string): Promise<LanguageSupport
  * @param languageName
  * @returns
  */
-export function getLanguageKeyMaps(languageName: string) {
+export function getLanguageKeyMaps(languageName: string, fileNameOrExtension: string) {
+    if (fileNameOrExtension) {
+        var extension = fileNameOrExtension.split('.').pop()
+        if (extension) {
+            var selectedLanguage = languages.find((language) => language.extensions.includes(extension))
+            languageName = selectedLanguage?.name
+        }
+    }
     switch (languageName) {
         case "Markdown":
             return customMarkdownKeymap

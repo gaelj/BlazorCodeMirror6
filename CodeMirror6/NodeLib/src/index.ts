@@ -77,8 +77,8 @@ export async function initCodeMirror(
         CMInstances[id].setup = setup
 
         let extensions = [
-            CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName))),
-            CMInstances[id].languageCompartment.of(await getLanguage(initialConfig.languageName) ?? []),
+            CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension))),
+            CMInstances[id].languageCompartment.of(await getLanguage(initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
             CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
             CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -281,9 +281,9 @@ export function setUnifiedMergeView(id: string, mergeViewConfiguration: UnifiedM
     })
 }
 
-export async function setLanguage(id: string, languageName: string) {
-    const language = await getLanguage(languageName)
-    const customKeyMap = getLanguageKeyMaps(languageName)
+export async function setLanguage(id: string, languageName: string, fileNameOrExtension: string) {
+    const language = await getLanguage(languageName, fileNameOrExtension)
+    const customKeyMap = getLanguageKeyMaps(languageName, fileNameOrExtension)
     CMInstances[id].view.dispatch({
         effects: [
             CMInstances[id].languageCompartment.reconfigure(language ?? []),

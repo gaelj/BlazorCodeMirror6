@@ -84,6 +84,10 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// <value></value>
     [Parameter] public CodeMirrorLanguage? Language { get; set; } = CodeMirrorLanguage.Markdown;
     /// <summary>
+    /// Define a file name or file extension to be used for automatic language detection / syntax highlighting
+    /// </summary>
+    [Parameter] public string? FileNameOrExtension { get; set; }
+    /// <summary>
     /// Automatically format (resize) markdown headers
     /// </summary>
     /// <value></value>
@@ -150,7 +154,6 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// </summary>
     /// <value></value>
     [Parameter] public UnifiedMergeConfig? MergeViewConfiguration { get; set; }
-
     /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>

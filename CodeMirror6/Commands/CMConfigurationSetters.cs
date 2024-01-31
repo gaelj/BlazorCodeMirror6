@@ -92,7 +92,8 @@ internal class CMSetters(
     /// </summary>
     internal Task SetLanguage() => cmJsInterop.ModuleInvokeVoidAsync(
         "setLanguage",
-        config.LanguageName
+        config.LanguageName,
+        config.FileNameOrExtension
     );
 
     /// <summary>

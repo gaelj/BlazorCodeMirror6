@@ -12,6 +12,7 @@ export class CmConfiguration {
     public readOnly: boolean
     public editable: boolean
     public languageName: string
+    public fileNameOrExtension: string
     public autoFormatMarkdown: boolean
     public replaceEmojiCodes: boolean
     public resize: string

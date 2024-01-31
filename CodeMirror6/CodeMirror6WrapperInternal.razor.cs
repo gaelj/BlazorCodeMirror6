@@ -85,6 +85,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <value></value>
     [Parameter] public CodeMirrorLanguage? Language { get; set; } = CodeMirrorLanguage.Markdown;
     /// <summary>
+    /// Define a file name or file extension to be used for automatic language detection / syntax highlighting
+    /// </summary>
+    [Parameter] public string? FileNameOrExtension { get; set; }
+    /// <summary>
     /// Automatically format (resize) markdown headers
     /// </summary>
     /// <value></value>
@@ -196,7 +200,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             ResizeStyle,
             LineWrapping,
             LintDocument is not null,
-            MergeViewConfiguration
+            MergeViewConfiguration,
+            FileNameOrExtension
         );
         try {
             if (IsWASM)
@@ -271,6 +276,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         }
         if (Config.LanguageName != Language) {
             Config.LanguageName = Language;
+            await CmJsInterop.PropertySetters.SetLanguage();
+        }
+        if (Config.FileNameOrExtension != FileNameOrExtension) {
+            Config.FileNameOrExtension = FileNameOrExtension;
             await CmJsInterop.PropertySetters.SetLanguage();
         }
         if (Config.AutoFormatMarkdown != AutoFormatMarkdown) {
