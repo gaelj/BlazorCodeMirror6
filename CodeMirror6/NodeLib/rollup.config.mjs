@@ -10,5 +10,5 @@ export default {
         format: "esm",
         name: 'CodeMirror',
     },
-    plugins: [commonjs(), json(), nodeResolve(), typescript()]
+    plugins: [commonjs(), json(), nodeResolve(), typescript()],
 };

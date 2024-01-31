@@ -55,6 +55,29 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
 #pragma warning restore CS0168 // Variable is declared but never used
         }
 
+        internal async Task<T?> ModuleInvokeAsync<T>(string method, params object?[] args)
+        {
+#pragma warning disable CS0168 // Variable is declared but never used
+            try {
+                var module = await _moduleTask.Value;
+                if (module is null) return default;
+                args = args.Prepend(cm6WrapperComponent.Id).ToArray();
+                return await module.InvokeAsync<T?>(method, args);
+            }
+            catch (Exception ex)
+            {
+                #if NET8_0_OR_GREATER
+                await cm6WrapperComponent.DispatchExceptionAsync(ex);
+                return default;
+                #else
+                throw;
+                #endif
+            }
+            finally {
+            }
+#pragma warning restore CS0168 // Variable is declared but never used
+        }
+
         /// <summary>
         /// Methods to set JS CodeMirror properties to reflect the values of the blazor wrapper parameters. Internal use only.
         /// </summary>

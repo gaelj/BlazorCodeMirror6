@@ -55,6 +55,7 @@ import { DotNet } from "@microsoft/dotnet-js-interop"
 import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
 import { hideMarksExtension } from "./CmHideMarkdownMarks"
+import { languages } from "@codemirror/language-data"
 
 /**
  * Initialize a new CodeMirror instance
@@ -77,7 +78,7 @@ export async function initCodeMirror(
 
         let extensions = [
             CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName))),
-            CMInstances[id].languageCompartment.of(getLanguage(initialConfig.languageName) ?? []),
+            CMInstances[id].languageCompartment.of(await getLanguage(initialConfig.languageName) ?? []),
             CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
             CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -197,6 +198,11 @@ export async function initCodeMirror(
     }
 }
 
+export function getAllSupportedLanguageNames(id: string)
+{
+    return languages.map((language) => language.name)
+}
+
 async function updateListenerExtension(id: string, update: ViewUpdate) {
     const dotnetHelper = CMInstances[id].dotNetHelper
     const setup = CMInstances[id].setup
@@ -275,8 +281,8 @@ export function setUnifiedMergeView(id: string, mergeViewConfiguration: UnifiedM
     })
 }
 
-export function setLanguage(id: string, languageName: string) {
-    const language = getLanguage(languageName)
+export async function setLanguage(id: string, languageName: string) {
+    const language = await getLanguage(languageName)
     const customKeyMap = getLanguageKeyMaps(languageName)
     CMInstances[id].view.dispatch({
         effects: [

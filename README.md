@@ -21,7 +21,7 @@ Visit the [live demo](https://gaelj.github.io/BlazorCodeMirror6/) to see the com
 - [x] setting a placeholder text
 - [x] applying preset themes
 - [x] setting ReadOnly and Editable attributes
-- [x] applying syntax highlighting and auto-completion for 13 different languages
+- [x] applying syntax highlighting for 145 different languages
 - [x] manual resizing of the editor (similar to html `textarea`)
 - [x] image preview
 - [x] custom linting

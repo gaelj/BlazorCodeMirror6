@@ -10,9 +10,11 @@
 
 <label for="Language">Language</label>
 <select @bind=@Language id="Language">
-    @foreach (var language in Enum.GetValues(typeof(CodeMirrorLanguage)))
+    @foreach (var language in Languages)
     {
-        <option value="@language">@language</option>
+        var languageDisplayName = language.GetType().GetField(language.ToString())?.GetCustomAttribute<GaelJ.BlazorCodeMirror6.Converters.JsonStringValueAttribute>()?.Value;
+
+        <option value="@language">@languageDisplayName</option>
     }
 </select>
 
@@ -258,6 +260,11 @@
     private bool ReplaceEmojiCodes = false;
     private bool LineWrapping = true;
     private bool MergeViewEnabled = false;
+    private List<CodeMirrorLanguage> Languages =>
+        Enum.GetValues<CodeMirrorLanguage>()
+            .OrderBy(l => l == CodeMirrorLanguage.PlainText ? 0 : 1)
+            .ThenBy(l => l.ToString())
+            .ToList();
     private readonly CodeMirrorSetup Setup = new() {
         HighlightActiveLine = false,
         LineNumbers = true,
