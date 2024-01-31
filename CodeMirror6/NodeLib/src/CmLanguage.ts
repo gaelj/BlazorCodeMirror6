@@ -29,7 +29,7 @@ export async function getLanguage(languageName: string, fileNameOrExtension: str
     }
     console.log("getLanguage: " + languageName)
     switch (languageName) {
-        case "PlainText":
+        case "Plain Text":
             return null
         case "Lezer":
             return lezer()

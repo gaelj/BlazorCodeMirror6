@@ -10,11 +10,8 @@
 
 <label for="Language">Language</label>
 <select @bind=@Language id="Language">
-    @foreach (var language in Languages)
-    {
-        var languageDisplayName = language.GetType().GetField(language.ToString())?.GetCustomAttribute<GaelJ.BlazorCodeMirror6.Converters.JsonStringValueAttribute>()?.Value;
-
-        <option value="@language">@languageDisplayName</option>
+    @foreach (var language in Languages) {
+        <option value="@language">@language.DisplayName()</option>
     }
 </select>
 
@@ -75,6 +72,20 @@
     }
 </div>
 
+<div class="d-block">
+    <label for="HighlightTrailingWhitespace">Highlight Trailing Whitespace</label>
+    <input id="HighlightTrailingWhitespace" type="checkbox" checked=@HighlightTrailingWhitespace @onchange=@(async v => {
+        HighlightTrailingWhitespace = (v.Value as bool?) == true;
+        await InvokeAsync(StateHasChanged);
+    }) />
+
+    <label for="HighlightWhitespace">Highlight Whitespace</label>
+    <input id="HighlightWhitespace" type="checkbox" checked=@HighlightWhitespace @onchange=@(async v => {
+        HighlightWhitespace = (v.Value as bool?) == true;
+        await InvokeAsync(StateHasChanged);
+    }) />
+</div>
+
 
 <CodeMirror6Wrapper
     IsWASM=@IsWASM
@@ -95,6 +106,8 @@
     ReadOnly=false
     LineWrapping=@LineWrapping
     MergeViewConfiguration=@MergeViewConfiguration
+    HighlightTrailingWhitespace=@HighlightTrailingWhitespace
+    HighlightWhitespace=@HighlightWhitespace
     style="max-width: 100%; max-height: 60em; "
 >
     <ContentBefore Context="c">
@@ -260,6 +273,8 @@
     private bool ReplaceEmojiCodes = false;
     private bool LineWrapping = true;
     private bool MergeViewEnabled = false;
+    private bool HighlightTrailingWhitespace = true;
+    private bool HighlightWhitespace = false;
     private List<CodeMirrorLanguage> Languages =>
         Enum.GetValues<CodeMirrorLanguage>()
             .OrderBy(l => l == CodeMirrorLanguage.PlainText ? 0 : 1)
@@ -271,6 +286,7 @@
         HighlightActiveLineGutter = false,
         HighlightSelectionMatches = false,
         ScrollToEnd = true,
+        ScrollPastEnd = true,
         BindMode = DocumentBindMode.OnDelayedInput,
     };
     private UnifiedMergeConfig? PreviousMergeViewConfiguration;

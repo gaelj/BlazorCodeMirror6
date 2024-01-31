@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json.Serialization;
 using GaelJ.BlazorCodeMirror6.Converters;
 
@@ -12,7 +13,7 @@ public enum CodeMirrorLanguage
     /// <summary>
     /// Plain text
     /// </summary>
-    [JsonStringValue("PlainText")] PlainText,
+    [JsonStringValue("Plain Text")] PlainText,
 
     /// <summary>
     /// APL
@@ -607,7 +608,7 @@ public enum CodeMirrorLanguage
     /// <summary>
     /// Lezer
     /// </summary>
-    Lezer,
+    [JsonStringValue("Lezer")] Lezer,
 
     /// <summary>
     /// Markdown
@@ -617,7 +618,7 @@ public enum CodeMirrorLanguage
     /// <summary>
     /// Mermaid
     /// </summary>
-    Mermaid,
+    [JsonStringValue("Mermaid")] Mermaid,
 
     /// <summary>
     /// Python
@@ -733,4 +734,18 @@ public enum CodeMirrorLanguage
     /// YAML
     /// </summary>
     [JsonStringValue("YAML")] Yaml,
+}
+
+/// <summary>
+/// Extension methods for the <see cref="CodeMirrorLanguage"/> enum
+/// </summary>
+public static class CodeMirrorLanguageExtensions
+{
+    /// <summary>
+    /// Returns the display name of the language
+    /// </summary>
+    /// <param name="language"></param>
+    /// <returns></returns>
+    public static string DisplayName(this CodeMirrorLanguage language) =>
+        language.GetType().GetField(language.ToString())?.GetCustomAttribute<JsonStringValueAttribute>()?.Value ?? language.ToString();
 }

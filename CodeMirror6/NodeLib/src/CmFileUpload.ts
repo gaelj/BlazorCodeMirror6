@@ -37,11 +37,13 @@ export function getFileUploadExtensions(id: string, setup: CmSetup)
 
     const dragAndDropHandler = EditorView.domEventHandlers({
         dragenter(event, view) {
+            if (!event.dataTransfer?.files.length) return
             event.preventDefault()
             overlay.style.display = 'flex'
             depth++
         },
         dragleave(event, view) {
+            if (!event.dataTransfer?.files.length) return
             event.preventDefault();
             depth--
             if (depth === 0) {
@@ -49,10 +51,12 @@ export function getFileUploadExtensions(id: string, setup: CmSetup)
             }
         },
         dragover(event, view) {
+            if (!event.dataTransfer?.files.length) return
             event.preventDefault()
             overlay.style.display = 'flex'
         },
         drop(event, view) {
+            if (!event.dataTransfer?.files.length) return
             const transfer = event.dataTransfer
             if (transfer?.files) {
                 overlay.style.display = 'none'

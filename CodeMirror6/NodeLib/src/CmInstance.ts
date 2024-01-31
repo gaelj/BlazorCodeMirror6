@@ -24,6 +24,8 @@ export class CmInstance
     public emojiReplacerCompartment: Compartment = new Compartment
     public lineWrappingCompartment: Compartment = new Compartment
     public unifiedMergeViewCompartment: Compartment = new Compartment
+    public highlightTrailingWhitespaceCompartment: Compartment = new Compartment
+    public highlightWhitespaceCompartment: Compartment = new Compartment
 }
 
 export const CMInstances: { [id: string]: CmInstance}  = {}
