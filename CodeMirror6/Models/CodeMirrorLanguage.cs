@@ -13,7 +13,7 @@ public enum CodeMirrorLanguage
     /// <summary>
     /// Plain text
     /// </summary>
-    [JsonStringValue("PlainText")] PlainText,
+    [JsonStringValue("Plain Text")] PlainText,
 
     /// <summary>
     /// APL
