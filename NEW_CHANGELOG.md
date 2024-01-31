@@ -1,27 +1,21 @@
-## 0.1.2 - 2024-01-16
+### ✨ Introduce new features
 
-### 🐛 Fix a bug
+- Implement configurable Unified Merge View
+- Support and dynamically load 145 languages
+- Allow specifying FileNameOrExtension to detect language automatically (instead of specifying Language parameter)
 
-- Fix create github release when not using a tag ref
+### ⚡️ Improve performance
 
-## 0.1.1 - 2024-01-16
+- Use record instead of class for interop DTOs: CodeMirrorCompletion/Section, CodeMirrorDiagnostic
 
-### 👷 Add or update CI build system
+### ⬆️ Upgrade dependencies
 
-- Improvement to make automatic releases
+- Update dependencies: Sentry in examples projects ; languages, merge, babel in js
 
-### 🔨 Add or update development scripts
+### 📝 Add or update documentation
 
-- Add message in make release script
-- Include make changelog in make release script
+- Add csv mode in README.md todo
 
-## 0.1.0 - 2024-01-15
+### 🚚 Move or rename resources (e.g., files, paths)
 
-### 👷 Add or update CI build system
-
-- Replace github actions with: create tag on merge to main & deploy on tag created
-
-### 🔖 Release / Version tags
-
-- Bump version to 0.1.0
-- Adding support for targeting .NET 6
+- Move GetMentionCompletions in example, to dedicated file
