@@ -1,21 +1,14 @@
 ### ✨ Introduce new features
 
-- Implement configurable Unified Merge View
-- Support and dynamically load 145 languages
-- Allow specifying FileNameOrExtension to detect language automatically (instead of specifying Language parameter)
+- Add DisplayName() extension to CodeMirrorLanguage enum
+- Allow scrolling past the end of the document
+- Implement white space & trailing white space highlighting
 
-### ⚡️ Improve performance
+### 🐛 Fix a bug
 
-- Use record instead of class for interop DTOs: CodeMirrorCompletion/Section, CodeMirrorDiagnostic
+- Fix dragging text was highjacked by the file drag overlay
+- Fix empty language definitions in example
 
-### ⬆️ Upgrade dependencies
+### ✏️ Fix typos
 
-- Update dependencies: Sentry in examples projects ; languages, merge, babel in js
-
-### 📝 Add or update documentation
-
-- Add csv mode in README.md todo
-
-### 🚚 Move or rename resources (e.g., files, paths)
-
-- Move GetMentionCompletions in example, to dedicated file
+- Display Plain Text language name with space

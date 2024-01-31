@@ -134,6 +134,16 @@ internal class CMSetters(
         config.MergeViewConfiguration
     );
 
+    internal Task SetHighlightTrailingWhitespace() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setHighlightTrailingWhitespace",
+        config.HighlightTrailingWhitespace
+    );
+
+    internal Task SetHighlightWhitespace() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setHighlightWhitespace",
+        config.HighlightWhitespace
+    );
+
     internal Task<List<string>?> GetAllSupportedLanguageNames() => cmJsInterop.ModuleInvokeAsync<List<string>>(
         "getAllSupportedLanguageNames"
     );
