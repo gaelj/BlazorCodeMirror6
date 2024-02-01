@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.2 - 2024-02-01
+
+### ⚡️ Improve performance
+
+- Call js module dispose on blazor component dispose
+
+### ⬆️ Upgrade dependencies
+
+- Update @codemirror/lint
+
+### 🐛 Fix a bug
+
+- Ensure the js init of an editor is done only once
+
 ## 0.2.1 - 2024-01-31
 
 ### ✨ Introduce new features

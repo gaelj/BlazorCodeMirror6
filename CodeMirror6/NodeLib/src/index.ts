@@ -69,6 +69,9 @@ export async function initCodeMirror(
     initialConfig: CmConfiguration,
     setup: CmSetup
 ) {
+    if (CMInstances[id] !== undefined)
+        return;
+
     try {
         const minDelay = new Promise(res => setTimeout(res, 100))
 

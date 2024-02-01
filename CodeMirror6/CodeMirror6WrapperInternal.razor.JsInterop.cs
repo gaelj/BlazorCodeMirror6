@@ -104,6 +104,13 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             if (IsJSReady) {
                 var module = await _moduleTask.Value;
                 try {
+                    await ModuleInvokeVoidAsync("dispose");
+                }
+                catch (ObjectDisposedException) { }
+                catch (JSDisconnectedException) { }
+                catch (Exception) { }
+
+                try {
                     await module.DisposeAsync();
                 }
                 catch (ObjectDisposedException) { }
