@@ -20940,7 +20940,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-ZZbX9i6C.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-JfalRAia.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -20951,7 +20951,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-Y8K4Gt4W.js').then(m => m.cpp());
+            return import('./index-2rEjNAqh.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20959,7 +20959,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-Y8K4Gt4W.js').then(m => m.cpp());
+            return import('./index-2rEjNAqh.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20987,7 +20987,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-wiFp-tOT.js').then(m => m.java());
+            return import('./index-Ify7_PRy.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21003,7 +21003,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-j1vxx8xd.js').then(m => m.json());
+            return import('./index-CvESTgOW.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21017,14 +21017,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-w1CJyBYB.js').then(m => m.less());
+            return import('./index-keZlCnE7.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-LOkkyESA.js').then(m => m.liquid());
+            return import('./index-kHZH3Gdu.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21050,7 +21050,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-b5jGDYtE.js').then(m => m.php());
+            return import('./index-YxS-E1Ud.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21067,28 +21067,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-34T3OMu_.js').then(m => m.python());
+            return import('./index-7Lt_dzf-.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-M3eTdsH3.js').then(m => m.rust());
+            return import('./index-YUWKWix2.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-D1wSpyhC.js').then(m => m.sass({ indented: true }));
+            return import('./index-2y_O1ieO.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-D1wSpyhC.js').then(m => m.sass());
+            return import('./index-2y_O1ieO.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21119,7 +21119,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-kkwUcklc.js').then(m => m.wast());
+            return import('./index-JDk3RzyD.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21127,7 +21127,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-DHB-P_Ll.js').then(m => m.xml());
+            return import('./index-T6hR_Cy-.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21135,7 +21135,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-1WE7SjaX.js').then(m => m.yaml());
+            return import('./index-tyWc1P5h.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -21930,13 +21930,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-gl7ROpbd.js').then(m => m.vue());
+            return import('./index-CLmHwX7d.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-dL5xaxN8.js').then(m => m.angular());
+            return import('./index-pIPbIFBA.js').then(m => m.angular());
         }
     })
 ];
@@ -26008,7 +26008,7 @@ class LintState {
         let markedDiagnostics = diagnostics;
         let diagnosticFilter = state.facet(lintConfig).markerFilter;
         if (diagnosticFilter)
-            markedDiagnostics = diagnosticFilter(markedDiagnostics);
+            markedDiagnostics = diagnosticFilter(markedDiagnostics, state);
         let ranges = Decoration.set(markedDiagnostics.map((d) => {
             // For zero-length ranges or ranges covering only a line break, create a widget
             return d.from == d.to || (d.from == d.to - 1 && state.doc.lineAt(d.from).to == d.from)
@@ -26018,7 +26018,8 @@ class LintState {
                 }).range(d.from)
                 : Decoration.mark({
                     attributes: { class: "cm-lintRange cm-lintRange-" + d.severity + (d.markClass ? " " + d.markClass : "") },
-                    diagnostic: d
+                    diagnostic: d,
+                    inclusive: true
                 }).range(d.from, d.to);
         }), true);
         return new LintState(ranges, panel, findDiagnostic(ranges));
@@ -26087,7 +26088,7 @@ const lintState = /*@__PURE__*/StateField.define({
     provide: f => [showPanel.from(f, val => val.panel),
         EditorView.decorations.from(f, s => s.diagnostics)]
 });
-const activeMark = /*@__PURE__*/Decoration.mark({ class: "cm-lintRange cm-lintRange-active" });
+const activeMark = /*@__PURE__*/Decoration.mark({ class: "cm-lintRange cm-lintRange-active", inclusive: true });
 function lintTooltip(view, pos, side) {
     let { diagnostics } = view.state.field(lintState);
     let found = [], stackStart = 2e8, stackEnd = 0;
@@ -26101,7 +26102,7 @@ function lintTooltip(view, pos, side) {
     });
     let diagnosticFilter = view.state.facet(lintConfig).tooltipFilter;
     if (diagnosticFilter)
-        found = diagnosticFilter(found);
+        found = diagnosticFilter(found, view.state);
     if (!found.length)
         return null;
     return {
@@ -26182,11 +26183,12 @@ const lintPlugin = /*@__PURE__*/ViewPlugin.fromClass(class {
         else {
             this.set = false;
             let { state } = this.view, { sources } = state.facet(lintConfig);
-            Promise.all(sources.map(source => Promise.resolve(source(this.view)))).then(annotations => {
-                let all = annotations.reduce((a, b) => a.concat(b));
-                if (this.view.state.doc == state.doc)
-                    this.view.dispatch(setDiagnostics(this.view.state, all));
-            }, error => { logException(this.view.state, error); });
+            if (sources.length)
+                Promise.all(sources.map(source => Promise.resolve(source(this.view)))).then(annotations => {
+                    let all = annotations.reduce((a, b) => a.concat(b));
+                    if (this.view.state.doc == state.doc)
+                        this.view.dispatch(setDiagnostics(this.view.state, all));
+                }, error => { logException(this.view.state, error); });
         }
     }
     update(update) {
@@ -26212,7 +26214,7 @@ const lintPlugin = /*@__PURE__*/ViewPlugin.fromClass(class {
 });
 const lintConfig = /*@__PURE__*/Facet.define({
     combine(input) {
-        return Object.assign({ sources: input.map(i => i.source) }, combineConfig(input.map(i => i.config), {
+        return Object.assign({ sources: input.map(i => i.source).filter(x => x != null) }, combineConfig(input.map(i => i.config), {
             delay: 750,
             markerFilter: null,
             tooltipFilter: null,
@@ -26225,7 +26227,8 @@ const lintConfig = /*@__PURE__*/Facet.define({
 /**
 Given a diagnostic source, this function returns an extension that
 enables linting with that source. It will be called whenever the
-editor is idle (after its content changed).
+editor is idle (after its content changed). If `null` is given as
+source, this only configures the lint extension.
 */
 function linter(source, config = {}) {
     return [
@@ -26574,7 +26577,7 @@ class LintGutterMarker extends GutterMarker {
         let diagnostics = this.diagnostics;
         let diagnosticsFilter = view.state.facet(lintGutterConfig).tooltipFilter;
         if (diagnosticsFilter)
-            diagnostics = diagnosticsFilter(diagnostics);
+            diagnostics = diagnosticsFilter(diagnostics, view.state);
         if (diagnostics.length)
             elt.onmouseover = () => gutterMarkerMouseOver(view, elt, diagnostics);
         return elt;
@@ -26653,7 +26656,7 @@ const lintGutterMarkers = /*@__PURE__*/StateField.define({
             if (effect.is(setDiagnosticsEffect)) {
                 let diagnostics = effect.value;
                 if (diagnosticFilter)
-                    diagnostics = diagnosticFilter(diagnostics || []);
+                    diagnostics = diagnosticFilter(diagnostics || [], tr.state);
                 markers = markersForDiagnostics(tr.state.doc, diagnostics.slice(0));
             }
         }
@@ -75516,6 +75519,8 @@ const hideMarksExtension = (enabled = true) => {
  * @param initialConfig
  */
 async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
+    if (CMInstances[id] !== undefined)
+        return;
     try {
         const minDelay = new Promise(res => setTimeout(res, 100));
         CMInstances[id] = new CmInstance();
