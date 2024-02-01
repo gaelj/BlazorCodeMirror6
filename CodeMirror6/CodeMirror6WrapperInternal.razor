@@ -21,6 +21,7 @@
     >
     </div>
 </div>
+
 @if (ContentAfter is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
     @ContentAfter((CommandDispatcher, Config, State))
 }

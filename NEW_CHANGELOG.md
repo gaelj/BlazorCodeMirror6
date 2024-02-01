@@ -1,14 +1,11 @@
-### ✨ Introduce new features
+### ⚡️ Improve performance
 
-- Add DisplayName() extension to CodeMirrorLanguage enum
-- Allow scrolling past the end of the document
-- Implement white space & trailing white space highlighting
+- Call js module dispose on blazor component dispose
+
+### ⬆️ Upgrade dependencies
+
+- Update @codemirror/lint
 
 ### 🐛 Fix a bug
 
-- Fix dragging text was highjacked by the file drag overlay
-- Fix empty language definitions in example
-
-### ✏️ Fix typos
-
-- Display Plain Text language name with space
+- Ensure the js init of an editor is done only once
