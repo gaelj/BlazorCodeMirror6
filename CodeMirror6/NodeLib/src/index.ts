@@ -35,6 +35,8 @@ import {
     insertTextAboveCommand,
     increaseMarkdownHeadingLevel,
     decreaseMarkdownHeadingLevel,
+    insertTableAboveCommand,
+    insertHorizontalRuleAboveCommand,
 } from "./CmCommands"
 import { dynamicImagesExtension } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
@@ -413,6 +415,9 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
             case 'LineComment': lineComment(view); break;
             case 'LineUncomment': lineUncomment(view); break;
             case 'ToggleLineComment': toggleLineComment(view); break;
+
+            case 'InsertTable': insertTableAboveCommand(view, args[0] as number, args[1] as number); break;
+            case 'InsertMarkdownHorizontalRule': insertHorizontalRuleAboveCommand(view); break;
 
             case 'Focus': break;
 
