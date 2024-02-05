@@ -1,4 +1,4 @@
-import { Decoration, ViewPlugin, EditorView } from "@codemirror/view";
+import { Decoration, ViewPlugin, EditorView, KeyBinding } from "@codemirror/view";
 import { Extension, RangeSetBuilder, Transaction } from "@codemirror/state";
 import { buildWidget } from "./lib/codemirror-kit";
 
@@ -25,6 +25,42 @@ function createColumnReplaceDecoration(content: string, from: number) {
     })
 }
 
+// get next or previous column offset relative to the current position
+function getRelativeColumnOffset(text: string, separator: string, position: number, previous: boolean): number {
+    let offset = 0
+    let inQuotes = false
+    let escapeNext = false
+    let previousColumnOffset = 0
+    for (let i = 0; i < text.length; i++) {
+        if (i === position && !previous)
+            offset = 0
+        else if (i === position && previous)
+            return previousColumnOffset - position
+        const char = text[i]
+        if (escapeNext) {
+            offset++
+            escapeNext = false
+        } else if (char === '"' && i < (text.length - 1) && text[i + 1] === '"') {
+            offset++
+            escapeNext = true
+        } else if (char === '"') {
+            inQuotes = !inQuotes
+            offset++
+        } else if (char === '\\') {
+            escapeNext = true
+            offset++
+        } else if (char === separator && !inQuotes && previous) {
+            previousColumnOffset = offset
+            offset++
+        } else if (char === separator && !inQuotes && i >= position) {
+            return offset
+        } else {
+            offset++
+        }
+    }
+    return offset
+}
+
 export function columnStylingPlugin(separator: string): Extension {
     return ViewPlugin.define((view: EditorView) => {
         return {
@@ -48,7 +84,7 @@ export function columnStylingPlugin(separator: string): Extension {
                                     const padding = " ".repeat(paddingSize)
                                     const widget = createColumnReplaceDecoration(padding, line.from + cellStartOffset - 1)
                                     builder.add(line.from + cellStartOffset - 1, line.from + cellStartOffset - 1, widget)
-                                    builder.add(line.from + cellStartOffset - 1, line.from + cellStartOffset - 1, atomicDecoration)
+                                    builder.add(line.from + cellStartOffset - 1, line.from + cellStartOffset, atomicDecoration)
                                 }
                                 paddingSize = maxWidths[index] - cell.length + 1
                                 cellStartOffset += cell.length + 1 // For the cell and the comma
@@ -66,39 +102,46 @@ export function columnStylingPlugin(separator: string): Extension {
         decorations: plugin => plugin.update(),
         eventHandlers: {
             keydown: (e, view) => {
+                console.log(e)
                 if (e.ctrlKey === true || e.metaKey === true || e.altKey === true || e.shiftKey === true)
                     return
                 if (e.key === "ArrowLeft") {
-                    if (moveCursor(view, 'left'))
-                        e.preventDefault()
+                    moveCursor(view, -1)
+                    e.preventDefault()
                 }
                 else if (e.key === "ArrowRight") {
-                    if (moveCursor(view, 'right'))
-                        e.preventDefault()
+                    moveCursor(view, 1)
+                    e.preventDefault()
                 }
             }
         }
     })
 }
 
-function moveCursor(view: EditorView, direction: 'left' | 'right'): boolean {
+export const columnStylingKeymap: KeyBinding[] = [
+    { key: 'Tab', run: (view) => {
+        const offset = getRelativeColumnOffset(view.state.doc.toString(), ",", view.state.selection.main.anchor, false)
+        moveCursor(view, offset + 1)
+        return true
+    }},
+    { key: 'Shift-Tab', run: (view) => {
+        const offset = getRelativeColumnOffset(view.state.doc.toString(), ",", view.state.selection.main.anchor, true)
+        moveCursor(view, offset)
+        return true
+    }},
+]
+
+function moveCursor(view: EditorView, inc: number) {
     console.log("moveCursors")
     const { state } = view
-    const transactions: Transaction[] = []
     state.selection.main
     const range = state.selection.main
-    const inc = direction === 'right' ? 1 : -1
     const newAnchor = Math.max(Math.min(state.doc.length, range.anchor + inc), 0)
-    transactions.push(state.update({
+    view.dispatch(state.update({
         selection: { anchor: newAnchor },
         scrollIntoView: true,
         userEvent: 'input'
     }))
-    if (transactions.length > 0) {
-        view.dispatch(...transactions)
-        return true
-    }
-    return false
 }
 
 

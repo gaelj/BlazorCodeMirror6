@@ -58,8 +58,7 @@ import { DotNet } from "@microsoft/dotnet-js-interop"
 import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
 import { hideMarksExtension } from "./CmHideMarkdownMarks"
-import { columnStylingPlugin } from "./CmColumns"
-import { insertTabKeymap } from "./CmKeymap"
+import { columnStylingKeymap, columnStylingPlugin } from "./CmColumns"
 
 /**
  * Initialize a new CodeMirror instance
@@ -86,8 +85,6 @@ export async function initCodeMirror(
         const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension)
         if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
             customKeyMap.push(indentWithTab)
-        else
-            customKeyMap.push(...insertTabKeymap)
 
         let extensions = [
             CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
@@ -108,7 +105,7 @@ export async function initCodeMirror(
             CMInstances[id].highlightWhitespaceCompartment.of(initialConfig.highlightWhitespace ? highlightWhitespace() : []),
             CMInstances[id].columnsStylingCompartment.of(
                 initialConfig.languageName === "CSV" || initialConfig.languageName === "TSV"
-                    ? columnStylingPlugin(initialConfig.languageName === "CSV" ? ',' : '\t')
+                    ? [columnStylingPlugin(initialConfig.languageName === "CSV" ? ',' : '\t'), keymap.of(columnStylingKeymap)]
                     : []
                 ),
 
@@ -307,8 +304,6 @@ export async function setLanguage(id: string, languageName: string, fileNameOrEx
     const customKeyMap = getLanguageKeyMaps(languageName, fileNameOrExtension)
     if (languageName !== "CSV" && languageName !== "TSV")
         customKeyMap.push(indentWithTab)
-    else
-        customKeyMap.push(...insertTabKeymap)
 
     CMInstances[id].view.dispatch({
         effects: [
@@ -318,7 +313,7 @@ export async function setLanguage(id: string, languageName: string, fileNameOrEx
             CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, languageName === 'Markdown')),
             CMInstances[id].columnsStylingCompartment.reconfigure(
                 languageName === "CSV" || languageName === "TSV"
-                    ? columnStylingPlugin(languageName === "CSV" ? ',' : '\t')
+                    ? [columnStylingPlugin(languageName === "CSV" ? ',' : '\t'), keymap.of(columnStylingKeymap)]
                     : []
             ),
         ]
