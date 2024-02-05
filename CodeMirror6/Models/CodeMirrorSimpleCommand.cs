@@ -64,6 +64,11 @@ public enum CodeMirrorSimpleCommand
     ToggleMarkdownTaskList,
 
     /// <summary>
+    /// Insert a markdown horizontal rule above the current cursor position
+    /// </summary>
+    InsertMarkdownHorizontalRule,
+
+    /// <summary>
     /// Undo the last change
     /// </summary>
     Undo,

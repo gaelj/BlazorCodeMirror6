@@ -180,6 +180,20 @@ function modifyHeaderLevelAtSelections(view: EditorView, delta: number): boolean
     return true
 }
 
+export function insertTableAboveCommand(view: EditorView, x: number, y: number) {
+    var header = "| Header ".repeat(x) + "|"
+    var sp =     "| ------ ".repeat(x) + "|"
+    var row =    "|        ".repeat(x) + "|\n"
+    const table = `
+${header}
+${sp}
+${row.repeat(y)}
+`
+    insertTextAboveCommand(view, table)
+}
+export function insertHorizontalRuleAboveCommand(view: EditorView) {
+    insertTextAboveCommand(view, "\n---\n")
+}
 export const toggleMarkdownBold: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "**")
 export const toggleMarkdownItalic: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "*")
 export const toggleMarkdownStrikethrough: Command = (view: EditorView) => toggleCharactersAroundRanges(view, "~~")

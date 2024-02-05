@@ -26,6 +26,7 @@ export class CmInstance
     public unifiedMergeViewCompartment: Compartment = new Compartment
     public highlightTrailingWhitespaceCompartment: Compartment = new Compartment
     public highlightWhitespaceCompartment: Compartment = new Compartment
+    public columnsStylingCompartment: Compartment = new Compartment
 }
 
 export const CMInstances: { [id: string]: CmInstance}  = {}
