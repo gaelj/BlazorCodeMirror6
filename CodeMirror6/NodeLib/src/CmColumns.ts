@@ -118,14 +118,14 @@ export function columnStylingPlugin(separator: string): Extension {
     })
 }
 
-export const columnStylingKeymap: KeyBinding[] = [
+export const getColumnStylingKeymap = (separator: string): KeyBinding[] => [
     { key: 'Tab', run: (view) => {
-        const offset = getRelativeColumnOffset(view.state.doc.toString(), ",", view.state.selection.main.anchor, false)
+        const offset = getRelativeColumnOffset(view.state.doc.toString(), separator, view.state.selection.main.anchor, false)
         moveCursor(view, offset + 1)
         return true
     }},
     { key: 'Shift-Tab', run: (view) => {
-        const offset = getRelativeColumnOffset(view.state.doc.toString(), ",", view.state.selection.main.anchor, true)
+        const offset = getRelativeColumnOffset(view.state.doc.toString(), separator, view.state.selection.main.anchor, true)
         moveCursor(view, offset)
         return true
     }},

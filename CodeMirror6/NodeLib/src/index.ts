@@ -58,7 +58,7 @@ import { DotNet } from "@microsoft/dotnet-js-interop"
 import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
 import { hideMarksExtension } from "./CmHideMarkdownMarks"
-import { columnStylingKeymap, columnStylingPlugin } from "./CmColumns"
+import { getColumnStylingKeymap, columnStylingPlugin } from "./CmColumns"
 
 /**
  * Initialize a new CodeMirror instance
@@ -105,7 +105,7 @@ export async function initCodeMirror(
             CMInstances[id].highlightWhitespaceCompartment.of(initialConfig.highlightWhitespace ? highlightWhitespace() : []),
             CMInstances[id].columnsStylingCompartment.of(
                 initialConfig.languageName === "CSV" || initialConfig.languageName === "TSV"
-                    ? [columnStylingPlugin(initialConfig.languageName === "CSV" ? ',' : '\t'), keymap.of(columnStylingKeymap)]
+                    ? [columnStylingPlugin(initialConfig.languageName === "CSV" ? ',' : '\t'), keymap.of(getColumnStylingKeymap(initialConfig.languageName === "CSV" ? ',' : '\t'))]
                     : []
                 ),
 
@@ -313,7 +313,7 @@ export async function setLanguage(id: string, languageName: string, fileNameOrEx
             CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, languageName === 'Markdown')),
             CMInstances[id].columnsStylingCompartment.reconfigure(
                 languageName === "CSV" || languageName === "TSV"
-                    ? [columnStylingPlugin(languageName === "CSV" ? ',' : '\t'), keymap.of(columnStylingKeymap)]
+                    ? [columnStylingPlugin(languageName === "CSV" ? ',' : '\t'), keymap.of(getColumnStylingKeymap(languageName === "CSV" ? ',' : '\t'))]
                     : []
             ),
         ]
