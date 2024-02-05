@@ -7,7 +7,6 @@ import { CMInstances } from "./CmInstance"
 export function getFileUploadExtensions(id: string, setup: CmSetup)
 {
     const overlayId = `${id}-file-upload`
-    // check if the document already contains the overlay
     if (document.getElementById(overlayId)) return []
 
     const overlay = document.createElement("div")
@@ -30,8 +29,10 @@ export function getFileUploadExtensions(id: string, setup: CmSetup)
     `
     let depth = 0
 
-    // Append the overlay to your CodeMirror container
-    const editorContainer = document.getElementById(id) // Replace with your actual container ID
+    const editorContainer = document.getElementById(id)
+    if (!editorContainer) {
+        return []
+    }
     editorContainer.style.position = 'relative'
     editorContainer.appendChild(overlay)
 

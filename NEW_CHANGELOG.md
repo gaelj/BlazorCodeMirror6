@@ -1,9 +1,7 @@
-### ✨ Introduce new features
+### 🐛 Fix a bug
 
-- Add commands to insert markdown table and horizontal rule
-- Implement csv and tsv with padded column widths (Does not support multiline cells)
-- Add Tab and Shift-Tab keymaps to csv mode, to navigate columns
+- Fix shift-tab in csv not working on last cell
 
-### 🎨 Improve structure / format of the code
+### 🥅 Catch errors
 
-- Improve eq() of emojiWidget
+- Silence errors when DOM elements are no longer available in Diagrams (SVG) and file upload (main div)

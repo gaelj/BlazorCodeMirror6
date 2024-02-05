@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.1 - 2024-02-06
+
+### 🐛 Fix a bug
+
+- Fix shift-tab in csv not working on last cell
+
+### 🥅 Catch errors
+
+- Silence errors when DOM elements are no longer available in Diagrams (SVG) and file upload (main div)
+
 ## 0.3.0 - 2024-02-06
 
 ### ✨ Introduce new features
