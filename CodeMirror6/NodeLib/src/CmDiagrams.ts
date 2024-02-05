@@ -52,6 +52,8 @@ function readSvgDimensions(svgContent: string): { width: number, height: number 
     const parser = new DOMParser()
     const svg = parser.parseFromString(svgContent, "image/svg+xml")
     const svgElement = svg.getElementsByTagName("svg")[0]
+    if (!svgElement)
+        return { width: 0, height: 0 }
     const width = svgElement.getAttribute("width")
     const height = svgElement.getAttribute("height")
     return { width: parseInt(width), height: parseInt(height) }

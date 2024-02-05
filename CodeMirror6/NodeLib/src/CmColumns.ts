@@ -58,7 +58,9 @@ function getRelativeColumnOffset(text: string, separator: string, position: numb
             offset++
         }
     }
-    return offset
+    if (previous)
+        return previousColumnOffset - position
+    else return offset
 }
 
 export function columnStylingPlugin(separator: string): Extension {
