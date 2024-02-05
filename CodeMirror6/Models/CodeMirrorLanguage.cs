@@ -16,6 +16,16 @@ public enum CodeMirrorLanguage
     [JsonStringValue("Plain Text")] PlainText,
 
     /// <summary>
+    /// Comma-separated values
+    /// </summary>
+    [JsonStringValue("CSV")] Csv,
+
+    /// <summary>
+    /// Tabulation-separated values
+    /// </summary>
+    [JsonStringValue("TSV")] Tsv,
+
+    /// <summary>
     /// APL
     /// </summary>
     [JsonStringValue("APL")] Apl,

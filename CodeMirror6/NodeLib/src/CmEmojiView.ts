@@ -8,12 +8,13 @@ import { isCursorInRange } from './CmHelpers'
 import * as emoji from 'node-emoji'
 
 const emojiWidget = (emoji: string) => buildWidget({
-    eq: () => false,
+    eq: (other) => emoji == other.emoji,
     toDOM: () => {
         const span = document.createElement('span');
         span.textContent = emoji
         return span;
     },
+    emoji: emoji,
 })
 
 export const viewEmojiExtension = (enabled: boolean = true): Extension => {

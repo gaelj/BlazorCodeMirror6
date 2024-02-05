@@ -35,6 +35,8 @@ import {
     insertTextAboveCommand,
     increaseMarkdownHeadingLevel,
     decreaseMarkdownHeadingLevel,
+    insertTableAboveCommand,
+    insertHorizontalRuleAboveCommand,
 } from "./CmCommands"
 import { dynamicImagesExtension } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
@@ -56,6 +58,7 @@ import { DotNet } from "@microsoft/dotnet-js-interop"
 import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
 import { hideMarksExtension } from "./CmHideMarkdownMarks"
+import { getColumnStylingKeymap, columnStylingPlugin } from "./CmColumns"
 
 /**
  * Initialize a new CodeMirror instance
@@ -72,15 +75,19 @@ export async function initCodeMirror(
     if (CMInstances[id] !== undefined)
         return;
 
+    console.log(`Initializing CodeMirror instance ${id}`)
     try {
         const minDelay = new Promise(res => setTimeout(res, 100))
 
         CMInstances[id] = new CmInstance()
         CMInstances[id].dotNetHelper = dotnetHelper
         CMInstances[id].setup = setup
+        const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension)
+        if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
+            customKeyMap.push(indentWithTab)
 
         let extensions = [
-            CMInstances[id].keymapCompartment.of(keymap.of(getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension))),
+            CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
             CMInstances[id].languageCompartment.of(await getLanguage(initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
             CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
@@ -96,6 +103,11 @@ export async function initCodeMirror(
             CMInstances[id].unifiedMergeViewCompartment.of(initialConfig.mergeViewConfiguration ? unifiedMergeView(initialConfig.mergeViewConfiguration) : []),
             CMInstances[id].highlightTrailingWhitespaceCompartment.of(initialConfig.highlightTrailingWhitespace ? highlightTrailingWhitespace() : []),
             CMInstances[id].highlightWhitespaceCompartment.of(initialConfig.highlightWhitespace ? highlightWhitespace() : []),
+            CMInstances[id].columnsStylingCompartment.of(
+                initialConfig.languageName === "CSV" || initialConfig.languageName === "TSV"
+                    ? [columnStylingPlugin(initialConfig.languageName === "CSV" ? ',' : '\t'), keymap.of(getColumnStylingKeymap(initialConfig.languageName === "CSV" ? ',' : '\t'))]
+                    : []
+                ),
 
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
             keymap.of([
@@ -133,8 +145,6 @@ export async function initCodeMirror(
                 ...foldKeymap,
                 ...completionKeymap,
                 ...lintKeymap,
-
-                indentWithTab,
             ])
         ]
 
@@ -292,12 +302,20 @@ export function setUnifiedMergeView(id: string, mergeViewConfiguration: UnifiedM
 export async function setLanguage(id: string, languageName: string, fileNameOrExtension: string) {
     const language = await getLanguage(languageName, fileNameOrExtension)
     const customKeyMap = getLanguageKeyMaps(languageName, fileNameOrExtension)
+    if (languageName !== "CSV" && languageName !== "TSV")
+        customKeyMap.push(indentWithTab)
+
     CMInstances[id].view.dispatch({
         effects: [
             CMInstances[id].languageCompartment.reconfigure(language ?? []),
             CMInstances[id].keymapCompartment.reconfigure(keymap.of(customKeyMap)),
             languageChangeEffect.of(language?.language),
-            CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, languageName === 'Markdown'))
+            CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, languageName === 'Markdown')),
+            CMInstances[id].columnsStylingCompartment.reconfigure(
+                languageName === "CSV" || languageName === "TSV"
+                    ? [columnStylingPlugin(languageName === "CSV" ? ',' : '\t'), keymap.of(getColumnStylingKeymap(languageName === "CSV" ? ',' : '\t'))]
+                    : []
+            ),
         ]
     })
 }
@@ -414,6 +432,9 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
             case 'LineUncomment': lineUncomment(view); break;
             case 'ToggleLineComment': toggleLineComment(view); break;
 
+            case 'InsertTable': insertTableAboveCommand(view, args[0] as number, args[1] as number); break;
+            case 'InsertMarkdownHorizontalRule': insertHorizontalRuleAboveCommand(view); break;
+
             case 'Focus': break;
 
             default: throw new Error(`Function ${functionName} does not exist.`);
@@ -430,6 +451,7 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
  * @param id
  */
 export function dispose(id: string) {
+    console.log(`Disposing of CodeMirror instance ${id}`)
     CMInstances[id].dotNetHelper.dispose()
     CMInstances[id].dotNetHelper = undefined
     CMInstances[id].view.destroy()

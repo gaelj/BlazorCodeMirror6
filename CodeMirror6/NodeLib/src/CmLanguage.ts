@@ -30,6 +30,8 @@ export async function getLanguage(languageName: string, fileNameOrExtension: str
     console.log("getLanguage: " + languageName)
     switch (languageName) {
         case "Plain Text":
+        case "CSV":
+        case "TSV":
             return null
         case "Lezer":
             return lezer()
