@@ -20940,7 +20940,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-JMxG4-mW.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-7xm9Wmm6.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -20951,7 +20951,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-YYezdwqQ.js').then(m => m.cpp());
+            return import('./index-THNysIyD.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20959,7 +20959,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-YYezdwqQ.js').then(m => m.cpp());
+            return import('./index-THNysIyD.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20987,7 +20987,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-f8MnclsH.js').then(m => m.java());
+            return import('./index-8njZ01lJ.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21003,7 +21003,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-DU-zmNhc.js').then(m => m.json());
+            return import('./index-vkpBUxcZ.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21017,14 +21017,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-cC7zsiud.js').then(m => m.less());
+            return import('./index-FGRSvNnR.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-H0HjLQCN.js').then(m => m.liquid());
+            return import('./index-k63rRQuC.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21050,7 +21050,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-H7bXAAw9.js').then(m => m.php());
+            return import('./index-ncFWVyj1.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21067,28 +21067,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-rHYKt19r.js').then(m => m.python());
+            return import('./index-sHiG6tAG.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-LAjW-7YZ.js').then(m => m.rust());
+            return import('./index-f5lDa6tf.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-jAgpaPqq.js').then(m => m.sass({ indented: true }));
+            return import('./index-LbQm--kq.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-jAgpaPqq.js').then(m => m.sass());
+            return import('./index-LbQm--kq.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21119,7 +21119,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-S_JH-EB3.js').then(m => m.wast());
+            return import('./index-mj4w-Jii.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21127,7 +21127,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-faj-Tcht.js').then(m => m.xml());
+            return import('./index-tAWEGyv5.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21135,7 +21135,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-8TOXD_z7.js').then(m => m.yaml());
+            return import('./index-Msx4meVW.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -21930,13 +21930,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-FAiqU99h.js').then(m => m.vue());
+            return import('./index-fh2EP1vI.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-_Ed6VJdf.js').then(m => m.angular());
+            return import('./index-kRTVd8Pm.js').then(m => m.angular());
         }
     })
 ];
@@ -75311,7 +75311,7 @@ class DiagramWidget extends WidgetType {
     toDOM(view) {
         const container = document.createElement('div');
         container.setAttribute('aria-hidden', 'true');
-        if (this.svgContent === null) {
+        if (this.svgContent === null || this.svgContent === undefined) {
             container.innerHTML = `Loading ${this.language} diagram...`;
             container.style.fontStyle = 'italic';
             container.style.color = 'gray';
@@ -75319,11 +75319,13 @@ class DiagramWidget extends WidgetType {
         else {
             container.innerHTML = this.svgContent;
             const svgElement = container.getElementsByTagName("svg")[0];
-            svgElement.setAttribute('aria-hidden', 'true');
-            svgElement.style.backgroundColor = 'white';
-            svgElement.style.maxHeight = '800px';
-            svgElement.style.maxWidth = 'calc(100% - 2em)';
-            svgElement.style.objectFit = 'scale-down';
+            if (svgElement !== null && svgElement !== undefined) {
+                svgElement.setAttribute('aria-hidden', 'true');
+                svgElement.style.backgroundColor = 'white';
+                svgElement.style.maxHeight = '800px';
+                svgElement.style.maxWidth = 'calc(100% - 2em)';
+                svgElement.style.objectFit = 'scale-down';
+            }
             container.style.fontStyle = '';
             container.style.color = '';
             container.style.backgroundColor = 'transparent';
