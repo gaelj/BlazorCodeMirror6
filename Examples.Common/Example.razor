@@ -115,6 +115,7 @@
     MergeViewConfiguration=@MergeViewConfiguration
     HighlightTrailingWhitespace=@HighlightTrailingWhitespace
     HighlightWhitespace=@HighlightWhitespace
+    Visible=@Visible
     style="max-width: 100%; max-height: 60em; "
 >
     <ContentBefore Context="c">
@@ -158,7 +159,7 @@
             <button class=@ButtonClass(c.State, "Task") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ToggleMarkdownTaskList)) title="Toggle task list">
                 <i class="fa fa-tasks"></i>
             </button>
-            <button class=@ButtonClass(c.State, "") @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertOrReplaceText, "test")) title="Insert or replace text">
+            <button class=@ButtonClass(c.State) @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertOrReplaceText, "test")) title="Insert or replace text">
                 Insert or replace text
             </button>
             <button class=@ButtonClass(c.State, "HorizontalRule") @onclick=@(() => c.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertTextAbove, "\n---\n")) title="Insert separator above">
@@ -170,11 +171,20 @@
             <button class=@ButtonClass(LineWrapping) @onclick=@(() => LineWrapping = !LineWrapping) title="Toggle long line wrapping">
                 <i class="fas fa-paragraph"></i>
             </button>
-            <button class=@ButtonClass(c.State, "") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.Undo)) title="Undo (Ctrl-Z)">
+            <button class=@ButtonClass(c.State) @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.Undo)) title="Undo (Ctrl-Z)">
                 <i class="fas fa-undo"></i>
             </button>
-            <button class=@ButtonClass(c.State, "") @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.Redo)) title="Redo (Ctrl-Y)">
+            <button class=@ButtonClass(c.State) @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.Redo)) title="Redo (Ctrl-Y)">
                 <i class="fas fa-redo"></i>
+            </button>
+            <button class=@ButtonClass(c.State) @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.Cut)) title="Cut (Ctrl-X)">
+                <i class="fas fa-scissors"></i>
+            </button>
+            <button class=@ButtonClass(c.State) @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.Copy)) title="Copy (Ctrl-C)">
+                <i class="fas fa-copy"></i>
+            </button>
+            <button class=@ButtonClass(c.State) @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.Paste)) title="Cut (Ctrl-V)">
+                <i class="fas fa-paste"></i>
             </button>
         </div>
     </ContentBefore>
