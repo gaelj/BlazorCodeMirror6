@@ -99,7 +99,7 @@ export async function initCodeMirror(
             CMInstances[id].emojiReplacerCompartment.of(replaceEmojiExtension(initialConfig.replaceEmojiCodes)),
             lastOperationWasUndo,
             indentationMarkers(),
-            CMInstances[id].lineWrappingCompartment.of(initialConfig.lineWrapping ? EditorView.lineWrapping : []),
+            CMInstances[id].lineWrappingCompartment.of(initialConfig.lineWrapping && initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV" ? EditorView.lineWrapping : []),
             CMInstances[id].unifiedMergeViewCompartment.of(initialConfig.mergeViewConfiguration ? unifiedMergeView(initialConfig.mergeViewConfiguration) : []),
             CMInstances[id].highlightTrailingWhitespaceCompartment.of(initialConfig.highlightTrailingWhitespace ? highlightTrailingWhitespace() : []),
             CMInstances[id].highlightWhitespaceCompartment.of(initialConfig.highlightWhitespace ? highlightWhitespace() : []),
