@@ -1,6 +1,7 @@
 import { Decoration, ViewPlugin, EditorView, KeyBinding } from "@codemirror/view";
 import { Extension, RangeSetBuilder, Transaction } from "@codemirror/state";
 import { buildWidget } from "./lib/codemirror-kit";
+import { Diagnostic } from "@codemirror/lint";
 
 
 function createColumnReplaceDecoration(content: string, from: number) {
@@ -49,6 +50,11 @@ function getRelativeColumnOffset(text: string, separator: string, position: numb
         } else if (char === '\\') {
             escapeNext = true
             offset++
+        } else if (char === '\n' && previous) {
+            previousColumnOffset = offset
+            offset++
+        } else if (char === '\n' && i >= position) {
+            return offset
         } else if (char === separator && !inQuotes && previous) {
             previousColumnOffset = offset
             offset++
@@ -132,6 +138,35 @@ export const getColumnStylingKeymap = (separator: string): KeyBinding[] => [
         return true
     }},
 ]
+
+export function getSeparator(languageName: string) {
+    if (languageName === "CSV") return ','
+    if (languageName === "TSV") return '\t'
+    return null
+}
+
+export async function columnLintSource(view: EditorView, separator: string): Promise<readonly Diagnostic[]> {
+    try {
+        const code = view.state.doc.toString()
+        const data = parseCSV(code, separator)
+        const nbCols = data[0].length
+        const errors: Diagnostic[] = []
+        for (let i = 1; i < data.length; i++) {
+            if (data[i].length !== nbCols && data[i].length !== 1) {
+                const message = `Expected ${nbCols} columns, found ${data[i].length}`
+                const from = view.state.doc.line(i + 1).from
+                const to = view.state.doc.line(i + 1).to
+                errors.push({ from, to, message, severity: 'error' })
+            }
+        }
+        if (errors.length > 0)
+            console.log('Linter found:', errors)
+        return errors
+    } catch (error) {
+        console.error('Linter error:', error)
+        return
+    }
+}
 
 function moveCursor(view: EditorView, inc: number) {
     console.log("moveCursors")

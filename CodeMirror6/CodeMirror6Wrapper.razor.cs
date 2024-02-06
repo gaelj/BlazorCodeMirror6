@@ -165,6 +165,11 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// <value></value>
     [Parameter] public bool HighlightWhitespace { get; set; }
     /// <summary>
+    /// Whether the editor is visible
+    /// </summary>
+    /// <value></value>
+    [Parameter] public bool Visible { get; set; }
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     /// <value></value>
