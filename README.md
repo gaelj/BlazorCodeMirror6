@@ -86,7 +86,7 @@ Visit the [live demo](https://gaelj.github.io/BlazorCodeMirror6/) to see the com
 ## Quick Start
 
 - add the nuget package [GaelJ.BlazorCodeMirror6](https://www.nuget.org/packages/GaelJ.BlazorCodeMirror6/)
-- Add `@using using GaelJ.BlazorCodeMirror6`, `@using GaelJ.BlazorCodeMirror6.Commands` and `@using GaelJ.BlazorCodeMirror6.Models.BlazorCodeMirror6` in your `_Imports.razor` or page/component
+- Add `@using GaelJ.BlazorCodeMirror6`, `@using GaelJ.BlazorCodeMirror6.Commands` and `@using GaelJ.BlazorCodeMirror6.Models` in your `_Imports.razor` or page/component
 - Use the `<CodeMirror6Wrapper />` component as demonstrated in `Examples.Common/Example.razor`
 
 ## Examples
