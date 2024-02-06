@@ -9,7 +9,8 @@ export async function externalLintSource(view: EditorView, dotnetHelper: DotNet.
     try {
         const code = view.state.doc.toString()
         const errors: Diagnostic[] = await dotnetHelper.invokeMethodAsync("LintingRequestedFromJS", code)
-        console.log('Linter found:', errors)
+        if (errors.length > 0)
+            console.log('Linter found:', errors)
         return errors
     } catch (error) {
         console.error('Linter error:', error)

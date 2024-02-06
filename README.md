@@ -33,6 +33,7 @@ Visit the [live demo](https://gaelj.github.io/BlazorCodeMirror6/) to see the com
 - [x] support C# language
 - [x] update doc in dotnet either on text changes or on blur
 - [x] diff viewer
+- [x] CSV mode: add column paddings for alignment, navigate columns with tab / shift-tab
 - [ ] search & replace toolbar button
 - [ ] toolbar with toolbar button template
 - [ ] support read-only paragraphs
@@ -47,7 +48,6 @@ Visit the [live demo](https://gaelj.github.io/BlazorCodeMirror6/) to see the com
 - [ ] automatic translation
 - [ ] deleting a file link deletes the file from the server
 - [ ] button (visible when editor is hovered), to copy raw editor content to clipboard
-- [ ] CSV mode
 
 ### Markdown specific
 
