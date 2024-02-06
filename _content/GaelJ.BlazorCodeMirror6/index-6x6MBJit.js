@@ -20940,7 +20940,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-VSXRzyjn.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-JMxG4-mW.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -20951,7 +20951,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-jvGdPTOA.js').then(m => m.cpp());
+            return import('./index-YYezdwqQ.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20959,7 +20959,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-jvGdPTOA.js').then(m => m.cpp());
+            return import('./index-YYezdwqQ.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20987,7 +20987,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-jIOeFAUX.js').then(m => m.java());
+            return import('./index-f8MnclsH.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21003,7 +21003,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-trk26sad.js').then(m => m.json());
+            return import('./index-DU-zmNhc.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21017,14 +21017,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-H8fDyK21.js').then(m => m.less());
+            return import('./index-cC7zsiud.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-guXj97Ce.js').then(m => m.liquid());
+            return import('./index-H0HjLQCN.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21050,7 +21050,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-R4n-22dV.js').then(m => m.php());
+            return import('./index-H7bXAAw9.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21067,28 +21067,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-tdg4fSIW.js').then(m => m.python());
+            return import('./index-rHYKt19r.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-LcdX9oBC.js').then(m => m.rust());
+            return import('./index-LAjW-7YZ.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-_3NDI1Yl.js').then(m => m.sass({ indented: true }));
+            return import('./index-jAgpaPqq.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-_3NDI1Yl.js').then(m => m.sass());
+            return import('./index-jAgpaPqq.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21119,7 +21119,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-T1NUwuxI.js').then(m => m.wast());
+            return import('./index-S_JH-EB3.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21127,7 +21127,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-sLVTHpev.js').then(m => m.xml());
+            return import('./index-faj-Tcht.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21135,7 +21135,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-Cq7xbkt9.js').then(m => m.yaml());
+            return import('./index-8TOXD_z7.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -21930,13 +21930,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-D59NdkC6.js').then(m => m.vue());
+            return import('./index-FAiqU99h.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-x5_esEP4.js').then(m => m.angular());
+            return import('./index-_Ed6VJdf.js').then(m => m.angular());
         }
     })
 ];
@@ -39587,7 +39587,8 @@ async function externalLintSource(view, dotnetHelper) {
     try {
         const code = view.state.doc.toString();
         const errors = await dotnetHelper.invokeMethodAsync("LintingRequestedFromJS", code);
-        console.log('Linter found:', errors);
+        if (errors.length > 0)
+            console.log('Linter found:', errors);
         return errors;
     }
     catch (error) {
@@ -75582,6 +75583,13 @@ function getRelativeColumnOffset(text, separator, position, previous) {
             escapeNext = true;
             offset++;
         }
+        else if (char === '\n' && previous) {
+            previousColumnOffset = offset;
+            offset++;
+        }
+        else if (char === '\n' && i >= position) {
+            return offset;
+        }
         else if (char === separator && !inQuotes && previous) {
             previousColumnOffset = offset;
             offset++;
@@ -75665,6 +75673,36 @@ const getColumnStylingKeymap = (separator) => [
             return true;
         } },
 ];
+function getSeparator(languageName) {
+    if (languageName === "CSV")
+        return ',';
+    if (languageName === "TSV")
+        return '\t';
+    return null;
+}
+async function columnLintSource(view, separator) {
+    try {
+        const code = view.state.doc.toString();
+        const data = parseCSV(code, separator);
+        const nbCols = data[0].length;
+        const errors = [];
+        for (let i = 1; i < data.length; i++) {
+            if (data[i].length !== nbCols && data[i].length !== 1) {
+                const message = `Expected ${nbCols} columns, found ${data[i].length}`;
+                const from = view.state.doc.line(i + 1).from;
+                const to = view.state.doc.line(i + 1).to;
+                errors.push({ from, to, message, severity: 'error' });
+            }
+        }
+        if (errors.length > 0)
+            console.log('Linter found:', errors);
+        return errors;
+    }
+    catch (error) {
+        console.error('Linter error:', error);
+        return;
+    }
+}
 function moveCursor(view, inc) {
     console.log("moveCursors");
     const { state } = view;
@@ -75772,12 +75810,16 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             CMInstances[id].emojiReplacerCompartment.of(replaceEmojiExtension(initialConfig.replaceEmojiCodes)),
             lastOperationWasUndo,
             indentationMarkers(),
-            CMInstances[id].lineWrappingCompartment.of(initialConfig.lineWrapping ? EditorView.lineWrapping : []),
+            CMInstances[id].lineWrappingCompartment.of(initialConfig.lineWrapping && initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV" ? EditorView.lineWrapping : []),
             CMInstances[id].unifiedMergeViewCompartment.of(initialConfig.mergeViewConfiguration ? unifiedMergeView(initialConfig.mergeViewConfiguration) : []),
             CMInstances[id].highlightTrailingWhitespaceCompartment.of(initialConfig.highlightTrailingWhitespace ? highlightTrailingWhitespace() : []),
             CMInstances[id].highlightWhitespaceCompartment.of(initialConfig.highlightWhitespace ? highlightWhitespace() : []),
             CMInstances[id].columnsStylingCompartment.of(initialConfig.languageName === "CSV" || initialConfig.languageName === "TSV"
-                ? [columnStylingPlugin(initialConfig.languageName === "CSV" ? ',' : '\t'), keymap.of(getColumnStylingKeymap(initialConfig.languageName === "CSV" ? ',' : '\t'))]
+                ? [
+                    columnStylingPlugin(getSeparator(initialConfig.languageName)),
+                    keymap.of(getColumnStylingKeymap(getSeparator(initialConfig.languageName))),
+                    linter(async (view) => columnLintSource(view, getSeparator(initialConfig.languageName))),
+                ]
                 : []),
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update); }),
             keymap.of([
@@ -75958,6 +76000,7 @@ async function setLanguage(id, languageName, fileNameOrExtension) {
     const customKeyMap = getLanguageKeyMaps(languageName, fileNameOrExtension);
     if (languageName !== "CSV" && languageName !== "TSV")
         customKeyMap.push(indentWithTab);
+    const separator = getSeparator(languageName);
     CMInstances[id].view.dispatch({
         effects: [
             CMInstances[id].languageCompartment.reconfigure(language ?? []),
@@ -75965,7 +76008,11 @@ async function setLanguage(id, languageName, fileNameOrExtension) {
             languageChangeEffect.of(language?.language),
             CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, languageName === 'Markdown')),
             CMInstances[id].columnsStylingCompartment.reconfigure(languageName === "CSV" || languageName === "TSV"
-                ? [columnStylingPlugin(languageName === "CSV" ? ',' : '\t'), keymap.of(getColumnStylingKeymap(languageName === "CSV" ? ',' : '\t'))]
+                ? [
+                    columnStylingPlugin(separator),
+                    keymap.of(getColumnStylingKeymap(separator)),
+                    linter(async (view) => columnLintSource(view, separator)),
+                ]
                 : []),
         ]
     });
