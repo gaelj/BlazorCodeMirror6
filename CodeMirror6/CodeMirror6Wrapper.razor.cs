@@ -168,7 +168,7 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// Whether the editor is visible
     /// </summary>
     /// <value></value>
-    [Parameter] public bool Visible { get; set; }
+    [Parameter] public bool Visible { get; set; } = true;
     /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
