@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.3 - 2024-02-06
+
+### 🐛 Fix a bug
+
+- Fix crash when creating new diagram
+- Fix typo in readme (imports)
+
 ## 0.3.2 - 2024-02-06
 
 ### ⚡️ Improve performance
