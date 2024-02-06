@@ -177,4 +177,19 @@ public enum CodeMirrorSimpleCommand
     /// Focus the CodeMirror editor
     /// </summary>
     Focus,
+
+    /// <summary>
+    /// Cut the current selection
+    /// </summary>
+    Cut,
+
+    /// <summary>
+    /// Copy the current selection
+    /// </summary>
+    Copy,
+
+    /// <summary>
+    /// Paste the current selection
+    /// </summary>
+    Paste,
 }

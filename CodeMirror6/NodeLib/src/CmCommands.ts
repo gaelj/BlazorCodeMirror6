@@ -203,10 +203,10 @@ export const toggleMarkdownQuote: Command = (view: EditorView) => toggleCharacte
 export function toggleMarkdownHeading(headingLevel: number): Command {
     return (view: EditorView) => toggleCharactersAtStartOfLines(view, "#".repeat(headingLevel), false)
 }
-export const increaseMarkdownHeadingLevel: Command = (view: EditorView) =>  {
+export const increaseMarkdownHeadingLevel: Command = (view: EditorView) => {
     return modifyHeaderLevelAtSelections(view, -1);
 }
-export const decreaseMarkdownHeadingLevel: Command = (view: EditorView) =>  {
+export const decreaseMarkdownHeadingLevel: Command = (view: EditorView) => {
     return modifyHeaderLevelAtSelections(view, 1);
 }
 export const toggleMarkdownUnorderedList: Command = (view: EditorView) => toggleCharactersAtStartOfLines(view, "-", true)
@@ -248,4 +248,39 @@ export function insertTextAboveCommand(view: EditorView, textToInsert: string) {
     view.dispatch(
         view.state.update(changeSpec, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), })
     )
+}
+
+export async function copy(view: EditorView) {
+    try {
+        const text = view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to);
+        if (text === null || text === undefined || text === "") return;
+        await navigator.clipboard.writeText(text)
+        view.focus()
+        return true
+    } catch (err) {
+        console.error('Failed to copy text: ', err);
+        return false;
+    }
+}
+
+export async function cut(view: EditorView) {
+    if (await copy(view))
+        view.dispatch(view.state.update({
+            changes: { from: view.state.selection.main.from, to: view.state.selection.main.to, insert: "" },
+            scrollIntoView: true
+        }));
+}
+
+export async function paste(view: EditorView): Promise<boolean> {
+    try {
+        const text = await navigator.clipboard.readText();
+        view.dispatch(view.state.update({
+            changes: { from: view.state.selection.main.from, to: view.state.selection.main.to, insert: text },
+            scrollIntoView: true
+        }));
+        return true;
+    } catch (err) {
+        console.error('Failed to paste text: ', err);
+        return false;
+    }
 }

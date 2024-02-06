@@ -70,6 +70,7 @@ async function fetchDiagramSvg(view: EditorView, code: string, language: string,
             headers: {
                 'Content-Type': 'text/plain',
                 'Accept': 'image/svg+xml',
+                'mode': 'no-cors',
             },
             body: code
         })
