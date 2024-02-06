@@ -49,6 +49,11 @@ function getRelativeColumnOffset(text: string, separator: string, position: numb
         } else if (char === '\\') {
             escapeNext = true
             offset++
+        } else if (char === '\n' && previous) {
+            previousColumnOffset = offset
+            offset++
+        } else if (char === '\n' && i >= position) {
+            return offset
         } else if (char === separator && !inQuotes && previous) {
             previousColumnOffset = offset
             offset++
