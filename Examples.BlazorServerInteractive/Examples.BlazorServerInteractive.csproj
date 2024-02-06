@@ -4,7 +4,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
-    <Version>0.3.3</Version>
+    <Version>0.3.4</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Sentry.AspNetCore" Version="3.41.4" />

@@ -37,6 +37,9 @@ import {
     decreaseMarkdownHeadingLevel,
     insertTableAboveCommand,
     insertHorizontalRuleAboveCommand,
+    cut,
+    copy,
+    paste,
 } from "./CmCommands"
 import { dynamicImagesExtension } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
@@ -443,6 +446,10 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
 
             case 'InsertTable': insertTableAboveCommand(view, args[0] as number, args[1] as number); break;
             case 'InsertMarkdownHorizontalRule': insertHorizontalRuleAboveCommand(view); break;
+
+            case 'Cut': cut(view); break;
+            case 'Copy': copy(view); break;
+            case 'Paste': paste(view); break;
 
             case 'Focus': break;
 
