@@ -20940,7 +20940,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-7xm9Wmm6.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-mG1kv3xy.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -20951,7 +20951,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-THNysIyD.js').then(m => m.cpp());
+            return import('./index-6y1FcZ6Y.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20959,7 +20959,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-THNysIyD.js').then(m => m.cpp());
+            return import('./index-6y1FcZ6Y.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20987,7 +20987,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-8njZ01lJ.js').then(m => m.java());
+            return import('./index-HpMLvq8f.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21003,7 +21003,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-vkpBUxcZ.js').then(m => m.json());
+            return import('./index-Ccq2OT9M.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21017,14 +21017,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-FGRSvNnR.js').then(m => m.less());
+            return import('./index-cmkuNdzL.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-k63rRQuC.js').then(m => m.liquid());
+            return import('./index-6Q5jsCNG.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21050,7 +21050,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-ncFWVyj1.js').then(m => m.php());
+            return import('./index-PghWDGT3.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21067,28 +21067,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-sHiG6tAG.js').then(m => m.python());
+            return import('./index-PbuPt1YK.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-f5lDa6tf.js').then(m => m.rust());
+            return import('./index-XybibK0Z.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-LbQm--kq.js').then(m => m.sass({ indented: true }));
+            return import('./index-8Q_nyvIc.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-LbQm--kq.js').then(m => m.sass());
+            return import('./index-8Q_nyvIc.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21119,7 +21119,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-mj4w-Jii.js').then(m => m.wast());
+            return import('./index-Y8t3kqw1.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21127,7 +21127,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-tAWEGyv5.js').then(m => m.xml());
+            return import('./index-tzdWNRFn.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21135,7 +21135,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-Msx4meVW.js').then(m => m.yaml());
+            return import('./index-YUokM5m2.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -21930,13 +21930,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-fh2EP1vI.js').then(m => m.vue());
+            return import('./index-FMBlDkpE.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-kRTVd8Pm.js').then(m => m.angular());
+            return import('./index-wmkch-im.js').then(m => m.angular());
         }
     })
 ];
@@ -34422,6 +34422,41 @@ function insertTextAboveCommand(view, textToInsert) {
         };
     });
     view.dispatch(view.state.update(changeSpec, { scrollIntoView: true, annotations: Transaction.userEvent.of('input'), }));
+}
+async function copy(view) {
+    try {
+        const text = view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to);
+        if (text === null || text === undefined || text === "")
+            return;
+        await navigator.clipboard.writeText(text);
+        view.focus();
+        return true;
+    }
+    catch (err) {
+        console.error('Failed to copy text: ', err);
+        return false;
+    }
+}
+async function cut(view) {
+    if (await copy(view))
+        view.dispatch(view.state.update({
+            changes: { from: view.state.selection.main.from, to: view.state.selection.main.to, insert: "" },
+            scrollIntoView: true
+        }));
+}
+async function paste(view) {
+    try {
+        const text = await navigator.clipboard.readText();
+        view.dispatch(view.state.update({
+            changes: { from: view.state.selection.main.from, to: view.state.selection.main.to, insert: text },
+            scrollIntoView: true
+        }));
+        return true;
+    }
+    catch (err) {
+        console.error('Failed to paste text: ', err);
+        return false;
+    }
 }
 
 const customMarkdownKeymap = [
@@ -75258,6 +75293,7 @@ async function fetchDiagramSvg(view, code, language, krokiUrl) {
             headers: {
                 'Content-Type': 'text/plain',
                 'Accept': 'image/svg+xml',
+                'mode': 'no-cors',
             },
             body: code
         });
@@ -76195,6 +76231,15 @@ function dispatchCommand(id, functionName, ...args) {
                 break;
             case 'InsertMarkdownHorizontalRule':
                 insertHorizontalRuleAboveCommand(view);
+                break;
+            case 'Cut':
+                cut(view);
+                break;
+            case 'Copy':
+                copy(view);
+                break;
+            case 'Paste':
+                paste(view);
                 break;
             case 'Focus': break;
             default: throw new Error(`Function ${functionName} does not exist.`);
