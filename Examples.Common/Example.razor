@@ -1,4 +1,4 @@
-﻿<h1>Code Mirror 6 Wrapper Demo</h1>
+<h1>Code Mirror 6 Wrapper Demo</h1>
 
 <label for="Theme">Theme</label>
 <select @bind=@Theme id="Theme">
@@ -86,6 +86,13 @@
     }) />
 </div>
 
+
+<button class="btn btn-primary"
+    @onclick=@(async () => {
+        Visible = !Visible;
+        await InvokeAsync(StateHasChanged);
+    })
+>Toggle visibility</button>
 
 <CodeMirror6Wrapper
     IsWASM=@IsWASM
@@ -275,6 +282,7 @@
     private bool MergeViewEnabled = false;
     private bool HighlightTrailingWhitespace = true;
     private bool HighlightWhitespace = false;
+    private bool Visible = true;
     private List<CodeMirrorLanguage> Languages =>
         Enum.GetValues<CodeMirrorLanguage>()
             .OrderBy(l => l == CodeMirrorLanguage.PlainText ? 0 : 1)
