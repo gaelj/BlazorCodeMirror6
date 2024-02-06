@@ -149,7 +149,7 @@ class DiagramWidget extends WidgetType {
         const container = document.createElement('div')
         container.setAttribute('aria-hidden', 'true')
 
-        if (this.svgContent === null) {
+        if (this.svgContent === null || this.svgContent === undefined) {
             container.innerHTML = `Loading ${this.language} diagram...`
             container.style.fontStyle = 'italic'
             container.style.color = 'gray'
@@ -157,11 +157,13 @@ class DiagramWidget extends WidgetType {
         else {
             container.innerHTML = this.svgContent
             const svgElement = container.getElementsByTagName("svg")[0]
-            svgElement.setAttribute('aria-hidden', 'true')
-            svgElement.style.backgroundColor = 'white'
-            svgElement.style.maxHeight = '800px'
-            svgElement.style.maxWidth = 'calc(100% - 2em)'
-            svgElement.style.objectFit = 'scale-down'
+            if (svgElement !== null && svgElement !== undefined) {
+                svgElement.setAttribute('aria-hidden', 'true')
+                svgElement.style.backgroundColor = 'white'
+                svgElement.style.maxHeight = '800px'
+                svgElement.style.maxWidth = 'calc(100% - 2em)'
+                svgElement.style.objectFit = 'scale-down'
+            }
             container.style.fontStyle = ''
             container.style.color = ''
             container.style.backgroundColor = 'transparent'
