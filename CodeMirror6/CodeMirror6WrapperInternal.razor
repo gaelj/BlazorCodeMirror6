@@ -1,4 +1,4 @@
-﻿@if (ContentBefore is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
+﻿@if (Visible && ContentBefore is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
     @ContentBefore((CommandDispatcher, Config, State))
 }
 @if (!IsLoaded) {
@@ -22,6 +22,6 @@
     </div>
 </div>
 
-@if (ContentAfter is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
+@if (Visible && ContentAfter is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
     @ContentAfter((CommandDispatcher, Config, State))
 }
