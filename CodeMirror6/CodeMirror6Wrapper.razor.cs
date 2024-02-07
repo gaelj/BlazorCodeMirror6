@@ -181,6 +181,12 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// <returns></returns>
     public CMCommandDispatcher? CommandDispatcher => CodeMirror6WrapperInternalRef.CmJsInterop?.CommandDispatcher;
 
+    /// <summary>
+    /// State of the CodeMirror6 editor
+    /// </summary>
+    /// <returns></returns>
+    public CodeMirrorState State => CodeMirror6WrapperInternalRef.State;
+
     private CodeMirror6WrapperInternal CodeMirror6WrapperInternalRef = null!;
     private ErrorBoundary? ErrorBoundary;
 

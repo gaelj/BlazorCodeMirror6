@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.5 - 2024-02-07
+
+### ✨ Introduce new features
+
+- Expose CodeMirrorState, for @ref access
+
+### 🐛 Fix a bug
+
+- Don't use no-cors header
+
+### 📝 Add or update documentation
+
+- Fix menu title in example project
+
 ## 0.3.4 - 2024-02-06
 
 ### ✨ Introduce new features
