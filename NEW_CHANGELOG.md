@@ -1,13 +1,11 @@
 ### ✨ Introduce new features
 
-- Implement clipboard commands
+- Expose CodeMirrorState, for @ref access
 
 ### 🐛 Fix a bug
 
-- Add no-cors header to diagram requests
-- Hide additional content when not visible
-- Make visible by default
+- Don't use no-cors header
 
 ### 📝 Add or update documentation
 
-- Add visibility toggle to example
+- Fix menu title in example project
