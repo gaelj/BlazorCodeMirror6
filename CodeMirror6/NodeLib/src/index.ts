@@ -290,7 +290,8 @@ export function setResize(id: string, resize: string) {
 export function setClassToParent(id: string, className: string, classNamesToRemove: string[]) {
     const dom = CMInstances[id].view.dom.parentElement
     classNamesToRemove.forEach(c => dom.classList.remove(c))
-    dom.classList.add(className)
+    if (dom?.classList)
+        dom.classList.add(className)
 }
 
 export function setTabSize(id: string, size: number) {
