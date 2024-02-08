@@ -10,6 +10,5 @@ public class JsonStringValueAttribute(string value) : Attribute
     /// <summary>
     /// The string value of the field when serialized to JSON.
     /// </summary>
-    /// <value></value>
     public string Value { get; } = value;
 }
