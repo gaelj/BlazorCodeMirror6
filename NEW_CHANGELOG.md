@@ -1,11 +1,11 @@
-### ✨ Introduce new features
-
-- Expose CodeMirrorState, for @ref access
-
 ### 🐛 Fix a bug
 
-- Don't use no-cors header
+- Try to fix random crash at startup
 
-### 📝 Add or update documentation
+### 💥 Introduce breaking changes
 
-- Fix menu title in example project
+- Move Id from parameter to Setup, as it should never be changed
+
+### 🔊 Add or update logs
+
+- Add DebugLogs setup parameter to print debug logs

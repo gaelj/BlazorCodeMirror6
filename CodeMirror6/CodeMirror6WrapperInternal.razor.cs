@@ -3,6 +3,7 @@ using GaelJ.BlazorCodeMirror6.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
 namespace GaelJ.BlazorCodeMirror6;
@@ -13,12 +14,8 @@ namespace GaelJ.BlazorCodeMirror6;
 public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposable
 {
     [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
-    /// <summary>
-    /// /// Gets or sets the unique identifier for the CodeMirror6 editor.
-    /// Defaults to CodeMirror6_Editor_{NewGuid}.
-    /// </summary>
-    /// <value></value>
-    [Parameter] public string Id { get; set; } = $"CodeMirror6_Editor_{Guid.NewGuid()}";
+    [Inject] private ILogger<CodeMirror6WrapperInternal> Logger { get; set; } = null!;
+
     /// <summary>
     /// The size of the tab character to use for the editor
     /// </summary>
@@ -182,7 +179,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     public CMCommandDispatcher? CommandDispatcher => CmJsInterop?.CommandDispatcher;
 
-    private string LoadingDivId => $"{Id}_Loading";
+    private string LoadingDivId => $"{Setup.Id}_Loading";
     private string ResizeStyle => AllowVerticalResize && AllowHorizontalResize
         ? "both"
         : AllowVerticalResize ? "vertical"
@@ -264,71 +261,78 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         shouldRender = true;
         if (CmJsInterop is null) return;
         shouldRender = false;
-        if (Config.TabSize != TabSize) {
-            Config.TabSize = TabSize;
-            await CmJsInterop.PropertySetters.SetTabSize();
+        try {
+            if (Config.TabSize != TabSize) {
+                Config.TabSize = TabSize;
+                await CmJsInterop.PropertySetters.SetTabSize();
+            }
+            if (Config.IndentationUnit != IndentationUnit) {
+                Config.IndentationUnit = IndentationUnit;
+                await CmJsInterop.PropertySetters.SetIndentUnit();
+            }
+            if (Config.Doc?.Replace("\r", "") != Doc?.Replace("\r", "")) {
+                Config.Doc = Doc;
+                await CmJsInterop.PropertySetters.SetDoc();
+            }
+            if (Config.Placeholder != Placeholder) {
+                Config.Placeholder = Placeholder;
+                await CmJsInterop.PropertySetters.SetPlaceholderText();
+            }
+            if (Config.ThemeName != Theme) {
+                Config.ThemeName = Theme;
+                await CmJsInterop.PropertySetters.SetTheme();
+            }
+            if (Config.ReadOnly != ReadOnly) {
+                Config.ReadOnly = ReadOnly;
+                await CmJsInterop.PropertySetters.SetReadOnly();
+            }
+            if (Config.Editable != Editable) {
+                Config.Editable = Editable;
+                await CmJsInterop.PropertySetters.SetEditable();
+            }
+            if (Config.LanguageName != Language) {
+                Config.LanguageName = Language;
+                await CmJsInterop.PropertySetters.SetLanguage();
+            }
+            if (Config.FileNameOrExtension != FileNameOrExtension) {
+                Config.FileNameOrExtension = FileNameOrExtension;
+                await CmJsInterop.PropertySetters.SetLanguage();
+            }
+            if (Config.AutoFormatMarkdown != AutoFormatMarkdown) {
+                Config.AutoFormatMarkdown = AutoFormatMarkdown;
+                await CmJsInterop.PropertySetters.SetAutoFormatMarkdown();
+            }
+            if (Config.ReplaceEmojiCodes != ReplaceEmojiCodes) {
+                Config.ReplaceEmojiCodes = ReplaceEmojiCodes;
+                await CmJsInterop.PropertySetters.SetReplaceEmojiCodes();
+            }
+            if (Config.Resize != ResizeStyle) {
+                Config.Resize = ResizeStyle;
+                await CmJsInterop.PropertySetters.SetResize();
+            }
+            if (Config.LineWrapping != LineWrapping) {
+                Config.LineWrapping = LineWrapping;
+                await CmJsInterop.PropertySetters.SetLineWrapping();
+            }
+            if (Config.MergeViewConfiguration != MergeViewConfiguration) {
+                Config.MergeViewConfiguration = MergeViewConfiguration;
+                await CmJsInterop.PropertySetters.SetUnifiedMergeView();
+            }
+            if (Config.HighlightTrailingWhitespace != HighlightTrailingWhitespace) {
+                Config.HighlightTrailingWhitespace = HighlightTrailingWhitespace;
+                await CmJsInterop.PropertySetters.SetHighlightTrailingWhitespace();
+            }
+            if (Config.HighlightWhitespace != HighlightWhitespace) {
+                Config.HighlightWhitespace = HighlightWhitespace;
+                await CmJsInterop.PropertySetters.SetHighlightWhitespace();
+            }
         }
-        if (Config.IndentationUnit != IndentationUnit) {
-            Config.IndentationUnit = IndentationUnit;
-            await CmJsInterop.PropertySetters.SetIndentUnit();
+        catch (Exception ex) {
+            Logger.LogError(ex, "Error setting CodeMirror6 properties");
         }
-        if (Config.Doc?.Replace("\r", "") != Doc?.Replace("\r", "")) {
-            Config.Doc = Doc;
-            await CmJsInterop.PropertySetters.SetDoc();
+        finally {
+            shouldRender = true;
         }
-        if (Config.Placeholder != Placeholder) {
-            Config.Placeholder = Placeholder;
-            await CmJsInterop.PropertySetters.SetPlaceholderText();
-        }
-        if (Config.ThemeName != Theme) {
-            Config.ThemeName = Theme;
-            await CmJsInterop.PropertySetters.SetTheme();
-        }
-        if (Config.ReadOnly != ReadOnly) {
-            Config.ReadOnly = ReadOnly;
-            await CmJsInterop.PropertySetters.SetReadOnly();
-        }
-        if (Config.Editable != Editable) {
-            Config.Editable = Editable;
-            await CmJsInterop.PropertySetters.SetEditable();
-        }
-        if (Config.LanguageName != Language) {
-            Config.LanguageName = Language;
-            await CmJsInterop.PropertySetters.SetLanguage();
-        }
-        if (Config.FileNameOrExtension != FileNameOrExtension) {
-            Config.FileNameOrExtension = FileNameOrExtension;
-            await CmJsInterop.PropertySetters.SetLanguage();
-        }
-        if (Config.AutoFormatMarkdown != AutoFormatMarkdown) {
-            Config.AutoFormatMarkdown = AutoFormatMarkdown;
-            await CmJsInterop.PropertySetters.SetAutoFormatMarkdown();
-        }
-        if (Config.ReplaceEmojiCodes != ReplaceEmojiCodes) {
-            Config.ReplaceEmojiCodes = ReplaceEmojiCodes;
-            await CmJsInterop.PropertySetters.SetReplaceEmojiCodes();
-        }
-        if (Config.Resize != ResizeStyle) {
-            Config.Resize = ResizeStyle;
-            await CmJsInterop.PropertySetters.SetResize();
-        }
-        if (Config.LineWrapping != LineWrapping) {
-            Config.LineWrapping = LineWrapping;
-            await CmJsInterop.PropertySetters.SetLineWrapping();
-        }
-        if (Config.MergeViewConfiguration != MergeViewConfiguration) {
-            Config.MergeViewConfiguration = MergeViewConfiguration;
-            await CmJsInterop.PropertySetters.SetUnifiedMergeView();
-        }
-        if (Config.HighlightTrailingWhitespace != HighlightTrailingWhitespace) {
-            Config.HighlightTrailingWhitespace = HighlightTrailingWhitespace;
-            await CmJsInterop.PropertySetters.SetHighlightTrailingWhitespace();
-        }
-        if (Config.HighlightWhitespace != HighlightWhitespace) {
-            Config.HighlightWhitespace = HighlightWhitespace;
-            await CmJsInterop.PropertySetters.SetHighlightWhitespace();
-        }
-        shouldRender = true;
     }
 
     /// <summary>
@@ -349,6 +353,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     {
         if (CmJsInterop?.IsJSReady == true)
             await CmJsInterop.DisposeAsync();
+        CmJsInterop = null;
         try {
             LinterCancellationTokenSource.Cancel();
             LinterCancellationTokenSource.Dispose();

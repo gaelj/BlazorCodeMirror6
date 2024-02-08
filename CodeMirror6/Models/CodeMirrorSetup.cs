@@ -16,6 +16,13 @@ public readonly record struct CodeMirrorSetup
     }
 
     /// <summary>
+    /// /// Gets or sets the unique identifier for the CodeMirror6 editor.
+    /// Defaults to CodeMirror6_Editor_{NewGuid}.
+    /// </summary>
+    /// <value></value>
+    [JsonPropertyName("id")] public string Id { get; init; } = $"CodeMirror6_Editor_{Guid.NewGuid()}";
+
+    /// <summary>
     /// Whether to show line numbers to the left of the editor.
     /// </summary>
     [JsonPropertyName("lineNumbers")] public bool LineNumbers { get; init; } = true;
@@ -134,4 +141,9 @@ public readonly record struct CodeMirrorSetup
     /// Can the user scroll past the end of the document
     /// </summary>
     [JsonPropertyName("scrollPastEnd")] public bool ScrollPastEnd { get; init; } = false;
+
+    /// <summary>
+    /// Whether to show the debug logs
+    /// </summary>
+    [JsonPropertyName("debugLogs")] public bool DebugLogs { get; init; } = false;
 }
