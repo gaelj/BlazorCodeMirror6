@@ -137,7 +137,9 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// </summary>
     [Parameter] public bool Visible { get; set; } = true;
     /// <summary>
-    /// Optional local storage key to use for saving the document
+    /// Optional local storage key to use for saving the document.
+    /// Remember to dispatch the command CodeMirrorSimpleCommand.ClearLocalStorage
+    /// to clear the local storage, for example after submitting the form.
     /// </summary>
     [Parameter] public string? LocalStorageKey { get; set; }
     /// <summary>

@@ -403,16 +403,21 @@ export function setDoc(id: string, text: string) {
 export function setLocalStorageKey(id: string, value: string) {
     saveToLocalStorage(id)
     CMInstances[id].localStorageKey = value
-    loadFromLocalStorage(id)
+    if (value)
+        loadFromLocalStorage(id)
+    else
+        clearLocalStorage(id)
+}
+
+export function clearLocalStorage(id: string) {
+    localStorage.removeItem(CMInstances[id].localStorageKey)
 }
 
 function loadFromLocalStorage(id: string) {
     const localStorageKey = CMInstances[id].localStorageKey
     if (localStorageKey) {
         const value = localStorage.getItem(localStorageKey)
-        if (value) {
-            setDoc(id, value)
-        }
+        setDoc(id, value)
     }
 }
 
@@ -420,7 +425,10 @@ function saveToLocalStorage(id: string) {
     const localStorageKey = CMInstances[id].localStorageKey
     if (localStorageKey) {
         const value = CMInstances[id].view.state.doc.toString()
-        localStorage.setItem(localStorageKey, value)
+        if (value)
+            localStorage.setItem(localStorageKey, value)
+        else
+            localStorage.removeItem(localStorageKey)
     }
 }
 
@@ -495,6 +503,7 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
             case 'Paste': paste(view); break;
 
             case 'Focus': break;
+            case 'ClearLocalStorage': clearLocalStorage(id); break;
 
             default: throw new Error(`Function ${functionName} does not exist.`);
         }

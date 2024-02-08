@@ -192,4 +192,8 @@ public enum CodeMirrorSimpleCommand
     /// Paste the current selection
     /// </summary>
     Paste,
+    /// <summary>
+    /// Clear the local storage document persistency
+    /// </summary>
+    ClearLocalStorage,
 }

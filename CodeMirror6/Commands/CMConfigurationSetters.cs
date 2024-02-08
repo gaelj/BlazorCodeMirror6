@@ -152,4 +152,8 @@ internal class CMSetters(
         "setLocalStorageKey",
         config.LocalStorageKey
     );
+
+    internal Task ClearLocalStorage() => cmJsInterop.ModuleInvokeVoidAsync(
+        "clearLocalStorage"
+    );
 }
