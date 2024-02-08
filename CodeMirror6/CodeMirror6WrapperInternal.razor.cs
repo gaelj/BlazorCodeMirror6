@@ -17,12 +17,6 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     [Inject] private ILogger<CodeMirror6WrapperInternal> Logger { get; set; } = null!;
 
     /// <summary>
-    /// /// Gets or sets the unique identifier for the CodeMirror6 editor.
-    /// Defaults to CodeMirror6_Editor_{NewGuid}.
-    /// </summary>
-    /// <value></value>
-    [Parameter] public string Id { get; set; } = $"CodeMirror6_Editor_{Guid.NewGuid()}";
-    /// <summary>
     /// The size of the tab character to use for the editor
     /// </summary>
     /// <value></value>
@@ -185,7 +179,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     public CMCommandDispatcher? CommandDispatcher => CmJsInterop?.CommandDispatcher;
 
-    private string LoadingDivId => $"{Id}_Loading";
+    private string LoadingDivId => $"{Setup.Id}_Loading";
     private string ResizeStyle => AllowVerticalResize && AllowHorizontalResize
         ? "both"
         : AllowVerticalResize ? "vertical"
