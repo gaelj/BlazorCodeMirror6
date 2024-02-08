@@ -1,4 +1,4 @@
-import { s as styleTags, t as tags, b as LRParser, L as LRLanguage, i as indentNodeProp, c as continuedIndent, f as foldNodeProp, k as foldInside, a as LanguageSupport } from './index-OuD7eSOu.js';
+import { s as styleTags, t as tags, b as LRParser, L as LRLanguage, i as indentNodeProp, c as continuedIndent, f as foldNodeProp, k as foldInside, a as LanguageSupport } from './index-Xryr0X6I.js';
 
 const jsonHighlighting = styleTags({
   String: tags.string,
