@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.6 - 2024-02-08
+
+### 🐛 Fix a bug
+
+- Try to fix random crash at startup
+
+### 💥 Introduce breaking changes
+
+- Move Id from parameter to Setup, as it should never be changed
+
+### 🔊 Add or update logs
+
+- Add DebugLogs setup parameter to print debug logs
+
 ## 0.3.5 - 2024-02-07
 
 ### ✨ Introduce new features

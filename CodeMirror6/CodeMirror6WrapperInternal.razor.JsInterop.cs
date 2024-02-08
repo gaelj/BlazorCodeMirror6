@@ -39,7 +39,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             try {
                 var module = await _moduleTask.Value;
                 if (module is null) return;
-                args = args.Prepend(cm6WrapperComponent.Id).ToArray();
+                args = args.Prepend(cm6WrapperComponent.Setup.Id).ToArray();
                 await module.InvokeVoidAsync(method, args);
             }
             catch (Exception ex)
@@ -61,7 +61,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             try {
                 var module = await _moduleTask.Value;
                 if (module is null) return default;
-                args = args.Prepend(cm6WrapperComponent.Id).ToArray();
+                args = args.Prepend(cm6WrapperComponent.Setup.Id).ToArray();
                 return await module.InvokeAsync<T?>(method, args);
             }
             catch (Exception ex)

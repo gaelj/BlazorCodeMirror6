@@ -75,10 +75,13 @@ export async function initCodeMirror(
     initialConfig: CmConfiguration,
     setup: CmSetup
 ) {
-    if (CMInstances[id] !== undefined)
-        return;
+    if (CMInstances[id] !== undefined) {
+        consoleLog(id, `CodeMirror instance ${id} already exists`)
+        return
+    }
 
-    console.log(`Initializing CodeMirror instance ${id}`)
+    if (setup.debugLogs === true)
+        console.log(`Initializing CodeMirror instance ${id}`)
     try {
         const minDelay = new Promise(res => setTimeout(res, 100))
 
@@ -223,13 +226,23 @@ export async function initCodeMirror(
     }
 }
 
-export function getAllSupportedLanguageNames(id: string)
+function consoleLog(id: string, message: string)
+{
+    if (CMInstances[id].setup.debugLogs === true)
+        console.log(message)
+}
+
+export function getAllSupportedLanguageNames()
 {
     return languages.map((language) => language.name)
 }
 
 async function updateListenerExtension(id: string, update: ViewUpdate) {
     const dotnetHelper = CMInstances[id].dotNetHelper
+    if (dotnetHelper === undefined){
+        consoleLog(id, `DotNetHelper is undefined`)
+        return
+    }
     const setup = CMInstances[id].setup
     if (update.docChanged) {
         if (setup.bindValueMode === 'OnInput')
@@ -351,7 +364,10 @@ export function setHighlightWhitespace(id: string, value: boolean) {
 
 export function forceRedraw(id: string) {
     const view = CMInstances[id].view
-    if (!view) return
+    if (!view) {
+        consoleLog(id, `View is undefined`)
+        return
+    }
 
     view.requestMeasure()
     view.update([])
@@ -467,7 +483,7 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
  * @param id
  */
 export function dispose(id: string) {
-    console.log(`Disposing of CodeMirror instance ${id}`)
+    consoleLog(id, `Disposing of CodeMirror instance ${id}`)
     CMInstances[id].dotNetHelper.dispose()
     CMInstances[id].dotNetHelper = undefined
     CMInstances[id].view.destroy()
