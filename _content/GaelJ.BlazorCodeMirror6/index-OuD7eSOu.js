@@ -20940,7 +20940,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-twRj-pgk.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-Qxc08bcy.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -20951,7 +20951,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-tGfz2N0q.js').then(m => m.cpp());
+            return import('./index-2mscYGS2.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20959,7 +20959,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-tGfz2N0q.js').then(m => m.cpp());
+            return import('./index-2mscYGS2.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20987,7 +20987,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-MgfqoBiG.js').then(m => m.java());
+            return import('./index-gqpA-ojZ.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21003,7 +21003,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-MirZGwt7.js').then(m => m.json());
+            return import('./index-WlnspQpI.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21017,14 +21017,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-ihboMfkv.js').then(m => m.less());
+            return import('./index-u7U67s1e.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-dIY2Jncx.js').then(m => m.liquid());
+            return import('./index-eyvYwdao.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21050,7 +21050,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-GPA0ZkBJ.js').then(m => m.php());
+            return import('./index-MT34_cd6.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21067,28 +21067,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-R0Uj1FXG.js').then(m => m.python());
+            return import('./index-ehcHRbGi.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-qOopzPfy.js').then(m => m.rust());
+            return import('./index-Zlwccg9s.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-ndlZ75rT.js').then(m => m.sass({ indented: true }));
+            return import('./index-t_lG9LwZ.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-ndlZ75rT.js').then(m => m.sass());
+            return import('./index-t_lG9LwZ.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21119,7 +21119,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-21oPdFu-.js').then(m => m.wast());
+            return import('./index-n-UsWvsb.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21127,7 +21127,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-TDfn8JIR.js').then(m => m.xml());
+            return import('./index-gJMAbvY-.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21135,7 +21135,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-RHbreq2i.js').then(m => m.yaml());
+            return import('./index-ia613KKA.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -21930,13 +21930,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-KPKKCHfv.js').then(m => m.vue());
+            return import('./index-RP2aqBdL.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-Rj-6Gkr6.js').then(m => m.angular());
+            return import('./index-7kYAo_s5.js').then(m => m.angular());
         }
     })
 ];
@@ -34192,19 +34192,24 @@ const ganttLanguageDescription = LanguageDescription.of({
     },
 });
 
+function consoleLog(id, message, ...optionalParams) {
+    if (CMInstances[id].setup.debugLogs === true)
+        console.log(message, ...optionalParams);
+}
+
 /**
  * Return the active Markdown styles in the selection
  * @param update
  * @returns
  */
-function getMarkdownStyleAtSelections(state) {
+function getMarkdownStyleAtSelections(id, state) {
     let styles = [];
     for (let range of state.selection.ranges) {
-        styles.push(...getMarkdownStyleAtRange(state, range));
+        styles.push(...getMarkdownStyleAtRange(id, state, range));
     }
     return styles;
 }
-function getMarkdownStyleAtRange(state, range) {
+function getMarkdownStyleAtRange(id, state, range) {
     let styles = [];
     let tree = syntaxTree(state);
     tree.iterate({
@@ -34217,7 +34222,7 @@ function getMarkdownStyleAtRange(state, range) {
             }
         }
     });
-    console.log("Active styles in range:", styles);
+    consoleLog(id, "Active styles in range:", styles);
     return styles;
 }
 function toggleCharactersAroundRange(controlChar, state, range) {
@@ -34473,18 +34478,18 @@ const languageChangeEffect = StateEffect.define();
  * @param languageName
  * @returns
  */
-async function getLanguage(languageName, fileNameOrExtension) {
+async function getLanguage(id, languageName, fileNameOrExtension) {
     if (fileNameOrExtension) {
         var extension = fileNameOrExtension.split('.').pop();
         if (extension) {
             var selectedLanguage = languages.find((language) => language.extensions.includes(extension));
             if (selectedLanguage) {
-                console.log("loading Language: " + selectedLanguage.name);
+                consoleLog(id, "loading Language: " + selectedLanguage.name);
                 return await selectedLanguage.load();
             }
         }
     }
-    console.log("getLanguage: " + languageName);
+    consoleLog(id, "getLanguage: " + languageName);
     switch (languageName) {
         case "Plain Text":
         case "CSV":
@@ -34513,7 +34518,7 @@ async function getLanguage(languageName, fileNameOrExtension) {
         default:
             var selectedLanguage = languages.find((language) => language.name === languageName);
             if (selectedLanguage) {
-                console.log("loading Language: " + selectedLanguage.name);
+                consoleLog(id, "loading Language: " + selectedLanguage.name);
                 return await selectedLanguage.load();
             }
             console.error("Language not found: " + languageName);
@@ -39618,12 +39623,12 @@ const dynamicImagesExtension = (enabled = true) => {
 /**
  * A function that fetches diagnostics from the Blazor component.
  */
-async function externalLintSource(view, dotnetHelper) {
+async function externalLintSource(id, view, dotnetHelper) {
     try {
         const code = view.state.doc.toString();
         const errors = await dotnetHelper.invokeMethodAsync("LintingRequestedFromJS", code);
         if (errors.length > 0)
-            console.log('Linter found:', errors);
+            consoleLog(id, 'Linter found:', errors);
         return errors;
     }
     catch (error) {
@@ -75132,7 +75137,7 @@ function getFileUploadExtensions(id, setup) {
             const file = files[i];
             const fileUrl = await uploadFileWithDotnet(id, file);
             fileUrls.push(fileUrl);
-            console.log("Uploaded file:", fileUrl);
+            consoleLog(id, "Uploaded file:", fileUrl);
             const fileName = files[0].name;
             var imageChar = file.type.indexOf("image/") === 0 ? "!" : "";
             var imageLink = `\n${imageChar}[${fileName}](${fileUrl})\n`;
@@ -75683,7 +75688,6 @@ function columnStylingPlugin(separator) {
         decorations: plugin => plugin.update(),
         eventHandlers: {
             keydown: (e, view) => {
-                console.log(e);
                 if (e.ctrlKey === true || e.metaKey === true || e.altKey === true || e.shiftKey === true)
                     return;
                 if (e.key === "ArrowLeft") {
@@ -75717,7 +75721,7 @@ function getSeparator(languageName) {
         return '\t';
     return null;
 }
-async function columnLintSource(view, separator) {
+async function columnLintSource(id, view, separator) {
     try {
         const code = view.state.doc.toString();
         const data = parseCSV(code, separator);
@@ -75732,7 +75736,7 @@ async function columnLintSource(view, separator) {
             }
         }
         if (errors.length > 0)
-            console.log('Linter found:', errors);
+            consoleLog(id, 'Linter found:', errors);
         return errors;
     }
     catch (error) {
@@ -75741,7 +75745,6 @@ async function columnLintSource(view, separator) {
     }
 }
 function moveCursor(view, inc) {
-    console.log("moveCursors");
     const { state } = view;
     state.selection.main;
     const range = state.selection.main;
@@ -75827,19 +75830,22 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         consoleLog(id, `CodeMirror instance ${id} already exists`);
         return;
     }
-    if (setup.debugLogs === true)
+    await loadCss("_content/GaelJ.BlazorCodeMirror6/GaelJ.BlazorCodeMirror6.bundle.scp.css");
+    if (setup.debugLogs === true) {
         console.log(`Initializing CodeMirror instance ${id}`);
+    }
     try {
         const minDelay = new Promise(res => setTimeout(res, 100));
         CMInstances[id] = new CmInstance();
         CMInstances[id].dotNetHelper = dotnetHelper;
         CMInstances[id].setup = setup;
+        CMInstances[id].localStorageKey = initialConfig.localStorageKey;
         const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension);
         if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
             customKeyMap.push(indentWithTab);
         let extensions = [
             CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
-            CMInstances[id].languageCompartment.of(await getLanguage(initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
+            CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
             CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
             CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -75858,7 +75864,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
                 ? [
                     columnStylingPlugin(getSeparator(initialConfig.languageName)),
                     keymap.of(getColumnStylingKeymap(getSeparator(initialConfig.languageName))),
-                    linter(async (view) => columnLintSource(view, getSeparator(initialConfig.languageName))),
+                    linter(async (view) => columnLintSource(id, view, getSeparator(initialConfig.languageName))),
                 ]
                 : []),
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update); }),
@@ -75926,18 +75932,21 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             extensions.push(scrollPastEnd());
         if (setup.allowMultipleSelections === true)
             extensions.push(EditorState.allowMultipleSelections.of(true));
-        if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput")
-            extensions.push(linter(async (view) => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()));
+        if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput") {
+            extensions.push(linter(async (view) => await externalLintSource(id, view, dotnetHelper), getExternalLinterConfig()));
+        }
         if (initialConfig.lintingEnabled === true)
             extensions.push(lintGutter());
         extensions.push(...getFileUploadExtensions(id, setup));
         await minDelay;
-        const scrollToEndEffect = EditorView.scrollIntoView(initialConfig.doc ? initialConfig.doc.length : 0, { y: 'end' });
-        const docLines = initialConfig.doc?.split(/\r\n|\r|\n/) ?? [initialConfig.doc];
+        const textInLocalStorage = localStorage.getItem(initialConfig.localStorageKey);
+        const initialDoc = textInLocalStorage ? textInLocalStorage : initialConfig.doc;
+        const scrollToEndEffect = EditorView.scrollIntoView(initialDoc ? initialDoc.length : 0, { y: 'end' });
+        const docLines = initialDoc?.split(/\r\n|\r|\n/) ?? [initialDoc];
         const text = Text.of(docLines);
         const textLength = text?.length ?? 0;
         CMInstances[id].state = EditorState.create({
-            doc: initialConfig.doc,
+            doc: initialDoc,
             extensions: extensions,
             selection: {
                 anchor: setup.scrollToEnd === true ? textLength : 0,
@@ -75964,10 +75973,6 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         console.error(`Error in initializing CodeMirror`, error);
     }
 }
-function consoleLog(id, message) {
-    if (CMInstances[id].setup.debugLogs === true)
-        console.log(message);
-}
 function getAllSupportedLanguageNames() {
     return languages.map((language) => language.name);
 }
@@ -75981,6 +75986,7 @@ async function updateListenerExtension(id, update) {
     if (update.docChanged) {
         if (setup.bindValueMode === 'OnInput')
             await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString());
+        saveToLocalStorage(id);
     }
     if (update.focusChanged) {
         await dotnetHelper.invokeMethodAsync("FocusChangedFromJS", update.view.hasFocus);
@@ -75988,7 +75994,7 @@ async function updateListenerExtension(id, update) {
             await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString());
     }
     if (update.selectionSet) {
-        await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtSelections(update.state));
+        await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtSelections(id, update.state));
         await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to }; }));
     }
 }
@@ -76044,7 +76050,7 @@ function setUnifiedMergeView(id, mergeViewConfiguration) {
     });
 }
 async function setLanguage(id, languageName, fileNameOrExtension) {
-    const language = await getLanguage(languageName, fileNameOrExtension);
+    const language = await getLanguage(id, languageName, fileNameOrExtension);
     const customKeyMap = getLanguageKeyMaps(languageName, fileNameOrExtension);
     if (languageName !== "CSV" && languageName !== "TSV")
         customKeyMap.push(indentWithTab);
@@ -76059,7 +76065,7 @@ async function setLanguage(id, languageName, fileNameOrExtension) {
                 ? [
                     columnStylingPlugin(separator),
                     keymap.of(getColumnStylingKeymap(separator)),
-                    linter(async (view) => columnLintSource(view, separator)),
+                    linter(async (view) => columnLintSource(id, view, separator)),
                 ]
                 : []),
         ]
@@ -76107,6 +76113,27 @@ function setDoc(id, text) {
         changes: { from: 0, to: CMInstances[id].view.state.doc.length, insert: text }
     });
     CMInstances[id].view.dispatch(transaction);
+}
+function setLocalStorageKey(id, value) {
+    saveToLocalStorage(id);
+    CMInstances[id].localStorageKey = value;
+    loadFromLocalStorage(id);
+}
+function loadFromLocalStorage(id) {
+    const localStorageKey = CMInstances[id].localStorageKey;
+    if (localStorageKey) {
+        const value = localStorage.getItem(localStorageKey);
+        if (value) {
+            setDoc(id, value);
+        }
+    }
+}
+function saveToLocalStorage(id) {
+    const localStorageKey = CMInstances[id].localStorageKey;
+    if (localStorageKey) {
+        const value = CMInstances[id].view.state.doc.toString();
+        localStorage.setItem(localStorageKey, value);
+    }
 }
 const autoFormatMarkdownExtensions = (id, autoFormatMarkdown = true) => [
     getDynamicHeaderStyling(autoFormatMarkdown),
@@ -76262,6 +76289,22 @@ function dispatchCommand(id, functionName, ...args) {
         console.error(`Error in calling the function ${functionName}`, error);
     }
 }
+function loadCss(url, cacheBust = true) {
+    const versionedUrl = cacheBust ? `${url}?v=${new Date().getTime()}` : url;
+    return new Promise((resolve, reject) => {
+        if (document.querySelector(`link[href="${versionedUrl}"]`)) {
+            resolve();
+            return;
+        }
+        const link = document.createElement('link');
+        link.type = 'text/css';
+        link.rel = 'stylesheet';
+        link.href = versionedUrl;
+        link.onload = () => resolve();
+        link.onerror = () => reject(new Error(`Failed to load CSS: ${versionedUrl}`));
+        document.head.appendChild(link);
+    });
+}
 /**
  * Dispose of a CodeMirror instance
  * @param id
@@ -76275,4 +76318,4 @@ function dispose(id) {
     delete CMInstances[id];
 }
 
-export { setTabSize as A, setIndentUnit as B, ContextTracker as C, setPlaceholderText as D, ExternalTokenizer as E, setTheme as F, setReadOnly as G, setEditable as H, IterMode as I, setLineWrapping as J, setUnifiedMergeView as K, LRLanguage as L, setLanguage as M, NodeWeakMap as N, setMentionCompletions as O, setHighlightTrailingWhitespace as P, setHighlightWhitespace as Q, forceRedraw as R, setAutoFormatMarkdown as S, setReplaceEmojiCodes as T, setDoc as U, dispatchCommand as V, dispose as W, LanguageSupport as a, LRParser as b, continuedIndent as c, ifNotIn as d, completeFromList as e, foldNodeProp as f, syntaxTree as g, flatIndent as h, indentNodeProp as i, delimitedIndent as j, foldInside as k, defineCSSCompletionSource as l, EditorView as m, EditorSelection as n, html as o, parseMixed as p, snippetCompletion as q, bracketMatchingHandle as r, styleTags as s, tags$1 as t, LocalTokenGroup as u, javascriptLanguage as v, initCodeMirror as w, getAllSupportedLanguageNames as x, setResize as y, setClassToParent as z };
+export { setTabSize as A, setIndentUnit as B, ContextTracker as C, setPlaceholderText as D, ExternalTokenizer as E, setTheme as F, setReadOnly as G, setEditable as H, IterMode as I, setLineWrapping as J, setUnifiedMergeView as K, LRLanguage as L, setLanguage as M, NodeWeakMap as N, setMentionCompletions as O, setHighlightTrailingWhitespace as P, setHighlightWhitespace as Q, forceRedraw as R, setAutoFormatMarkdown as S, setReplaceEmojiCodes as T, setDoc as U, setLocalStorageKey as V, dispatchCommand as W, dispose as X, LanguageSupport as a, LRParser as b, continuedIndent as c, ifNotIn as d, completeFromList as e, foldNodeProp as f, syntaxTree as g, flatIndent as h, indentNodeProp as i, delimitedIndent as j, foldInside as k, defineCSSCompletionSource as l, EditorView as m, EditorSelection as n, html as o, parseMixed as p, snippetCompletion as q, bracketMatchingHandle as r, styleTags as s, tags$1 as t, LocalTokenGroup as u, javascriptLanguage as v, initCodeMirror as w, getAllSupportedLanguageNames as x, setResize as y, setClassToParent as z };
