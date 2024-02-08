@@ -2,6 +2,7 @@ import { Decoration, ViewPlugin, EditorView, KeyBinding } from "@codemirror/view
 import { Extension, RangeSetBuilder, Transaction } from "@codemirror/state";
 import { buildWidget } from "./lib/codemirror-kit";
 import { Diagnostic } from "@codemirror/lint";
+import { consoleLog } from "./CmLogging";
 
 
 function createColumnReplaceDecoration(content: string, from: number) {
@@ -110,7 +111,6 @@ export function columnStylingPlugin(separator: string): Extension {
         decorations: plugin => plugin.update(),
         eventHandlers: {
             keydown: (e, view) => {
-                console.log(e)
                 if (e.ctrlKey === true || e.metaKey === true || e.altKey === true || e.shiftKey === true)
                     return
                 if (e.key === "ArrowLeft") {
@@ -145,7 +145,7 @@ export function getSeparator(languageName: string) {
     return null
 }
 
-export async function columnLintSource(view: EditorView, separator: string): Promise<readonly Diagnostic[]> {
+export async function columnLintSource(id: string, view: EditorView, separator: string): Promise<readonly Diagnostic[]> {
     try {
         const code = view.state.doc.toString()
         const data = parseCSV(code, separator)
@@ -160,7 +160,7 @@ export async function columnLintSource(view: EditorView, separator: string): Pro
             }
         }
         if (errors.length > 0)
-            console.log('Linter found:', errors)
+            consoleLog(id, 'Linter found:', errors)
         return errors
     } catch (error) {
         console.error('Linter error:', error)
@@ -169,7 +169,6 @@ export async function columnLintSource(view: EditorView, separator: string): Pro
 }
 
 function moveCursor(view: EditorView, inc: number) {
-    console.log("moveCursors")
     const { state } = view
     state.selection.main
     const range = state.selection.main

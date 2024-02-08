@@ -10,7 +10,6 @@ public class CodeMirrorState
     /// <summary>
     /// List of markdown styles active at the current selection(s)
     /// </summary>
-    /// <value></value>
     public ReadOnlyCollection<string> MarkdownStylesAtSelections { get; internal set; } = new([]);
 
     /// <summary>

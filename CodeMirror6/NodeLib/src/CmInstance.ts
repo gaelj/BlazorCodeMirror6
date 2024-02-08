@@ -12,6 +12,7 @@ export class CmInstance
     public state: EditorState
     public view: EditorView
     public setup: CmSetup
+    public localStorageKey: string
     public languageCompartment: Compartment = new Compartment
     public markdownStylingCompartment: Compartment = new Compartment
     public tabSizeCompartment: Compartment = new Compartment

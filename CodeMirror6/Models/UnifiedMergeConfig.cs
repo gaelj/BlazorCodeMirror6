@@ -55,6 +55,5 @@ public record DiffConfig
     /// changed characters in a scanned range. This should help avoid
     /// quadratic running time on large, very different inputs.
     /// </summary>
-    /// <value></value>
     [JsonPropertyName("scanLimit")] public int? ScanLimit { get; set; }
 }

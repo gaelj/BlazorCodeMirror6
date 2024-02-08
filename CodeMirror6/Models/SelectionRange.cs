@@ -15,11 +15,9 @@ public record SelectionRange
     /// <summary>
     /// The lower boundary of the range.
     /// </summary>
-    /// <value></value>
     [JsonPropertyName("from")] public int? From { get; set; }
     /// <summary>
     /// The upper boundary of the range.
     /// </summary>
-    /// <value></value>
     [JsonPropertyName("to")] public int? To { get; set; }
 }
