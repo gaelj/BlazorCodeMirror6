@@ -5,6 +5,7 @@ import { mermaid, mermaidLanguage, flowchartLanguageDescription, ganttLanguageDe
 import { languages } from "@codemirror/language-data"
 import { StateEffect } from "@codemirror/state"
 import { customMarkdownKeymap } from "./CmKeymap"
+import { consoleLog } from "./CmLogging"
 
 /**
  * StateEffect that is triggered when the language changes
@@ -16,18 +17,18 @@ export const languageChangeEffect = StateEffect.define<Language>()
  * @param languageName
  * @returns
  */
-export async function getLanguage(languageName: string, fileNameOrExtension: string): Promise<LanguageSupport> {
+export async function getLanguage(id: string, languageName: string, fileNameOrExtension: string): Promise<LanguageSupport> {
     if (fileNameOrExtension) {
         var extension = fileNameOrExtension.split('.').pop()
         if (extension) {
             var selectedLanguage = languages.find((language) => language.extensions.includes(extension))
             if (selectedLanguage) {
-                console.log("loading Language: " + selectedLanguage.name)
+                consoleLog(id, "loading Language: " + selectedLanguage.name)
                 return await selectedLanguage.load()
             }
         }
     }
-    console.log("getLanguage: " + languageName)
+    consoleLog(id, "getLanguage: " + languageName)
     switch (languageName) {
         case "Plain Text":
         case "CSV":
@@ -55,7 +56,7 @@ export async function getLanguage(languageName: string, fileNameOrExtension: str
         default:
             var selectedLanguage = languages.find((language) => language.name === languageName)
             if (selectedLanguage) {
-                console.log("loading Language: " + selectedLanguage.name)
+                consoleLog(id, "loading Language: " + selectedLanguage.name)
                 return await selectedLanguage.load()
             }
             console.error("Language not found: " + languageName)

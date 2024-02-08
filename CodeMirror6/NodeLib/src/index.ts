@@ -62,6 +62,7 @@ import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
 import { hideMarksExtension } from "./CmHideMarkdownMarks"
 import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSeparator } from "./CmColumns"
+import { consoleLog } from "./CmLogging"
 
 /**
  * Initialize a new CodeMirror instance
@@ -80,8 +81,9 @@ export async function initCodeMirror(
         return
     }
 
-    if (setup.debugLogs === true)
+    if (setup.debugLogs === true) {
         console.log(`Initializing CodeMirror instance ${id}`)
+    }
     try {
         const minDelay = new Promise(res => setTimeout(res, 100))
 
@@ -94,7 +96,7 @@ export async function initCodeMirror(
 
         let extensions = [
             CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
-            CMInstances[id].languageCompartment.of(await getLanguage(initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
+            CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
             CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
             CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
@@ -114,10 +116,10 @@ export async function initCodeMirror(
                     ? [
                         columnStylingPlugin(getSeparator(initialConfig.languageName)),
                         keymap.of(getColumnStylingKeymap(getSeparator(initialConfig.languageName))),
-                        linter(async view => columnLintSource(view, getSeparator(initialConfig.languageName))),
+                        linter(async view => columnLintSource(id, view, getSeparator(initialConfig.languageName))),
                     ]
                     : []
-                ),
+            ),
 
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
             keymap.of([
@@ -179,7 +181,7 @@ export async function initCodeMirror(
         if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
 
         if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput")
-            extensions.push(linter(async view => await externalLintSource(view, dotnetHelper), getExternalLinterConfig()))
+            extensions.push(linter(async view => await externalLintSource(id, view, dotnetHelper), getExternalLinterConfig()))
         if (initialConfig.lintingEnabled === true)
             extensions.push(lintGutter())
 
@@ -206,7 +208,7 @@ export async function initCodeMirror(
             scrollTo: setup.scrollToEnd === true ? scrollToEndEffect : null,
         })
 
-        if (setup.scrollToEnd === true ) {
+        if (setup.scrollToEnd === true) {
             CMInstances[id].view.focus()
         }
 
@@ -226,20 +228,13 @@ export async function initCodeMirror(
     }
 }
 
-function consoleLog(id: string, message: string)
-{
-    if (CMInstances[id].setup.debugLogs === true)
-        console.log(message)
-}
-
-export function getAllSupportedLanguageNames()
-{
+export function getAllSupportedLanguageNames() {
     return languages.map((language) => language.name)
 }
 
 async function updateListenerExtension(id: string, update: ViewUpdate) {
     const dotnetHelper = CMInstances[id].dotNetHelper
-    if (dotnetHelper === undefined){
+    if (dotnetHelper === undefined) {
         consoleLog(id, `DotNetHelper is undefined`)
         return
     }
@@ -254,7 +249,7 @@ async function updateListenerExtension(id: string, update: ViewUpdate) {
             await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
     }
     if (update.selectionSet) {
-        await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtSelections(update.state))
+        await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtSelections(id, update.state))
         await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
     }
 }
@@ -320,7 +315,7 @@ export function setUnifiedMergeView(id: string, mergeViewConfiguration: UnifiedM
 }
 
 export async function setLanguage(id: string, languageName: string, fileNameOrExtension: string) {
-    const language = await getLanguage(languageName, fileNameOrExtension)
+    const language = await getLanguage(id, languageName, fileNameOrExtension)
     const customKeyMap = getLanguageKeyMaps(languageName, fileNameOrExtension)
     if (languageName !== "CSV" && languageName !== "TSV")
         customKeyMap.push(indentWithTab)
@@ -337,7 +332,7 @@ export async function setLanguage(id: string, languageName: string, fileNameOrEx
                     ? [
                         columnStylingPlugin(separator),
                         keymap.of(getColumnStylingKeymap(separator)),
-                        linter(async view => columnLintSource(view, separator)),
+                        linter(async view => columnLintSource(id, view, separator)),
                     ]
                     : []
             ),

@@ -4,21 +4,22 @@ import { SyntaxNodeRef } from "@lezer/common"
 import { EditorState, ChangeSpec, EditorSelection, Transaction, Text, SelectionRange, TransactionSpec } from "@codemirror/state"
 import { Command } from "@codemirror/view"
 import { EditorView } from "codemirror"
+import { consoleLog } from "./CmLogging"
 
 /**
  * Return the active Markdown styles in the selection
  * @param update
  * @returns
  */
-export function getMarkdownStyleAtSelections(state: EditorState): string[] {
+export function getMarkdownStyleAtSelections(id: string, state: EditorState): string[] {
     let styles: string[] = [];
     for (let range of state.selection.ranges) {
-        styles.push(...getMarkdownStyleAtRange(state, range))
+        styles.push(...getMarkdownStyleAtRange(id, state, range))
     }
     return styles
 }
 
-function getMarkdownStyleAtRange(state: EditorState, range: SelectionRange): string[] {
+function getMarkdownStyleAtRange(id: string, state: EditorState, range: SelectionRange): string[] {
     let styles: string[] = [];
     let tree = syntaxTree(state)
     tree.iterate({
@@ -31,7 +32,7 @@ function getMarkdownStyleAtRange(state: EditorState, range: SelectionRange): str
             }
         }
     })
-    console.log("Active styles in range:", styles)
+    consoleLog(id, "Active styles in range:", styles)
     return styles
 }
 
