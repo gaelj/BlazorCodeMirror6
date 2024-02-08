@@ -137,6 +137,10 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// </summary>
     [Parameter] public bool Visible { get; set; } = true;
     /// <summary>
+    /// Optional local storage key to use for saving the document
+    /// </summary>
+    [Parameter] public string? LocalStorageKey { get; set; }
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }

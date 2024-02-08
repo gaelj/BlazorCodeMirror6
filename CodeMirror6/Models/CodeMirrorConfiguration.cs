@@ -23,6 +23,7 @@ namespace GaelJ.BlazorCodeMirror6.Models;
 /// <param name="fileNameOrExtension"></param>
 /// <param name="highlightTrailingWhitespace"></param>
 /// <param name="highlightWhitespace"></param>
+/// <param name="localStorageKey"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -40,7 +41,8 @@ public class CodeMirrorConfiguration(
     UnifiedMergeConfig? mergeViewConfiguration,
     string? fileNameOrExtension,
     bool highlightTrailingWhitespace,
-    bool highlightWhitespace)
+    bool highlightWhitespace,
+    string? localStorageKey)
 {
 
     /// <summary>
@@ -110,14 +112,14 @@ public class CodeMirrorConfiguration(
     [JsonPropertyName("lineWrapping")] public bool LineWrapping { get; internal set; } = lineWrapping;
 
     /// <summary>
-    /// Did the user provide a linting callback (internal use)
+    /// Did the user provide a linting callback
     /// </summary>
-    [JsonPropertyName("lintingEnabled")] internal bool LintingEnabled { get; set; } = lintingEnabled;
+    [JsonPropertyName("lintingEnabled")] public bool LintingEnabled { get; internal set; } = lintingEnabled;
 
     /// <summary>
     /// Unified merged view configuration
     /// </summary>
-    [JsonPropertyName("mergeViewConfiguration")] internal UnifiedMergeConfig? MergeViewConfiguration { get; set; } = mergeViewConfiguration;
+    [JsonPropertyName("mergeViewConfiguration")] public UnifiedMergeConfig? MergeViewConfiguration { get; internal set; } = mergeViewConfiguration;
 
     /// <summary>
     /// Whether to highlight trailing whitespace
@@ -128,4 +130,8 @@ public class CodeMirrorConfiguration(
     /// Whether to highlight whitespace
     /// </summary>
     [JsonPropertyName("highlightWhitespace")] public bool HighlightWhitespace { get; internal set; } = highlightWhitespace;
+    /// <summary>
+    /// Optional local storage key to use for saving the document
+    /// </summary>
+    [JsonPropertyName("localStorageKey")] public string? LocalStorageKey { get; internal set; } = localStorageKey;
 }

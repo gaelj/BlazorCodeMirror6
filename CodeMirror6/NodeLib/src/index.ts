@@ -92,6 +92,7 @@ export async function initCodeMirror(
         CMInstances[id] = new CmInstance()
         CMInstances[id].dotNetHelper = dotnetHelper
         CMInstances[id].setup = setup
+        CMInstances[id].localStorageKey = initialConfig.localStorageKey
         const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension)
         if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
             customKeyMap.push(indentWithTab)
@@ -182,8 +183,9 @@ export async function initCodeMirror(
         if (setup.scrollPastEnd === true) extensions.push(scrollPastEnd())
         if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
 
-        if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput")
+        if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput") {
             extensions.push(linter(async view => await externalLintSource(id, view, dotnetHelper), getExternalLinterConfig()))
+        }
         if (initialConfig.lintingEnabled === true)
             extensions.push(lintGutter())
 
@@ -191,13 +193,16 @@ export async function initCodeMirror(
 
         await minDelay
 
-        const scrollToEndEffect = EditorView.scrollIntoView(initialConfig.doc ? initialConfig.doc.length : 0, { y: 'end' })
-        const docLines = initialConfig.doc?.split(/\r\n|\r|\n/) ?? [initialConfig.doc]
+        const textInLocalStorage = localStorage.getItem(initialConfig.localStorageKey)
+        const initialDoc = textInLocalStorage ? textInLocalStorage : initialConfig.doc
+
+        const scrollToEndEffect = EditorView.scrollIntoView(initialDoc ? initialDoc.length : 0, { y: 'end' })
+        const docLines = initialDoc?.split(/\r\n|\r|\n/) ?? [initialDoc]
         const text = Text.of(docLines)
         const textLength = text?.length ?? 0
 
         CMInstances[id].state = EditorState.create({
-            doc: initialConfig.doc,
+            doc: initialDoc,
             extensions: extensions,
             selection: {
                 anchor: setup.scrollToEnd === true ? textLength : 0,
@@ -244,6 +249,7 @@ async function updateListenerExtension(id: string, update: ViewUpdate) {
     if (update.docChanged) {
         if (setup.bindValueMode === 'OnInput')
             await dotnetHelper.invokeMethodAsync("DocChangedFromJS", update.state.doc.toString())
+        saveToLocalStorage(id)
     }
     if (update.focusChanged) {
         await dotnetHelper.invokeMethodAsync("FocusChangedFromJS", update.view.hasFocus)
@@ -392,6 +398,30 @@ export function setDoc(id: string, text: string) {
         changes: { from: 0, to: CMInstances[id].view.state.doc.length, insert: text }
     })
     CMInstances[id].view.dispatch(transaction)
+}
+
+export function setLocalStorageKey(id: string, value: string) {
+    saveToLocalStorage(id)
+    CMInstances[id].localStorageKey = value
+    loadFromLocalStorage(id)
+}
+
+function loadFromLocalStorage(id: string) {
+    const localStorageKey = CMInstances[id].localStorageKey
+    if (localStorageKey) {
+        const value = localStorage.getItem(localStorageKey)
+        if (value) {
+            setDoc(id, value)
+        }
+    }
+}
+
+function saveToLocalStorage(id: string) {
+    const localStorageKey = CMInstances[id].localStorageKey
+    if (localStorageKey) {
+        const value = CMInstances[id].view.state.doc.toString()
+        localStorage.setItem(localStorageKey, value)
+    }
 }
 
 const autoFormatMarkdownExtensions = (id: string, autoFormatMarkdown: boolean = true) => [

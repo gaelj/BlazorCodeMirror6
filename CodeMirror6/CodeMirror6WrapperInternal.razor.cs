@@ -141,6 +141,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// </summary>
     [Parameter] public bool Visible { get; set; } = true;
     /// <summary>
+    /// Optional local storage key to use for saving the document
+    /// </summary>
+    [Parameter] public string? LocalStorageKey { get; set; }
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
@@ -188,7 +192,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             MergeViewConfiguration,
             FileNameOrExtension,
             HighlightTrailingWhitespace,
-            HighlightWhitespace
+            HighlightWhitespace,
+            LocalStorageKey
         );
         try {
             if (IsWASM)
@@ -297,6 +302,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             if (Config.HighlightWhitespace != HighlightWhitespace) {
                 Config.HighlightWhitespace = HighlightWhitespace;
                 await CmJsInterop.PropertySetters.SetHighlightWhitespace();
+            }
+            if (Config.LocalStorageKey != LocalStorageKey) {
+                Config.LocalStorageKey = LocalStorageKey;
+                await CmJsInterop.PropertySetters.SetLocalStorageKey();
             }
         }
         catch (Exception ex) {
