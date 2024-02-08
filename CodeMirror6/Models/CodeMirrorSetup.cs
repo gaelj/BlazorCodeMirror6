@@ -16,10 +16,9 @@ public readonly record struct CodeMirrorSetup
     }
 
     /// <summary>
-    /// /// Gets or sets the unique identifier for the CodeMirror6 editor.
+    /// Gets or sets the unique identifier for the CodeMirror6 editor.
     /// Defaults to CodeMirror6_Editor_{NewGuid}.
     /// </summary>
-    /// <value></value>
     [JsonPropertyName("id")] public string Id { get; init; } = $"CodeMirror6_Editor_{Guid.NewGuid()}";
 
     /// <summary>

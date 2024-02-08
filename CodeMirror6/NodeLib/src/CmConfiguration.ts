@@ -21,6 +21,7 @@ export class CmConfiguration {
     public mergeViewConfiguration: UnifiedMergeConfig | null
     public highlightTrailingWhitespace: boolean
     public highlightWhitespace: boolean
+    public localStorageKey: string
 }
 
 export interface UnifiedMergeConfig {

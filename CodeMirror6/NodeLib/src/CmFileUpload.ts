@@ -2,6 +2,7 @@ import { EditorView } from "@codemirror/view"
 import { EditorSelection } from '@codemirror/state'
 import { CmSetup } from "./CmSetup"
 import { CMInstances } from "./CmInstance"
+import { consoleLog } from "./CmLogging"
 
 
 export function getFileUploadExtensions(id: string, setup: CmSetup)
@@ -93,7 +94,7 @@ export function getFileUploadExtensions(id: string, setup: CmSetup)
             const file = files[i]
             const fileUrl = await uploadFileWithDotnet(id, file)
             fileUrls.push(fileUrl)
-            console.log("Uploaded file:", fileUrl)
+            consoleLog(id, "Uploaded file:", fileUrl)
             const fileName = files[0].name
             var imageChar = file.type.indexOf("image/") === 0 ? "!" : ""
             var imageLink = `\n${imageChar}[${fileName}](${fileUrl})\n`

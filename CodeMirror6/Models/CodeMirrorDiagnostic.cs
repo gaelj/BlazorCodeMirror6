@@ -10,13 +10,11 @@ public record CodeMirrorDiagnostic
     /// <summary>
     /// The start position of the relevant text, in characters counted from the start of the string.
     /// </summary>
-    /// <value></value>
     [JsonPropertyName("from")] public int From { get; init; }
     /// <summary>
     /// The end position. May be equal to `from`, though actually
     /// covering text is preferable.
     /// </summary>
-    /// <value></value>
     [JsonPropertyName("to")] public int To { get; init; }
     /// <summary>
     /// The severity of the problem. This will influence how it is
@@ -28,18 +26,15 @@ public record CodeMirrorDiagnostic
     /// When given, add an extra CSS class to parts of the code that
     /// this diagnostic applies to.
     /// </summary>
-    /// <value></value>
     [JsonPropertyName("markClass")] public string? MarkClass { get; init; }
     /// <summary>
     /// An optional source string indicating where the diagnostic is
     /// coming from. You can put the name of your linter here, if
     /// applicable.
     /// </summary>
-    /// <value></value>
     [JsonPropertyName("source")] public string? Source { get; init; }
     /// <summary>
     /// The message associated with this diagnostic.
     /// </summary>
-    /// <value></value>
     [JsonPropertyName("message")] public string Message { get; init; } = null!;
 }

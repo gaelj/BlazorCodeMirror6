@@ -147,4 +147,9 @@ internal class CMSetters(
     internal Task<List<string>?> GetAllSupportedLanguageNames() => cmJsInterop.ModuleInvokeAsync<List<string>>(
         "getAllSupportedLanguageNames"
     );
+
+    internal Task SetLocalStorageKey() => cmJsInterop.ModuleInvokeVoidAsync(
+        "setLocalStorageKey",
+        config.LocalStorageKey
+    );
 }

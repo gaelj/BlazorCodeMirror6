@@ -1,11 +1,24 @@
+### ✨ Introduce new features
+
+- Implement optional persist / restore of document to local storage
+
+### 🎨 Improve structure / format of the code
+
+- Finish removing Id parameter
+
 ### 🐛 Fix a bug
 
-- Try to fix random crash at startup
+- Automatically load inline component css
+- Fix browser refresh script url in example
 
-### 💥 Introduce breaking changes
+### 📝 Add or update documentation
 
-- Move Id from parameter to Setup, as it should never be changed
+- Cleanup comments
 
 ### 🔊 Add or update logs
 
-- Add DebugLogs setup parameter to print debug logs
+- Make all js loggings optional
+
+### 🥅 Catch errors
+
+- Catch js disconnected exceptions
