@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Examples.BlazorWasm",
   "resources": {
-    "hash": "sha256-mm16XZcYdR0dbJN5YR6cmQIMEAIvJdoaR1A+rNdBrpM=",
+    "hash": "sha256-PSObTIPGC12KMCxWcK9GLWwxE/JsRhgSh3/SF0AdkZU=",
     "jsModuleNative": {
       "dotnet.native.8.0.1.ahpp78valh.js": "sha256-SGOlISx+3G4kkvpC9Uq3qoPGsnjxGmW61QBev0lyI5U="
     },
@@ -17,9 +17,9 @@
       "icudt_no_CJK.dat": "sha256-L7sV7NEYP37/Qr2FPCePo5cJqRgTXRwGHuwF5Q+0Nfs="
     },
     "assembly": {
-      "Examples.BlazorWasm.wasm": "sha256-NnFszFdQD0gtrSyQM+0mXDsxv8ecD7Ztji/tBELWBkc=",
-      "Examples.Common.wasm": "sha256-C+qONcAsQnsyhHlDnGk9FrKdzxAQUyMm9ZYjZ6m1BRg=",
-      "GaelJ.BlazorCodeMirror6.wasm": "sha256-y9P/OunPmNxLrHTCV8oun0nbsdOfGxVuYU4/eh1Rrf0=",
+      "Examples.BlazorWasm.wasm": "sha256-w5WESA8+c3uh0Zy6UhCGsl7o8jxv5W7/I59GGXbM3eY=",
+      "Examples.Common.wasm": "sha256-KavfgdMCSiYIA2ZHkL9kj2k006ar3HHosGxJ/rviEhA=",
+      "GaelJ.BlazorCodeMirror6.wasm": "sha256-VNCze7YwSlrNSBEF2Bvv7mfypBvxWIEmQLRRzt2Ir3Y=",
       "Microsoft.AspNetCore.Components.wasm": "sha256-4Xmfdzku23xVoRe4q7zlSxDEoQxcaO7hGq9ZhdBx0bg=",
       "Microsoft.AspNetCore.Components.Web.wasm": "sha256-0ObCfjh0yiJgeuu+nbyRdFop0n9sww8wwciTy4htB6I=",
       "Microsoft.AspNetCore.Components.WebAssembly.wasm": "sha256-QkeuxcmFIVYALW+Gqf5ceOcKAUjvZL93cfoqCR7ykuI=",
@@ -34,7 +34,7 @@
       "Microsoft.Extensions.DependencyInjection.Abstractions.wasm": "sha256-IbbATST3D41t4joQicJR0ejaA+giRTT4cp61BFrqIqU=",
       "Microsoft.Extensions.DependencyInjection.wasm": "sha256-gg8xZqJsBBrrNEyUGzYqhL3sqkuZ4AHAvdTdL9nZ0S0=",
       "Microsoft.Extensions.Http.wasm": "sha256-+f3jtqQs3F6UgxXUmA3BR89zdI5teQ9BuQEJRQRObtI=",
-      "Microsoft.Extensions.Logging.Abstractions.wasm": "sha256-HgmlUiWnlUc1IJzwje83m9vuxFY6gyYkf9RO8YCAz8c=",
+      "Microsoft.Extensions.Logging.Abstractions.wasm": "sha256-f95vDrKnqTru/c6za00bqYAvSG9Iy97FfPgbcXu+mBI=",
       "Microsoft.Extensions.Logging.Configuration.wasm": "sha256-acPaTd27IH1Fo83PoDG/s9I1FHSPGzQq4cjAGskKntU=",
       "Microsoft.Extensions.Logging.wasm": "sha256-tntx8pzMKuX0WPggs0GiDcbT3BVGUsf8+BrBEJq8MsU=",
       "Microsoft.Extensions.ObjectPool.wasm": "sha256-yN/YwcJojmFmoiBEEYT4EioSwZ0GQpHJnZJ+qVozBHs=",
