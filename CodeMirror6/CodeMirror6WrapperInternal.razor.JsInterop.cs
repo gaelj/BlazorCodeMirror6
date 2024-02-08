@@ -42,6 +42,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
                 args = args.Prepend(cm6WrapperComponent.Setup.Id).ToArray();
                 await module.InvokeVoidAsync(method, args);
             }
+            catch (JSDisconnectedException) {}
             catch (Exception ex)
             {
                 #if NET8_0_OR_GREATER
@@ -63,6 +64,9 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
                 if (module is null) return default;
                 args = args.Prepend(cm6WrapperComponent.Setup.Id).ToArray();
                 return await module.InvokeAsync<T?>(method, args);
+            }
+            catch (JSDisconnectedException) {
+                return default;
             }
             catch (Exception ex)
             {
