@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.8 - 2024-02-08
+
+### ✨ Introduce new features
+
+- Add ClearLocalStorage command
+- Paste data copied from Excel formatted as Markdown table
+
+### 🐛 Fix a bug
+
+- Fix cursor location on paste was before the pasted text
+
 ## 0.3.7 - 2024-02-08
 
 ### ✨ Introduce new features
