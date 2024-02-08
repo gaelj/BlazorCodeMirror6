@@ -4,7 +4,9 @@ import { SyntaxNodeRef } from "@lezer/common"
 import { EditorState, ChangeSpec, EditorSelection, Transaction, Text, SelectionRange, TransactionSpec } from "@codemirror/state"
 import { Command } from "@codemirror/view"
 import { EditorView } from "codemirror"
+
 import { consoleLog } from "./CmLogging"
+import { csvToMarkdownTable } from "./CmColumns"
 
 /**
  * Return the active Markdown styles in the selection
@@ -274,15 +276,29 @@ export async function cut(view: EditorView) {
 
 export async function paste(view: EditorView): Promise<boolean> {
     try {
-        const text = await navigator.clipboard.readText();
+        let text = await navigator.clipboard.readText();
+        /*
+        let items = await navigator.clipboard.read()
+        const htmlItems = items.filter(item => item.types.includes("text/html"))
+        if (htmlItems.length > 0) {
+            for (let item of htmlItems) {
+                if (item.types.includes("text/html")) {
+                    text = await (await item.getType("text/html")).text() + "\n"
+                    break
+                }
+            }
+        } */
+        if (markdownLanguage.isActiveAt(view.state, view.state.selection.main.from) &&
+            markdownLanguage.isActiveAt(view.state, view.state.selection.main.to))
+            text = csvToMarkdownTable(text, "\t", true)
         view.dispatch(view.state.update({
             changes: { from: view.state.selection.main.from, to: view.state.selection.main.to, insert: text },
             selection: { anchor: view.state.selection.main.anchor + text.length, head: view.state.selection.main.anchor + text.length },
             scrollIntoView: true
         }));
-        return true;
+        return true
     } catch (err) {
-        console.error('Failed to paste text: ', err);
-        return false;
+        console.error('Failed to paste text: ', err)
+        return false
     }
 }

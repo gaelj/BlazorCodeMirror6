@@ -245,3 +245,34 @@ function findMaxColumnWidths(data: string[][]): number[] {
 function parseCSV(csvData: string, separator: string): string[][] {
     return csvData.split('\n').map((row) => extractAllRowCells(row, separator))
 }
+
+export function csvToMarkdownTable(text: string, separator: string, withHeaders: boolean)
+{
+    if (text.trim().indexOf("\n") < 0 && text.indexOf(separator) < 0) return text;
+    var md = "\n\n";
+    const data = parseCSV(text, separator);
+    if (data.length <= 1) return text;
+    data.forEach((line, lineIndex) => {
+        if (line.length > 0) {
+            var mdRow = "| ";
+            line.forEach((cell) => {
+                while (cell.indexOf("|") > 0)
+                    cell = cell.replace("|", "&#124;");
+                mdRow += cell + " | ";
+                if (lineIndex == 0 && !withHeaders) {
+                    md += "|  ";
+                }
+            });
+            if ((lineIndex == 0 && !withHeaders) || (lineIndex == 1 && withHeaders)) {
+                if (lineIndex == 0)
+                    md += "  |\n";
+                line.forEach(() => {
+                    md += "|--";
+                });
+                md += "|\n";
+            }
+            md += mdRow + "\n";
+        }
+    });
+    return md;
+}
