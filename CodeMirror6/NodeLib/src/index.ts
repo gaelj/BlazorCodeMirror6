@@ -21,6 +21,11 @@ import { unifiedMergeView } from "@codemirror/merge"
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap, Completion } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
 import { linter, lintGutter, lintKeymap } from "@codemirror/lint"
+
+import { DotNet } from "@microsoft/dotnet-js-interop"
+import { indentationMarkers } from '@replit/codemirror-indentation-markers'
+import { hyperLink, hyperLinkStyle } from '@uiw/codemirror-extensions-hyper-link'
+
 import { CmInstance, CMInstances } from "./CmInstance"
 import { CmConfiguration, UnifiedMergeConfig } from "./CmConfiguration"
 import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
@@ -52,12 +57,9 @@ import { mentionCompletionExtension, setCachedCompletions } from "./CmMentionsCo
 import { mentionDecorationExtension } from "./CmMentionsView"
 import { viewEmojiExtension } from "./CmEmojiView"
 import { emojiCompletionExtension } from "./CmEmojiCompletion"
-import { indentationMarkers } from '@replit/codemirror-indentation-markers'
-import { hyperLink, hyperLinkStyle } from '@uiw/codemirror-extensions-hyper-link'
 import { markdownLinkExtension } from "./CmMarkdownLink"
 import { htmlViewPlugin } from "./CmHtml"
-import { getFileUploadExtensions } from "./CmFileUpload"
-import { DotNet } from "@microsoft/dotnet-js-interop"
+import { getFileUploadExtensions, uploadFiles } from "./CmFileUpload"
 import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
 import { hideMarksExtension } from "./CmHideMarkdownMarks"
@@ -191,6 +193,25 @@ export async function initCodeMirror(
 
         extensions.push(...getFileUploadExtensions(id, setup))
 
+        const pasteHandler = EditorView.domEventHandlers({
+            paste(event, view) {
+                const transfer = event.clipboardData
+
+                consoleLog(id, "Pasting", transfer.files, transfer.types, transfer.items)
+                for (let i = 0; i < transfer.items.length; i++) {
+                    const item = transfer.items[i]
+                    consoleLog(id, "Item", item.kind, item.type)
+                }
+                if (transfer?.files && transfer.files.length > 0 && !transfer.types.includes('text/plain')) {
+                    uploadFiles(id, transfer.files, view)
+                    event.preventDefault()
+                }
+                else if (paste(view))
+                    event.preventDefault()
+            },
+        })
+        extensions.push(pasteHandler)
+
         await minDelay
 
         const textInLocalStorage = localStorage.getItem(initialConfig.localStorageKey)
@@ -283,6 +304,7 @@ export function setIndentUnit(id: string, indentUnitString: string) {
         effects: CMInstances[id].indentUnitCompartment.reconfigure(indentUnit.of(indentUnitString))
     })
 }
+
 export function setPlaceholderText(id: string, text: string) {
     CMInstances[id].view.dispatch({
         effects: CMInstances[id].placeholderCompartment.reconfigure(placeholder(text))
@@ -403,16 +425,21 @@ export function setDoc(id: string, text: string) {
 export function setLocalStorageKey(id: string, value: string) {
     saveToLocalStorage(id)
     CMInstances[id].localStorageKey = value
-    loadFromLocalStorage(id)
+    if (value)
+        loadFromLocalStorage(id)
+    else
+        clearLocalStorage(id)
+}
+
+export function clearLocalStorage(id: string) {
+    localStorage.removeItem(CMInstances[id].localStorageKey)
 }
 
 function loadFromLocalStorage(id: string) {
     const localStorageKey = CMInstances[id].localStorageKey
     if (localStorageKey) {
         const value = localStorage.getItem(localStorageKey)
-        if (value) {
-            setDoc(id, value)
-        }
+        setDoc(id, value)
     }
 }
 
@@ -420,7 +447,10 @@ function saveToLocalStorage(id: string) {
     const localStorageKey = CMInstances[id].localStorageKey
     if (localStorageKey) {
         const value = CMInstances[id].view.state.doc.toString()
-        localStorage.setItem(localStorageKey, value)
+        if (value)
+            localStorage.setItem(localStorageKey, value)
+        else
+            localStorage.removeItem(localStorageKey)
     }
 }
 
@@ -495,6 +525,7 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
             case 'Paste': paste(view); break;
 
             case 'Focus': break;
+            case 'ClearLocalStorage': clearLocalStorage(id); break;
 
             default: throw new Error(`Function ${functionName} does not exist.`);
         }
@@ -524,7 +555,6 @@ function loadCss(url: string, cacheBust: boolean = true): Promise<void> {
         document.head.appendChild(link);
     });
 }
-
 
 /**
  * Dispose of a CodeMirror instance

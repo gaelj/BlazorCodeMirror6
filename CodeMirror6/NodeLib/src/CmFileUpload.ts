@@ -72,56 +72,44 @@ export function getFileUploadExtensions(id: string, setup: CmSetup)
                         selection: newSelection
                     });
                 }
-                uploadFiles(transfer.files, view)
+                uploadFiles(id, transfer.files, view)
                 depth = 0
             }
         }
     })
 
-    const pasteHandler = EditorView.domEventHandlers({
-        paste(event, view) {
-            const transfer = event.clipboardData
-            if (transfer?.files && transfer.files.length > 0) {
-                event.preventDefault()
-                uploadFiles(transfer.files, view)
+    return [ dragAndDropHandler ]
+}
+
+async function uploadFileWithDotnet(id: string, file: File): Promise<string> {
+    const arrayBuffer = await file.arrayBuffer()
+    const byteArray = new Uint8Array(arrayBuffer)
+    const lastModifiedDate = new Date(file.lastModified)
+    return await CMInstances[id].dotNetHelper.invokeMethodAsync('UploadFileFromJS', byteArray, file.name, file.type, lastModifiedDate)
+}
+
+export async function uploadFiles(id: string, files: FileList, view: EditorView) {
+    const fileUrls = []
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        const fileUrl = await uploadFileWithDotnet(id, file)
+        fileUrls.push(fileUrl)
+        consoleLog(id, "Uploaded file:", fileUrl)
+        const fileName = files[0].name
+        var imageChar = file.type.indexOf("image/") === 0 ? "!" : ""
+        var imageLink = `\n${imageChar}[${fileName}](${fileUrl})\n`
+        const ranges = view.state.selection.ranges;
+        const lastRange = ranges[ranges.length - 1];
+
+        view.dispatch(
+            {
+                changes: { from: view.state.selection.main.from, insert: imageLink },
+                selection: { anchor: lastRange.from + imageLink.length, head: lastRange.from + imageLink.length }
+            },
+            {
+                scrollIntoView: true
             }
-        }
-    })
-
-    async function uploadFiles(files: FileList, view: EditorView) {
-        const fileUrls = []
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i]
-            const fileUrl = await uploadFileWithDotnet(id, file)
-            fileUrls.push(fileUrl)
-            consoleLog(id, "Uploaded file:", fileUrl)
-            const fileName = files[0].name
-            var imageChar = file.type.indexOf("image/") === 0 ? "!" : ""
-            var imageLink = `\n${imageChar}[${fileName}](${fileUrl})\n`
-            const ranges = view.state.selection.ranges;
-            const lastRange = ranges[ranges.length - 1];
-
-            view.dispatch(
-                {
-                    changes: { from: view.state.selection.main.from, insert: imageLink },
-                    selection: { anchor: lastRange.from + imageLink.length, head: lastRange.from + imageLink.length }
-                },
-                {
-                    scrollIntoView: true
-                }
-            )
-        }
-        return fileUrls
+        )
     }
-
-    async function uploadFileWithDotnet(id: string, file: File): Promise<string> {
-        const arrayBuffer = await file.arrayBuffer()
-        const byteArray = new Uint8Array(arrayBuffer)
-        const lastModifiedDate = new Date(file.lastModified)
-        return await CMInstances[id].dotNetHelper.invokeMethodAsync('UploadFileFromJS', byteArray, file.name, file.type, lastModifiedDate)
-    }
-
-    return [
-        dragAndDropHandler, pasteHandler, //selectionField
-    ]
+    return fileUrls
 }
