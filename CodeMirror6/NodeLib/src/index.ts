@@ -81,6 +81,8 @@ export async function initCodeMirror(
         return
     }
 
+    await loadCss("_content/GaelJ.BlazorCodeMirror6/GaelJ.BlazorCodeMirror6.bundle.scp.css")
+
     if (setup.debugLogs === true) {
         console.log(`Initializing CodeMirror instance ${id}`)
     }
@@ -472,6 +474,27 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
         console.error(`Error in calling the function ${functionName}`, error);
     }
 }
+
+function loadCss(url: string, cacheBust: boolean = true): Promise<void> {
+    const versionedUrl = cacheBust ? `${url}?v=${new Date().getTime()}` : url;
+
+    return new Promise((resolve, reject) => {
+        if (document.querySelector(`link[href="${versionedUrl}"]`)) {
+            resolve();
+            return;
+        }
+
+        const link = document.createElement('link');
+        link.type = 'text/css';
+        link.rel = 'stylesheet';
+        link.href = versionedUrl;
+        link.onload = () => resolve();
+        link.onerror = () => reject(new Error(`Failed to load CSS: ${versionedUrl}`));
+
+        document.head.appendChild(link);
+    });
+}
+
 
 /**
  * Dispose of a CodeMirror instance
