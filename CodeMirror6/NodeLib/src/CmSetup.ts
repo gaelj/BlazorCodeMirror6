@@ -28,4 +28,5 @@ export class CmSetup
     public bindValueMode: string
     public krokiUrl: string
     public scrollPastEnd: boolean
+    public debugLogs: boolean
 }

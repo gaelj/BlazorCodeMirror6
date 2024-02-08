@@ -134,4 +134,9 @@ public readonly record struct CodeMirrorSetup
     /// Can the user scroll past the end of the document
     /// </summary>
     [JsonPropertyName("scrollPastEnd")] public bool ScrollPastEnd { get; init; } = false;
+
+    /// <summary>
+    /// Whether to show the debug logs
+    /// </summary>
+    [JsonPropertyName("debugLogs")] public bool DebugLogs { get; init; } = false;
 }

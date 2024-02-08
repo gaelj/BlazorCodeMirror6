@@ -1,5 +1,6 @@
 using GaelJ.BlazorCodeMirror6.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
 namespace GaelJ.BlazorCodeMirror6;
@@ -22,6 +23,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     [JSInvokable] public async Task DocChangedFromJS(string value)
     {
+        if (Setup.DebugLogs) Logger.LogInformation("DocChangedFromJS: {value}", value);
         if (Doc?.Replace("\r", "") == value?.Replace("\r", "")) return;
         Doc = value?.Replace("\r", "") ?? "";
         Config.Doc = Doc;
@@ -35,6 +37,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     [JSInvokable] public async Task FocusChangedFromJS(bool value)
     {
+        if (Setup.DebugLogs) Logger.LogInformation("FocusChangedFromJS: {value}", value);
         if (State.HasFocus == value) return;
         State.HasFocus = value;
         await FocusChanged.InvokeAsync(State.HasFocus);
@@ -47,6 +50,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     [JSInvokable] public async Task SelectionSetFromJS(IEnumerable<SelectionRange>? values)
     {
+        if (Setup.DebugLogs) Logger.LogInformation("SelectionChangedFromJS: @{values}", values);
         Selection = values?.ToList();
         await SelectionChanged.InvokeAsync(Selection);
     }
@@ -58,6 +62,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     [JSInvokable] public async Task MarkdownStyleChangedFromJS(IEnumerable<string>? values)
     {
+        if (Setup.DebugLogs) Logger.LogInformation("MarkdownStyleChangedFromJS: @{values}", values);
         State.MarkdownStylesAtSelections = new(values?.ToList() ?? []);
         await MarkdownStylesAtSelectionsChanged.InvokeAsync(State.MarkdownStylesAtSelections);
     }
@@ -69,6 +74,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     [JSInvokable] public async Task<List<CodeMirrorDiagnostic>> LintingRequestedFromJS(string document)
     {
+        if (Setup.DebugLogs) Logger.LogInformation("LintingRequestedFromJS: {document}", document);
         if (Setup.BindMode == DocumentBindMode.OnDelayedInput) {
             await DocChangedFromJS(document);
         }
@@ -100,6 +106,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     [JSInvokable] public async Task<string?> UploadFileFromJS(byte[] fileBytes, string fileName, string contentType, DateTime lastModified)
     {
+        if (Setup.DebugLogs) Logger.LogInformation("UploadFileFromJS: {fileName}", fileName);
         using var fileStream = new MemoryStream(fileBytes);
         var customFormFile = new CustomFormFile(fileStream, fileName, contentType);
         var customBrowserFile = new CustomBrowserFile(fileStream, fileName, contentType, lastModified);
