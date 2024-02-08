@@ -277,6 +277,7 @@ export async function paste(view: EditorView): Promise<boolean> {
         const text = await navigator.clipboard.readText();
         view.dispatch(view.state.update({
             changes: { from: view.state.selection.main.from, to: view.state.selection.main.to, insert: text },
+            selection: { anchor: view.state.selection.main.anchor + text.length, head: view.state.selection.main.anchor + text.length },
             scrollIntoView: true
         }));
         return true;
