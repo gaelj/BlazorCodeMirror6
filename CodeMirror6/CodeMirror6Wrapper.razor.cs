@@ -13,11 +13,6 @@ namespace GaelJ.BlazorCodeMirror6;
 public partial class CodeMirror6Wrapper : ComponentBase
 {
     /// <summary>
-    /// Gets or sets the unique identifier for the CodeMirror6 editor.
-    /// Defaults to CodeMirror6_Editor_{NewGuid}.
-    /// </summary>
-    [Parameter] public string Id { get; set; } = $"CodeMirror6_Editor_{Guid.NewGuid()}";
-    /// <summary>
     /// The size of the tab character to use for the editor
     /// </summary>
     [Parameter] public int TabSize { get; set; } = 2;
