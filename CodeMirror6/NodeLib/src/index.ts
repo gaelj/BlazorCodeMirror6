@@ -230,6 +230,8 @@ export function getAllSupportedLanguageNames(id: string)
 
 async function updateListenerExtension(id: string, update: ViewUpdate) {
     const dotnetHelper = CMInstances[id].dotNetHelper
+    if (dotnetHelper === undefined)
+        return
     const setup = CMInstances[id].setup
     if (update.docChanged) {
         if (setup.bindValueMode === 'OnInput')
