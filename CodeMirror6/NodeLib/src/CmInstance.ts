@@ -2,6 +2,7 @@ import { EditorView } from "@codemirror/view"
 import { EditorState, Compartment } from "@codemirror/state"
 import { CmSetup } from "./CmSetup"
 import { DotNet } from "@microsoft/dotnet-js-interop"
+import { CmConfiguration } from "./CmConfiguration"
 
 /**
  * Stores the state of a CodeMirror instance and allow dynamic changes to the state
@@ -12,6 +13,7 @@ export class CmInstance
     public state: EditorState
     public view: EditorView
     public setup: CmSetup
+    public config: CmConfiguration
     public localStorageKey: string
     public languageCompartment: Compartment = new Compartment
     public markdownStylingCompartment: Compartment = new Compartment

@@ -8,7 +8,7 @@ export class CmConfiguration {
     public placeholder: string
     public themeName: string | null
     public tabSize: number
-    public indentationUnit: string
+    public indentationUnit: number
     public readOnly: boolean
     public editable: boolean
     public languageName: string
