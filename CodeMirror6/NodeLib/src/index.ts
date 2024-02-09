@@ -3,7 +3,7 @@ import {
     rectangularSelection, crosshairCursor, ViewUpdate, lineNumbers, highlightActiveLineGutter,
     placeholder, scrollPastEnd, highlightTrailingWhitespace, highlightWhitespace
 } from "@codemirror/view"
-import { EditorState, SelectionRange, Text } from "@codemirror/state"
+import { EditorState, SelectionRange, Text, StateEffect, ChangeSpec } from "@codemirror/state"
 import {
     indentWithTab, history, historyKeymap,
     cursorSyntaxLeft, selectSyntaxLeft, selectSyntaxRight, cursorSyntaxRight, deleteLine,
@@ -94,6 +94,7 @@ export async function initCodeMirror(
         CMInstances[id] = new CmInstance()
         CMInstances[id].dotNetHelper = dotnetHelper
         CMInstances[id].setup = setup
+        CMInstances[id].config = initialConfig
         CMInstances[id].localStorageKey = initialConfig.localStorageKey
         const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension)
         if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
@@ -104,7 +105,7 @@ export async function initCodeMirror(
             CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
             CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
-            CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
+            CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.indentationUnit))),
             CMInstances[id].placeholderCompartment.of(placeholder(initialConfig.placeholder)),
             CMInstances[id].themeCompartment.of(getTheme(initialConfig.themeName)),
             CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(initialConfig.readOnly)),
@@ -283,83 +284,48 @@ async function updateListenerExtension(id: string, update: ViewUpdate) {
     }
 }
 
-export function setResize(id: string, resize: string) {
+function setResize(id: string, resize: string) {
     setClassToParent(id, `resize-${resize}`, ['resize-horizontal', 'resize-both', 'resize-none', 'resize-vertical'])
 }
 
-export function setClassToParent(id: string, className: string, classNamesToRemove: string[]) {
+function setClassToParent(id: string, className: string, classNamesToRemove: string[]) {
     const dom = CMInstances[id].view.dom.parentElement
     classNamesToRemove.forEach(c => dom.classList.remove(c))
     if (dom?.classList)
         dom.classList.add(className)
 }
 
-export function setTabSize(id: string, size: number) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].tabSizeCompartment.reconfigure(EditorState.tabSize.of(size))
-    })
-}
+export async function setConfiguration(id: string, newConfig: CmConfiguration) {
+    const view = CMInstances[id].view
+    const oldConfig = CMInstances[id].config
+    const effects: StateEffect<any>[] = []
+    const changes: ChangeSpec[] = []
+    if (oldConfig.resize === newConfig.resize)
+        setResize(id, newConfig.resize)
 
-export function setIndentUnit(id: string, indentUnitString: string) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].indentUnitCompartment.reconfigure(indentUnit.of(indentUnitString))
-    })
-}
-
-export function setPlaceholderText(id: string, text: string) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].placeholderCompartment.reconfigure(placeholder(text))
-    })
-}
-
-export function setTheme(id: string, themeName: string) {
-    const theme = getTheme(themeName)
-    if (theme !== null) {
-        CMInstances[id].view.dispatch({
-            effects: CMInstances[id].themeCompartment.reconfigure(theme)
-        })
+    if (view.state.doc.toString() !== newConfig.doc) {
+        changes.push({ from: 0, to: view.state.doc.length, insert: newConfig.doc })
     }
-}
-
-export function setReadOnly(id: string, readOnly: boolean) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].readonlyCompartment.reconfigure(EditorState.readOnly.of(readOnly))
-    })
-}
-
-export function setEditable(id: string, editable: boolean) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].editableCompartment.reconfigure(EditorView.editable.of(editable))
-    })
-}
-
-export function setLineWrapping(id: string, lineWrapping: boolean) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].lineWrappingCompartment.reconfigure(lineWrapping ? EditorView.lineWrapping : [])
-    })
-}
-
-export function setUnifiedMergeView(id: string, mergeViewConfiguration: UnifiedMergeConfig) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].unifiedMergeViewCompartment.reconfigure(mergeViewConfiguration ? unifiedMergeView(mergeViewConfiguration) : [])
-    })
-}
-
-export async function setLanguage(id: string, languageName: string, fileNameOrExtension: string) {
-    const language = await getLanguage(id, languageName, fileNameOrExtension)
-    const customKeyMap = getLanguageKeyMaps(languageName, fileNameOrExtension)
-    if (languageName !== "CSV" && languageName !== "TSV")
-        customKeyMap.push(indentWithTab)
-    const separator = getSeparator(languageName)
-
-    CMInstances[id].view.dispatch({
-        effects: [
+    if (oldConfig.placeholder !== newConfig.placeholder) effects.push(CMInstances[id].placeholderCompartment.reconfigure(placeholder(newConfig.placeholder)))
+    const theme = getTheme(newConfig.themeName)
+    if (theme !== null && oldConfig.themeName !== newConfig.themeName) effects.push(CMInstances[id].themeCompartment.reconfigure(theme))
+    if (oldConfig.tabSize !== newConfig.tabSize) effects.push(CMInstances[id].tabSizeCompartment.reconfigure(EditorState.tabSize.of(newConfig.tabSize)))
+    if (oldConfig.indentationUnit !== newConfig.indentationUnit) effects.push(CMInstances[id].indentUnitCompartment.reconfigure(indentUnit.of(' '.repeat(newConfig.indentationUnit))))
+    if (oldConfig.readOnly !== newConfig.readOnly) effects.push(CMInstances[id].readonlyCompartment.reconfigure(EditorState.readOnly.of(newConfig.readOnly)))
+    if (oldConfig.editable !== newConfig.editable) effects.push(CMInstances[id].editableCompartment.reconfigure(EditorView.editable.of(newConfig.editable)))
+    if (oldConfig.languageName !== newConfig.languageName || oldConfig.fileNameOrExtension !== newConfig.fileNameOrExtension) {
+        const language = await getLanguage(id, newConfig.languageName, newConfig.fileNameOrExtension)
+        const customKeyMap = getLanguageKeyMaps(newConfig.languageName, newConfig.fileNameOrExtension)
+        if (newConfig.languageName !== "CSV" && newConfig.languageName !== "TSV")
+            customKeyMap.push(indentWithTab)
+        const separator = getSeparator(newConfig.languageName)
+        effects.push(
             CMInstances[id].languageCompartment.reconfigure(language ?? []),
             CMInstances[id].keymapCompartment.reconfigure(keymap.of(customKeyMap)),
             languageChangeEffect.of(language?.language),
-            CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, languageName === 'Markdown')),
+            CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.languageName === 'Markdown')),
             CMInstances[id].columnsStylingCompartment.reconfigure(
-                languageName === "CSV" || languageName === "TSV"
+                newConfig.languageName === "CSV" || newConfig.languageName === "TSV"
                     ? [
                         columnStylingPlugin(separator),
                         keymap.of(getColumnStylingKeymap(separator)),
@@ -367,25 +333,23 @@ export async function setLanguage(id: string, languageName: string, fileNameOrEx
                     ]
                     : []
             ),
-        ]
-    })
+        )
+    }
+    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown) effects.push(CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.autoFormatMarkdown)))
+    if (oldConfig.replaceEmojiCodes !== newConfig.replaceEmojiCodes) effects.push(CMInstances[id].emojiReplacerCompartment.reconfigure(replaceEmojiExtension(newConfig.replaceEmojiCodes)))
+    if (oldConfig.lineWrapping !== newConfig.lineWrapping) effects.push(CMInstances[id].lineWrappingCompartment.reconfigure(newConfig.lineWrapping ? EditorView.lineWrapping : []))
+    if (oldConfig.mergeViewConfiguration !== newConfig.mergeViewConfiguration) effects.push(CMInstances[id].unifiedMergeViewCompartment.reconfigure(newConfig.mergeViewConfiguration ? unifiedMergeView(newConfig.mergeViewConfiguration) : []))
+    if (oldConfig.highlightTrailingWhitespace !== newConfig.highlightTrailingWhitespace) effects.push(CMInstances[id].highlightTrailingWhitespaceCompartment.reconfigure(newConfig.highlightTrailingWhitespace ? highlightTrailingWhitespace() : []))
+    if (oldConfig.highlightWhitespace !== newConfig.highlightWhitespace) effects.push(CMInstances[id].highlightWhitespaceCompartment.reconfigure(newConfig.highlightWhitespace ? highlightWhitespace() : []))
+    if (oldConfig.localStorageKey !== newConfig.localStorageKey) setLocalStorageKey(id, newConfig.localStorageKey)
+
+    CMInstances[id].config = newConfig
+    view.dispatch({ effects: effects, changes: changes })
 }
 
 export function setMentionCompletions(id: string, mentionCompletions: Completion[]) {
     setCachedCompletions(mentionCompletions)
     forceRedraw(id)
-}
-
-export function setHighlightTrailingWhitespace(id: string, value: boolean) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].highlightTrailingWhitespaceCompartment.reconfigure(value ? highlightTrailingWhitespace() : [])
-    })
-}
-
-export function setHighlightWhitespace(id: string, value: boolean) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].highlightWhitespaceCompartment.reconfigure(value ? highlightWhitespace() : [])
-    })
 }
 
 export function forceRedraw(id: string) {
@@ -404,26 +368,14 @@ export function forceRedraw(id: string) {
     view.dispatch(view.state.update(changes))
 }
 
-export function setAutoFormatMarkdown(id: string, autoFormatMarkdown: boolean) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, autoFormatMarkdown))
-    })
-}
-
-export function setReplaceEmojiCodes(id: string, replaceEmojiCodes: boolean) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].emojiReplacerCompartment.reconfigure(replaceEmojiExtension(replaceEmojiCodes))
-    });
-}
-
-export function setDoc(id: string, text: string) {
+function setDoc(id: string, text: string) {
     const transaction = CMInstances[id].view.state.update({
         changes: { from: 0, to: CMInstances[id].view.state.doc.length, insert: text }
     })
     CMInstances[id].view.dispatch(transaction)
 }
 
-export function setLocalStorageKey(id: string, value: string) {
+function setLocalStorageKey(id: string, value: string) {
     saveToLocalStorage(id)
     CMInstances[id].localStorageKey = value
     if (value)
