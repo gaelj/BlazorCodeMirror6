@@ -20940,7 +20940,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-zGiGwDIa.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-UQXf2a91.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -20951,7 +20951,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-tS-LJPgK.js').then(m => m.cpp());
+            return import('./index-Tin6zLnw.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20959,7 +20959,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-tS-LJPgK.js').then(m => m.cpp());
+            return import('./index-Tin6zLnw.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20987,7 +20987,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-xuCeO1eJ.js').then(m => m.java());
+            return import('./index-0dEeNbPN.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21003,7 +21003,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-oCStIGnQ.js').then(m => m.json());
+            return import('./index-P8TRDugv.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21017,14 +21017,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-IfBrqDKR.js').then(m => m.less());
+            return import('./index-3FM4zII5.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-g-FDoMcA.js').then(m => m.liquid());
+            return import('./index-K-BKJvGY.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21050,7 +21050,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-Sh8bhnn4.js').then(m => m.php());
+            return import('./index-keUIdmTo.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21067,28 +21067,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-PkWCk6WP.js').then(m => m.python());
+            return import('./index-B6XSnFuc.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-_vIjIIyj.js').then(m => m.rust());
+            return import('./index-z3b0StEc.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-S1O9mSEi.js').then(m => m.sass({ indented: true }));
+            return import('./index-tUXtr2Yr.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-S1O9mSEi.js').then(m => m.sass());
+            return import('./index-tUXtr2Yr.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21119,7 +21119,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-QN80rkFM.js').then(m => m.wast());
+            return import('./index-Sc5Bkfun.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21127,7 +21127,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-g86xs8MV.js').then(m => m.xml());
+            return import('./index-eCOss-tx.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21135,7 +21135,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-d4mBUC04.js').then(m => m.yaml());
+            return import('./index-BKkEYO8B.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -21930,13 +21930,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-RzQXqKJW.js').then(m => m.vue());
+            return import('./index-RsxEcadP.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-3HVzynJl.js').then(m => m.angular());
+            return import('./index-uyqmzZKp.js').then(m => m.angular());
         }
     })
 ];
@@ -75874,6 +75874,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         CMInstances[id] = new CmInstance();
         CMInstances[id].dotNetHelper = dotnetHelper;
         CMInstances[id].setup = setup;
+        CMInstances[id].config = initialConfig;
         CMInstances[id].localStorageKey = initialConfig.localStorageKey;
         const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension);
         if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
@@ -75883,7 +75884,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
             CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
-            CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.tabSize))),
+            CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.indentationUnit))),
             CMInstances[id].placeholderCompartment.of(placeholder(initialConfig.placeholder)),
             CMInstances[id].themeCompartment.of(getTheme(initialConfig.themeName)),
             CMInstances[id].readonlyCompartment.of(EditorState.readOnly.of(initialConfig.readOnly)),
@@ -76056,86 +76057,66 @@ function setResize(id, resize) {
 function setClassToParent(id, className, classNamesToRemove) {
     const dom = CMInstances[id].view.dom.parentElement;
     classNamesToRemove.forEach(c => dom.classList.remove(c));
-    dom.classList.add(className);
+    if (dom?.classList)
+        dom.classList.add(className);
 }
-function setTabSize(id, size) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].tabSizeCompartment.reconfigure(EditorState.tabSize.of(size))
-    });
-}
-function setIndentUnit(id, indentUnitString) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].indentUnitCompartment.reconfigure(indentUnit.of(indentUnitString))
-    });
-}
-function setPlaceholderText(id, text) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].placeholderCompartment.reconfigure(placeholder(text))
-    });
-}
-function setTheme(id, themeName) {
-    const theme = getTheme(themeName);
-    if (theme !== null) {
-        CMInstances[id].view.dispatch({
-            effects: CMInstances[id].themeCompartment.reconfigure(theme)
-        });
+async function setConfiguration(id, newConfig) {
+    const view = CMInstances[id].view;
+    const oldConfig = CMInstances[id].config;
+    const effects = [];
+    const changes = [];
+    if (oldConfig.resize === newConfig.resize)
+        setResize(id, newConfig.resize);
+    if (view.state.doc.toString() !== newConfig.doc) {
+        changes.push({ from: 0, to: view.state.doc.length, insert: newConfig.doc });
     }
-}
-function setReadOnly(id, readOnly) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].readonlyCompartment.reconfigure(EditorState.readOnly.of(readOnly))
-    });
-}
-function setEditable(id, editable) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].editableCompartment.reconfigure(EditorView.editable.of(editable))
-    });
-}
-function setLineWrapping(id, lineWrapping) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].lineWrappingCompartment.reconfigure(lineWrapping ? EditorView.lineWrapping : [])
-    });
-}
-function setUnifiedMergeView(id, mergeViewConfiguration) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].unifiedMergeViewCompartment.reconfigure(mergeViewConfiguration ? unifiedMergeView(mergeViewConfiguration) : [])
-    });
-}
-async function setLanguage(id, languageName, fileNameOrExtension) {
-    const language = await getLanguage(id, languageName, fileNameOrExtension);
-    const customKeyMap = getLanguageKeyMaps(languageName, fileNameOrExtension);
-    if (languageName !== "CSV" && languageName !== "TSV")
-        customKeyMap.push(indentWithTab);
-    const separator = getSeparator(languageName);
-    CMInstances[id].view.dispatch({
-        effects: [
-            CMInstances[id].languageCompartment.reconfigure(language ?? []),
-            CMInstances[id].keymapCompartment.reconfigure(keymap.of(customKeyMap)),
-            languageChangeEffect.of(language?.language),
-            CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, languageName === 'Markdown')),
-            CMInstances[id].columnsStylingCompartment.reconfigure(languageName === "CSV" || languageName === "TSV"
-                ? [
-                    columnStylingPlugin(separator),
-                    keymap.of(getColumnStylingKeymap(separator)),
-                    linter(async (view) => columnLintSource(id, view, separator)),
-                ]
-                : []),
-        ]
-    });
+    if (oldConfig.placeholder !== newConfig.placeholder)
+        effects.push(CMInstances[id].placeholderCompartment.reconfigure(placeholder(newConfig.placeholder)));
+    const theme = getTheme(newConfig.themeName);
+    if (theme !== null && oldConfig.themeName !== newConfig.themeName)
+        effects.push(CMInstances[id].themeCompartment.reconfigure(theme));
+    if (oldConfig.tabSize !== newConfig.tabSize)
+        effects.push(CMInstances[id].tabSizeCompartment.reconfigure(EditorState.tabSize.of(newConfig.tabSize)));
+    if (oldConfig.indentationUnit !== newConfig.indentationUnit)
+        effects.push(CMInstances[id].indentUnitCompartment.reconfigure(indentUnit.of(' '.repeat(newConfig.indentationUnit))));
+    if (oldConfig.readOnly !== newConfig.readOnly)
+        effects.push(CMInstances[id].readonlyCompartment.reconfigure(EditorState.readOnly.of(newConfig.readOnly)));
+    if (oldConfig.editable !== newConfig.editable)
+        effects.push(CMInstances[id].editableCompartment.reconfigure(EditorView.editable.of(newConfig.editable)));
+    if (oldConfig.languageName !== newConfig.languageName || oldConfig.fileNameOrExtension !== newConfig.fileNameOrExtension) {
+        const language = await getLanguage(id, newConfig.languageName, newConfig.fileNameOrExtension);
+        const customKeyMap = getLanguageKeyMaps(newConfig.languageName, newConfig.fileNameOrExtension);
+        if (newConfig.languageName !== "CSV" && newConfig.languageName !== "TSV")
+            customKeyMap.push(indentWithTab);
+        const separator = getSeparator(newConfig.languageName);
+        effects.push(CMInstances[id].languageCompartment.reconfigure(language ?? []), CMInstances[id].keymapCompartment.reconfigure(keymap.of(customKeyMap)), languageChangeEffect.of(language?.language), CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.languageName === 'Markdown')), CMInstances[id].columnsStylingCompartment.reconfigure(newConfig.languageName === "CSV" || newConfig.languageName === "TSV"
+            ? [
+                columnStylingPlugin(separator),
+                keymap.of(getColumnStylingKeymap(separator)),
+                linter(async (view) => columnLintSource(id, view, separator)),
+            ]
+            : []));
+    }
+    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown)
+        effects.push(CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.autoFormatMarkdown)));
+    if (oldConfig.replaceEmojiCodes !== newConfig.replaceEmojiCodes)
+        effects.push(CMInstances[id].emojiReplacerCompartment.reconfigure(replaceEmojiExtension(newConfig.replaceEmojiCodes)));
+    if (oldConfig.lineWrapping !== newConfig.lineWrapping)
+        effects.push(CMInstances[id].lineWrappingCompartment.reconfigure(newConfig.lineWrapping ? EditorView.lineWrapping : []));
+    if (oldConfig.mergeViewConfiguration !== newConfig.mergeViewConfiguration)
+        effects.push(CMInstances[id].unifiedMergeViewCompartment.reconfigure(newConfig.mergeViewConfiguration ? unifiedMergeView(newConfig.mergeViewConfiguration) : []));
+    if (oldConfig.highlightTrailingWhitespace !== newConfig.highlightTrailingWhitespace)
+        effects.push(CMInstances[id].highlightTrailingWhitespaceCompartment.reconfigure(newConfig.highlightTrailingWhitespace ? highlightTrailingWhitespace() : []));
+    if (oldConfig.highlightWhitespace !== newConfig.highlightWhitespace)
+        effects.push(CMInstances[id].highlightWhitespaceCompartment.reconfigure(newConfig.highlightWhitespace ? highlightWhitespace() : []));
+    if (oldConfig.localStorageKey !== newConfig.localStorageKey)
+        setLocalStorageKey(id, newConfig.localStorageKey);
+    CMInstances[id].config = newConfig;
+    view.dispatch({ effects: effects, changes: changes });
 }
 function setMentionCompletions(id, mentionCompletions) {
     setCachedCompletions(mentionCompletions);
     forceRedraw(id);
-}
-function setHighlightTrailingWhitespace(id, value) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].highlightTrailingWhitespaceCompartment.reconfigure(value ? highlightTrailingWhitespace() : [])
-    });
-}
-function setHighlightWhitespace(id, value) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].highlightWhitespaceCompartment.reconfigure(value ? highlightWhitespace() : [])
-    });
 }
 function forceRedraw(id) {
     const view = CMInstances[id].view;
@@ -76149,16 +76130,6 @@ function forceRedraw(id) {
         return { range };
     });
     view.dispatch(view.state.update(changes));
-}
-function setAutoFormatMarkdown(id, autoFormatMarkdown) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, autoFormatMarkdown))
-    });
-}
-function setReplaceEmojiCodes(id, replaceEmojiCodes) {
-    CMInstances[id].view.dispatch({
-        effects: CMInstances[id].emojiReplacerCompartment.reconfigure(replaceEmojiExtension(replaceEmojiCodes))
-    });
 }
 function setDoc(id, text) {
     const transaction = CMInstances[id].view.state.update({
@@ -76380,4 +76351,4 @@ function dispose(id) {
     delete CMInstances[id];
 }
 
-export { setTabSize as A, setIndentUnit as B, ContextTracker as C, setPlaceholderText as D, ExternalTokenizer as E, setTheme as F, setReadOnly as G, setEditable as H, IterMode as I, setLineWrapping as J, setUnifiedMergeView as K, LRLanguage as L, setLanguage as M, NodeWeakMap as N, setMentionCompletions as O, setHighlightTrailingWhitespace as P, setHighlightWhitespace as Q, forceRedraw as R, setAutoFormatMarkdown as S, setReplaceEmojiCodes as T, setDoc as U, setLocalStorageKey as V, clearLocalStorage as W, dispatchCommand as X, dispose as Y, LanguageSupport as a, LRParser as b, continuedIndent as c, ifNotIn as d, completeFromList as e, foldNodeProp as f, syntaxTree as g, flatIndent as h, indentNodeProp as i, delimitedIndent as j, foldInside as k, defineCSSCompletionSource as l, EditorView as m, EditorSelection as n, html as o, parseMixed as p, snippetCompletion as q, bracketMatchingHandle as r, styleTags as s, tags$1 as t, LocalTokenGroup as u, javascriptLanguage as v, initCodeMirror as w, getAllSupportedLanguageNames as x, setResize as y, setClassToParent as z };
+export { forceRedraw as A, clearLocalStorage as B, ContextTracker as C, dispatchCommand as D, ExternalTokenizer as E, dispose as F, IterMode as I, LRLanguage as L, NodeWeakMap as N, LanguageSupport as a, LRParser as b, continuedIndent as c, ifNotIn as d, completeFromList as e, foldNodeProp as f, syntaxTree as g, flatIndent as h, indentNodeProp as i, delimitedIndent as j, foldInside as k, defineCSSCompletionSource as l, EditorView as m, EditorSelection as n, html as o, parseMixed as p, snippetCompletion as q, bracketMatchingHandle as r, styleTags as s, tags$1 as t, LocalTokenGroup as u, javascriptLanguage as v, initCodeMirror as w, getAllSupportedLanguageNames as x, setConfiguration as y, setMentionCompletions as z };
