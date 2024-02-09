@@ -1,8 +1,11 @@
-### ✨ Introduce new features
+### ✏️ Fix typos
 
-- Add ClearLocalStorage command
-- Paste data copied from Excel formatted as Markdown table
+- Fix paste button tooltip in example
+
+### 🎨 Improve structure / format of the code
+
+- Simplify configuration setting interop
 
 ### 🐛 Fix a bug
 
-- Fix cursor location on paste was before the pasted text
+- Silence a possible crash on startup
