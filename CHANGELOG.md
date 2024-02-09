@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.9 - 2024-02-09
+
+### ✏️ Fix typos
+
+- Fix paste button tooltip in example
+
+### 🎨 Improve structure / format of the code
+
+- Simplify configuration setting interop
+
+### 🐛 Fix a bug
+
+- Silence a possible crash on startup
+
 ## 0.3.8 - 2024-02-08
 
 ### ✨ Introduce new features
