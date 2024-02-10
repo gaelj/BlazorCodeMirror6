@@ -220,6 +220,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     internal CodeMirrorJsInterop? CmJsInterop = null;
     internal CodeMirrorConfiguration Config = null!;
     private bool shouldRender = true;
+    private bool IsCodeMirrorInitialized;
 
     /// <summary>
     /// Life-cycle method invoked when the component is initialized.
@@ -277,7 +278,9 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
                 var mentionCompletions = await GetMentionCompletions();
                 await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions);
             }
+            IsCodeMirrorInitialized = true;
             await InvokeAsync(StateHasChanged);
+            await OnParametersSetAsync();
         }
     }
 
@@ -288,7 +291,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     protected override async Task OnParametersSetAsync()
     {
         shouldRender = true;
-        if (CmJsInterop is null) return;
+        if (CmJsInterop is null || !IsCodeMirrorInitialized) return;
         shouldRender = false;
         var updated = false;
         try {
