@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.3 - 2024-02-10
+
+### 🐛 Fix a bug
+
+- Fix crash in logging
+
 ## 0.4.2 - 2024-02-10
 
 ### 🐛 Fix a bug
