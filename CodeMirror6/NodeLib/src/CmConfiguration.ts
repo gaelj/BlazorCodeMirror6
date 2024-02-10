@@ -22,6 +22,7 @@ export class CmConfiguration {
     public highlightTrailingWhitespace: boolean
     public highlightWhitespace: boolean
     public localStorageKey: string
+    public fullScreen: boolean
 }
 
 export interface UnifiedMergeConfig {

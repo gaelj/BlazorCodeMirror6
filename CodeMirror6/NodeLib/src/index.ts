@@ -132,8 +132,8 @@ export async function initCodeMirror(
                 ...closeBracketsKeymap,
 
                 //...defaultKeymap,
-                { key: "Alt-ArrowLeft", mac: "Ctrl-ArrowLeft", run: cursorSyntaxLeft, shift: selectSyntaxLeft },
-                { key: "Alt-ArrowRight", mac: "Ctrl-ArrowRight", run: cursorSyntaxRight, shift: selectSyntaxRight },
+                { key: "Alt-ArrowLeft", mac: "Mod-ArrowLeft", run: cursorSyntaxLeft, shift: selectSyntaxLeft },
+                { key: "Alt-ArrowRight", mac: "Mod-ArrowRight", run: cursorSyntaxRight, shift: selectSyntaxRight },
 
                 { key: "Alt-ArrowUp", run: moveLineUp },
                 { key: "Shift-Alt-ArrowUp", run: copyLineUp },
@@ -144,7 +144,7 @@ export async function initCodeMirror(
                 { key: "Escape", run: simplifySelection },
                 { key: "Mod-Enter", run: insertBlankLine },
 
-                { key: "Alt-l", mac: "Ctrl-l", run: selectLine },
+                { key: "Alt-l", mac: "Mod-l", run: selectLine },
                 { key: "Mod-i", run: selectParentSyntax, preventDefault: true },
 
                 { key: "Mod-[", run: indentLess },
@@ -290,13 +290,17 @@ async function updateListenerExtension(id: string, update: ViewUpdate) {
 }
 
 function adjustEditorHeight(id: string) {
-    const toolbarTopHeight = document.getElementById(`${id}_TopBar`).offsetHeight;
-    const toolbarBottomHeight = document.getElementById(`${id}_BottomBar`).offsetHeight;
-    const container = document.getElementById(`${id}_Container`)
-    const viewportHeight = container.offsetHeight;
-    const editorHeight = viewportHeight - toolbarTopHeight - toolbarBottomHeight;
+    if (CMInstances[id].config.fullScreen !== true) {
+        document.getElementById(id).style.height = ''
+        return
+    }
+    const toolbarTopHeight = document.getElementById(`${id}_TopBar`).offsetHeight
+    const toolbarBottomHeight = document.getElementById(`${id}_BottomBar`).offsetHeight
+    const viewportHeight = window.innerHeight
+    const editorHeight = viewportHeight - toolbarTopHeight - toolbarBottomHeight
 
-    document.getElementById(id).style.height = `${editorHeight}px`;
+    CMInstances[id].view.dom.style.height = ''
+    document.getElementById(id).style.height = `${editorHeight}px`
 }
 
 function setResize(id: string, resize: string) {
@@ -315,7 +319,7 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
     const oldConfig = CMInstances[id].config
     const effects: StateEffect<any>[] = []
     const changes: ChangeSpec[] = []
-    if (oldConfig.resize === newConfig.resize)
+    if (oldConfig.resize !== newConfig.resize)
         setResize(id, newConfig.resize)
 
     if (view.state.doc.toString() !== newConfig.doc) {
