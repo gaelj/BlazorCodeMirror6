@@ -493,7 +493,7 @@ function loadCss(url: string, cacheBust: boolean = true): Promise<void> {
     const versionedUrl = cacheBust ? `${url}?v=${new Date().getTime()}` : url;
 
     return new Promise((resolve, reject) => {
-        if (document.querySelector(`link[href="${versionedUrl}"]`)) {
+        if (document.querySelector(`link[href^="${url}"]`)) {
             resolve();
             return;
         }
