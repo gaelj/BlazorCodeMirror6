@@ -94,6 +94,13 @@
     })
 >Toggle visibility</button>
 
+<button class="btn btn-primary"
+    @onclick=@(async () => {
+        LocalStorageKey = "Key2";
+        await InvokeAsync(StateHasChanged);
+    })
+>Change local storage key</button>
+
 <CodeMirror6Wrapper
     IsWASM=@IsWASM
     @bind-Doc=@Text
@@ -115,8 +122,9 @@
     MergeViewConfiguration=@MergeViewConfiguration
     HighlightTrailingWhitespace=@HighlightTrailingWhitespace
     HighlightWhitespace=@HighlightWhitespace
-    Visible=@Visible
-    style="max-width: 100%; max-height: 60em; "
+    FullScreen=@FullScreen
+    LocalStorageKey=@LocalStorageKey
+    MaxHeight="60em"
 >
     <ContentBefore Context="c">
         <div class="toolbar sticky-top alert alert-info my-3">
@@ -186,6 +194,12 @@
             <button class=@ButtonClass(c.State) @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.Paste)) title="Paste (Ctrl-V)">
                 <i class="fas fa-paste"></i>
             </button>
+            <button class=@ButtonClass(c.State) @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ClearLocalStorage)) title="Clear local storage">
+                <i class="fas fa-trash"></i>
+            </button>
+            <button class=@ButtonClass(FullScreen) @onclick=@(() => FullScreen = !FullScreen) title="Toggle full-screen mode">
+                <i class=@(FullScreen ? "fas fa-window-restore" : "fas fa-window-maximize")></i>
+            </button>
         </div>
     </ContentBefore>
 </CodeMirror6Wrapper>
@@ -246,6 +260,7 @@
     LintDocument=@LintDocument
     AllowHorizontalResize=false
     AllowVerticalResize=false
+    Height="20em"
 />
 
 <pre>@Text3?.Split("\n").Count() Line(s)</pre>
@@ -293,6 +308,8 @@
     private bool HighlightTrailingWhitespace = true;
     private bool HighlightWhitespace = false;
     private bool Visible = true;
+    private bool FullScreen = false;
+    private string LocalStorageKey = "CodeMirror6WrapperDemo";
     private List<CodeMirrorLanguage> Languages =>
         Enum.GetValues<CodeMirrorLanguage>()
             .OrderBy(l => l == CodeMirrorLanguage.PlainText ? 0 : 1)

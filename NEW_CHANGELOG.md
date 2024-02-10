@@ -1,11 +1,12 @@
-### ✏️ Fix typos
+### ✨ Introduce new features
 
-- Fix paste button tooltip in example
+- Add Height, Width, MaxHeight & MaxWidth parameters
+- Implement full screen mode (#109)
 
-### 🎨 Improve structure / format of the code
+### ⚡️ Improve performance
 
-- Simplify configuration setting interop
+- If multiple instances exist on the same page, load the inline css only once
 
-### 🐛 Fix a bug
+### 📝 Add or update documentation
 
-- Silence a possible crash on startup
+- Add document persistence to LocalStorage to demo

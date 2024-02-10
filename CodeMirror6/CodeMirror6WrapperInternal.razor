@@ -1,27 +1,31 @@
-﻿@if (Visible && ContentBefore is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
-    @ContentBefore((CommandDispatcher, Config, State))
-}
-@if (!IsLoaded) {
-    <div
-        id=@LoadingDivId
-        @attributes=@AdditionalAttributes
-        class="editor-loading @VisibleClass"
-    >
-        @for (var i = 0; i < (Doc?.Split("\n").Length ?? 10); i++) {
-            var randomWidth = new Random().Next(20, 80);
-            <div class="loading-animation" style=@($"width: {randomWidth}%")></div>
+﻿<div class=@ContainerClass style=@ContainerStyle id=@ContainerId>
+
+    <div id=@TopBarId>
+        @if (Visible && ContentBefore is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
+            @ContentBefore((CommandDispatcher, Config, State))
         }
     </div>
-}
 
-<div class=@VisibleClass>
-    <div
-        id=@Setup.Id
-        @attributes=@AdditionalAttributes
-    >
+    @if (!IsLoaded) {
+        <div
+            id=@LoadingDivId
+            @attributes=@AdditionalAttributes
+            class="editor-loading"
+            style=@EditorStyle
+        >
+            @for (var i = 0; i < (Doc?.Split("\n").Length ?? 10); i++) {
+                var randomWidth = new Random().Next(20, 80);
+                <div class="loading-animation" style=@($"width: {randomWidth}%")></div>
+            }
+        </div>
+    }
+
+    <div id=@Setup.Id @attributes=@AdditionalAttributes style=@EditorStyle>
+    </div>
+
+    <div id=@BottomBarId>
+        @if (Visible && ContentAfter is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
+            @ContentAfter((CommandDispatcher, Config, State))
+        }
     </div>
 </div>
-
-@if (Visible && ContentAfter is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
-    @ContentAfter((CommandDispatcher, Config, State))
-}
