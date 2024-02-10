@@ -115,7 +115,7 @@
     MergeViewConfiguration=@MergeViewConfiguration
     HighlightTrailingWhitespace=@HighlightTrailingWhitespace
     HighlightWhitespace=@HighlightWhitespace
-    Visible=@Visible
+    FullScreen=@FullScreen
     MaxHeight="60em"
 >
     <ContentBefore Context="c">
@@ -185,6 +185,9 @@
             </button>
             <button class=@ButtonClass(c.State) @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.Paste)) title="Paste (Ctrl-V)">
                 <i class="fas fa-paste"></i>
+            </button>
+            <button class=@ButtonClass(FullScreen) @onclick=@(() => FullScreen = !FullScreen) title="Toggle full-screen mode">
+                <i class=@(FullScreen ? "fas fa-window-restore" : "fas fa-window-maximize")></i>
             </button>
         </div>
     </ContentBefore>
@@ -294,6 +297,7 @@
     private bool HighlightTrailingWhitespace = true;
     private bool HighlightWhitespace = false;
     private bool Visible = true;
+    private bool FullScreen = false;
     private List<CodeMirrorLanguage> Languages =>
         Enum.GetValues<CodeMirrorLanguage>()
             .OrderBy(l => l == CodeMirrorLanguage.PlainText ? 0 : 1)

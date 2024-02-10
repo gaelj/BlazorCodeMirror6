@@ -147,6 +147,19 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// </summary>
     [Parameter] public string? LocalStorageKey { get; set; }
     /// <summary>
+    /// The z-index to use for the full screen mode. Defaults to 3.
+    /// </summary>
+    /// <value></value>
+    [Parameter] public int FullScreenZIndex { get; set; } = 3;
+    /// <summary>
+    /// The full screen background color to use. Defaults to var(--bs-body-bg).
+    /// </summary>
+    [Parameter] public string? FullScreenBackgroundColor { get; set; }// = "var(--bs-body-bg)";
+    /// <summary>
+    /// Whether the editor is is full screen mode
+    /// </summary>
+    [Parameter] public bool FullScreen { get; set; }
+    /// <summary>
     /// Optional CSS width of the editor. Overridden when in full screen mode.
     /// </summary>
     /// <value></value>
@@ -178,12 +191,27 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     public CMCommandDispatcher? CommandDispatcher => CmJsInterop?.CommandDispatcher;
 
     private string LoadingDivId => $"{Setup.Id}_Loading";
-    private string ResizeStyle => AllowVerticalResize && AllowHorizontalResize
-        ? "both"
+    private string ContainerId => $"{Setup.Id}_Container";
+    private string TopBarId => $"{Setup.Id}_TopBar";
+    private string BottomBarId => $"{Setup.Id}_BottomBar";
+    private string ResizeStyle =>
+          FullScreen ? "none"
+        : AllowVerticalResize && AllowHorizontalResize ? "both"
         : AllowVerticalResize ? "vertical"
         : AllowHorizontalResize ? "horizontal"
         : "none";
     private string VisibleClass => Visible ? string.Empty : " d-none ";
+    private string FullScreenStyle => FullScreen
+        ? $"z-index: {FullScreenZIndex}; background-color: {FullScreenBackgroundColor};"
+        : string.Empty;
+    private string ContainerStyle => $"{FullScreenStyle}";
+    private string WidthStyle => FullScreen ? "width: 100%" : string.IsNullOrEmpty(Width) ? string.Empty : $"width: {Width};";
+    private string HeightStyle => FullScreen ? "height: 100%" : string.IsNullOrEmpty(Height) ? string.Empty : $"height: {Height};";
+    private string MaxWidthStyle => FullScreen ? "max-width: 100%" : string.IsNullOrEmpty(MaxWidth) && string.IsNullOrEmpty(Width) ? string.Empty : $"max-width: {MaxWidth ?? Width};";
+    private string MaxHeightStyle => FullScreen ? "max-height: 100%" : string.IsNullOrEmpty(MaxHeight) && string.IsNullOrEmpty(Height) ? string.Empty : $"max-height: {MaxHeight ?? Height};";
+    private string EditorStyle => $"{WidthStyle}; {HeightStyle}; {MaxWidthStyle}; {MaxHeightStyle};";
+    private string FullScreenClass => FullScreen ? " cm-full-screen " : string.Empty;
+    private string ContainerClass => $"{FullScreenClass} {VisibleClass}";
 
     /// <summary>
     /// JavaScript interop instance

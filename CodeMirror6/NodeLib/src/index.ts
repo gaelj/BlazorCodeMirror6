@@ -250,6 +250,8 @@ export async function initCodeMirror(
         // add a class to allow resizing of the editor
         setResize(id, initialConfig.resize)
 
+        adjustEditorHeight(id)
+
         forceRedraw(id)
 
     } catch (error) {
@@ -282,6 +284,19 @@ async function updateListenerExtension(id: string, update: ViewUpdate) {
         await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtSelections(id, update.state))
         await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to } }))
     }
+    if (update.geometryChanged) {
+        adjustEditorHeight(id)
+    }
+}
+
+function adjustEditorHeight(id: string) {
+    const toolbarTopHeight = document.getElementById(`${id}_TopBar`).offsetHeight;
+    const toolbarBottomHeight = document.getElementById(`${id}_BottomBar`).offsetHeight;
+    const container = document.getElementById(`${id}_Container`)
+    const viewportHeight = container.offsetHeight;
+    const editorHeight = viewportHeight - toolbarTopHeight - toolbarBottomHeight;
+
+    document.getElementById(id).style.height = `${editorHeight}px`;
 }
 
 function setResize(id: string, resize: string) {

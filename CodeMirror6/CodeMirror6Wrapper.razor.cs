@@ -143,6 +143,19 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// </summary>
     [Parameter] public string? LocalStorageKey { get; set; }
     /// <summary>
+    /// The z-index to use for the full screen mode. Defaults to 3.
+    /// </summary>
+    /// <value></value>
+    [Parameter] public int FullScreenZIndex { get; set; } = 3;
+    /// <summary>
+    /// The full screen background color to use. Defaults to var(--bs-body-bg).
+    /// </summary>
+    [Parameter] public string? FullScreenBackgroundColor { get; set; } = "var(--bs-body-bg)";
+    /// <summary>
+    /// Whether the editor is is full screen mode
+    /// </summary>
+    [Parameter] public bool FullScreen { get; set; }
+    /// <summary>
     /// Optional CSS width of the editor. Overridden when in full screen mode.
     /// </summary>
     /// <value></value>
