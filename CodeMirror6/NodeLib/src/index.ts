@@ -132,8 +132,8 @@ export async function initCodeMirror(
                 ...closeBracketsKeymap,
 
                 //...defaultKeymap,
-                { key: "Alt-ArrowLeft", mac: "Ctrl-ArrowLeft", run: cursorSyntaxLeft, shift: selectSyntaxLeft },
-                { key: "Alt-ArrowRight", mac: "Ctrl-ArrowRight", run: cursorSyntaxRight, shift: selectSyntaxRight },
+                { key: "Alt-ArrowLeft", mac: "Mod-ArrowLeft", run: cursorSyntaxLeft, shift: selectSyntaxLeft },
+                { key: "Alt-ArrowRight", mac: "Mod-ArrowRight", run: cursorSyntaxRight, shift: selectSyntaxRight },
 
                 { key: "Alt-ArrowUp", run: moveLineUp },
                 { key: "Shift-Alt-ArrowUp", run: copyLineUp },
@@ -144,7 +144,7 @@ export async function initCodeMirror(
                 { key: "Escape", run: simplifySelection },
                 { key: "Mod-Enter", run: insertBlankLine },
 
-                { key: "Alt-l", mac: "Ctrl-l", run: selectLine },
+                { key: "Alt-l", mac: "Mod-l", run: selectLine },
                 { key: "Mod-i", run: selectParentSyntax, preventDefault: true },
 
                 { key: "Mod-[", run: indentLess },
