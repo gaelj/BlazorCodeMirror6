@@ -290,8 +290,13 @@ async function updateListenerExtension(id: string, update: ViewUpdate) {
 }
 
 function adjustEditorHeight(id: string) {
+    const editor = document.getElementById(id)
+    if (!editor) {
+        consoleLog(id, `Editor is undefined`)
+        return
+    }
     if (CMInstances[id].config.fullScreen !== true) {
-        document.getElementById(id).style.height = ''
+        editor.style.height = ''
         return
     }
     const toolbarTopHeight = document.getElementById(`${id}_TopBar`).offsetHeight
@@ -300,7 +305,7 @@ function adjustEditorHeight(id: string) {
     const editorHeight = viewportHeight - toolbarTopHeight - toolbarBottomHeight
 
     CMInstances[id].view.dom.style.height = ''
-    document.getElementById(id).style.height = `${editorHeight}px`
+    editor.style.height = `${editorHeight}px`
 }
 
 function setResize(id: string, resize: string) {
@@ -308,6 +313,7 @@ function setResize(id: string, resize: string) {
 }
 
 function setClassToParent(id: string, className: string, classNamesToRemove: string[]) {
+    if (!CMInstances[id]?.view?.dom?.parentElement) return
     const dom = CMInstances[id].view.dom.parentElement
     classNamesToRemove.forEach(c => dom.classList.remove(c))
     if (dom?.classList)
@@ -315,7 +321,11 @@ function setClassToParent(id: string, className: string, classNamesToRemove: str
 }
 
 export async function setConfiguration(id: string, newConfig: CmConfiguration) {
-    const view = CMInstances[id].view
+    const view = CMInstances[id]?.view
+    if (!view) {
+        consoleLog(id, `View is undefined`)
+        return
+    }
     const oldConfig = CMInstances[id].config
     const effects: StateEffect<any>[] = []
     const changes: ChangeSpec[] = []
