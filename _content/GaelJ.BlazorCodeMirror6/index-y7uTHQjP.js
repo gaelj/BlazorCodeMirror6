@@ -1,4 +1,4 @@
-import { s as styleTags, t as tags, b as LRParser, L as LRLanguage, i as indentNodeProp, c as continuedIndent, h as flatIndent, j as delimitedIndent, f as foldNodeProp, k as foldInside, a as LanguageSupport } from './index-Q8kNcCAA.js';
+import { s as styleTags, t as tags, b as LRParser, L as LRLanguage, i as indentNodeProp, c as continuedIndent, h as flatIndent, j as delimitedIndent, f as foldNodeProp, k as foldInside, a as LanguageSupport } from './index-vCdfvytS.js';
 
 const javaHighlighting = styleTags({
   null: tags.null,
