@@ -244,7 +244,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             FileNameOrExtension,
             HighlightTrailingWhitespace,
             HighlightWhitespace,
-            LocalStorageKey
+            LocalStorageKey,
+            FullScreen
         );
         try {
             if (IsWASM)
@@ -358,6 +359,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             }
             if (Config.LocalStorageKey != LocalStorageKey) {
                 Config.LocalStorageKey = LocalStorageKey;
+                updated = true;
+            }
+            if (Config.FullScreen != FullScreen) {
+                Config.FullScreen = FullScreen;
                 updated = true;
             }
             if (updated)
