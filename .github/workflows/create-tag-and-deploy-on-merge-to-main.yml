@@ -89,7 +89,9 @@ jobs:
       run: dotnet build Examples.BlazorWasm
 
     - name: 🚀 Publish
-      run: dotnet publish Examples.BlazorWasm -c Release -o ./build
+      run: |
+        dotnet publish Examples.BlazorWasm -c Release -o ./build
+        cp ./build/wwwroot/index.html ./build/wwwroot/404.html
 
     - name: 🌍 Set base path
       run: sed -i 's|<base href="/" />|<base href="/BlazorCodeMirror6/" />|g' ./build/wwwroot/index.html
