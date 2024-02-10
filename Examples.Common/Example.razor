@@ -94,6 +94,13 @@
     })
 >Toggle visibility</button>
 
+<button class="btn btn-primary"
+    @onclick=@(async () => {
+        LocalStorageKey = "Key2";
+        await InvokeAsync(StateHasChanged);
+    })
+>Change local storage key</button>
+
 <CodeMirror6Wrapper
     IsWASM=@IsWASM
     @bind-Doc=@Text
@@ -116,6 +123,7 @@
     HighlightTrailingWhitespace=@HighlightTrailingWhitespace
     HighlightWhitespace=@HighlightWhitespace
     FullScreen=@FullScreen
+    LocalStorageKey=@LocalStorageKey
     MaxHeight="60em"
 >
     <ContentBefore Context="c">
@@ -185,6 +193,9 @@
             </button>
             <button class=@ButtonClass(c.State) @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.Paste)) title="Paste (Ctrl-V)">
                 <i class="fas fa-paste"></i>
+            </button>
+            <button class=@ButtonClass(c.State) @onclick=@(() => c.Commands.Dispatch(CodeMirrorSimpleCommand.ClearLocalStorage)) title="Clear local storage">
+                <i class="fas fa-trash"></i>
             </button>
             <button class=@ButtonClass(FullScreen) @onclick=@(() => FullScreen = !FullScreen) title="Toggle full-screen mode">
                 <i class=@(FullScreen ? "fas fa-window-restore" : "fas fa-window-maximize")></i>
@@ -298,6 +309,7 @@
     private bool HighlightWhitespace = false;
     private bool Visible = true;
     private bool FullScreen = false;
+    private string LocalStorageKey = "CodeMirror6WrapperDemo";
     private List<CodeMirrorLanguage> Languages =>
         Enum.GetValues<CodeMirrorLanguage>()
             .OrderBy(l => l == CodeMirrorLanguage.PlainText ? 0 : 1)
