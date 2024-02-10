@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.2 - 2024-02-10
+
+### 🐛 Fix a bug
+
+- Prevent null ref crashes
+- Prevent setting any configs until the editor is initialized
+
 ## 0.4.1 - 2024-02-10
 
 ### ✨ Introduce new features
