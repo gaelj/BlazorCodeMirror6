@@ -204,15 +204,15 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         ? $"z-index: {FullScreenZIndex}; background-color: {FullScreenBackgroundColor};"
         : string.Empty;
     private string ContainerStyle => $"{FullScreenStyle}";
-    private string VisibleClass => Visible ? string.Empty : " d-none ";
-    private string FullScreenClass => FullScreen ? " cm-full-screen " : string.Empty;
-    private string ContainerClass => $"{FullScreenClass} {VisibleClass}";
+    private string VisibleClass => Visible ? string.Empty : "d-none ";
+    private string FullScreenClass => FullScreen ? "cm-full-screen " : string.Empty;
+    private string ContainerClass => $"{FullScreenClass}{VisibleClass}";
 
-    private string WidthStyle => FullScreen ? "width: 100%" : string.IsNullOrEmpty(Width) ? string.Empty : $"width: {Width};";
-    private string HeightStyle => FullScreen ? "height: 100%" : string.IsNullOrEmpty(Height) ? string.Empty : $"height: {Height};";
-    private string MaxWidthStyle => FullScreen ? "max-width: 100%" : string.IsNullOrEmpty(MaxWidth) && string.IsNullOrEmpty(Width) ? string.Empty : $"max-width: {MaxWidth ?? Width};";
-    private string MaxHeightStyle => FullScreen ? "max-height: 100%" : string.IsNullOrEmpty(MaxHeight) && string.IsNullOrEmpty(Height) ? string.Empty : $"max-height: {MaxHeight ?? Height};";
-    private string EditorStyle => $"{WidthStyle}; {HeightStyle}; {MaxWidthStyle}; {MaxHeightStyle};";
+    private string WidthStyle => FullScreen || string.IsNullOrEmpty(Width) ? string.Empty : $"width: {Width};";
+    private string HeightStyle => FullScreen || string.IsNullOrEmpty(Height) ? string.Empty : $"height: {Height};";
+    private string MaxWidthStyle => FullScreen || (string.IsNullOrEmpty(MaxWidth) && string.IsNullOrEmpty(Width)) ? string.Empty : $"max-width: {MaxWidth ?? Width};";
+    private string MaxHeightStyle => FullScreen || (string.IsNullOrEmpty(MaxHeight) && string.IsNullOrEmpty(Height)) ? string.Empty : $"max-height: {MaxHeight ?? Height};";
+    private string EditorStyle => $"{WidthStyle} {HeightStyle} {MaxWidthStyle} {MaxHeightStyle}";
 
     /// <summary>
     /// JavaScript interop instance

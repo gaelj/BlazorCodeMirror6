@@ -290,13 +290,17 @@ async function updateListenerExtension(id: string, update: ViewUpdate) {
 }
 
 function adjustEditorHeight(id: string) {
-    const toolbarTopHeight = document.getElementById(`${id}_TopBar`).offsetHeight;
-    const toolbarBottomHeight = document.getElementById(`${id}_BottomBar`).offsetHeight;
-    const container = document.getElementById(`${id}_Container`)
-    const viewportHeight = container.offsetHeight;
-    const editorHeight = viewportHeight - toolbarTopHeight - toolbarBottomHeight;
+    if (CMInstances[id].config.fullScreen !== true) {
+        document.getElementById(id).style.height = ''
+        return
+    }
+    const toolbarTopHeight = document.getElementById(`${id}_TopBar`).offsetHeight
+    const toolbarBottomHeight = document.getElementById(`${id}_BottomBar`).offsetHeight
+    const viewportHeight = window.innerHeight
+    const editorHeight = viewportHeight - toolbarTopHeight - toolbarBottomHeight
 
-    document.getElementById(id).style.height = `${editorHeight}px`;
+    CMInstances[id].view.dom.style.height = ''
+    document.getElementById(id).style.height = `${editorHeight}px`
 }
 
 function setResize(id: string, resize: string) {
