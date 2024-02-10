@@ -315,7 +315,7 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
     const oldConfig = CMInstances[id].config
     const effects: StateEffect<any>[] = []
     const changes: ChangeSpec[] = []
-    if (oldConfig.resize === newConfig.resize)
+    if (oldConfig.resize !== newConfig.resize)
         setResize(id, newConfig.resize)
 
     if (view.state.doc.toString() !== newConfig.doc) {
