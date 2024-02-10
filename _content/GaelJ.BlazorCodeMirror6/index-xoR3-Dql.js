@@ -20940,7 +20940,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-UQXf2a91.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-8yvmIWG5.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -20951,7 +20951,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-Tin6zLnw.js').then(m => m.cpp());
+            return import('./index-5uiPa-fD.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20959,7 +20959,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-Tin6zLnw.js').then(m => m.cpp());
+            return import('./index-5uiPa-fD.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20987,7 +20987,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-0dEeNbPN.js').then(m => m.java());
+            return import('./index-W1nliViF.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21003,7 +21003,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-P8TRDugv.js').then(m => m.json());
+            return import('./index-clvExwJx.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21017,14 +21017,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-3FM4zII5.js').then(m => m.less());
+            return import('./index-4L6_oOor.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-K-BKJvGY.js').then(m => m.liquid());
+            return import('./index-T4NZbg1u.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21050,7 +21050,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-keUIdmTo.js').then(m => m.php());
+            return import('./index-krlj7li7.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21067,28 +21067,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-B6XSnFuc.js').then(m => m.python());
+            return import('./index-Z5X99vyI.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-z3b0StEc.js').then(m => m.rust());
+            return import('./index-qNISGVgr.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-tUXtr2Yr.js').then(m => m.sass({ indented: true }));
+            return import('./index-WFXlbcrA.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-tUXtr2Yr.js').then(m => m.sass());
+            return import('./index-WFXlbcrA.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21119,7 +21119,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-Sc5Bkfun.js').then(m => m.wast());
+            return import('./index-GxWkXszr.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21127,7 +21127,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-eCOss-tx.js').then(m => m.xml());
+            return import('./index-w-dka3oH.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21135,7 +21135,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-BKkEYO8B.js').then(m => m.yaml());
+            return import('./index-ZlNHn2IJ.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -21930,13 +21930,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-RsxEcadP.js').then(m => m.vue());
+            return import('./index-JWitlg22.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-uyqmzZKp.js').then(m => m.angular());
+            return import('./index-JnD8CxTr.js').then(m => m.angular());
         }
     })
 ];
@@ -76020,6 +76020,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         }
         // add a class to allow resizing of the editor
         setResize(id, initialConfig.resize);
+        adjustEditorHeight(id);
         forceRedraw(id);
     }
     catch (error) {
@@ -76050,6 +76051,17 @@ async function updateListenerExtension(id, update) {
         await dotnetHelper.invokeMethodAsync("MarkdownStyleChangedFromJS", getMarkdownStyleAtSelections(id, update.state));
         await dotnetHelper.invokeMethodAsync("SelectionSetFromJS", update.state.selection.ranges.map(r => { return { from: r.from, to: r.to }; }));
     }
+    if (update.geometryChanged) {
+        adjustEditorHeight(id);
+    }
+}
+function adjustEditorHeight(id) {
+    const toolbarTopHeight = document.getElementById(`${id}_TopBar`).offsetHeight;
+    const toolbarBottomHeight = document.getElementById(`${id}_BottomBar`).offsetHeight;
+    const container = document.getElementById(`${id}_Container`);
+    const viewportHeight = container.offsetHeight;
+    const editorHeight = viewportHeight - toolbarTopHeight - toolbarBottomHeight;
+    document.getElementById(id).style.height = `${editorHeight}px`;
 }
 function setResize(id, resize) {
     setClassToParent(id, `resize-${resize}`, ['resize-horizontal', 'resize-both', 'resize-none', 'resize-vertical']);
@@ -76325,7 +76337,7 @@ function dispatchCommand(id, functionName, ...args) {
 function loadCss(url, cacheBust = true) {
     const versionedUrl = cacheBust ? `${url}?v=${new Date().getTime()}` : url;
     return new Promise((resolve, reject) => {
-        if (document.querySelector(`link[href="${versionedUrl}"]`)) {
+        if (document.querySelector(`link[href^="${url}"]`)) {
             resolve();
             return;
         }

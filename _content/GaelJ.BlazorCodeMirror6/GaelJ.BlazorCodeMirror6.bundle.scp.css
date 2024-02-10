@@ -1,6 +1,7 @@
 /* _content/GaelJ.BlazorCodeMirror6/CodeMirror6WrapperInternal.razor.rz.scp.css */
 [b-xisrmijffq] .cm-editor {
     overflow: auto;
+    height: inherit;
     max-height: inherit;
     max-width: 100%;
 }
@@ -127,4 +128,15 @@
 
 [b-xisrmijffq] .cm-line table tr:nth-child(even) {
     background-color: #7f7f7f30;
+}
+
+.cm-full-screen[b-xisrmijffq] {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    top: 0px;
+    left: 0px;
+    overflow: auto;
+    width: 100vw;
+    height: 100vh;
 }
