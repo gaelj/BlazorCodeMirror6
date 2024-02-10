@@ -1,3 +1,8 @@
 .sticky-top {
     padding-top: 10px;
 }
+
+.cm-full-screen .sticky-top {
+    margin: 0px !important;
+    padding: 0px !important;
+}
