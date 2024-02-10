@@ -1,12 +1,11 @@
 ### ✨ Introduce new features
 
-- Add Height, Width, MaxHeight & MaxWidth parameters
-- Implement full screen mode (#109)
+- Add full screen state to configuration
 
-### ⚡️ Improve performance
+### 🐛 Fix a bug
 
-- If multiple instances exist on the same page, load the inline css only once
-
-### 📝 Add or update documentation
-
-- Add document persistence to LocalStorage to demo
+- Fix 404 in example project in github pages, when reloading with a suburl
+- Fix editor height regressions
+- Fix resize parameter changes were ignored
+- Fix visibility toggle broken in example
+- Use Mod instead of Ctrl for shortcuts (Mac compatibility)

@@ -24,6 +24,7 @@ namespace GaelJ.BlazorCodeMirror6.Models;
 /// <param name="highlightTrailingWhitespace"></param>
 /// <param name="highlightWhitespace"></param>
 /// <param name="localStorageKey"></param>
+/// <param name="fullScreen"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -42,7 +43,8 @@ public class CodeMirrorConfiguration(
     string? fileNameOrExtension,
     bool highlightTrailingWhitespace,
     bool highlightWhitespace,
-    string? localStorageKey)
+    string? localStorageKey,
+    bool fullScreen)
 {
 
     /// <summary>
@@ -134,4 +136,8 @@ public class CodeMirrorConfiguration(
     /// Optional local storage key to use for saving the document
     /// </summary>
     [JsonPropertyName("localStorageKey")] public string? LocalStorageKey { get; internal set; } = localStorageKey;
+    /// <summary>
+    /// Whether to display the editor in full screen mode
+    /// </summary>
+    [JsonPropertyName("fullScreen")] public bool FullScreen { get; internal set; } = fullScreen;
 }
