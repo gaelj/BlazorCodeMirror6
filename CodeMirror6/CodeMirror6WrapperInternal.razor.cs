@@ -147,6 +147,26 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// </summary>
     [Parameter] public string? LocalStorageKey { get; set; }
     /// <summary>
+    /// Optional CSS width of the editor. Overridden when in full screen mode.
+    /// </summary>
+    /// <value></value>
+    [Parameter] public string? Width { get; set; }
+    /// <summary>
+    /// Optional CSS height of the editor. Overridden when in full screen mode.
+    /// </summary>
+    /// <value></value>
+    [Parameter] public string? Height { get; set; }
+    /// <summary>
+    /// Optional CSS max-width of the editor. Overridden when in full screen mode.
+    /// </summary>
+    /// <value></value>
+    [Parameter] public string? MaxWidth { get; set; }
+    /// <summary>
+    /// Optional CSS max-height of the editor. Overridden when in full screen mode.
+    /// </summary>
+    /// <value></value>
+    [Parameter] public string? MaxHeight { get; set; }
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }

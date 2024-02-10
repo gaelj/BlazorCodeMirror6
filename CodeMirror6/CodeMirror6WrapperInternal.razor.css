@@ -1,5 +1,6 @@
-﻿::deep .cm-editor {
+::deep .cm-editor {
     overflow: auto;
+    height: inherit;
     max-height: inherit;
     max-width: 100%;
 }
