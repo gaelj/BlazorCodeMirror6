@@ -23,8 +23,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     [JSInvokable] public async Task DocChangedFromJS(string value)
     {
-        if (Setup.DebugLogs) Logger.LogInformation("DocChangedFromJS: {value}", value);
         if (Doc?.Replace("\r", "") == value?.Replace("\r", "")) return;
+        if (Setup.DebugLogs) Logger.LogInformation("DocChangedFromJS: {length}", value?.Length);
         Doc = value?.Replace("\r", "") ?? "";
         Config.Doc = Doc;
         await DocChanged.InvokeAsync(Doc);
@@ -37,8 +37,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     [JSInvokable] public async Task FocusChangedFromJS(bool value)
     {
-        if (Setup.DebugLogs) Logger.LogInformation("FocusChangedFromJS: {value}", value);
         if (State.HasFocus == value) return;
+        if (Setup.DebugLogs) Logger.LogInformation("FocusChangedFromJS: {value}", value);
         State.HasFocus = value;
         await FocusChanged.InvokeAsync(State.HasFocus);
     }
@@ -74,7 +74,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     [JSInvokable] public async Task<List<CodeMirrorDiagnostic>> LintingRequestedFromJS(string document)
     {
-        if (Setup.DebugLogs) Logger.LogInformation("LintingRequestedFromJS: {document}", document);
+        if (Setup.DebugLogs) Logger.LogInformation("LintingRequestedFromJS: {length}", document.Length);
         if (Setup.BindMode == DocumentBindMode.OnDelayedInput) {
             await DocChangedFromJS(document);
         }
