@@ -41,7 +41,7 @@ export const dynamicHrExtension = (enabled: boolean = true): Extension => {
                         const hrRegex = /^-{3,}$/
 
                         if (hrRegex.test(lineText)) {
-                            widgets.push(createHRDecorationWidget().range(from, to))
+                            widgets.push(createHRDecorationWidget().range(line.from, line.to))
                         }
                     }
                 },
