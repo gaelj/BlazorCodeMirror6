@@ -392,7 +392,7 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
     if (oldConfig.highlightTrailingWhitespace !== newConfig.highlightTrailingWhitespace) effects.push(CMInstances[id].highlightTrailingWhitespaceCompartment.reconfigure(newConfig.highlightTrailingWhitespace ? highlightTrailingWhitespace() : []))
     if (oldConfig.highlightWhitespace !== newConfig.highlightWhitespace) effects.push(CMInstances[id].highlightWhitespaceCompartment.reconfigure(newConfig.highlightWhitespace ? highlightWhitespace() : []))
     if (oldConfig.localStorageKey !== newConfig.localStorageKey) setLocalStorageKey(id, newConfig.localStorageKey)
-    if (oldConfig.fullScreen !== newConfig.fullScreen) {}
+    if (oldConfig.fullScreen !== newConfig.fullScreen) view.focus()
     if (oldConfig.supportFileUpload !== newConfig.supportFileUpload) {}
     if (oldConfig.maxDocumentLength !== newConfig.maxDocumentLength) {}
 
