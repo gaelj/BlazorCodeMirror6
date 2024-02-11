@@ -20940,7 +20940,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-CqiwWoZF.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-rvGs5ZMF.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -20951,7 +20951,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-C9WucaEI.js').then(m => m.cpp());
+            return import('./index-hut0nm86.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20959,7 +20959,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-C9WucaEI.js').then(m => m.cpp());
+            return import('./index-hut0nm86.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20987,7 +20987,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-0MnzsCFX.js').then(m => m.java());
+            return import('./index-Gb9Kapr6.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21003,7 +21003,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-ewYhfxTj.js').then(m => m.json());
+            return import('./index-WrN8eSLF.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21017,14 +21017,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-aITYWglQ.js').then(m => m.less());
+            return import('./index-LUudtgab.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-eGIFs1HT.js').then(m => m.liquid());
+            return import('./index-FnZvBU0E.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21050,7 +21050,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-dwkxOyUX.js').then(m => m.php());
+            return import('./index-GlqNR3Ub.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21067,28 +21067,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index--F6oxT6E.js').then(m => m.python());
+            return import('./index-iI0s1bp3.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-VsBsS9w0.js').then(m => m.rust());
+            return import('./index-tq6NDaty.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-8n9Xg0FL.js').then(m => m.sass({ indented: true }));
+            return import('./index-iDvlMYjQ.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-8n9Xg0FL.js').then(m => m.sass());
+            return import('./index-iDvlMYjQ.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21119,7 +21119,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-o0TObN1O.js').then(m => m.wast());
+            return import('./index-RxsHIzUg.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21127,7 +21127,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-D1xdo4QR.js').then(m => m.xml());
+            return import('./index-ky9-3aQ9.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21135,7 +21135,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-Wx4HqlvV.js').then(m => m.yaml());
+            return import('./index-8JRlM7gC.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -21930,13 +21930,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-Cpa4cypt.js').then(m => m.vue());
+            return import('./index-lI7CNKXK.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-8g2BLps9.js').then(m => m.angular());
+            return import('./index-N3CysZF1.js').then(m => m.angular());
         }
     })
 ];
@@ -34974,36 +34974,36 @@ function findMaxColumnWidths(data) {
     return maxWidths;
 }
 function parseCSV(csvData, separator) {
-    return csvData.split('\n').map((row) => extractAllRowCells(row, separator));
+    return csvData.trim().split('\n').map((row) => extractAllRowCells(row, separator));
 }
 function csvToMarkdownTable(text, separator, withHeaders) {
-    if (text.trim().indexOf("\n") < 0 && text.indexOf(separator) < 0)
+    if (text.indexOf(separator) < 0)
         return text;
     var md = "\n\n";
     const data = parseCSV(text, separator);
-    if (data.length <= 1)
+    const maxWidths = findMaxColumnWidths(data);
+    if (data.length === 0)
         return text;
+    if (data.length === 1)
+        withHeaders = false;
+    if (withHeaders === false)
+        data.unshift(data[0].map(() => ""));
     data.forEach((line, lineIndex) => {
-        if (line.length > 0) {
-            var mdRow = "| ";
-            line.forEach((cell) => {
-                while (cell.indexOf("|") > 0)
-                    cell = cell.replace("|", "&#124;");
-                mdRow += cell + " | ";
-                if (lineIndex == 0 && !withHeaders) {
-                    md += "|  ";
-                }
+        var mdRow = "";
+        line.forEach((cell, cellIndex) => {
+            while (cell.indexOf("|") > 0)
+                cell = cell.replace("|", "&#124;");
+            mdRow += "| " + cell + (' '.repeat(maxWidths[cellIndex] - cell.length)) + " ";
+        });
+        mdRow += "|";
+        if (lineIndex === 0) {
+            mdRow += "\n";
+            line.forEach((cell, cellIndex) => {
+                mdRow += "|-" + ('-'.repeat(maxWidths[cellIndex])) + "-";
             });
-            if ((lineIndex == 0 && !withHeaders) || (lineIndex == 1 && withHeaders)) {
-                if (lineIndex == 0)
-                    md += "  |\n";
-                line.forEach(() => {
-                    md += "|--";
-                });
-                md += "|\n";
-            }
-            md += mdRow + "\n";
+            mdRow += "|";
         }
+        md += mdRow + "\n";
     });
     return md;
 }
@@ -61951,7 +61951,7 @@ const dynamicHrExtension = (enabled = true) => {
                         const lineText = state.doc.sliceString(line.from, line.to);
                         const hrRegex = /^-{3,}$/;
                         if (hrRegex.test(lineText)) {
-                            widgets.push(createHRDecorationWidget().range(from, to));
+                            widgets.push(createHRDecorationWidget().range(line.from, line.to));
                         }
                     }
                 },
@@ -75338,6 +75338,14 @@ function htmlViewPlugin(enabled) {
     });
 }
 
+function isFileDragEvent(event) {
+    let isFile = false;
+    for (let i = 0; i < event.dataTransfer.types.length; i++) {
+        if (event.dataTransfer.types[i] == "Files")
+            isFile = true;
+    }
+    return isFile;
+}
 function getFileUploadExtensions(id, setup) {
     const overlayId = `${id}-file-upload`;
     if (document.getElementById(overlayId))
@@ -75369,14 +75377,14 @@ function getFileUploadExtensions(id, setup) {
     editorContainer.appendChild(overlay);
     const dragAndDropHandler = EditorView.domEventHandlers({
         dragenter(event, view) {
-            if (!event.dataTransfer?.files.length)
+            if (!CMInstances[id].config.supportFileUpload || !isFileDragEvent(event))
                 return;
             event.preventDefault();
             overlay.style.display = 'flex';
             depth++;
         },
         dragleave(event, view) {
-            if (!event.dataTransfer?.files.length)
+            if (!CMInstances[id].config.supportFileUpload || !isFileDragEvent(event))
                 return;
             event.preventDefault();
             depth--;
@@ -75385,14 +75393,15 @@ function getFileUploadExtensions(id, setup) {
             }
         },
         dragover(event, view) {
-            if (!event.dataTransfer?.files.length)
+            if (!CMInstances[id].config.supportFileUpload || !isFileDragEvent(event))
                 return;
             event.preventDefault();
             overlay.style.display = 'flex';
         },
         drop(event, view) {
-            if (!event.dataTransfer?.files.length)
+            if (!CMInstances[id].config.supportFileUpload || !isFileDragEvent(event))
                 return;
+            consoleLog(id, "drop");
             const transfer = event.dataTransfer;
             if (transfer?.files) {
                 overlay.style.display = 'none';
@@ -75447,8 +75456,8 @@ function markdownTableToHTML(markdownTable) {
     rows.forEach((row, index) => {
         const isHeader = index === 0;
         const tag = isHeader ? "th" : "td";
-        const cells = row.split('|').filter(cell => cell.trim() !== '').map(cell => cell.trim().replace(/-/g, ''));
-        if (cells.join('').trim() !== '')
+        const cells = row.trim().replace(/^\|/, '').replace(/\|$/, '').trim().split('|').map(cell => cell.trim());
+        if (cells.join('').trim().replace(/-/g, '') !== '')
             htmlTable += `  <tr>${cells.map(cell => `<${tag}>${cell}</${tag}>`).join('')}</tr>\n`;
     });
     return htmlTable;
@@ -75904,6 +75913,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
                 ]
                 : []),
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update); }),
+            linter(async (view) => maxDocLengthLintSource(id, view)),
             keymap.of([
                 ...closeBracketsKeymap,
                 //...defaultKeymap,
@@ -75982,7 +75992,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
                     const item = transfer.items[i];
                     consoleLog(id, "Item", item.kind, item.type);
                 }
-                if (transfer?.files && transfer.files.length > 0 && !transfer.types.includes('text/plain')) {
+                if (CMInstances[id].config.supportFileUpload && transfer?.files && transfer.files.length > 0 && !transfer.types.includes('text/plain')) {
                     uploadFiles(id, transfer.files, view);
                     event.preventDefault();
                 }
@@ -76025,6 +76035,26 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
     }
     catch (error) {
         console.error(`Error in initializing CodeMirror`, error);
+    }
+}
+async function maxDocLengthLintSource(id, view) {
+    try {
+        const docLength = view.state.doc.length;
+        const maxLength = CMInstances[id].config.maxDocumentLength;
+        if (maxLength === null)
+            return [];
+        const errors = [];
+        if (docLength > maxLength) {
+            const message = `Maximum document length of ${maxLength} characters exceeded.`;
+            errors.push({ from: maxLength, to: docLength, message, severity: 'error' });
+        }
+        if (errors.length > 0)
+            consoleLog(id, 'Linter found:', errors);
+        return errors;
+    }
+    catch (error) {
+        console.error('Linter error:', error);
+        return;
     }
 }
 function getAllSupportedLanguageNames() {
@@ -76138,6 +76168,10 @@ async function setConfiguration(id, newConfig) {
         effects.push(CMInstances[id].highlightWhitespaceCompartment.reconfigure(newConfig.highlightWhitespace ? highlightWhitespace() : []));
     if (oldConfig.localStorageKey !== newConfig.localStorageKey)
         setLocalStorageKey(id, newConfig.localStorageKey);
+    if (oldConfig.fullScreen !== newConfig.fullScreen)
+        view.focus();
+    if (oldConfig.supportFileUpload !== newConfig.supportFileUpload) ;
+    if (oldConfig.maxDocumentLength !== newConfig.maxDocumentLength) ;
     CMInstances[id].config = newConfig;
     view.dispatch({ effects: effects, changes: changes });
 }
@@ -76378,4 +76412,4 @@ function dispose(id) {
     delete CMInstances[id];
 }
 
-export { forceRedraw as A, clearLocalStorage as B, ContextTracker as C, dispatchCommand as D, ExternalTokenizer as E, dispose as F, IterMode as I, LRLanguage as L, NodeWeakMap as N, LanguageSupport as a, LRParser as b, continuedIndent as c, ifNotIn as d, completeFromList as e, foldNodeProp as f, syntaxTree as g, flatIndent as h, indentNodeProp as i, delimitedIndent as j, foldInside as k, defineCSSCompletionSource as l, EditorView as m, EditorSelection as n, html as o, parseMixed as p, snippetCompletion as q, bracketMatchingHandle as r, styleTags as s, tags$1 as t, LocalTokenGroup as u, javascriptLanguage as v, initCodeMirror as w, getAllSupportedLanguageNames as x, setConfiguration as y, setMentionCompletions as z };
+export { setMentionCompletions as A, forceRedraw as B, ContextTracker as C, clearLocalStorage as D, ExternalTokenizer as E, dispatchCommand as F, dispose as G, IterMode as I, LRLanguage as L, NodeWeakMap as N, LanguageSupport as a, LRParser as b, continuedIndent as c, ifNotIn as d, completeFromList as e, foldNodeProp as f, syntaxTree as g, flatIndent as h, indentNodeProp as i, delimitedIndent as j, foldInside as k, defineCSSCompletionSource as l, EditorView as m, EditorSelection as n, html as o, parseMixed as p, snippetCompletion as q, bracketMatchingHandle as r, styleTags as s, tags$1 as t, LocalTokenGroup as u, javascriptLanguage as v, initCodeMirror as w, maxDocLengthLintSource as x, getAllSupportedLanguageNames as y, setConfiguration as z };
