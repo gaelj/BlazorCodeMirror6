@@ -109,10 +109,6 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// </summary>
     [Parameter] public Func<Task<List<CodeMirrorCompletion>>>? GetMentionCompletions { get; set; }
     /// <summary>
-    /// Upload a file to a server and return the URL to the file
-    /// </summary>
-    [Parameter] public Func<IFormFile, Task<string>>? UploadFile { get; set; }
-    /// <summary>
     /// Upload an IBrowserFile to a server and returns the URL to the file
     /// </summary>
     [Parameter] public Func<IBrowserFile, Task<string>>? UploadBrowserFile { get; set; }

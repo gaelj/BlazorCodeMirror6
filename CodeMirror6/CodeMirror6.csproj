@@ -42,9 +42,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.15" Condition="'$(TargetFramework)'=='net7.0'" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1" Condition="'$(TargetFramework)'=='net8.0'" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-  </ItemGroup>
   <Target Name="RemoveNodeModulesTarget">
     <RemoveDir Directories="./NodeLib/node_modules" />
   </Target>
