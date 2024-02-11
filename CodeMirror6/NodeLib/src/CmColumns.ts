@@ -243,36 +243,34 @@ function findMaxColumnWidths(data: string[][]): number[] {
 }
 
 function parseCSV(csvData: string, separator: string): string[][] {
-    return csvData.split('\n').map((row) => extractAllRowCells(row, separator))
+    return csvData.trim().split('\n').map((row) => extractAllRowCells(row, separator))
 }
 
 export function csvToMarkdownTable(text: string, separator: string, withHeaders: boolean)
 {
-    if (text.trim().indexOf("\n") < 0 && text.indexOf(separator) < 0) return text;
-    var md = "\n\n";
-    const data = parseCSV(text, separator);
-    if (data.length <= 1) return text;
+    if (text.indexOf(separator) < 0) return text
+    var md = "\n\n"
+    const data = parseCSV(text, separator)
+    const maxWidths = findMaxColumnWidths(data)
+    if (data.length === 0) return text
+    if (data.length === 1) withHeaders = false
+    if (withHeaders === false) data.unshift(data[0].map(() => ""))
     data.forEach((line, lineIndex) => {
-        if (line.length > 0) {
-            var mdRow = "| ";
-            line.forEach((cell) => {
-                while (cell.indexOf("|") > 0)
-                    cell = cell.replace("|", "&#124;");
-                mdRow += cell + " | ";
-                if (lineIndex == 0 && !withHeaders) {
-                    md += "|  ";
-                }
+        var mdRow = ""
+        line.forEach((cell, cellIndex) => {
+            while (cell.indexOf("|") > 0)
+                cell = cell.replace("|", "&#124;")
+            mdRow += "| " + cell + (' '.repeat(maxWidths[cellIndex] - cell.length)) + " "
+        })
+        mdRow += "|"
+        if (lineIndex === 0) {
+            mdRow += "\n"
+            line.forEach((cell, cellIndex) => {
+                mdRow += "|-" + ('-'.repeat(maxWidths[cellIndex])) + "-"
             });
-            if ((lineIndex == 0 && !withHeaders) || (lineIndex == 1 && withHeaders)) {
-                if (lineIndex == 0)
-                    md += "  |\n";
-                line.forEach(() => {
-                    md += "|--";
-                });
-                md += "|\n";
-            }
-            md += mdRow + "\n";
+            mdRow += "|"
         }
-    });
-    return md;
+        md += mdRow + "\n"
+    })
+    return md
 }

@@ -11,12 +11,12 @@ function markdownTableToHTML(markdownTable: string): string {
     let htmlTable = "";
 
     rows.forEach((row, index) => {
-        const isHeader = index === 0;
-        const tag = isHeader ? "th" : "td";
-        const cells = row.split('|').filter(cell => cell.trim() !== '').map(cell => cell.trim().replace(/-/g, ''));
-        if (cells.join('').trim() !== '')
-            htmlTable += `  <tr>${cells.map(cell => `<${tag}>${cell}</${tag}>`).join('')}</tr>\n`;
-    });
+        const isHeader = index === 0
+        const tag = isHeader ? "th" : "td"
+        const cells = row.trim().replace(/^\|/, '').replace(/\|$/, '').trim().split('|').map(cell => cell.trim())
+        if (cells.join('').trim().replace(/-/g, '') !== '')
+            htmlTable += `  <tr>${cells.map(cell => `<${tag}>${cell}</${tag}>`).join('')}</tr>\n`
+    })
 
     return htmlTable;
 }

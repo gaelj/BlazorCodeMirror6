@@ -20,7 +20,7 @@ import { languages } from "@codemirror/language-data"
 import { unifiedMergeView } from "@codemirror/merge"
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap, Completion } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
-import { linter, lintGutter, lintKeymap } from "@codemirror/lint"
+import { Diagnostic, linter, lintGutter, lintKeymap } from "@codemirror/lint"
 
 import { DotNet } from "@microsoft/dotnet-js-interop"
 import { indentationMarkers } from '@replit/codemirror-indentation-markers'
@@ -128,6 +128,7 @@ export async function initCodeMirror(
             ),
 
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
+            linter(async view => maxDocLengthLintSource(id, view)),
             keymap.of([
                 ...closeBracketsKeymap,
 
@@ -203,7 +204,7 @@ export async function initCodeMirror(
                     const item = transfer.items[i]
                     consoleLog(id, "Item", item.kind, item.type)
                 }
-                if (transfer?.files && transfer.files.length > 0 && !transfer.types.includes('text/plain')) {
+                if (CMInstances[id].config.supportFileUpload && transfer?.files && transfer.files.length > 0 && !transfer.types.includes('text/plain')) {
                     uploadFiles(id, transfer.files, view)
                     event.preventDefault()
                 }
@@ -256,6 +257,26 @@ export async function initCodeMirror(
 
     } catch (error) {
         console.error(`Error in initializing CodeMirror`, error)
+    }
+}
+
+export async function maxDocLengthLintSource(id: string, view: EditorView): Promise<readonly Diagnostic[]> {
+    try {
+        const docLength = view.state.doc.length
+        const maxLength = CMInstances[id].config.maxDocumentLength
+        if (maxLength === null)
+            return []
+        const errors: Diagnostic[] = []
+        if (docLength > maxLength) {
+            const message = `Maximum document length of ${maxLength} characters exceeded.`
+            errors.push({ from: maxLength, to: docLength, message, severity: 'error' })
+        }
+        if (errors.length > 0)
+            consoleLog(id, 'Linter found:', errors)
+        return errors
+    } catch (error) {
+        console.error('Linter error:', error)
+        return
     }
 }
 
@@ -371,6 +392,9 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
     if (oldConfig.highlightTrailingWhitespace !== newConfig.highlightTrailingWhitespace) effects.push(CMInstances[id].highlightTrailingWhitespaceCompartment.reconfigure(newConfig.highlightTrailingWhitespace ? highlightTrailingWhitespace() : []))
     if (oldConfig.highlightWhitespace !== newConfig.highlightWhitespace) effects.push(CMInstances[id].highlightWhitespaceCompartment.reconfigure(newConfig.highlightWhitespace ? highlightWhitespace() : []))
     if (oldConfig.localStorageKey !== newConfig.localStorageKey) setLocalStorageKey(id, newConfig.localStorageKey)
+    if (oldConfig.fullScreen !== newConfig.fullScreen) view.focus()
+    if (oldConfig.supportFileUpload !== newConfig.supportFileUpload) {}
+    if (oldConfig.maxDocumentLength !== newConfig.maxDocumentLength) {}
 
     CMInstances[id].config = newConfig
     view.dispatch({ effects: effects, changes: changes })
