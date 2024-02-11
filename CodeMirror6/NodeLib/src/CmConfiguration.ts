@@ -24,6 +24,7 @@ export class CmConfiguration {
     public localStorageKey: string
     public fullScreen: boolean
     public supportFileUpload: boolean
+    public maxDocumentLength: number | null
 }
 
 export interface UnifiedMergeConfig {

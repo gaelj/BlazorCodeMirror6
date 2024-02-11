@@ -26,6 +26,7 @@ namespace GaelJ.BlazorCodeMirror6.Models;
 /// <param name="localStorageKey"></param>
 /// <param name="fullScreen"></param>
 /// <param name="supportFileUpload"></param>
+/// <param name="maxDocumentLength"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -46,7 +47,8 @@ public class CodeMirrorConfiguration(
     bool highlightWhitespace,
     string? localStorageKey,
     bool fullScreen,
-    bool supportFileUpload)
+    bool supportFileUpload,
+    int? maxDocumentLength)
 {
     /// <summary>
     /// The text to display in the editor
@@ -147,4 +149,9 @@ public class CodeMirrorConfiguration(
     /// Whether to support file upload
     /// </summary>
     [JsonPropertyName("supportFileUpload")] public bool SupportFileUpload { get; internal set; } = supportFileUpload;
+
+    /// <summary>
+    /// The maximum length of the document
+    /// </summary>
+    [JsonPropertyName("maxDocumentLength")] public int? MaxDocumentLength { get; internal set; } = maxDocumentLength;
 }

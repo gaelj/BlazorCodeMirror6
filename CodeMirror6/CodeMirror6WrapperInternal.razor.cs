@@ -180,6 +180,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <value></value>
     [Parameter] public string? MaxHeight { get; set; }
     /// <summary>
+    /// Optional maximum document length, in characters. A linting error will be raised if the document exceeds this length.
+    /// </summary>
+    [Parameter] public int? MaxDocumentLength { get; set; }
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
@@ -247,7 +251,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             HighlightWhitespace,
             LocalStorageKey,
             FullScreen,
-            UploadBrowserFile is not null
+            UploadBrowserFile is not null,
+            MaxDocumentLength
         );
         try {
             if (IsWASM)
@@ -371,6 +376,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             }
             if (Config.SupportFileUpload != (UploadBrowserFile is not null)) {
                 Config.SupportFileUpload = UploadBrowserFile is not null;
+                updated = true;
+            }
+            if (Config.MaxDocumentLength != MaxDocumentLength) {
+                Config.MaxDocumentLength = MaxDocumentLength;
                 updated = true;
             }
             if (updated)
