@@ -149,6 +149,7 @@ export async function columnLintSource(id: string, view: EditorView, separator: 
     try {
         const code = view.state.doc.toString()
         const data = parseCSV(code, separator)
+        if (data === null) return
         const nbCols = data[0].length
         const errors: Diagnostic[] = []
         for (let i = 1; i < data.length; i++) {
@@ -224,6 +225,7 @@ function extractAllRowCells(line: string, separator: string): string[] {
 
 function findMaxColumnWidthsInCsv(csvData: string, separator: string): number[] {
     const data = parseCSV(csvData, separator)
+    if (data === null) return []
     return findMaxColumnWidths(data)
 }
 
@@ -243,7 +245,9 @@ function findMaxColumnWidths(data: string[][]): number[] {
 }
 
 function parseCSV(csvData: string, separator: string): string[][] {
-    return csvData.trim().split('\n').map((row) => extractAllRowCells(row, separator))
+    const data = csvData.trim().split('\n').map((row) => extractAllRowCells(row, separator))
+    if (data.some((row) => row.length !== data[0].length)) return null
+    return data
 }
 
 export function csvToMarkdownTable(text: string, separator: string, withHeaders: boolean)
@@ -251,6 +255,7 @@ export function csvToMarkdownTable(text: string, separator: string, withHeaders:
     if (text.indexOf(separator) < 0) return text
     var md = "\n\n"
     const data = parseCSV(text, separator)
+    if (data === null) return text
     const maxWidths = findMaxColumnWidths(data)
     if (data.length === 0) return text
     if (data.length === 1) withHeaders = false
