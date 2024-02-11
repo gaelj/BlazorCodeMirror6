@@ -23,6 +23,7 @@ export class CmConfiguration {
     public highlightWhitespace: boolean
     public localStorageKey: string
     public fullScreen: boolean
+    public supportFileUpload: boolean
 }
 
 export interface UnifiedMergeConfig {

@@ -5,6 +5,15 @@ import { CMInstances } from "./CmInstance"
 import { consoleLog } from "./CmLogging"
 
 
+function isFileDragEvent(event: DragEvent): boolean {
+    let isFile = false
+    for (let i = 0; i < event.dataTransfer.types.length; i++) {
+        if (event.dataTransfer.types[i] == "Files")
+            isFile = true
+    }
+    return isFile
+}
+
 export function getFileUploadExtensions(id: string, setup: CmSetup)
 {
     const overlayId = `${id}-file-upload`
@@ -39,13 +48,13 @@ export function getFileUploadExtensions(id: string, setup: CmSetup)
 
     const dragAndDropHandler = EditorView.domEventHandlers({
         dragenter(event, view) {
-            if (!event.dataTransfer?.files.length) return
+            if (!CMInstances[id].config.supportFileUpload || !isFileDragEvent(event)) return
             event.preventDefault()
             overlay.style.display = 'flex'
             depth++
         },
         dragleave(event, view) {
-            if (!event.dataTransfer?.files.length) return
+            if (!CMInstances[id].config.supportFileUpload || !isFileDragEvent(event)) return
             event.preventDefault();
             depth--
             if (depth === 0) {
@@ -53,12 +62,13 @@ export function getFileUploadExtensions(id: string, setup: CmSetup)
             }
         },
         dragover(event, view) {
-            if (!event.dataTransfer?.files.length) return
+            if (!CMInstances[id].config.supportFileUpload || !isFileDragEvent(event)) return
             event.preventDefault()
             overlay.style.display = 'flex'
         },
         drop(event, view) {
-            if (!event.dataTransfer?.files.length) return
+            if (!CMInstances[id].config.supportFileUpload || !isFileDragEvent(event)) return
+            consoleLog(id, "drop")
             const transfer = event.dataTransfer
             if (transfer?.files) {
                 overlay.style.display = 'none'

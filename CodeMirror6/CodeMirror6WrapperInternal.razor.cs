@@ -246,7 +246,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             HighlightTrailingWhitespace,
             HighlightWhitespace,
             LocalStorageKey,
-            FullScreen
+            FullScreen,
+            UploadBrowserFile is not null
         );
         try {
             if (IsWASM)
@@ -366,6 +367,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             }
             if (Config.FullScreen != FullScreen) {
                 Config.FullScreen = FullScreen;
+                updated = true;
+            }
+            if (Config.SupportFileUpload != (UploadBrowserFile is not null)) {
+                Config.SupportFileUpload = UploadBrowserFile is not null;
                 updated = true;
             }
             if (updated)

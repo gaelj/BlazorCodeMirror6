@@ -203,7 +203,7 @@ export async function initCodeMirror(
                     const item = transfer.items[i]
                     consoleLog(id, "Item", item.kind, item.type)
                 }
-                if (transfer?.files && transfer.files.length > 0 && !transfer.types.includes('text/plain')) {
+                if (CMInstances[id].config.supportFileUpload && transfer?.files && transfer.files.length > 0 && !transfer.types.includes('text/plain')) {
                     uploadFiles(id, transfer.files, view)
                     event.preventDefault()
                 }
