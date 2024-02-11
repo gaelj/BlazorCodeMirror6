@@ -194,10 +194,11 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     public CMCommandDispatcher? CommandDispatcher => CmJsInterop?.CommandDispatcher;
 
-    private string LoadingDivId => $"{Setup.Id}_Loading";
-    private string ContainerId => $"{Setup.Id}_Container";
-    private string TopBarId => $"{Setup.Id}_TopBar";
-    private string BottomBarId => $"{Setup.Id}_BottomBar";
+    private string SetupId = null!;
+    private string LoadingDivId => $"{SetupId}_Loading";
+    private string ContainerId => $"{SetupId}_Container";
+    private string TopBarId => $"{SetupId}_TopBar";
+    private string BottomBarId => $"{SetupId}_BottomBar";
     private string ResizeStyle =>
           FullScreen ? "none"
         : AllowVerticalResize && AllowHorizontalResize ? "both"
@@ -279,6 +280,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     {
         if (CmJsInterop is null) {
             CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
+            SetupId = Setup.Id;
             await CmJsInterop.PropertySetters.InitCodeMirror();
             if (GetMentionCompletions is not null) {
                 var mentionCompletions = await GetMentionCompletions();
