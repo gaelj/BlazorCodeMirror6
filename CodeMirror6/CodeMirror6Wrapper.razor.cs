@@ -176,6 +176,10 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// <value></value>
     [Parameter] public string? MaxHeight { get; set; }
     /// <summary>
+    /// Optional maximum document length, in characters. A linting error will be raised if the document exceeds this length.
+    /// </summary>
+    [Parameter] public int? MaxDocumentLength { get; set; }
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }

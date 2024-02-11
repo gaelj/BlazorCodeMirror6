@@ -86,6 +86,11 @@
     }) />
 </div>
 
+<label for="HighlightTrailingWhitespace">Read-only</label>
+<input id="HighlightTrailingWhitespace" type="checkbox" checked=@ReadOnly @onchange=@(async v => {
+    ReadOnly = (v.Value as bool?) == true;
+    await InvokeAsync(StateHasChanged);
+}) />
 
 <button class="btn btn-primary"
     @onclick=@(async () => {
@@ -117,7 +122,7 @@
     GetMentionCompletions=@GetMentionCompletions
     UploadFile=@UploadFile
     Editable
-    ReadOnly=false
+    ReadOnly=@ReadOnly
     LineWrapping=@LineWrapping
     MergeViewConfiguration=@MergeViewConfiguration
     HighlightTrailingWhitespace=@HighlightTrailingWhitespace
@@ -232,6 +237,7 @@
     LintDocument=@LintDocument
     AllowHorizontalResize
     AllowVerticalResize=false
+    MaxDocumentLength=10
 />
 
 <pre>@Text2?.Split("\n").Count() Line(s)</pre>
@@ -291,10 +297,12 @@
 @code
 {
     [Parameter] public bool IsWASM { get; set; }
+
     private string? Text = code;
     private string? Text2 = "# Example 2";
     private string? Text3;
     private int TabSize = 4;
+    private bool ReadOnly;
     private List<SelectionRange>? selectionRanges1;
     private List<SelectionRange>? selectionRanges2;
     private List<SelectionRange>? selectionRanges3;
