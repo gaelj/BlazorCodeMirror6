@@ -20940,7 +20940,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-C9fiSCSi.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-Y45m7Vwv.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -20951,7 +20951,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-CGAQLrH0.js').then(m => m.cpp());
+            return import('./index-DUSgLUI6.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20959,7 +20959,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-CGAQLrH0.js').then(m => m.cpp());
+            return import('./index-DUSgLUI6.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20987,7 +20987,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-Czov5lh4.js').then(m => m.java());
+            return import('./index-jPZgddmX.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21003,7 +21003,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-DcOKznQm.js').then(m => m.json());
+            return import('./index-BgG02U15.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21017,14 +21017,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-CXgAD3P8.js').then(m => m.less());
+            return import('./index-DsYuslXO.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-BS7TCdvY.js').then(m => m.liquid());
+            return import('./index-BPeR11fi.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21050,7 +21050,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-CtrE0wJp.js').then(m => m.php());
+            return import('./index-CyDE5GDF.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21067,28 +21067,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-F8qVdLVE.js').then(m => m.python());
+            return import('./index-D5q5EUHT.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-C_FSvBT8.js').then(m => m.rust());
+            return import('./index-BOcXO5tt.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-DDNUr-9I.js').then(m => m.sass({ indented: true }));
+            return import('./index-BuddL_Rs.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-DDNUr-9I.js').then(m => m.sass());
+            return import('./index-BuddL_Rs.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21119,7 +21119,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-BjEulnim.js').then(m => m.wast());
+            return import('./index-B3ct1KhY.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21127,7 +21127,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-wy5IXXCL.js').then(m => m.xml());
+            return import('./index-CeQbt6Ju.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21135,7 +21135,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-BAYuzsvz.js').then(m => m.yaml());
+            return import('./index-BY_S0f23.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -21930,13 +21930,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-xNE1UC4N.js').then(m => m.vue());
+            return import('./index-Dlka8q1P.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-Dxz2MzZJ.js').then(m => m.angular());
+            return import('./index-Dt6M314h.js').then(m => m.angular());
         }
     })
 ];
@@ -75848,8 +75848,9 @@ const hideMarksExtension = (enabled = true) => {
                         if (mark.startsWith('#')) {
                             to += 1; // Hide the space character after the #'s
                         }
-                        if (!isCursorInRange(state, cursorRange.from, cursorRange.to))
-                            widgets.push(hideDecoration().range(from, to));
+                        if (isCursorInRange(state, cursorRange.from, cursorRange.to))
+                            return;
+                        widgets.push(hideDecoration().range(from, to));
                     }
                 },
             });
@@ -75885,6 +75886,11 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         consoleLog(id, `CodeMirror instance ${id} already exists`);
         return;
     }
+    const parentDiv = document.getElementById(id);
+    if (!parentDiv) {
+        console.error(`Parent div with id ${id} not found`);
+        return;
+    }
     await loadCss("_content/GaelJ.BlazorCodeMirror6/GaelJ.BlazorCodeMirror6.bundle.scp.css");
     if (setup.debugLogs === true) {
         console.log(`Initializing CodeMirror instance ${id}`);
@@ -75899,6 +75905,8 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension);
         if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
             customKeyMap.push(indentWithTab);
+        consoleLog(id, 'Config', initialConfig);
+        consoleLog(id, 'Setup', setup);
         let extensions = [
             CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
             CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
@@ -76022,7 +76030,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         });
         CMInstances[id].view = new EditorView({
             state: CMInstances[id].state,
-            parent: document.getElementById(id),
+            parent: parentDiv,
             scrollTo: setup.scrollToEnd === true ? scrollToEndEffect : null,
         });
         if (setup.scrollToEnd === true) {
@@ -76033,6 +76041,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         if (loadingPlaceholder) {
             loadingPlaceholder.style.display = 'none';
         }
+        // foldMarkdownCodeBlocks(CMInstances[id].view)
         // add a class to allow resizing of the editor
         setResize(id, initialConfig.resize);
         adjustEditorHeight(id);
@@ -76093,7 +76102,7 @@ async function updateListenerExtension(id, update) {
 function adjustEditorHeight(id) {
     const editor = document.getElementById(id);
     if (!editor) {
-        consoleLog(id, `Editor is undefined`);
+        consoleLog(id, `Editor ${id} is not found in the DOM - cannot adjust height`);
         return;
     }
     if (CMInstances[id].config.fullScreen !== true) {
