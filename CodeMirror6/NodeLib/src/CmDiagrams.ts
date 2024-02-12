@@ -90,7 +90,7 @@ async function fetchDiagramSvg(view: EditorView, code: string, language: string,
     })
 }
 
-function detectDiagramLanguage(code: string): string | undefined {
+export function detectDiagramLanguage(code: string): string | undefined {
     const lines = code.split('\n')
     if (lines.length === 0) {
         return undefined
