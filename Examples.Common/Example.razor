@@ -121,8 +121,14 @@
     ReplaceEmojiCodes=@ReplaceEmojiCodes
     GetMentionCompletions=@GetMentionCompletions
     UploadFile=@UploadFile
-    Editable
+    Editable=@(!ReadOnly)
     ReadOnly=@ReadOnly
+    LineNumbers=@(!ReadOnly)
+    HighlightActiveLineGutter=@(!ReadOnly)
+    ScrollPastEnd=@(!ReadOnly)
+    DropCursor=@(!ReadOnly)
+    DrawSelection=@(!ReadOnly)
+    PreviewImages=@true
     LineWrapping=@LineWrapping
     MergeViewConfiguration=@MergeViewConfiguration
     HighlightTrailingWhitespace=@HighlightTrailingWhitespace
@@ -325,12 +331,8 @@
             .ThenBy(l => l.ToString())
             .ToList();
     private readonly CodeMirrorSetup Setup = new() {
-        HighlightActiveLine = false,
-        LineNumbers = true,
-        HighlightActiveLineGutter = false,
-        HighlightSelectionMatches = false,
+        HighlightSelectionMatches = true,
         ScrollToEnd = true,
-        ScrollPastEnd = true,
         BindMode = DocumentBindMode.OnDelayedInput,
     };
     private UnifiedMergeConfig? PreviousMergeViewConfiguration;

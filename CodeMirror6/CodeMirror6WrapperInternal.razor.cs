@@ -184,6 +184,34 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// </summary>
     [Parameter] public int? MaxDocumentLength { get; set; }
     /// <summary>
+    /// Whether to show line numbers to the left of the editor.
+    /// </summary>
+    [Parameter] public bool LineNumbers { get; init; } = true;
+    /// <summary>
+    /// Whether to highlight the line gutter when the cursor is on it.
+    /// </summary>
+    [Parameter] public bool HighlightActiveLineGutter { get; init; } = true;
+    /// <summary>
+    /// Whether to highlight the active line.
+    /// </summary>
+    [Parameter] public bool HighlightActiveLine { get; init; } = true;
+    /// <summary>
+    /// Whether to draw the selection when the editor is focused.
+    /// </summary>
+    [Parameter] public bool DrawSelection { get; init; } = true;
+    /// <summary>
+    /// Whether to show a cursor marker when the editor is focused.
+    /// </summary>
+    [Parameter] public bool DropCursor { get; init; } = true;
+    /// <summary>
+    /// Whether to enable preview images.
+    /// </summary>
+    [Parameter] public bool PreviewImages { get; init; } = true;
+    /// <summary>
+    /// Can the user scroll past the end of the document
+    /// </summary>
+    [Parameter] public bool ScrollPastEnd { get; init; } = true;
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
@@ -212,7 +240,6 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     private string VisibleClass => Visible ? string.Empty : "d-none ";
     private string FullScreenClass => FullScreen ? "cm-full-screen " : string.Empty;
     private string ContainerClass => $"{FullScreenClass}{VisibleClass}";
-
     private string WidthStyle => FullScreen || string.IsNullOrEmpty(Width) ? string.Empty : $"width: {Width};";
     private string HeightStyle => FullScreen || string.IsNullOrEmpty(Height) ? string.Empty : $"height: {Height};";
     private string MaxWidthStyle => FullScreen || (string.IsNullOrEmpty(MaxWidth) && string.IsNullOrEmpty(Width)) ? string.Empty : $"max-width: {MaxWidth ?? Width};";
@@ -254,7 +281,14 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             LocalStorageKey,
             FullScreen,
             UploadBrowserFile is not null,
-            MaxDocumentLength
+            MaxDocumentLength,
+            LineNumbers,
+            HighlightActiveLineGutter,
+            DrawSelection,
+            DropCursor,
+            PreviewImages,
+            ScrollPastEnd,
+            HighlightActiveLine
         );
         try {
             if (IsWASM)
@@ -382,6 +416,34 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             }
             if (Config.MaxDocumentLength != MaxDocumentLength) {
                 Config.MaxDocumentLength = MaxDocumentLength;
+                updated = true;
+            }
+            if (Config.LineNumbers != LineNumbers) {
+                Config.LineNumbers = LineNumbers;
+                updated = true;
+            }
+            if (Config.HighlightActiveLineGutter != HighlightActiveLineGutter) {
+                Config.HighlightActiveLineGutter = HighlightActiveLineGutter;
+                updated = true;
+            }
+            if (Config.DrawSelection != DrawSelection) {
+                Config.DrawSelection = DrawSelection;
+                updated = true;
+            }
+            if (Config.DropCursor != DropCursor) {
+                Config.DropCursor = DropCursor;
+                updated = true;
+            }
+            if (Config.PreviewImages != PreviewImages) {
+                Config.PreviewImages = PreviewImages;
+                updated = true;
+            }
+            if (Config.ScrollPastEnd != ScrollPastEnd) {
+                Config.ScrollPastEnd = ScrollPastEnd;
+                updated = true;
+            }
+            if (Config.HighlightActiveLine != HighlightActiveLine) {
+                Config.HighlightActiveLine = HighlightActiveLine;
                 updated = true;
             }
             if (updated)

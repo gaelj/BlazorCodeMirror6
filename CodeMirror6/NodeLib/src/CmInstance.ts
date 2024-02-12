@@ -30,6 +30,12 @@ export class CmInstance
     public highlightTrailingWhitespaceCompartment: Compartment = new Compartment
     public highlightWhitespaceCompartment: Compartment = new Compartment
     public columnsStylingCompartment: Compartment = new Compartment
+    public lineNumbersCompartment: Compartment = new Compartment
+    public highlightActiveLineGutterCompartment: Compartment = new Compartment
+    public highlightActiveLineCompartment: Compartment = new Compartment
+    public drawSelectionCompartment: Compartment = new Compartment
+    public dropCursorCompartment: Compartment = new Compartment
+    public scrollPastEndCompartment: Compartment = new Compartment
 }
 
 export const CMInstances: { [id: string]: CmInstance}  = {}

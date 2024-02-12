@@ -4,13 +4,13 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Version>0.4.6</Version>
+    <Version>0.5.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Sentry.AspNetCore" Version="3.41.4" />
+    <PackageReference Include="Sentry.AspNetCore" Version="4.1.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CodeMirror6\CodeMirror6.csproj" />
