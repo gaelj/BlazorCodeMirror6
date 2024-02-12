@@ -77,11 +77,6 @@ public readonly record struct CodeMirrorSetup
     [JsonPropertyName("crossHairSelection")] public bool CrossHairSelection { get; init; } = true;
 
     /// <summary>
-    /// Whether to highlight the active line.
-    /// </summary>
-    [JsonPropertyName("highlightActiveLine")] public bool HighlightActiveLine { get; init; } = true;
-
-    /// <summary>
     /// Whether to highlight selection matches.
     /// </summary>
     [JsonPropertyName("highlightSelectionMatches")] public bool HighlightSelectionMatches { get; init; } = true;

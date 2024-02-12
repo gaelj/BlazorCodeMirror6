@@ -188,6 +188,10 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// </summary>
     [Parameter] public bool HighlightActiveLineGutter { get; init; } = true;
     /// <summary>
+    /// Whether to highlight the active line.
+    /// </summary>
+    [Parameter] public bool HighlightActiveLine { get; init; } = true;
+    /// <summary>
     /// Whether to draw the selection when the editor is focused.
     /// </summary>
     [Parameter] public bool DrawSelection { get; init; } = true;

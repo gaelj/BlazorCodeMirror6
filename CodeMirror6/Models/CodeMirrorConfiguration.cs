@@ -33,6 +33,7 @@ namespace GaelJ.BlazorCodeMirror6.Models;
 /// <param name="dropCursor"></param>
 /// <param name="previewImages"></param>
 /// <param name="scrollPastEnd"></param>
+/// <param name="highlightActiveLine"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -60,7 +61,8 @@ public class CodeMirrorConfiguration(
     bool drawSelection,
     bool dropCursor,
     bool previewImages,
-    bool scrollPastEnd)
+    bool scrollPastEnd,
+    bool highlightActiveLine)
 {
     /// <summary>
     /// The text to display in the editor
@@ -176,6 +178,11 @@ public class CodeMirrorConfiguration(
     /// Whether to highlight the line gutter when the cursor is on it.
     /// </summary>
     [JsonPropertyName("highlightActiveLineGutter")] public bool HighlightActiveLineGutter { get; internal set; } = highlightActiveLineGutter;
+
+    /// <summary>
+    /// Whether to highlight the active line.
+    /// </summary>
+    [JsonPropertyName("highlightActiveLine")] public bool HighlightActiveLine { get; internal set; } = highlightActiveLine;
 
     /// <summary>
     /// Whether to draw the selection when the editor is focused.

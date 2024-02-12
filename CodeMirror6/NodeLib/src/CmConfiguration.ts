@@ -31,6 +31,7 @@ export class CmConfiguration {
     public dropCursor: boolean
     public previewImages: boolean
     public scrollPastEnd: boolean
+    public highlightActiveLine: boolean
 }
 
 export interface UnifiedMergeConfig {

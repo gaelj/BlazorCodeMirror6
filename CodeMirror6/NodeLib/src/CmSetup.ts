@@ -15,7 +15,6 @@ export class CmSetup
     public autocompletion: boolean
     public rectangularSelection: boolean
     public crossHairSelection: boolean
-    public highlightActiveLine: boolean
     public highlightSelectionMatches: boolean
     public allowMentions: boolean
     public scrollToEnd: boolean
