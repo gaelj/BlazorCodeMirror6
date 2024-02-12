@@ -227,6 +227,11 @@ function findMaxColumnWidthsInCsv(csvData: string, separator: string): number[] 
     return findMaxColumnWidths(data)
 }
 
+function isCsvInvalid(data: string[][]): boolean
+{
+    return data.some((row) => row.length !== data[0].length)
+}
+
 function findMaxColumnWidths(data: string[][]): number[] {
     let maxWidths: number[] = []
 
@@ -251,6 +256,7 @@ export function csvToMarkdownTable(text: string, separator: string, withHeaders:
     if (text.indexOf(separator) < 0) return text
     var md = "\n\n"
     const data = parseCSV(text, separator)
+    if (isCsvInvalid(data)) return text
     const maxWidths = findMaxColumnWidths(data)
     if (data.length === 0) return text
     if (data.length === 1) withHeaders = false
