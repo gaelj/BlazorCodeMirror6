@@ -180,6 +180,34 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// </summary>
     [Parameter] public int? MaxDocumentLength { get; set; }
     /// <summary>
+    /// Whether to show line numbers to the left of the editor.
+    /// </summary>
+    [Parameter] public bool LineNumbers { get; init; } = true;
+    /// <summary>
+    /// Whether to highlight the line gutter when the cursor is on it.
+    /// </summary>
+    [Parameter] public bool HighlightActiveLineGutter { get; init; } = true;
+    /// <summary>
+    /// Whether to highlight the active line.
+    /// </summary>
+    [Parameter] public bool HighlightActiveLine { get; init; } = true;
+    /// <summary>
+    /// Whether to draw the selection when the editor is focused.
+    /// </summary>
+    [Parameter] public bool DrawSelection { get; init; } = true;
+    /// <summary>
+    /// Whether to show a cursor marker when the editor is focused.
+    /// </summary>
+    [Parameter] public bool DropCursor { get; init; } = true;
+    /// <summary>
+    /// Whether to enable preview images.
+    /// </summary>
+    [Parameter] public bool PreviewImages { get; init; } = true;
+    /// <summary>
+    /// Can the user scroll past the end of the document
+    /// </summary>
+    [Parameter] public bool ScrollPastEnd { get; init; } = true;
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }

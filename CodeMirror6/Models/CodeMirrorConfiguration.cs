@@ -27,6 +27,13 @@ namespace GaelJ.BlazorCodeMirror6.Models;
 /// <param name="fullScreen"></param>
 /// <param name="supportFileUpload"></param>
 /// <param name="maxDocumentLength"></param>
+/// <param name="lineNumbers"></param>
+/// <param name="highlightActiveLineGutter"></param>
+/// <param name="drawSelection"></param>
+/// <param name="dropCursor"></param>
+/// <param name="previewImages"></param>
+/// <param name="scrollPastEnd"></param>
+/// <param name="highlightActiveLine"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -48,7 +55,14 @@ public class CodeMirrorConfiguration(
     string? localStorageKey,
     bool fullScreen,
     bool supportFileUpload,
-    int? maxDocumentLength)
+    int? maxDocumentLength,
+    bool lineNumbers,
+    bool highlightActiveLineGutter,
+    bool drawSelection,
+    bool dropCursor,
+    bool previewImages,
+    bool scrollPastEnd,
+    bool highlightActiveLine)
 {
     /// <summary>
     /// The text to display in the editor
@@ -154,4 +168,39 @@ public class CodeMirrorConfiguration(
     /// The maximum length of the document
     /// </summary>
     [JsonPropertyName("maxDocumentLength")] public int? MaxDocumentLength { get; internal set; } = maxDocumentLength;
+
+    /// <summary>
+    /// Whether to show line numbers to the left of the editor.
+    /// </summary>
+    [JsonPropertyName("lineNumbers")] public bool LineNumbers { get; internal set; } = lineNumbers;
+
+    /// <summary>
+    /// Whether to highlight the line gutter when the cursor is on it.
+    /// </summary>
+    [JsonPropertyName("highlightActiveLineGutter")] public bool HighlightActiveLineGutter { get; internal set; } = highlightActiveLineGutter;
+
+    /// <summary>
+    /// Whether to highlight the active line.
+    /// </summary>
+    [JsonPropertyName("highlightActiveLine")] public bool HighlightActiveLine { get; internal set; } = highlightActiveLine;
+
+    /// <summary>
+    /// Whether to draw the selection when the editor is focused.
+    /// </summary>
+    [JsonPropertyName("drawSelection")] public bool DrawSelection { get; internal set; } = drawSelection;
+
+    /// <summary>
+    /// Whether to show a cursor marker when the editor is focused.
+    /// </summary>
+    [JsonPropertyName("dropCursor")] public bool DropCursor { get; internal set; } = dropCursor;
+
+    /// <summary>
+    /// Whether to enable preview images.
+    /// </summary>
+    [JsonPropertyName("previewImages")] public bool PreviewImages { get; internal set; } = previewImages;
+
+    /// <summary>
+    /// Can the user scroll past the end of the document
+    /// </summary>
+    [JsonPropertyName("scrollPastEnd")] public bool ScrollPastEnd { get; internal set; } = scrollPastEnd;
 }

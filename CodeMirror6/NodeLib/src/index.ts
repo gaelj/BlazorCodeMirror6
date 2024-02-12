@@ -27,7 +27,7 @@ import { indentationMarkers } from '@replit/codemirror-indentation-markers'
 import { hyperLink, hyperLinkStyle } from '@uiw/codemirror-extensions-hyper-link'
 
 import { CmInstance, CMInstances } from "./CmInstance"
-import { CmConfiguration, UnifiedMergeConfig } from "./CmConfiguration"
+import { CmConfiguration } from "./CmConfiguration"
 import { getDynamicHeaderStyling } from "./CmDynamicMarkdownHeaderStyling"
 import { getTheme } from "./CmTheme"
 import { languageChangeEffect, getLanguage, getLanguageKeyMaps } from "./CmLanguage"
@@ -126,6 +126,12 @@ export async function initCodeMirror(
                     ]
                     : []
             ),
+            CMInstances[id].lineNumbersCompartment.of(initialConfig.lineNumbers ? lineNumbers() : []),
+            CMInstances[id].highlightActiveLineGutterCompartment.of(initialConfig.highlightActiveLineGutter ? highlightActiveLineGutter() : []),
+            CMInstances[id].drawSelectionCompartment.of(initialConfig.drawSelection ? drawSelection() : []),
+            CMInstances[id].dropCursorCompartment.of(initialConfig.dropCursor ? dropCursor() : []),
+            CMInstances[id].scrollPastEndCompartment.of(initialConfig.scrollPastEnd ? scrollPastEnd() : []),
+            CMInstances[id].highlightActiveLineCompartment.of(initialConfig.highlightActiveLine ? highlightActiveLine() : []),
 
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
             linter(async view => maxDocLengthLintSource(id, view)),
@@ -168,13 +174,9 @@ export async function initCodeMirror(
         ]
 
         // Basic Setup
-        if (setup.lineNumbers === true) extensions.push(lineNumbers())
-        if (setup.highlightActiveLineGutter === true) extensions.push(highlightActiveLineGutter())
         if (setup.highlightSpecialChars === true) extensions.push(highlightSpecialChars())
         if (setup.history === true) extensions.push(history())
         if (setup.foldGutter === true) extensions.push(foldGutter())
-        if (setup.drawSelection === true) extensions.push(drawSelection())
-        if (setup.dropCursor === true) extensions.push(dropCursor())
         if (setup.indentOnInput === true) extensions.push(indentOnInput())
         if (setup.syntaxHighlighting === true) extensions.push(syntaxHighlighting(defaultHighlightStyle, { fallback: true }))
         if (setup.bracketMatching === true) extensions.push(bracketMatching())
@@ -182,11 +184,8 @@ export async function initCodeMirror(
         if (setup.autocompletion === true) extensions.push(autocompletion())
         if (setup.rectangularSelection === true) extensions.push(rectangularSelection())
         if (setup.crossHairSelection === true) extensions.push(crosshairCursor())
-        if (setup.highlightActiveLine === true) extensions.push(highlightActiveLine())
         if (setup.highlightSelectionMatches === true) extensions.push(highlightSelectionMatches())
-        if (setup.scrollPastEnd === true) extensions.push(scrollPastEnd())
         if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
-
         if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput") {
             extensions.push(linter(async view => await externalLintSource(id, view, dotnetHelper), getExternalLinterConfig()))
         }
@@ -385,7 +384,8 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
             ),
         )
     }
-    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown) effects.push(CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.autoFormatMarkdown)))
+    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages)
+        effects.push(CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.autoFormatMarkdown)))
     if (oldConfig.replaceEmojiCodes !== newConfig.replaceEmojiCodes) effects.push(CMInstances[id].emojiReplacerCompartment.reconfigure(replaceEmojiExtension(newConfig.replaceEmojiCodes)))
     if (oldConfig.lineWrapping !== newConfig.lineWrapping) effects.push(CMInstances[id].lineWrappingCompartment.reconfigure(newConfig.lineWrapping ? EditorView.lineWrapping : []))
     if (oldConfig.mergeViewConfiguration !== newConfig.mergeViewConfiguration) effects.push(CMInstances[id].unifiedMergeViewCompartment.reconfigure(newConfig.mergeViewConfiguration ? unifiedMergeView(newConfig.mergeViewConfiguration) : []))
@@ -395,6 +395,12 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
     if (oldConfig.fullScreen !== newConfig.fullScreen) view.focus()
     if (oldConfig.supportFileUpload !== newConfig.supportFileUpload) {}
     if (oldConfig.maxDocumentLength !== newConfig.maxDocumentLength) {}
+    if (oldConfig.lineNumbers !== newConfig.lineNumbers) effects.push(CMInstances[id].lineNumbersCompartment.reconfigure(newConfig.lineNumbers ? lineNumbers() : []))
+    if (oldConfig.highlightActiveLineGutter !== newConfig.highlightActiveLineGutter) effects.push(CMInstances[id].highlightActiveLineGutterCompartment.reconfigure(newConfig.highlightActiveLineGutter ? highlightActiveLineGutter() : []))
+    if (oldConfig.drawSelection !== newConfig.drawSelection) effects.push(CMInstances[id].drawSelectionCompartment.reconfigure(newConfig.drawSelection ? drawSelection() : []))
+    if (oldConfig.dropCursor !== newConfig.dropCursor) effects.push(CMInstances[id].dropCursorCompartment.reconfigure(newConfig.dropCursor ? dropCursor() : []))
+    if (oldConfig.scrollPastEnd !== newConfig.scrollPastEnd) effects.push(CMInstances[id].scrollPastEndCompartment.reconfigure(newConfig.scrollPastEnd ? scrollPastEnd() : []))
+    if (oldConfig.highlightActiveLine !== newConfig.highlightActiveLine) effects.push(CMInstances[id].highlightActiveLineCompartment.reconfigure(newConfig.highlightActiveLine ? highlightActiveLine() : []))
 
     CMInstances[id].config = newConfig
     view.dispatch({ effects: effects, changes: changes })
@@ -463,7 +469,7 @@ function saveToLocalStorage(id: string) {
 const autoFormatMarkdownExtensions = (id: string, autoFormatMarkdown: boolean = true) => [
     getDynamicHeaderStyling(autoFormatMarkdown),
     dynamicHrExtension(autoFormatMarkdown),
-    dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].setup.previewImages === true),
+    dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].config.previewImages === true),
     dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
     autocompletion({
         override: [
