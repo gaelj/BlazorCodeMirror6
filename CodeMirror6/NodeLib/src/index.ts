@@ -256,8 +256,8 @@ export async function initCodeMirror(
         adjustEditorHeight(id)
 
         forceRedraw(id)
-
-    } catch (error) {
+    }
+    catch (error) {
         console.error(`Error in initializing CodeMirror`, error)
     }
 }
