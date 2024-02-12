@@ -46,8 +46,8 @@ export const hideMarksExtension = (enabled: boolean = true): Extension => {
                         if (mark.startsWith('#')) {
                             to += 1 // Hide the space character after the #'s
                         }
-                        if (!isCursorInRange(state, cursorRange.from, cursorRange.to))
-                            widgets.push(hideDecoration().range(from, to))
+                        if (isCursorInRange(state, cursorRange.from, cursorRange.to)) return
+                        widgets.push(hideDecoration().range(from, to))
                     }
                 },
             })
