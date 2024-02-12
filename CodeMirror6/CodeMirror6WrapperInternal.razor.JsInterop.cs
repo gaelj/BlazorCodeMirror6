@@ -33,26 +33,28 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         private CMCommandDispatcher _commands = null!;
         public bool IsJSReady => _moduleTask.IsValueCreated && _moduleTask.Value.IsCompletedSuccessfully;
 
-        internal async Task ModuleInvokeVoidAsync(string method, params object?[] args)
+        internal async Task<bool> ModuleInvokeVoidAsync(string method, params object?[] args)
         {
 #pragma warning disable CS0168 // Variable is declared but never used
             try {
                 var module = await _moduleTask.Value;
-                if (module is null) return;
-                args = args.Prepend(cm6WrapperComponent.Setup.Id).ToArray();
+                if (module is null) return false;
+                args = args.Prepend(cm6WrapperComponent.SetupId).ToArray();
                 await module.InvokeVoidAsync(method, args);
+                return true;
             }
+            catch (ObjectDisposedException) {}
             catch (JSDisconnectedException) {}
             catch (Exception ex)
             {
                 #if NET8_0_OR_GREATER
-                await cm6WrapperComponent.DispatchExceptionAsync(ex);
+                if (cm6WrapperComponent is not null)
+                    await cm6WrapperComponent.DispatchExceptionAsync(ex);
                 #else
                 throw;
                 #endif
             }
-            finally {
-            }
+            return false;
 #pragma warning restore CS0168 // Variable is declared but never used
         }
 
@@ -62,8 +64,11 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             try {
                 var module = await _moduleTask.Value;
                 if (module is null) return default;
-                args = args.Prepend(cm6WrapperComponent.Setup.Id).ToArray();
+                args = args.Prepend(cm6WrapperComponent.SetupId).ToArray();
                 return await module.InvokeAsync<T?>(method, args);
+            }
+            catch (ObjectDisposedException) {
+                return default;
             }
             catch (JSDisconnectedException) {
                 return default;
@@ -71,7 +76,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             catch (Exception ex)
             {
                 #if NET8_0_OR_GREATER
-                await cm6WrapperComponent.DispatchExceptionAsync(ex);
+                if (cm6WrapperComponent is not null)
+                    await cm6WrapperComponent.DispatchExceptionAsync(ex);
                 return default;
                 #else
                 throw;

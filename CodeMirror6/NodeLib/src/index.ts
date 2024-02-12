@@ -568,9 +568,12 @@ function loadCss(url: string, cacheBust: boolean = true): Promise<void> {
  */
 export function dispose(id: string) {
     consoleLog(id, `Disposing of CodeMirror instance ${id}`)
-    CMInstances[id].dotNetHelper.dispose()
-    CMInstances[id].dotNetHelper = undefined
-    CMInstances[id].view.destroy()
-    CMInstances[id] = undefined
+    if (CMInstances[id].dotNetHelper !== undefined) {
+        CMInstances[id].dotNetHelper.dispose()
+        CMInstances[id].dotNetHelper = undefined
+    }
+    if (CMInstances[id].view !== undefined) {
+        CMInstances[id].view.destroy()
+    }
     delete CMInstances[id]
 }
