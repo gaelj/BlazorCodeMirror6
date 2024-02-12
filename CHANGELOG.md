@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.4.5 - 2024-02-12
+
+### 🐛 Fix a bug
+
+- Check result of interop functions and quit if error
+- Ensure the original Setup.Id is used, even if Setup was overwritten
+- Fix another case of false detection of markdown tables
+- Prevent null refs in dispose()
+
+### 🔧 Add or update configuration files
+
+- Cleanup vs code debug names
+
+### 🥅 Catch errors
+
+- Catch ObjectDisposedException
+
 ## 0.4.4 - 2024-02-11
 
 ### ✨ Introduce new features
