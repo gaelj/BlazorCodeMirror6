@@ -2,6 +2,12 @@
 
 ## 0.4.5 - 2024-02-12
 
+### 🔖 Release / Version tags
+
+- Update version to 0.4.5
+
+## 0.4.5 - 2024-02-12
+
 ### 🐛 Fix a bug
 
 - Check result of interop functions and quit if error
