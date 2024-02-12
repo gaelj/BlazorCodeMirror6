@@ -42,6 +42,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
                 args = args.Prepend(cm6WrapperComponent.SetupId).ToArray();
                 await module.InvokeVoidAsync(method, args);
             }
+            catch (ObjectDisposedException) {}
             catch (JSDisconnectedException) {}
             catch (Exception ex)
             {
@@ -65,6 +66,9 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
                 if (module is null) return default;
                 args = args.Prepend(cm6WrapperComponent.SetupId).ToArray();
                 return await module.InvokeAsync<T?>(method, args);
+            }
+            catch (ObjectDisposedException) {
+                return default;
             }
             catch (JSDisconnectedException) {
                 return default;
