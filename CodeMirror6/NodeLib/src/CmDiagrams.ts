@@ -266,30 +266,43 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
         inclusive: false,
     })
 
-    function getDecorationsRange(state: EditorState, node: SyntaxNodeRef, updatedCode?: string, updatedLanguage?: string, updatedSvgContent?: string, from?: number, to?: number, width?: number, height?: number) {
-        const decorationsRange: Range<Decoration>[] = []
-        if (node.type.name === 'FencedCode') {
-            const { language, code } = getLanguageAndCode(state, node)
-            if (language) {
-                const cursorInRange = isCursorInRange(state, from, to)
-
-                let params: DiagramWidgetParams
-                if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
-                    const { height } = updatedSvgContent ? readSvgDimensions(updatedSvgContent) : { height: null }
-                    params = { language, code, svgContent: updatedSvgContent, from: cursorInRange ? null : from, to, height }
-                } else {
-                    const svgContent = fetchSvgFromCache(code, language)
-                    const { height } = svgContent?.response ? readSvgDimensions(svgContent?.response) : { height: null }
-                    params = { language, code, svgContent: svgContent?.response, from: cursorInRange ? null : from, to, height }
-                }
-
-                if (cursorInRange)
-                    decorationsRange.push(diagramWidgetDecoration(params).range(state.doc.lineAt(from).from))
-                else
-                    decorationsRange.push(diagramReplacementDecoration(params).range(from, to))
-            }
+    function getDecorationsRange(state: EditorState, node: SyntaxNodeRef, updatedCode?: string, updatedLanguage?: string, updatedSvgContent?: string, from?: number, to?: number) {
+        if (node.type.name !== 'FencedCode') {
+            return []
         }
-        return decorationsRange
+        const { language, code } = getLanguageAndCode(state, node)
+        if (language === undefined) {
+            return []
+        }
+        const cursorInRange = isCursorInRange(state, from, to)
+
+        let params: DiagramWidgetParams
+        if (!(language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage)) {
+            const svgContent = fetchSvgFromCache(code, language)
+            updatedSvgContent = svgContent?.response
+        }
+        const { height } = updatedSvgContent ? readSvgDimensions(updatedSvgContent) : { height: null }
+        params = { language, code, svgContent: updatedSvgContent, from: cursorInRange ? null : from, to, height }
+
+        if (cursorInRange)
+            return [diagramWidgetDecoration(params).range(state.doc.lineAt(from).from)]
+        else
+            return [diagramReplacementDecoration(params).range(from, to)]
+    }
+
+    function getDecorationsRange2(state: EditorState, updatedCode?: string, updatedLanguage?: string, updatedSvgContent?: string, from?: number, to?: number) {
+        const cursorInRange = isCursorInRange(state, from, to)
+
+        let params: DiagramWidgetParams
+        const svgContent = fetchSvgFromCache(updatedCode, updatedLanguage)
+        updatedSvgContent = svgContent?.response
+        const { height } = updatedSvgContent ? readSvgDimensions(updatedSvgContent) : { height: null }
+        params = { language: updatedLanguage, code: updatedCode, svgContent: updatedSvgContent, from: cursorInRange ? null : from, to, height }
+
+        if (cursorInRange)
+            return [diagramWidgetDecoration(params).range(state.doc.lineAt(from).from)]
+        else
+            return [diagramReplacementDecoration(params).range(from, to)]
     }
 
     const decorate = (state: EditorState, updatedCode?: string, updatedLanguage?: string, updatedSvgContent?: string, width: number = null, height: number = null) => {
@@ -298,9 +311,17 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
             syntaxTree(state).iterate({
                 enter: (node) => {
                     const { from, to } = node
-                    decorationsRange.push(...getDecorationsRange(state, node, updatedCode, updatedLanguage, updatedSvgContent, from, to, width, height))
+                    decorationsRange.push(...getDecorationsRange(state, node, updatedCode, updatedLanguage, updatedSvgContent, from, to))
                 },
             })
+        }
+        return decorationsRange.length > 0 ? RangeSet.of(decorationsRange) : Decoration.none
+    }
+
+    const decorate2 = (state: EditorState, updatedCode: string, updatedLanguage: string, updatedSvgContent: string, from: number, to: number) => {
+        let decorationsRange: Range<Decoration>[] = []
+        if (enabled) {
+            decorationsRange.push(...getDecorationsRange2(state, updatedCode, updatedLanguage, updatedSvgContent, from, to))
         }
         return decorationsRange.length > 0 ? RangeSet.of(decorationsRange) : Decoration.none
     }
@@ -314,8 +335,8 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
             if (transaction.effects.some(_ => true)) {
                 for (const effect of transaction.effects) {
                     if (effect.is(updateDiagramEffect)) {
-                        const { code, language, svgContent, height } = effect.value
-                        return decorate(transaction.state, code, language, svgContent, height)
+                        const { code, language, svgContent, height, from, to } = effect.value
+                        return decorate2(transaction.state, code, language, svgContent, from, to)
                     }
                 }
             }
