@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.0 - 2024-02-12
+
+### 💥 Introduce breaking changes
+
+- Move lineNumbers, highlightActiveLineGutter, drawSelection, dropCursor, previewImages, scrollPastEnd and highlightActiveLine from Setup to Parameters (allow dynamically changing their values)
+
+### ⬆️ Upgrade dependencies
+
+- Update dependencies
+- Update package-lock.json
+
 ## 0.4.5 - 2024-02-12
 
 ### 🔖 Release / Version tags
