@@ -106,6 +106,9 @@ export async function initCodeMirror(
         if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
             customKeyMap.push(indentWithTab)
 
+        consoleLog(id, 'Config', initialConfig)
+        consoleLog(id, 'Setup', setup)
+
         let extensions = [
             CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
             CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
@@ -259,8 +262,8 @@ export async function initCodeMirror(
         adjustEditorHeight(id)
 
         forceRedraw(id)
-
-    } catch (error) {
+    }
+    catch (error) {
         console.error(`Error in initializing CodeMirror`, error)
     }
 }
@@ -318,7 +321,7 @@ async function updateListenerExtension(id: string, update: ViewUpdate) {
 function adjustEditorHeight(id: string) {
     const editor = document.getElementById(id)
     if (!editor) {
-        consoleLog(id, `Editor is undefined`)
+        consoleLog(id, `Editor ${id} is not found in the DOM - cannot adjust height`)
         return
     }
     if (CMInstances[id].config.fullScreen !== true) {
