@@ -25,6 +25,12 @@ export class CmConfiguration {
     public fullScreen: boolean
     public supportFileUpload: boolean
     public maxDocumentLength: number | null
+    public lineNumbers: boolean
+    public highlightActiveLineGutter: boolean
+    public drawSelection: boolean
+    public dropCursor: boolean
+    public previewImages: boolean
+    public scrollPastEnd: boolean
 }
 
 export interface UnifiedMergeConfig {

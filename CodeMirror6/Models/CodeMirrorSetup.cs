@@ -22,16 +22,6 @@ public readonly record struct CodeMirrorSetup
     [JsonPropertyName("id")] public string Id { get; init; } = $"CodeMirror6_Editor_{Guid.NewGuid()}";
 
     /// <summary>
-    /// Whether to show line numbers to the left of the editor.
-    /// </summary>
-    [JsonPropertyName("lineNumbers")] public bool LineNumbers { get; init; } = true;
-
-    /// <summary>
-    /// Whether to highlight the line gutter when the cursor is on it.
-    /// </summary>
-    [JsonPropertyName("highlightActiveLineGutter")] public bool HighlightActiveLineGutter { get; init; } = true;
-
-    /// <summary>
     /// Whether to highlight special characters (whitespace, tabs, newlines).
     /// </summary>
     [JsonPropertyName("highlightSpecialChars")] public bool HighlightSpecialChars { get; init; } = true;
@@ -45,16 +35,6 @@ public readonly record struct CodeMirrorSetup
     /// Whether to enable code folding.
     /// </summary>
     [JsonPropertyName("foldGutter")] public bool FoldGutter { get; init; } = true;
-
-    /// <summary>
-    /// Whether to draw the selection when the editor is focused.
-    /// </summary>
-    [JsonPropertyName("drawSelection")] public bool DrawSelection { get; init; } = true;
-
-    /// <summary>
-    /// Whether to show a cursor marker when the editor is focused.
-    /// </summary>
-    [JsonPropertyName("dropCursor")] public bool DropCursor { get; init; } = true;
 
     /// <summary>
     /// Whether to allow multiple selections.
@@ -107,11 +87,6 @@ public readonly record struct CodeMirrorSetup
     [JsonPropertyName("highlightSelectionMatches")] public bool HighlightSelectionMatches { get; init; } = true;
 
     /// <summary>
-    /// Whether to enable preview images.
-    /// </summary>
-    [JsonPropertyName("previewImages")] public bool PreviewImages { get; init; } = true;
-
-    /// <summary>
     /// Whether to enable mentions.
     /// </summary>
     [JsonPropertyName("allowMentions")] public bool AllowMentions { get; init; } = true;
@@ -135,11 +110,6 @@ public readonly record struct CodeMirrorSetup
     /// Bind value mode of the text area
     /// </summary>
     [JsonPropertyName("bindValueMode")] public DocumentBindMode BindMode { get; init; } = DocumentBindMode.OnLostFocus;
-
-    /// <summary>
-    /// Can the user scroll past the end of the document
-    /// </summary>
-    [JsonPropertyName("scrollPastEnd")] public bool ScrollPastEnd { get; init; } = false;
 
     /// <summary>
     /// Whether to show the debug logs
