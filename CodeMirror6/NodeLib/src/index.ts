@@ -315,7 +315,7 @@ async function updateListenerExtension(id: string, update: ViewUpdate) {
 function adjustEditorHeight(id: string) {
     const editor = document.getElementById(id)
     if (!editor) {
-        consoleLog(id, `Editor is undefined`)
+        consoleLog(id, `Editor ${id} is not found in the DOM - cannot adjust height`)
         return
     }
     if (CMInstances[id].config.fullScreen !== true) {
