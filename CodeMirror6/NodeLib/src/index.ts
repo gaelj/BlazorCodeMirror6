@@ -83,6 +83,12 @@ export async function initCodeMirror(
         return
     }
 
+    const parentDiv = document.getElementById(id)
+    if (!parentDiv) {
+        console.error(`Parent div with id ${id} not found`)
+        return
+    }
+
     await loadCss("_content/GaelJ.BlazorCodeMirror6/GaelJ.BlazorCodeMirror6.bundle.scp.css")
 
     if (setup.debugLogs === true) {
@@ -233,7 +239,7 @@ export async function initCodeMirror(
 
         CMInstances[id].view = new EditorView({
             state: CMInstances[id].state,
-            parent: document.getElementById(id),
+            parent: parentDiv,
             scrollTo: setup.scrollToEnd === true ? scrollToEndEffect : null,
         })
 
