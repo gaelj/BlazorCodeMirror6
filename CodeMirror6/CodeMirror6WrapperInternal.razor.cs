@@ -281,10 +281,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     {
         if (CmJsInterop is null) {
             CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
-            await CmJsInterop.PropertySetters.InitCodeMirror();
+            if (!await CmJsInterop.PropertySetters.InitCodeMirror()) return;
             if (GetMentionCompletions is not null) {
                 var mentionCompletions = await GetMentionCompletions();
-                await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions);
+                if (!await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions)) return;
             }
             IsCodeMirrorInitialized = true;
             await InvokeAsync(StateHasChanged);

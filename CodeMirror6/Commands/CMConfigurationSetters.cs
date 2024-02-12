@@ -17,19 +17,19 @@ internal class CMSetters(
     /// Call the Javascript initialization
     /// </summary>
     /// <returns></returns>
-    internal Task InitCodeMirror() => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task<bool> InitCodeMirror() => cmJsInterop.ModuleInvokeVoidAsync(
         "initCodeMirror",
         _dotnetHelperRef,
         config,
         setup
     );
 
-    internal Task SetMentionCompletions(List<CodeMirrorCompletion> mentionCompletions) => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task<bool> SetMentionCompletions(List<CodeMirrorCompletion> mentionCompletions) => cmJsInterop.ModuleInvokeVoidAsync(
         "setMentionCompletions",
         mentionCompletions
     );
 
-    internal Task ForceRedraw() => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task<bool> ForceRedraw() => cmJsInterop.ModuleInvokeVoidAsync(
         "forceRedraw"
     );
 
@@ -37,7 +37,7 @@ internal class CMSetters(
         "getAllSupportedLanguageNames"
     );
 
-    internal Task SetConfiguration() => cmJsInterop.ModuleInvokeVoidAsync(
+    internal Task<bool> SetConfiguration() => cmJsInterop.ModuleInvokeVoidAsync(
         "setConfiguration",
         config
     );
