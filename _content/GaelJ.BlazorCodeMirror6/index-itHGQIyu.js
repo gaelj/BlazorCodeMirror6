@@ -20940,7 +20940,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-rvGs5ZMF.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-Qe11Bz07.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -20951,7 +20951,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-hut0nm86.js').then(m => m.cpp());
+            return import('./index-znbHZRUV.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20959,7 +20959,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-hut0nm86.js').then(m => m.cpp());
+            return import('./index-znbHZRUV.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20987,7 +20987,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-Gb9Kapr6.js').then(m => m.java());
+            return import('./index-1nMz9OyE.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21003,7 +21003,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-WrN8eSLF.js').then(m => m.json());
+            return import('./index-PD67hHYf.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21017,14 +21017,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-LUudtgab.js').then(m => m.less());
+            return import('./index-WvUM3uVU.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-FnZvBU0E.js').then(m => m.liquid());
+            return import('./index-GPROqh5C.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21050,7 +21050,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-GlqNR3Ub.js').then(m => m.php());
+            return import('./index-09EkJDDX.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21067,28 +21067,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-iI0s1bp3.js').then(m => m.python());
+            return import('./index-4YX39vyu.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-tq6NDaty.js').then(m => m.rust());
+            return import('./index-3x9uFjDT.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-iDvlMYjQ.js').then(m => m.sass({ indented: true }));
+            return import('./index-xNu5NZUo.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-iDvlMYjQ.js').then(m => m.sass());
+            return import('./index-xNu5NZUo.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21119,7 +21119,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-RxsHIzUg.js').then(m => m.wast());
+            return import('./index-lBWIKhCc.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21127,7 +21127,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-ky9-3aQ9.js').then(m => m.xml());
+            return import('./index-t60BWF0o.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21135,7 +21135,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-8JRlM7gC.js').then(m => m.yaml());
+            return import('./index-taFmrVTw.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -21930,13 +21930,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-lI7CNKXK.js').then(m => m.vue());
+            return import('./index-MSK9qXuj.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-N3CysZF1.js').then(m => m.angular());
+            return import('./index-31otLL0W.js').then(m => m.angular());
         }
     })
 ];
@@ -34961,6 +34961,9 @@ function findMaxColumnWidthsInCsv(csvData, separator) {
     const data = parseCSV(csvData, separator);
     return findMaxColumnWidths(data);
 }
+function isCsvInvalid(data) {
+    return data.some((row) => row.length !== data[0].length);
+}
 function findMaxColumnWidths(data) {
     let maxWidths = [];
     data.forEach(row => {
@@ -34981,6 +34984,8 @@ function csvToMarkdownTable(text, separator, withHeaders) {
         return text;
     var md = "\n\n";
     const data = parseCSV(text, separator);
+    if (isCsvInvalid(data))
+        return text;
     const maxWidths = findMaxColumnWidths(data);
     if (data.length === 0)
         return text;
@@ -76405,10 +76410,13 @@ function loadCss(url, cacheBust = true) {
  */
 function dispose(id) {
     consoleLog(id, `Disposing of CodeMirror instance ${id}`);
-    CMInstances[id].dotNetHelper.dispose();
-    CMInstances[id].dotNetHelper = undefined;
-    CMInstances[id].view.destroy();
-    CMInstances[id] = undefined;
+    if (CMInstances[id].dotNetHelper !== undefined) {
+        CMInstances[id].dotNetHelper.dispose();
+        CMInstances[id].dotNetHelper = undefined;
+    }
+    if (CMInstances[id].view !== undefined) {
+        CMInstances[id].view.destroy();
+    }
     delete CMInstances[id];
 }
 
