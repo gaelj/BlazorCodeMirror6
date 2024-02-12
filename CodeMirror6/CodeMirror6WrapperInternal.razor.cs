@@ -232,6 +232,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// </summary>
     protected override async Task OnInitializedAsync()
     {
+        SetupId = Setup.Id;
         Config = new(
             Doc?.Replace("\r", ""),
             Placeholder,
@@ -280,7 +281,6 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     {
         if (CmJsInterop is null) {
             CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
-            SetupId = Setup.Id;
             await CmJsInterop.PropertySetters.InitCodeMirror();
             if (GetMentionCompletions is not null) {
                 var mentionCompletions = await GetMentionCompletions();

@@ -46,7 +46,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             catch (Exception ex)
             {
                 #if NET8_0_OR_GREATER
-                await cm6WrapperComponent.DispatchExceptionAsync(ex);
+                if (cm6WrapperComponent is not null)
+                    await cm6WrapperComponent.DispatchExceptionAsync(ex);
                 #else
                 throw;
                 #endif
@@ -71,7 +72,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             catch (Exception ex)
             {
                 #if NET8_0_OR_GREATER
-                await cm6WrapperComponent.DispatchExceptionAsync(ex);
+                if (cm6WrapperComponent is not null)
+                    await cm6WrapperComponent.DispatchExceptionAsync(ex);
                 return default;
                 #else
                 throw;
