@@ -100,6 +100,9 @@ export async function initCodeMirror(
         if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
             customKeyMap.push(indentWithTab)
 
+        consoleLog(id, 'Config', initialConfig)
+        consoleLog(id, 'Setup', setup)
+
         let extensions = [
             CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
             CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
