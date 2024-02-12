@@ -62,7 +62,7 @@ import { htmlViewPlugin } from "./CmHtml"
 import { getFileUploadExtensions, uploadFiles } from "./CmFileUpload"
 import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
-import { hideMarksExtension } from "./CmHideMarkdownMarks"
+import { foldMarkdownCodeBlocks, hideMarksExtension } from "./CmHideMarkdownMarks"
 import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSeparator } from "./CmColumns"
 import { consoleLog } from "./CmLogging"
 
@@ -83,6 +83,12 @@ export async function initCodeMirror(
         return
     }
 
+    const parentDiv = document.getElementById(id)
+    if (!parentDiv) {
+        console.error(`Parent div with id ${id} not found`)
+        return
+    }
+
     await loadCss("_content/GaelJ.BlazorCodeMirror6/GaelJ.BlazorCodeMirror6.bundle.scp.css")
 
     if (setup.debugLogs === true) {
@@ -99,6 +105,9 @@ export async function initCodeMirror(
         const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension)
         if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
             customKeyMap.push(indentWithTab)
+
+        consoleLog(id, 'Config', initialConfig)
+        consoleLog(id, 'Setup', setup)
 
         let extensions = [
             CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
@@ -233,7 +242,7 @@ export async function initCodeMirror(
 
         CMInstances[id].view = new EditorView({
             state: CMInstances[id].state,
-            parent: document.getElementById(id),
+            parent: parentDiv,
             scrollTo: setup.scrollToEnd === true ? scrollToEndEffect : null,
         })
 
@@ -247,14 +256,16 @@ export async function initCodeMirror(
             loadingPlaceholder.style.display = 'none'
         }
 
+        // foldMarkdownCodeBlocks(CMInstances[id].view)
+
         // add a class to allow resizing of the editor
         setResize(id, initialConfig.resize)
 
         adjustEditorHeight(id)
 
         forceRedraw(id)
-
-    } catch (error) {
+    }
+    catch (error) {
         console.error(`Error in initializing CodeMirror`, error)
     }
 }
@@ -312,7 +323,7 @@ async function updateListenerExtension(id: string, update: ViewUpdate) {
 function adjustEditorHeight(id: string) {
     const editor = document.getElementById(id)
     if (!editor) {
-        consoleLog(id, `Editor is undefined`)
+        consoleLog(id, `Editor ${id} is not found in the DOM - cannot adjust height`)
         return
     }
     if (CMInstances[id].config.fullScreen !== true) {
