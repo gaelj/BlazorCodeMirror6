@@ -96,12 +96,12 @@ export async function initCodeMirror(
         CMInstances[id].setup = setup
         CMInstances[id].config = initialConfig
 
+        consoleLog(id, 'Config', initialConfig)
+        consoleLog(id, 'Setup', setup)
+
         const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension)
         if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
             customKeyMap.push(indentWithTab)
-
-        consoleLog(id, 'Config', initialConfig)
-        consoleLog(id, 'Setup', setup)
 
         let extensions = [
             CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
