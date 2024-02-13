@@ -95,7 +95,7 @@ export async function initCodeMirror(
         CMInstances[id].dotNetHelper = dotnetHelper
         CMInstances[id].setup = setup
         CMInstances[id].config = initialConfig
-        CMInstances[id].localStorageKey = initialConfig.localStorageKey
+
         const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension)
         if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
             customKeyMap.push(indentWithTab)
