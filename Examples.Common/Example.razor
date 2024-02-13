@@ -134,6 +134,7 @@
     HighlightTrailingWhitespace=@HighlightTrailingWhitespace
     HighlightWhitespace=@HighlightWhitespace
     Visible=@Visible
+    MarkdownStylesAtSelectionsChanged=@(styles => Styles = styles.ToList())
     FullScreen=@FullScreen
     LocalStorageKey=@LocalStorageKey
     MaxHeight="60em"
@@ -231,6 +232,13 @@
     }
     <hr />
 }
+
+@foreach (var s in Styles) {
+    <p>
+        @s
+    </p>
+}
+
 
 <CodeMirror6Wrapper
     IsWASM=@IsWASM
@@ -341,6 +349,7 @@
     private string ButtonClass(bool enabled) => enabled
         ? "btn btn-sm btn-primary"
         : "btn btn-sm btn-outline-secondary";
+    private List<string> Styles = [];
 
     private async Task ToggleEmojis(CMCommandDispatcher commands)
     {

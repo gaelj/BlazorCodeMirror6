@@ -62,7 +62,7 @@ import { htmlViewPlugin } from "./CmHtml"
 import { getFileUploadExtensions, uploadFiles } from "./CmFileUpload"
 import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
-import { hideMarksExtension } from "./CmHideMarkdownMarks"
+import { foldMarkdownCodeBlocks, hideMarksExtension } from "./CmHideMarkdownMarks"
 import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSeparator } from "./CmColumns"
 import { consoleLog } from "./CmLogging"
 
@@ -80,6 +80,12 @@ export async function initCodeMirror(
 ) {
     if (CMInstances[id] !== undefined) {
         consoleLog(id, `CodeMirror instance ${id} already exists`)
+        return
+    }
+
+    const parentDiv = document.getElementById(id)
+    if (!parentDiv) {
+        console.error(`Parent div with id ${id} not found`)
         return
     }
 
@@ -236,7 +242,7 @@ export async function initCodeMirror(
 
         CMInstances[id].view = new EditorView({
             state: CMInstances[id].state,
-            parent: document.getElementById(id),
+            parent: parentDiv,
             scrollTo: setup.scrollToEnd === true ? scrollToEndEffect : null,
         })
 
@@ -249,6 +255,8 @@ export async function initCodeMirror(
         if (loadingPlaceholder) {
             loadingPlaceholder.style.display = 'none'
         }
+
+        // foldMarkdownCodeBlocks(CMInstances[id].view)
 
         // add a class to allow resizing of the editor
         setResize(id, initialConfig.resize)

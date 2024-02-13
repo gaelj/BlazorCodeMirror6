@@ -1,8 +1,13 @@
-### 💥 Introduce breaking changes
+### ✨ Introduce new features
 
-- Move lineNumbers, highlightActiveLineGutter, drawSelection, dropCursor, previewImages, scrollPastEnd and highlightActiveLine from Setup to Parameters (allow dynamically changing their values)
+- Implement foldMarkdownCodeBlocks
+- Show styles at selection in example
 
-### ⬆️ Upgrade dependencies
+### 🔊 Add or update logs
 
-- Update dependencies
-- Update package-lock.json
+- Clarify log message
+- Log config and setup at initialization
+
+### 🥅 Catch errors
+
+- Check for existence of the parent div and error out immediately if not found
