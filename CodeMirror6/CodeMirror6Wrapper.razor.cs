@@ -3,7 +3,6 @@ using GaelJ.BlazorCodeMirror6.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Http;
 
 namespace GaelJ.BlazorCodeMirror6;
 
