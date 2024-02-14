@@ -452,42 +452,40 @@ function setDoc(id: string, text: string) {
 
 function setLocalStorageKey(id: string, value: string) {
     consoleLog(id, `${id} Setting local storage key to ${value}`)
+    if (CMInstances[id].config.localStorageKey === value) return
     saveToLocalStorage(id)
     CMInstances[id].config.localStorageKey = value
     if (value)
         loadFromLocalStorage(id)
-    else
-        clearLocalStorage(id)
 }
 
 export function clearLocalStorage(id: string) {
     const localStorageKey = CMInstances[id].config.localStorageKey
+    if (!localStorageKey) return
     consoleLog(id, `${id} Clearing local storage ${localStorageKey}`)
     localStorage.removeItem(localStorageKey)
 }
 
 function loadFromLocalStorage(id: string) {
     const localStorageKey = CMInstances[id].config.localStorageKey
+    if (!localStorageKey) return
     consoleLog(id, `${id} Loading text from local storage key ${localStorageKey}`)
-    if (localStorageKey) {
-        const value = localStorage.getItem(localStorageKey)
-        setDoc(id, value)
-    }
+    const value = localStorage.getItem(localStorageKey)
+    setDoc(id, value)
 }
 
 function saveToLocalStorage(id: string) {
     const localStorageKey = CMInstances[id].config.localStorageKey
+    if (!localStorageKey) return
     consoleLog(id, `${id} Saving to local storage key ${localStorageKey}`)
-    if (localStorageKey) {
-        const value = CMInstances[id].view.state.doc.toString()
-        if (value) {
-            consoleLog(id, `Setting value to ${value}`)
-            localStorage.setItem(localStorageKey, value)
-        }
-        else {
-            consoleLog(id, `Removing item from local storage`)
-            localStorage.removeItem(localStorageKey)
-        }
+    const value = CMInstances[id].view.state.doc.toString()
+    if (value) {
+        consoleLog(id, `Setting value to ${value}`)
+        localStorage.setItem(localStorageKey, value)
+    }
+    else {
+        consoleLog(id, `Removing item from local storage`)
+        localStorage.removeItem(localStorageKey)
     }
 }
 
