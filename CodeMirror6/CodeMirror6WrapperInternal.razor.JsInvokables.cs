@@ -108,13 +108,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     {
         if (Setup.DebugLogs) Logger.LogInformation("UploadFileFromJS: {fileName}", fileName);
         using var fileStream = new MemoryStream(fileBytes);
-        var customFormFile = new CustomFormFile(fileStream, fileName, contentType);
         var customBrowserFile = new CustomBrowserFile(fileStream, fileName, contentType, lastModified);
-        var fileUrl = UploadFile is not null
-            ? await UploadFile(customFormFile)
-            : UploadBrowserFile is not null
-                ? await UploadBrowserFile(customBrowserFile)
-                : null;
+        var fileUrl = UploadBrowserFile is not null
+            ? await UploadBrowserFile(customBrowserFile)
+            : null;
         if (!string.IsNullOrEmpty(fileUrl)) {
             var imageChar = contentType.StartsWith("image/") ? "!" : string.Empty;
             var imageLink = $"\n{imageChar}[{fileName}]({fileUrl})\n";
