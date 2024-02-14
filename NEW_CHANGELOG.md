@@ -1,3 +1,11 @@
-### 💥 Introduce breaking changes
+### ⬆️ Upgrade dependencies
 
-- Drop IFormFile upload (not supported in WASM). IBrowserFile is still available (#118)
+- Update Microsoft.AspNetCore.Components.Web to 8.0.2
+
+### 🐛 Fix a bug
+
+- Remove broken usings
+
+### 🔧 Add or update configuration files
+
+- Add github source link
