@@ -20940,7 +20940,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-BqAUTxvR.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-lgfrgJUh.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -20951,7 +20951,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-brXxOG-H.js').then(m => m.cpp());
+            return import('./index-WViwWzTl.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20959,7 +20959,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-brXxOG-H.js').then(m => m.cpp());
+            return import('./index-WViwWzTl.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20987,7 +20987,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-Cix-ooY5.js').then(m => m.java());
+            return import('./index-CsskHBEV.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21003,7 +21003,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-DZqPd5bE.js').then(m => m.json());
+            return import('./index-B8xpHR5_.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21017,14 +21017,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-DsiotKSq.js').then(m => m.less());
+            return import('./index-CaU3spPw.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-4AYWtbE6.js').then(m => m.liquid());
+            return import('./index-C3R9Gj41.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21050,7 +21050,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-CrjGbVDd.js').then(m => m.php());
+            return import('./index-HSw-xwXG.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21067,28 +21067,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-CsLo2S-X.js').then(m => m.python());
+            return import('./index-B4y3Lp1b.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-CDhTeUfI.js').then(m => m.rust());
+            return import('./index-Dv_qbKPG.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-CQXtno36.js').then(m => m.sass({ indented: true }));
+            return import('./index-DR1wkTEO.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-CQXtno36.js').then(m => m.sass());
+            return import('./index-DR1wkTEO.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21119,7 +21119,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-CAGdWgrQ.js').then(m => m.wast());
+            return import('./index-BlN33WFU.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21127,7 +21127,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-DuU-AhxA.js').then(m => m.xml());
+            return import('./index-CsP0hUDj.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21135,7 +21135,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-BiXWinYU.js').then(m => m.yaml());
+            return import('./index-Bo3pJc8a.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -21930,13 +21930,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-CXP9jXX1.js').then(m => m.vue());
+            return import('./index-mXAI9bdY.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-CB5z6Dwc.js').then(m => m.angular());
+            return import('./index-B9tMfVxq.js').then(m => m.angular());
         }
     })
 ];
@@ -61817,10 +61817,28 @@ const blockquote = () => {
     ];
 };
 
+const idField = StateField.define({
+    create() {
+        return "";
+    },
+    update(value, tr) {
+        return value;
+    }
+});
+function createEditorWithId(id) {
+    return idField.init(() => id);
+}
+function getIdFromState(state) {
+    return state.field(idField);
+}
+
 const hasOverlap = (x1, x2, y1, y2) => {
     return Math.max(x1, y1) <= Math.min(x2, y2);
 };
 const isCursorInRange = (state, from, to) => {
+    const id = getIdFromState(state);
+    if (!CMInstances[id].config.showMarkdownControlCharactersAroundCursor)
+        return false;
     return state.selection.ranges.some((range) => {
         return hasOverlap(from, to, range.from, range.to);
     });
@@ -75663,6 +75681,7 @@ class DiagramWidget extends WidgetType {
                 svgElement.style.maxHeight = '800px';
                 svgElement.style.maxWidth = 'calc(100% - 2em)';
                 svgElement.style.objectFit = 'scale-down';
+                svgElement.setAttribute('preserveAspectRatio', "xMinYMin meet");
             }
             container.style.fontStyle = '';
             container.style.color = '';
@@ -75887,6 +75906,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
             customKeyMap.push(indentWithTab);
         let extensions = [
+            createEditorWithId(id),
             CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
             CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
             CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
@@ -76210,39 +76230,41 @@ function setDoc(id, text) {
 }
 function setLocalStorageKey(id, value) {
     consoleLog(id, `${id} Setting local storage key to ${value}`);
+    if (CMInstances[id].config.localStorageKey === value)
+        return;
     saveToLocalStorage(id);
     CMInstances[id].config.localStorageKey = value;
     if (value)
         loadFromLocalStorage(id);
-    else
-        clearLocalStorage(id);
 }
 function clearLocalStorage(id) {
     const localStorageKey = CMInstances[id].config.localStorageKey;
+    if (!localStorageKey)
+        return;
     consoleLog(id, `${id} Clearing local storage ${localStorageKey}`);
     localStorage.removeItem(localStorageKey);
 }
 function loadFromLocalStorage(id) {
     const localStorageKey = CMInstances[id].config.localStorageKey;
+    if (!localStorageKey)
+        return;
     consoleLog(id, `${id} Loading text from local storage key ${localStorageKey}`);
-    if (localStorageKey) {
-        const value = localStorage.getItem(localStorageKey);
-        setDoc(id, value);
-    }
+    const value = localStorage.getItem(localStorageKey);
+    setDoc(id, value);
 }
 function saveToLocalStorage(id) {
     const localStorageKey = CMInstances[id].config.localStorageKey;
+    if (!localStorageKey)
+        return;
     consoleLog(id, `${id} Saving to local storage key ${localStorageKey}`);
-    if (localStorageKey) {
-        const value = CMInstances[id].view.state.doc.toString();
-        if (value) {
-            consoleLog(id, `Setting value to ${value}`);
-            localStorage.setItem(localStorageKey, value);
-        }
-        else {
-            consoleLog(id, `Removing item from local storage`);
-            localStorage.removeItem(localStorageKey);
-        }
+    const value = CMInstances[id].view.state.doc.toString();
+    if (value) {
+        consoleLog(id, `Setting value to ${value}`);
+        localStorage.setItem(localStorageKey, value);
+    }
+    else {
+        consoleLog(id, `Removing item from local storage`);
+        localStorage.removeItem(localStorageKey);
     }
 }
 const autoFormatMarkdownExtensions = (id, autoFormatMarkdown = true) => [
