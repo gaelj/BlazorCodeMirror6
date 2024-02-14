@@ -9,7 +9,7 @@
     <AssemblyName>GaelJ.BlazorCodeMirror6</AssemblyName>
     <IsPackable>true</IsPackable>
     <PackageId>GaelJ.BlazorCodeMirror6</PackageId>
-    <Version>0.5.1</Version>
+    <Version>0.6.0</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -43,7 +43,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1" Condition="'$(TargetFramework)'=='net8.0'" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.SourceLink.Github" Version="8.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
