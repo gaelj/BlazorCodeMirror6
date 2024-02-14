@@ -243,7 +243,7 @@ export async function initCodeMirror(
         CMInstances[id].view = new EditorView({
             state: CMInstances[id].state,
             parent: parentDiv,
-            scrollTo: initialScrollEffect,
+            scrollTo: setup.scrollToEnd === true ? initialScrollEffect : null,
         })
 
         if (setup.scrollToEnd === true) {
