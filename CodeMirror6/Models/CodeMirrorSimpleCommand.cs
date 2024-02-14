@@ -196,4 +196,8 @@ public enum CodeMirrorSimpleCommand
     /// Clear the local storage document persistency
     /// </summary>
     ClearLocalStorage,
+    /// <summary>
+    /// Scroll the current selection into view
+    /// </summary>
+    ScrollIntoView,
 }

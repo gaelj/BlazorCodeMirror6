@@ -101,13 +101,13 @@ export async function initCodeMirror(
         CMInstances[id].dotNetHelper = dotnetHelper
         CMInstances[id].setup = setup
         CMInstances[id].config = initialConfig
-        CMInstances[id].localStorageKey = initialConfig.localStorageKey
-        const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension)
-        if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
-            customKeyMap.push(indentWithTab)
 
         consoleLog(id, 'Config', initialConfig)
         consoleLog(id, 'Setup', setup)
+
+        const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension)
+        if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
+            customKeyMap.push(indentWithTab)
 
         let extensions = [
             CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
@@ -227,7 +227,7 @@ export async function initCodeMirror(
         const textInLocalStorage = localStorage.getItem(initialConfig.localStorageKey)
         const initialDoc = textInLocalStorage ? textInLocalStorage : initialConfig.doc
 
-        const scrollToEndEffect = EditorView.scrollIntoView(initialDoc ? initialDoc.length : 0, { y: 'end' })
+        const initialScrollEffect = EditorView.scrollIntoView((initialDoc && setup.scrollToEnd === true) ? initialDoc.length : 0, { y: setup.scrollToEnd === true ? 'end' : 'start' })
         const docLines = initialDoc?.split(/\r\n|\r|\n/) ?? [initialDoc]
         const text = Text.of(docLines)
         const textLength = text?.length ?? 0
@@ -243,7 +243,7 @@ export async function initCodeMirror(
         CMInstances[id].view = new EditorView({
             state: CMInstances[id].state,
             parent: parentDiv,
-            scrollTo: setup.scrollToEnd === true ? scrollToEndEffect : null,
+            scrollTo: setup.scrollToEnd === true ? initialScrollEffect : null,
         })
 
         if (setup.scrollToEnd === true) {
@@ -352,6 +352,7 @@ function setClassToParent(id: string, className: string, classNamesToRemove: str
 }
 
 export async function setConfiguration(id: string, newConfig: CmConfiguration) {
+    consoleLog(id, `Setting configuration for ${id} to`, newConfig)
     const view = CMInstances[id]?.view
     if (!view) {
         consoleLog(id, `View is undefined`)
@@ -414,7 +415,11 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
     if (oldConfig.highlightActiveLine !== newConfig.highlightActiveLine) effects.push(CMInstances[id].highlightActiveLineCompartment.reconfigure(newConfig.highlightActiveLine ? highlightActiveLine() : []))
 
     CMInstances[id].config = newConfig
-    view.dispatch({ effects: effects, changes: changes })
+    if (effects.length > 0 || changes.length > 0)
+        view.dispatch({
+            effects: effects,
+            changes: changes,
+    })
 }
 
 export function setMentionCompletions(id: string, mentionCompletions: Completion[]) {
@@ -446,8 +451,9 @@ function setDoc(id: string, text: string) {
 }
 
 function setLocalStorageKey(id: string, value: string) {
+    consoleLog(id, `${id} Setting local storage key to ${value}`)
     saveToLocalStorage(id)
-    CMInstances[id].localStorageKey = value
+    CMInstances[id].config.localStorageKey = value
     if (value)
         loadFromLocalStorage(id)
     else
@@ -455,11 +461,14 @@ function setLocalStorageKey(id: string, value: string) {
 }
 
 export function clearLocalStorage(id: string) {
-    localStorage.removeItem(CMInstances[id].localStorageKey)
+    const localStorageKey = CMInstances[id].config.localStorageKey
+    consoleLog(id, `${id} Clearing local storage ${localStorageKey}`)
+    localStorage.removeItem(localStorageKey)
 }
 
 function loadFromLocalStorage(id: string) {
-    const localStorageKey = CMInstances[id].localStorageKey
+    const localStorageKey = CMInstances[id].config.localStorageKey
+    consoleLog(id, `${id} Loading text from local storage key ${localStorageKey}`)
     if (localStorageKey) {
         const value = localStorage.getItem(localStorageKey)
         setDoc(id, value)
@@ -467,13 +476,18 @@ function loadFromLocalStorage(id: string) {
 }
 
 function saveToLocalStorage(id: string) {
-    const localStorageKey = CMInstances[id].localStorageKey
+    const localStorageKey = CMInstances[id].config.localStorageKey
+    consoleLog(id, `${id} Saving to local storage key ${localStorageKey}`)
     if (localStorageKey) {
         const value = CMInstances[id].view.state.doc.toString()
-        if (value)
+        if (value) {
+            consoleLog(id, `Setting value to ${value}`)
             localStorage.setItem(localStorageKey, value)
-        else
+        }
+        else {
+            consoleLog(id, `Removing item from local storage`)
             localStorage.removeItem(localStorageKey)
+        }
     }
 }
 
@@ -549,6 +563,7 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
 
             case 'Focus': break;
             case 'ClearLocalStorage': clearLocalStorage(id); break;
+            case 'ScrollIntoView': view.dispatch({ scrollIntoView: true }); break;
 
             default: throw new Error(`Function ${functionName} does not exist.`);
         }
