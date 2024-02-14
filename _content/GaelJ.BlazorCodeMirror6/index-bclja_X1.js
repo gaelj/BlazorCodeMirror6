@@ -20940,7 +20940,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-Y45m7Vwv.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-BqAUTxvR.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -20951,7 +20951,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-DUSgLUI6.js').then(m => m.cpp());
+            return import('./index-brXxOG-H.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20959,7 +20959,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-DUSgLUI6.js').then(m => m.cpp());
+            return import('./index-brXxOG-H.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20987,7 +20987,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-jPZgddmX.js').then(m => m.java());
+            return import('./index-Cix-ooY5.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21003,7 +21003,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-BgG02U15.js').then(m => m.json());
+            return import('./index-DZqPd5bE.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21017,14 +21017,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-DsYuslXO.js').then(m => m.less());
+            return import('./index-DsiotKSq.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-BPeR11fi.js').then(m => m.liquid());
+            return import('./index-4AYWtbE6.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21050,7 +21050,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-CyDE5GDF.js').then(m => m.php());
+            return import('./index-CrjGbVDd.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21067,28 +21067,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-D5q5EUHT.js').then(m => m.python());
+            return import('./index-CsLo2S-X.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-BOcXO5tt.js').then(m => m.rust());
+            return import('./index-CDhTeUfI.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-BuddL_Rs.js').then(m => m.sass({ indented: true }));
+            return import('./index-CQXtno36.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-BuddL_Rs.js').then(m => m.sass());
+            return import('./index-CQXtno36.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21119,7 +21119,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-B3ct1KhY.js').then(m => m.wast());
+            return import('./index-CAGdWgrQ.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21127,7 +21127,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-CeQbt6Ju.js').then(m => m.xml());
+            return import('./index-DuU-AhxA.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21135,7 +21135,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-BY_S0f23.js').then(m => m.yaml());
+            return import('./index-BiXWinYU.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -21930,13 +21930,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-Dlka8q1P.js').then(m => m.vue());
+            return import('./index-CXP9jXX1.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-Dt6M314h.js').then(m => m.angular());
+            return import('./index-CB5z6Dwc.js').then(m => m.angular());
         }
     })
 ];
@@ -75748,37 +75748,29 @@ const dynamicDiagramsExtension = (enabled = true, krokiUrl = "https://kroki.io")
         block: true,
         inclusive: false,
     });
-    function getDecorationsRange(state, node, updatedCode, updatedLanguage, updatedSvgContent, from, to, width, height) {
-        const decorationsRange = [];
-        if (node.type.name === 'FencedCode') {
-            const { language, code } = getLanguageAndCode(state, node);
-            if (language) {
-                const cursorInRange = isCursorInRange(state, from, to);
-                let params;
-                if (language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage) {
-                    const { height } = updatedSvgContent ? readSvgDimensions(updatedSvgContent) : { height: null };
-                    params = { language, code, svgContent: updatedSvgContent, from: cursorInRange ? null : from, to, height };
-                }
-                else {
-                    const svgContent = fetchSvgFromCache(code, language);
-                    const { height } = svgContent?.response ? readSvgDimensions(svgContent?.response) : { height: null };
-                    params = { language, code, svgContent: svgContent?.response, from: cursorInRange ? null : from, to, height };
-                }
-                if (cursorInRange)
-                    decorationsRange.push(diagramWidgetDecoration(params).range(state.doc.lineAt(from).from));
-                else
-                    decorationsRange.push(diagramReplacementDecoration(params).range(from, to));
-            }
+    function getDecorationsRange(state, node, from, to) {
+        if (node.type.name !== 'FencedCode') {
+            return [];
         }
-        return decorationsRange;
+        const { language, code } = getLanguageAndCode(state, node);
+        if (language === undefined) {
+            return [];
+        }
+        const cursorInRange = isCursorInRange(state, from, to);
+        let params;
+        params = { language, code, from: cursorInRange ? null : from, to: cursorInRange ? null : to, svgContent: null, height: null };
+        if (cursorInRange)
+            return [diagramWidgetDecoration(params).range(state.doc.lineAt(from).from)];
+        else
+            return [diagramReplacementDecoration(params).range(from, to)];
     }
-    const decorate = (state, updatedCode, updatedLanguage, updatedSvgContent, width = null, height = null) => {
+    const decorate = (state) => {
         let decorationsRange = [];
         if (enabled) {
             syntaxTree(state).iterate({
                 enter: (node) => {
                     const { from, to } = node;
-                    decorationsRange.push(...getDecorationsRange(state, node, updatedCode, updatedLanguage, updatedSvgContent, from, to));
+                    decorationsRange.push(...getDecorationsRange(state, node, from, to));
                 },
             });
         }
@@ -75789,19 +75781,7 @@ const dynamicDiagramsExtension = (enabled = true, krokiUrl = "https://kroki.io")
             return decorate(state);
         },
         update(value, transaction) {
-            // Apply the effect to update diagram content
-            if (transaction.effects.some(_ => true)) {
-                for (const effect of transaction.effects) {
-                    if (effect.is(updateDiagramEffect)) {
-                        const { code, language, svgContent, height } = effect.value;
-                        return decorate(transaction.state, code, language, svgContent, height);
-                    }
-                }
-            }
-            else {
-                return decorate(transaction.state);
-            }
-            return value.map(transaction.changes);
+            return decorate(transaction.state);
         },
         provide(field) {
             return EditorView.decorations.from(field);
@@ -75901,12 +75881,11 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         CMInstances[id].dotNetHelper = dotnetHelper;
         CMInstances[id].setup = setup;
         CMInstances[id].config = initialConfig;
-        CMInstances[id].localStorageKey = initialConfig.localStorageKey;
+        consoleLog(id, 'Config', initialConfig);
+        consoleLog(id, 'Setup', setup);
         const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension);
         if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
             customKeyMap.push(indentWithTab);
-        consoleLog(id, 'Config', initialConfig);
-        consoleLog(id, 'Setup', setup);
         let extensions = [
             CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
             CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
@@ -76017,7 +75996,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         await minDelay;
         const textInLocalStorage = localStorage.getItem(initialConfig.localStorageKey);
         const initialDoc = textInLocalStorage ? textInLocalStorage : initialConfig.doc;
-        const scrollToEndEffect = EditorView.scrollIntoView(initialDoc ? initialDoc.length : 0, { y: 'end' });
+        const initialScrollEffect = EditorView.scrollIntoView((initialDoc && setup.scrollToEnd === true) ? initialDoc.length : 0, { y: setup.scrollToEnd === true ? 'end' : 'start' });
         const docLines = initialDoc?.split(/\r\n|\r|\n/) ?? [initialDoc];
         const text = Text.of(docLines);
         const textLength = text?.length ?? 0;
@@ -76031,7 +76010,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         CMInstances[id].view = new EditorView({
             state: CMInstances[id].state,
             parent: parentDiv,
-            scrollTo: setup.scrollToEnd === true ? scrollToEndEffect : null,
+            scrollTo: setup.scrollToEnd === true ? initialScrollEffect : null,
         });
         if (setup.scrollToEnd === true) {
             CMInstances[id].view.focus();
@@ -76128,6 +76107,7 @@ function setClassToParent(id, className, classNamesToRemove) {
         dom.classList.add(className);
 }
 async function setConfiguration(id, newConfig) {
+    consoleLog(id, `Setting configuration for ${id} to`, newConfig);
     const view = CMInstances[id]?.view;
     if (!view) {
         consoleLog(id, `View is undefined`);
@@ -76199,7 +76179,11 @@ async function setConfiguration(id, newConfig) {
     if (oldConfig.highlightActiveLine !== newConfig.highlightActiveLine)
         effects.push(CMInstances[id].highlightActiveLineCompartment.reconfigure(newConfig.highlightActiveLine ? highlightActiveLine() : []));
     CMInstances[id].config = newConfig;
-    view.dispatch({ effects: effects, changes: changes });
+    if (effects.length > 0 || changes.length > 0)
+        view.dispatch({
+            effects: effects,
+            changes: changes,
+        });
 }
 function setMentionCompletions(id, mentionCompletions) {
     setCachedCompletions(mentionCompletions);
@@ -76225,31 +76209,40 @@ function setDoc(id, text) {
     CMInstances[id].view.dispatch(transaction);
 }
 function setLocalStorageKey(id, value) {
+    consoleLog(id, `${id} Setting local storage key to ${value}`);
     saveToLocalStorage(id);
-    CMInstances[id].localStorageKey = value;
+    CMInstances[id].config.localStorageKey = value;
     if (value)
         loadFromLocalStorage(id);
     else
         clearLocalStorage(id);
 }
 function clearLocalStorage(id) {
-    localStorage.removeItem(CMInstances[id].localStorageKey);
+    const localStorageKey = CMInstances[id].config.localStorageKey;
+    consoleLog(id, `${id} Clearing local storage ${localStorageKey}`);
+    localStorage.removeItem(localStorageKey);
 }
 function loadFromLocalStorage(id) {
-    const localStorageKey = CMInstances[id].localStorageKey;
+    const localStorageKey = CMInstances[id].config.localStorageKey;
+    consoleLog(id, `${id} Loading text from local storage key ${localStorageKey}`);
     if (localStorageKey) {
         const value = localStorage.getItem(localStorageKey);
         setDoc(id, value);
     }
 }
 function saveToLocalStorage(id) {
-    const localStorageKey = CMInstances[id].localStorageKey;
+    const localStorageKey = CMInstances[id].config.localStorageKey;
+    consoleLog(id, `${id} Saving to local storage key ${localStorageKey}`);
     if (localStorageKey) {
         const value = CMInstances[id].view.state.doc.toString();
-        if (value)
+        if (value) {
+            consoleLog(id, `Setting value to ${value}`);
             localStorage.setItem(localStorageKey, value);
-        else
+        }
+        else {
+            consoleLog(id, `Removing item from local storage`);
             localStorage.removeItem(localStorageKey);
+        }
     }
 }
 const autoFormatMarkdownExtensions = (id, autoFormatMarkdown = true) => [
@@ -76400,6 +76393,9 @@ function dispatchCommand(id, functionName, ...args) {
             case 'Focus': break;
             case 'ClearLocalStorage':
                 clearLocalStorage(id);
+                break;
+            case 'ScrollIntoView':
+                view.dispatch({ scrollIntoView: true });
                 break;
             default: throw new Error(`Function ${functionName} does not exist.`);
         }
