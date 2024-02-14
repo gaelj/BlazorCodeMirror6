@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0 - 2024-02-14
+
+### 💥 Introduce breaking changes
+
+- Drop IFormFile upload (not supported in WASM). IBrowserFile is still available (#118)
+
 ## 0.5.1 - 2024-02-12
 
 ### ✨ Introduce new features

@@ -120,7 +120,7 @@
     Setup=@Setup
     ReplaceEmojiCodes=@ReplaceEmojiCodes
     GetMentionCompletions=@GetMentionCompletions
-    UploadFile=@UploadFile
+    UploadBrowserFile=@UploadBrowserFile
     Editable=@(!ReadOnly)
     ReadOnly=@ReadOnly
     LineNumbers=@(!ReadOnly)
@@ -385,9 +385,9 @@
         return Task.FromResult(result);
     }
 
-    private async Task<string> UploadFile(Microsoft.AspNetCore.Http.IFormFile file)
+    private async Task<string> UploadBrowserFile(IBrowserFile file)
     {
-        var fileBytes = new byte[file.Length];
+        var fileBytes = new byte[file.Size];
         await file.OpenReadStream().ReadAsync(fileBytes);
         var base64 = Convert.ToBase64String(fileBytes);
         var mimeType = file.ContentType;
