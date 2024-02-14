@@ -32,6 +32,7 @@ export class CmConfiguration {
     public previewImages: boolean
     public scrollPastEnd: boolean
     public highlightActiveLine: boolean
+    public showMarkdownControlCharactersAroundCursor: boolean
 }
 
 export interface UnifiedMergeConfig {
