@@ -1,13 +1,11 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Examples.BlazorServer.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.WebHost.UseSentry(o => {
     o.Dsn = "https://d0ab79eee7b999c61d2c01fdf3958eeb@o4505402784546816.ingest.sentry.io/4506525909909504";
     // When configuring for the first time, to see what the SDK is doing:
