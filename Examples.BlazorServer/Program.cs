@@ -35,4 +35,6 @@ app.UseSentryTracing();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
+app.MapControllers();
+
 app.Run();
