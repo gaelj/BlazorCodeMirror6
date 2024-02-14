@@ -203,6 +203,10 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// </summary>
     [Parameter] public bool ScrollPastEnd { get; init; } = true;
     /// <summary>
+    /// Whether to show the markdown control characters around the cursor
+    /// </summary>
+    [Parameter] public bool ShowMarkdownControlCharactersAroundCursor { get; init; } = true;
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }

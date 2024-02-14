@@ -65,6 +65,7 @@ import { dynamicDiagramsExtension } from "./CmDiagrams"
 import { foldMarkdownCodeBlocks, hideMarksExtension } from "./CmHideMarkdownMarks"
 import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSeparator } from "./CmColumns"
 import { consoleLog } from "./CmLogging"
+import { createEditorWithId } from "./CmId"
 
 /**
  * Initialize a new CodeMirror instance
@@ -110,6 +111,7 @@ export async function initCodeMirror(
             customKeyMap.push(indentWithTab)
 
         let extensions = [
+            createEditorWithId(id),
             CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
             CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
             CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
