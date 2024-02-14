@@ -1,31 +1,15 @@
 ### ✨ Introduce new features
 
-- Add ScrollIntoView command
-
-### ⚡️ Improve performance
-
-- Don't dispatch empty changes in setConfiguration
+- Add ShowMarkdownControlCharactersAroundCursor parameter
 
 ### ⬆️ Upgrade dependencies
 
-- Update Microsoft.AspNetCore.Components.Web to 8.0.2
+- Update Microsoft to 8.0.2
 
 ### 🎨 Improve structure / format of the code
 
-- Cleanup diagrams
+- Improve local storage management
 
-### 🔊 Add or update logs
+### 💄 Add or update the UI and style files
 
-- Add loggings for local storage
-
-### 🔧 Add or update configuration files
-
-- Add github source link
-
-### 🗑️ Deprecate code that needs to be cleaned up
-
-- Remove useless localStorageKey copy
-
-### 🚚 Move or rename resources (e.g., files, paths)
-
-- Move initial logs earlier
+- Ensure correct aspect ratio of svg diagrams
