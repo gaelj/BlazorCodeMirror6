@@ -12,7 +12,7 @@
     <SupportedPlatform Include="browser-wasm" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.2" />
     <PackageReference Include="Sentry.Extensions.Logging" Version="4.1.0" />
   </ItemGroup>
   <ItemGroup>
