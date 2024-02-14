@@ -415,7 +415,11 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
     if (oldConfig.highlightActiveLine !== newConfig.highlightActiveLine) effects.push(CMInstances[id].highlightActiveLineCompartment.reconfigure(newConfig.highlightActiveLine ? highlightActiveLine() : []))
 
     CMInstances[id].config = newConfig
-    view.dispatch({ effects: effects, changes: changes })
+    if (effects.length > 0 || changes.length > 0)
+        view.dispatch({
+            effects: effects,
+            changes: changes,
+    })
 }
 
 export function setMentionCompletions(id: string, mentionCompletions: Completion[]) {
