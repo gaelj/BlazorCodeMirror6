@@ -65,6 +65,7 @@ import { dynamicDiagramsExtension } from "./CmDiagrams"
 import { foldMarkdownCodeBlocks, hideMarksExtension } from "./CmHideMarkdownMarks"
 import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSeparator } from "./CmColumns"
 import { consoleLog } from "./CmLogging"
+import { createEditorWithId } from "./CmId"
 
 /**
  * Initialize a new CodeMirror instance
@@ -110,6 +111,7 @@ export async function initCodeMirror(
             customKeyMap.push(indentWithTab)
 
         let extensions = [
+            createEditorWithId(id),
             CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
             CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
             CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
@@ -452,42 +454,40 @@ function setDoc(id: string, text: string) {
 
 function setLocalStorageKey(id: string, value: string) {
     consoleLog(id, `${id} Setting local storage key to ${value}`)
+    if (CMInstances[id].config.localStorageKey === value) return
     saveToLocalStorage(id)
     CMInstances[id].config.localStorageKey = value
     if (value)
         loadFromLocalStorage(id)
-    else
-        clearLocalStorage(id)
 }
 
 export function clearLocalStorage(id: string) {
     const localStorageKey = CMInstances[id].config.localStorageKey
+    if (!localStorageKey) return
     consoleLog(id, `${id} Clearing local storage ${localStorageKey}`)
     localStorage.removeItem(localStorageKey)
 }
 
 function loadFromLocalStorage(id: string) {
     const localStorageKey = CMInstances[id].config.localStorageKey
+    if (!localStorageKey) return
     consoleLog(id, `${id} Loading text from local storage key ${localStorageKey}`)
-    if (localStorageKey) {
-        const value = localStorage.getItem(localStorageKey)
-        setDoc(id, value)
-    }
+    const value = localStorage.getItem(localStorageKey)
+    setDoc(id, value)
 }
 
 function saveToLocalStorage(id: string) {
     const localStorageKey = CMInstances[id].config.localStorageKey
+    if (!localStorageKey) return
     consoleLog(id, `${id} Saving to local storage key ${localStorageKey}`)
-    if (localStorageKey) {
-        const value = CMInstances[id].view.state.doc.toString()
-        if (value) {
-            consoleLog(id, `Setting value to ${value}`)
-            localStorage.setItem(localStorageKey, value)
-        }
-        else {
-            consoleLog(id, `Removing item from local storage`)
-            localStorage.removeItem(localStorageKey)
-        }
+    const value = CMInstances[id].view.state.doc.toString()
+    if (value) {
+        consoleLog(id, `Setting value to ${value}`)
+        localStorage.setItem(localStorageKey, value)
+    }
+    else {
+        consoleLog(id, `Removing item from local storage`)
+        localStorage.removeItem(localStorageKey)
     }
 }
 

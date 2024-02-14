@@ -207,6 +207,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// </summary>
     [Parameter] public bool ScrollPastEnd { get; init; } = true;
     /// <summary>
+    /// Whether to show the markdown control characters around the cursor
+    /// </summary>
+    [Parameter] public bool ShowMarkdownControlCharactersAroundCursor { get; init; } = true;
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
@@ -283,7 +287,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             DropCursor,
             PreviewImages,
             ScrollPastEnd,
-            HighlightActiveLine
+            HighlightActiveLine,
+            ShowMarkdownControlCharactersAroundCursor
         );
         try {
             if (IsWASM)
@@ -439,6 +444,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             }
             if (Config.HighlightActiveLine != HighlightActiveLine) {
                 Config.HighlightActiveLine = HighlightActiveLine;
+                updated = true;
+            }
+            if (Config.ShowMarkdownControlCharactersAroundCursor != ShowMarkdownControlCharactersAroundCursor) {
+                Config.ShowMarkdownControlCharactersAroundCursor = ShowMarkdownControlCharactersAroundCursor;
                 updated = true;
             }
             if (updated)

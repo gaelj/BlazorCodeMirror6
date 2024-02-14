@@ -1,5 +1,7 @@
-import type { EditorState, Extension, Range } from '@codemirror/state'
+import type { EditorState } from '@codemirror/state'
 import { syntaxTree } from '@codemirror/language'
+import { CMInstances } from './CmInstance'
+import { getIdFromState } from './CmId'
 
 
 const hasOverlap = (x1: number, x2: number, y1: number, y2: number) => {
@@ -7,6 +9,8 @@ const hasOverlap = (x1: number, x2: number, y1: number, y2: number) => {
 }
 
 export const isCursorInRange = (state: EditorState, from: number, to: number) => {
+    const id = getIdFromState(state)
+    if (!CMInstances[id].config.showMarkdownControlCharactersAroundCursor) return false
     return state.selection.ranges.some((range) => {
         return hasOverlap(from, to, range.from, range.to)
     })

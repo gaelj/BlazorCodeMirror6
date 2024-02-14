@@ -163,6 +163,7 @@ class DiagramWidget extends WidgetType {
                 svgElement.style.maxHeight = '800px'
                 svgElement.style.maxWidth = 'calc(100% - 2em)'
                 svgElement.style.objectFit = 'scale-down'
+                svgElement.setAttribute('preserveAspectRatio', "xMinYMin meet")
             }
             container.style.fontStyle = ''
             container.style.color = ''

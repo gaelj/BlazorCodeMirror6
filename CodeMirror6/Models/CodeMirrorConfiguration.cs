@@ -34,6 +34,7 @@ namespace GaelJ.BlazorCodeMirror6.Models;
 /// <param name="previewImages"></param>
 /// <param name="scrollPastEnd"></param>
 /// <param name="highlightActiveLine"></param>
+/// <param name="showMarkdownControlCharactersAroundCursor"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -62,7 +63,8 @@ public class CodeMirrorConfiguration(
     bool dropCursor,
     bool previewImages,
     bool scrollPastEnd,
-    bool highlightActiveLine)
+    bool highlightActiveLine,
+    bool showMarkdownControlCharactersAroundCursor)
 {
     /// <summary>
     /// The text to display in the editor
@@ -203,4 +205,9 @@ public class CodeMirrorConfiguration(
     /// Can the user scroll past the end of the document
     /// </summary>
     [JsonPropertyName("scrollPastEnd")] public bool ScrollPastEnd { get; internal set; } = scrollPastEnd;
+
+    /// <summary>
+    /// Whether to show markdown control characters around the cursor
+    /// </summary>
+    [JsonPropertyName("showMarkdownControlCharactersAroundCursor")] public bool ShowMarkdownControlCharactersAroundCursor { get; internal set; } = showMarkdownControlCharactersAroundCursor;
 }
