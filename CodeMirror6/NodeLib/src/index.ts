@@ -563,6 +563,7 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
 
             case 'Focus': break;
             case 'ClearLocalStorage': clearLocalStorage(id); break;
+            case 'ScrollIntoView': view.dispatch({ scrollIntoView: true }); break;
 
             default: throw new Error(`Function ${functionName} does not exist.`);
         }
