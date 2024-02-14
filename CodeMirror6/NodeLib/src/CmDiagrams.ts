@@ -266,7 +266,7 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
         inclusive: false,
     })
 
-    function getDecorationsRange(state: EditorState, node: SyntaxNodeRef, updatedCode?: string, updatedLanguage?: string, updatedSvgContent?: string, from?: number, to?: number) {
+    function getDecorationsRange(state: EditorState, node: SyntaxNodeRef, from?: number, to?: number) {
         if (node.type.name !== 'FencedCode') {
             return []
         }
@@ -277,12 +277,7 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
         const cursorInRange = isCursorInRange(state, from, to)
 
         let params: DiagramWidgetParams
-        if (!(language === updatedLanguage && code === updatedCode && updatedCode && updatedLanguage)) {
-            const svgContent = fetchSvgFromCache(code, language)
-            updatedSvgContent = svgContent?.response
-        }
-        const { height } = updatedSvgContent ? readSvgDimensions(updatedSvgContent) : { height: null }
-        params = { language, code, svgContent: updatedSvgContent, from: cursorInRange ? null : from, to, height }
+        params = { language, code, from: cursorInRange ? null : from, to: cursorInRange ? null : to, svgContent: null, height: null }
 
         if (cursorInRange)
             return [diagramWidgetDecoration(params).range(state.doc.lineAt(from).from)]
@@ -290,38 +285,15 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
             return [diagramReplacementDecoration(params).range(from, to)]
     }
 
-    function getDecorationsRange2(state: EditorState, updatedCode?: string, updatedLanguage?: string, updatedSvgContent?: string, from?: number, to?: number) {
-        const cursorInRange = isCursorInRange(state, from, to)
-
-        let params: DiagramWidgetParams
-        const svgContent = fetchSvgFromCache(updatedCode, updatedLanguage)
-        updatedSvgContent = svgContent?.response
-        const { height } = updatedSvgContent ? readSvgDimensions(updatedSvgContent) : { height: null }
-        params = { language: updatedLanguage, code: updatedCode, svgContent: updatedSvgContent, from: cursorInRange ? null : from, to, height }
-
-        if (cursorInRange)
-            return [diagramWidgetDecoration(params).range(state.doc.lineAt(from).from)]
-        else
-            return [diagramReplacementDecoration(params).range(from, to)]
-    }
-
-    const decorate = (state: EditorState, updatedCode?: string, updatedLanguage?: string, updatedSvgContent?: string, width: number = null, height: number = null) => {
+    const decorate = (state: EditorState) => {
         let decorationsRange: Range<Decoration>[] = []
         if (enabled) {
             syntaxTree(state).iterate({
                 enter: (node) => {
                     const { from, to } = node
-                    decorationsRange.push(...getDecorationsRange(state, node, updatedCode, updatedLanguage, updatedSvgContent, from, to))
+                    decorationsRange.push(...getDecorationsRange(state, node, from, to))
                 },
             })
-        }
-        return decorationsRange.length > 0 ? RangeSet.of(decorationsRange) : Decoration.none
-    }
-
-    const decorate2 = (state: EditorState, updatedCode: string, updatedLanguage: string, updatedSvgContent: string, from: number, to: number) => {
-        let decorationsRange: Range<Decoration>[] = []
-        if (enabled) {
-            decorationsRange.push(...getDecorationsRange2(state, updatedCode, updatedLanguage, updatedSvgContent, from, to))
         }
         return decorationsRange.length > 0 ? RangeSet.of(decorationsRange) : Decoration.none
     }
@@ -331,20 +303,7 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
             return decorate(state)
         },
         update(value, transaction) {
-            // Apply the effect to update diagram content
-            if (transaction.effects.some(_ => true)) {
-                for (const effect of transaction.effects) {
-                    if (effect.is(updateDiagramEffect)) {
-                        const { code, language, svgContent, height, from, to } = effect.value
-                        return decorate2(transaction.state, code, language, svgContent, from, to)
-                    }
-                }
-            }
-            else {
-                return decorate(transaction.state)
-            }
-
-            return value.map(transaction.changes)
+            return decorate(transaction.state)
         },
         provide(field) {
             return EditorView.decorations.from(field)
