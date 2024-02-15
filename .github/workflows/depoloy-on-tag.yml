@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: 📥 Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4.1.1
 
     - name: 📦 Setup NuGet
       uses: NuGet/setup-nuget@v1.2.0
