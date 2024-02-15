@@ -1,15 +1,8 @@
-### ✨ Introduce new features
+### 🐛 Fix a bug
 
-- Add ShowMarkdownControlCharactersAroundCursor parameter
+- Fix diagrams not always initially rendered
 
-### ⬆️ Upgrade dependencies
+### 📝 Add or update documentation
 
-- Update Microsoft to 8.0.2
-
-### 🎨 Improve structure / format of the code
-
-- Improve local storage management
-
-### 💄 Add or update the UI and style files
-
-- Ensure correct aspect ratio of svg diagrams
+- Add example: blazor server file upload with IBrowser file
+- Cleanup example
