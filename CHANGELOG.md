@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.5 - 2024-02-15
+
+### 🐛 Fix a bug
+
+- Fix diagrams not always initially rendered
+
+### 📝 Add or update documentation
+
+- Add example: blazor server file upload with IBrowser file
+- Cleanup example
+
 ## 0.6.4 - 2024-02-14
 
 ### ✨ Introduce new features

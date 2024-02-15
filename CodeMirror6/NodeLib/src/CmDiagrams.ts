@@ -211,9 +211,9 @@ class DiagramWidget extends WidgetType {
 function getLanguageAndCode(state: EditorState, node: SyntaxNodeRef) {
     const { from, to } = node
     const codeAndLanguage = state.doc.sliceString(from, to)
-    const language = detectDiagramLanguage(codeAndLanguage)
+    const diagramLanguage = detectDiagramLanguage(codeAndLanguage)
     const code = codeAndLanguage.split('\n').slice(1, -1).join('\n')
-    return { language, code }
+    return { diagramLanguage, code }
 }
 
 const diagramPlugin = (krokiUrl: string) => ViewPlugin.fromClass(
@@ -227,9 +227,7 @@ const diagramPlugin = (krokiUrl: string) => ViewPlugin.fromClass(
 
         update(update: ViewUpdate) {
             update.transactions.forEach(tr => {
-                if (tr.docChanged) {
-                    this.parseDocumentAndLoadDiagrams(this.view)
-                }
+                this.parseDocumentAndLoadDiagrams(this.view)
             })
         }
 
@@ -237,9 +235,9 @@ const diagramPlugin = (krokiUrl: string) => ViewPlugin.fromClass(
             syntaxTree(view.state).iterate({
                 enter: (node) => {
                     if (node.type.name === 'FencedCode') {
-                        const { language, code } = getLanguageAndCode(view.state, node)
-                        if (language) {
-                            fetchDiagramSvg(view, code, language, krokiUrl)
+                        const { diagramLanguage, code } = getLanguageAndCode(view.state, node)
+                        if (diagramLanguage) {
+                            fetchDiagramSvg(view, code, diagramLanguage, krokiUrl)
                         }
                     }
                 },
@@ -269,21 +267,21 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
 
     function getDecorationsRange(state: EditorState, node: SyntaxNodeRef, from?: number, to?: number) {
         if (node.type.name !== 'FencedCode') {
-            return []
+            return null
         }
-        const { language, code } = getLanguageAndCode(state, node)
-        if (language === undefined) {
-            return []
+        const { diagramLanguage, code } = getLanguageAndCode(state, node)
+        if (diagramLanguage === undefined) {
+            return null
         }
         const cursorInRange = isCursorInRange(state, from, to)
 
         let params: DiagramWidgetParams
-        params = { language, code, from: cursorInRange ? null : from, to: cursorInRange ? null : to, svgContent: null, height: null }
+        params = { language: diagramLanguage, code, from: cursorInRange ? null : from, to: cursorInRange ? null : to, svgContent: null, height: null }
 
         if (cursorInRange)
-            return [diagramWidgetDecoration(params).range(state.doc.lineAt(from).from)]
+            return diagramWidgetDecoration(params).range(state.doc.lineAt(from).from)
         else
-            return [diagramReplacementDecoration(params).range(from, to)]
+            return diagramReplacementDecoration(params).range(from, to)
     }
 
     const decorate = (state: EditorState) => {
@@ -292,7 +290,9 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
             syntaxTree(state).iterate({
                 enter: (node) => {
                     const { from, to } = node
-                    decorationsRange.push(...getDecorationsRange(state, node, from, to))
+                    const decorateRange = getDecorationsRange(state, node, from, to)
+                    if (decorateRange)
+                        decorationsRange.push(decorateRange)
                 },
             })
         }
