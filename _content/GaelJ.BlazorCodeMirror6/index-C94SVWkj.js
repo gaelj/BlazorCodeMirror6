@@ -20940,7 +20940,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-lgfrgJUh.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-HyyNnAnv.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -20951,7 +20951,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-WViwWzTl.js').then(m => m.cpp());
+            return import('./index-CwV-fS07.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20959,7 +20959,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-WViwWzTl.js').then(m => m.cpp());
+            return import('./index-CwV-fS07.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20987,7 +20987,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-CsskHBEV.js').then(m => m.java());
+            return import('./index-BRSaGnAp.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21003,7 +21003,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-B8xpHR5_.js').then(m => m.json());
+            return import('./index-DTc12_3T.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21017,14 +21017,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-CaU3spPw.js').then(m => m.less());
+            return import('./index-Eh4nGxxa.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-C3R9Gj41.js').then(m => m.liquid());
+            return import('./index-kwwqTvhy.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21050,7 +21050,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-HSw-xwXG.js').then(m => m.php());
+            return import('./index-CYQjCxnS.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21067,28 +21067,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-B4y3Lp1b.js').then(m => m.python());
+            return import('./index-acv0edQS.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-Dv_qbKPG.js').then(m => m.rust());
+            return import('./index-CEqXk7N7.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-DR1wkTEO.js').then(m => m.sass({ indented: true }));
+            return import('./index-BJPl2ET3.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-DR1wkTEO.js').then(m => m.sass());
+            return import('./index-BJPl2ET3.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21119,7 +21119,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-BlN33WFU.js').then(m => m.wast());
+            return import('./index-CkiktmTt.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21127,7 +21127,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-CsP0hUDj.js').then(m => m.xml());
+            return import('./index-B2DH19fk.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21135,7 +21135,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-Bo3pJc8a.js').then(m => m.yaml());
+            return import('./index-C7RuQ3Ao.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -21930,13 +21930,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-mXAI9bdY.js').then(m => m.vue());
+            return import('./index-CN0z32Qq.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-B9tMfVxq.js').then(m => m.angular());
+            return import('./index-CgJLQgpR.js').then(m => m.angular());
         }
     })
 ];
@@ -75722,9 +75722,9 @@ class DiagramWidget extends WidgetType {
 function getLanguageAndCode(state, node) {
     const { from, to } = node;
     const codeAndLanguage = state.doc.sliceString(from, to);
-    const language = detectDiagramLanguage(codeAndLanguage);
+    const diagramLanguage = detectDiagramLanguage(codeAndLanguage);
     const code = codeAndLanguage.split('\n').slice(1, -1).join('\n');
-    return { language, code };
+    return { diagramLanguage, code };
 }
 const diagramPlugin = (krokiUrl) => ViewPlugin.fromClass(class {
     constructor(view) {
@@ -75733,18 +75733,16 @@ const diagramPlugin = (krokiUrl) => ViewPlugin.fromClass(class {
     }
     update(update) {
         update.transactions.forEach(tr => {
-            if (tr.docChanged) {
-                this.parseDocumentAndLoadDiagrams(this.view);
-            }
+            this.parseDocumentAndLoadDiagrams(this.view);
         });
     }
     parseDocumentAndLoadDiagrams(view) {
         syntaxTree(view.state).iterate({
             enter: (node) => {
                 if (node.type.name === 'FencedCode') {
-                    const { language, code } = getLanguageAndCode(view.state, node);
-                    if (language) {
-                        fetchDiagramSvg(view, code, language, krokiUrl);
+                    const { diagramLanguage, code } = getLanguageAndCode(view.state, node);
+                    if (diagramLanguage) {
+                        fetchDiagramSvg(view, code, diagramLanguage, krokiUrl);
                     }
                 }
             },
@@ -75769,19 +75767,19 @@ const dynamicDiagramsExtension = (enabled = true, krokiUrl = "https://kroki.io")
     });
     function getDecorationsRange(state, node, from, to) {
         if (node.type.name !== 'FencedCode') {
-            return [];
+            return null;
         }
-        const { language, code } = getLanguageAndCode(state, node);
-        if (language === undefined) {
-            return [];
+        const { diagramLanguage, code } = getLanguageAndCode(state, node);
+        if (diagramLanguage === undefined) {
+            return null;
         }
         const cursorInRange = isCursorInRange(state, from, to);
         let params;
-        params = { language, code, from: cursorInRange ? null : from, to: cursorInRange ? null : to, svgContent: null, height: null };
+        params = { language: diagramLanguage, code, from: cursorInRange ? null : from, to: cursorInRange ? null : to, svgContent: null, height: null };
         if (cursorInRange)
-            return [diagramWidgetDecoration(params).range(state.doc.lineAt(from).from)];
+            return diagramWidgetDecoration(params).range(state.doc.lineAt(from).from);
         else
-            return [diagramReplacementDecoration(params).range(from, to)];
+            return diagramReplacementDecoration(params).range(from, to);
     }
     const decorate = (state) => {
         let decorationsRange = [];
@@ -75789,7 +75787,9 @@ const dynamicDiagramsExtension = (enabled = true, krokiUrl = "https://kroki.io")
             syntaxTree(state).iterate({
                 enter: (node) => {
                     const { from, to } = node;
-                    decorationsRange.push(...getDecorationsRange(state, node, from, to));
+                    const decorateRange = getDecorationsRange(state, node, from, to);
+                    if (decorateRange)
+                        decorationsRange.push(decorateRange);
                 },
             });
         }
