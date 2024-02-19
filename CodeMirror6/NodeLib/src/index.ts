@@ -17,6 +17,7 @@ import {
     foldGutter, foldKeymap,
 } from "@codemirror/language"
 import { languages } from "@codemirror/language-data"
+import { markdownLanguage } from "@codemirror/lang-markdown"
 import { unifiedMergeView } from "@codemirror/merge"
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap, Completion } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
@@ -35,16 +36,9 @@ import {
     toggleMarkdownBold, toggleMarkdownItalic, toggleMarkdownCodeBlock, toggleMarkdownCode,
     toggleMarkdownStrikethrough, toggleMarkdownQuote, toggleMarkdownHeading,
     toggleMarkdownUnorderedList, toggleMarkdownOrderedList, toggleMarkdownTaskList,
-    getMarkdownStyleAtSelections,
-    insertOrReplaceText,
-    insertTextAboveCommand,
-    increaseMarkdownHeadingLevel,
-    decreaseMarkdownHeadingLevel,
-    insertTableAboveCommand,
-    insertHorizontalRuleAboveCommand,
-    cut,
-    copy,
-    paste,
+    getMarkdownStyleAtSelections, insertOrReplaceText, insertTextAboveCommand, increaseMarkdownHeadingLevel,
+    decreaseMarkdownHeadingLevel, insertTableAboveCommand, insertHorizontalRuleAboveCommand,
+    cut, copy, paste,
 } from "./CmCommands"
 import { dynamicImagesExtension } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
@@ -63,9 +57,11 @@ import { getFileUploadExtensions, uploadFiles } from "./CmFileUpload"
 import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
 import { foldMarkdownCodeBlocks, hideMarksExtension } from "./CmHideMarkdownMarks"
-import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSeparator } from "./CmColumns"
+import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSeparator, csvToMarkdownTable } from "./CmColumns"
 import { consoleLog } from "./CmLogging"
 import { createEditorWithId } from "./CmId"
+
+export { csvToMarkdownTable}
 
 /**
  * Initialize a new CodeMirror instance
@@ -593,6 +589,8 @@ function loadCss(url: string, cacheBust: boolean = true): Promise<void> {
         document.head.appendChild(link);
     });
 }
+
+const getCmView = (id: string): EditorView => CMInstances[id].view
 
 /**
  * Dispose of a CodeMirror instance
