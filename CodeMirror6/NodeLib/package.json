@@ -31,7 +31,6 @@
     "@codemirror/theme-one-dark": "^6.1.2",
     "@microsoft/dotnet-js-interop": "^8.0.0",
     "@replit/codemirror-indentation-markers": "^6.5.0",
-    "@uiw/codemirror-extensions-hyper-link": "^4.21.22",
     "@uiw/codemirror-theme-abcdef": "^4.21.22",
     "@uiw/codemirror-theme-abyss": "^4.21.22",
     "@uiw/codemirror-theme-androidstudio": "^4.21.22",

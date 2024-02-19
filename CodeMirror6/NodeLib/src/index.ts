@@ -25,7 +25,6 @@ import { Diagnostic, linter, lintGutter, lintKeymap } from "@codemirror/lint"
 
 import { DotNet } from "@microsoft/dotnet-js-interop"
 import { indentationMarkers } from '@replit/codemirror-indentation-markers'
-import { hyperLink, hyperLinkStyle } from '@uiw/codemirror-extensions-hyper-link'
 
 import { CmInstance, CMInstances } from "./CmInstance"
 import { CmConfiguration } from "./CmConfiguration"
@@ -60,6 +59,7 @@ import { foldMarkdownCodeBlocks, hideMarksExtension } from "./CmHideMarkdownMark
 import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSeparator, csvToMarkdownTable } from "./CmColumns"
 import { consoleLog } from "./CmLogging"
 import { createEditorWithId } from "./CmId"
+import { hyperLink, hyperLinkStyle } from './CmHyperlink'
 
 export { csvToMarkdownTable}
 
