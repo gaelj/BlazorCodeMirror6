@@ -112,11 +112,6 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         var fileUrl = UploadBrowserFile is not null
             ? await UploadBrowserFile(customBrowserFile)
             : null;
-        if (!string.IsNullOrEmpty(fileUrl)) {
-            var imageChar = contentType.StartsWith("image/") ? "!" : string.Empty;
-            var imageLink = $"\n{imageChar}[{fileName}]({fileUrl})\n";
-            //await CmJsInterop!.Commands.Dispatch(CodeMirrorCommandOneParameter.InsertTextAbove, imageLink);
-        }
         return fileUrl;
     }
 
