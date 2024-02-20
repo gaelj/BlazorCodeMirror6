@@ -61,7 +61,7 @@ import { consoleLog } from "./CmLogging"
 import { createEditorWithId } from "./CmId"
 import { hyperLink } from './CmHyperlink'
 
-export { csvToMarkdownTable}
+export { csvToMarkdownTable, getCmInstance }
 
 /**
  * Initialize a new CodeMirror instance
@@ -590,7 +590,7 @@ function loadCss(url: string, cacheBust: boolean = true): Promise<void> {
     });
 }
 
-const getCmView = (id: string): EditorView => CMInstances[id].view
+const getCmInstance = (id: string) => CMInstances[id]
 
 /**
  * Dispose of a CodeMirror instance
