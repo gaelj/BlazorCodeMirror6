@@ -35,6 +35,7 @@ namespace GaelJ.BlazorCodeMirror6.Models;
 /// <param name="scrollPastEnd"></param>
 /// <param name="highlightActiveLine"></param>
 /// <param name="showMarkdownControlCharactersAroundCursor"></param>
+/// <param name="embedUploadsAsDataUrls"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -64,7 +65,8 @@ public class CodeMirrorConfiguration(
     bool previewImages,
     bool scrollPastEnd,
     bool highlightActiveLine,
-    bool showMarkdownControlCharactersAroundCursor)
+    bool showMarkdownControlCharactersAroundCursor,
+    bool embedUploadsAsDataUrls)
 {
     /// <summary>
     /// The text to display in the editor
@@ -162,7 +164,7 @@ public class CodeMirrorConfiguration(
     [JsonPropertyName("fullScreen")] public bool FullScreen { get; internal set; } = fullScreen;
 
     /// <summary>
-    /// Whether to support file upload
+    /// Whether to support file upload (either via a custom callback or as data URLs in the document)
     /// </summary>
     [JsonPropertyName("supportFileUpload")] public bool SupportFileUpload { get; internal set; } = supportFileUpload;
 
@@ -210,4 +212,9 @@ public class CodeMirrorConfiguration(
     /// Whether to show markdown control characters around the cursor
     /// </summary>
     [JsonPropertyName("showMarkdownControlCharactersAroundCursor")] public bool ShowMarkdownControlCharactersAroundCursor { get; internal set; } = showMarkdownControlCharactersAroundCursor;
+
+    /// <summary>
+    /// When uploading a file, instead of using the callback, encode the file contents as base64 and include it as a data URL in the document
+    /// </summary>
+    [JsonPropertyName("embedUploadsAsDataUrls")] public bool EmbedUploadsAsDataUrls { get; internal set; } = embedUploadsAsDataUrls;
 }

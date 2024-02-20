@@ -98,11 +98,27 @@ async function uploadFileWithDotnet(id: string, file: File): Promise<string> {
     return await CMInstances[id].dotNetHelper.invokeMethodAsync('UploadFileFromJS', byteArray, file.name, file.type, lastModifiedDate)
 }
 
+async function encodeFileAsDataUrl(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = function (e) {
+            resolve(e.target.result as string)
+        }
+        reader.onerror = function (e) {
+            reject(e)
+        }
+        reader.readAsDataURL(file)
+    })
+}
+
 export async function uploadFiles(id: string, files: FileList, view: EditorView) {
     const fileUrls = []
+    const embedUploadsAsDataUrls = CMInstances[id].config.embedUploadsAsDataUrls
     for (let i = 0; i < files.length; i++) {
         const file = files[i]
-        const fileUrl = await uploadFileWithDotnet(id, file)
+        const fileUrl = embedUploadsAsDataUrls
+            ? await encodeFileAsDataUrl(file)
+            : await uploadFileWithDotnet(id, file)
         fileUrls.push(fileUrl)
         consoleLog(id, "Uploaded file:", fileUrl)
         const fileName = files[0].name

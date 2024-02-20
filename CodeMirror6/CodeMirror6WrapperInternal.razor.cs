@@ -116,6 +116,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// </summary>
     [Parameter] public Func<IBrowserFile, Task<string>>? UploadBrowserFile { get; set; }
     /// <summary>
+    /// Whether to embed uploads as data URLs instead of using the custom callback. Warning: this can cause performance issues, especially in Blazor Server apps.
+    /// </summary>
+    [Parameter] public bool EmbedUploadsAsDataUrls { get; set; }
+    /// <summary>
     /// Define whether the component is used in a WASM or Server app. In a WASM app, JS interop can start sooner
     /// </summary>
     [Parameter] public bool IsWASM { get; set; }
@@ -279,7 +283,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             HighlightWhitespace,
             LocalStorageKey,
             FullScreen,
-            UploadBrowserFile is not null,
+            UploadBrowserFile is not null || EmbedUploadsAsDataUrls,
             MaxDocumentLength,
             LineNumbers,
             HighlightActiveLineGutter,
@@ -288,7 +292,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             PreviewImages,
             ScrollPastEnd,
             HighlightActiveLine,
-            ShowMarkdownControlCharactersAroundCursor
+            ShowMarkdownControlCharactersAroundCursor,
+            EmbedUploadsAsDataUrls
         );
         try {
             if (IsWASM)
@@ -410,8 +415,12 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
                 Config.FullScreen = FullScreen;
                 updated = true;
             }
-            if (Config.SupportFileUpload != (UploadBrowserFile is not null)) {
-                Config.SupportFileUpload = UploadBrowserFile is not null;
+            if (Config.SupportFileUpload != (UploadBrowserFile is not null || EmbedUploadsAsDataUrls)) {
+                Config.SupportFileUpload = UploadBrowserFile is not null || EmbedUploadsAsDataUrls;
+                updated = true;
+            }
+            if (Config.EmbedUploadsAsDataUrls != EmbedUploadsAsDataUrls) {
+                Config.EmbedUploadsAsDataUrls = EmbedUploadsAsDataUrls;
                 updated = true;
             }
             if (Config.MaxDocumentLength != MaxDocumentLength) {
