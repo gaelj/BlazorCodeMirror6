@@ -17,6 +17,7 @@ import {
     foldGutter, foldKeymap,
 } from "@codemirror/language"
 import { languages } from "@codemirror/language-data"
+import { markdownLanguage } from "@codemirror/lang-markdown"
 import { unifiedMergeView } from "@codemirror/merge"
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap, Completion } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
@@ -24,7 +25,6 @@ import { Diagnostic, linter, lintGutter, lintKeymap } from "@codemirror/lint"
 
 import { DotNet } from "@microsoft/dotnet-js-interop"
 import { indentationMarkers } from '@replit/codemirror-indentation-markers'
-import { hyperLink, hyperLinkStyle } from '@uiw/codemirror-extensions-hyper-link'
 
 import { CmInstance, CMInstances } from "./CmInstance"
 import { CmConfiguration } from "./CmConfiguration"
@@ -35,16 +35,9 @@ import {
     toggleMarkdownBold, toggleMarkdownItalic, toggleMarkdownCodeBlock, toggleMarkdownCode,
     toggleMarkdownStrikethrough, toggleMarkdownQuote, toggleMarkdownHeading,
     toggleMarkdownUnorderedList, toggleMarkdownOrderedList, toggleMarkdownTaskList,
-    getMarkdownStyleAtSelections,
-    insertOrReplaceText,
-    insertTextAboveCommand,
-    increaseMarkdownHeadingLevel,
-    decreaseMarkdownHeadingLevel,
-    insertTableAboveCommand,
-    insertHorizontalRuleAboveCommand,
-    cut,
-    copy,
-    paste,
+    getMarkdownStyleAtSelections, insertOrReplaceText, insertTextAboveCommand, increaseMarkdownHeadingLevel,
+    decreaseMarkdownHeadingLevel, insertTableAboveCommand, insertHorizontalRuleAboveCommand,
+    cut, copy, paste,
 } from "./CmCommands"
 import { dynamicImagesExtension } from "./CmImages"
 import { externalLintSource, getExternalLinterConfig } from "./CmLint"
@@ -63,9 +56,12 @@ import { getFileUploadExtensions, uploadFiles } from "./CmFileUpload"
 import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
 import { foldMarkdownCodeBlocks, hideMarksExtension } from "./CmHideMarkdownMarks"
-import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSeparator } from "./CmColumns"
+import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSeparator, csvToMarkdownTable } from "./CmColumns"
 import { consoleLog } from "./CmLogging"
 import { createEditorWithId } from "./CmId"
+import { hyperLink } from './CmHyperlink'
+
+export { csvToMarkdownTable, getCmInstance }
 
 /**
  * Initialize a new CodeMirror instance
@@ -143,6 +139,7 @@ export async function initCodeMirror(
             CMInstances[id].dropCursorCompartment.of(initialConfig.dropCursor ? dropCursor() : []),
             CMInstances[id].scrollPastEndCompartment.of(initialConfig.scrollPastEnd ? scrollPastEnd() : []),
             CMInstances[id].highlightActiveLineCompartment.of(initialConfig.highlightActiveLine ? highlightActiveLine() : []),
+            hyperLink,
 
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
             linter(async view => maxDocLengthLintSource(id, view)),
@@ -507,7 +504,6 @@ const autoFormatMarkdownExtensions = (id: string, autoFormatMarkdown: boolean = 
     blockquote(),
     viewEmojiExtension(autoFormatMarkdown),
     htmlViewPlugin(autoFormatMarkdown),
-    hyperLink, hyperLinkStyle,
     markdownLinkExtension(autoFormatMarkdown),
     markdownTableExtension(autoFormatMarkdown),
     hideMarksExtension(autoFormatMarkdown),
@@ -593,6 +589,8 @@ function loadCss(url: string, cacheBust: boolean = true): Promise<void> {
         document.head.appendChild(link);
     });
 }
+
+const getCmInstance = (id: string) => CMInstances[id]
 
 /**
  * Dispose of a CodeMirror instance

@@ -24,6 +24,7 @@ export class CmConfiguration {
     public localStorageKey: string
     public fullScreen: boolean
     public supportFileUpload: boolean
+    public embedUploadsAsDataUrls: boolean
     public maxDocumentLength: number | null
     public lineNumbers: boolean
     public highlightActiveLineGutter: boolean

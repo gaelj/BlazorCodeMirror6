@@ -44,6 +44,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
                 return true;
             }
             catch (ObjectDisposedException) {}
+            catch (OperationCanceledException) {}
             catch (JSDisconnectedException) {}
             catch (Exception ex)
             {
@@ -68,6 +69,9 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
                 return await module.InvokeAsync<T?>(method, args);
             }
             catch (ObjectDisposedException) {
+                return default;
+            }
+            catch (OperationCanceledException) {
                 return default;
             }
             catch (JSDisconnectedException) {

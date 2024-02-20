@@ -13,10 +13,12 @@ export function createMarkdownLinkExtension(): Extension {
                 update: () => {
                     const builder = new RangeSetBuilder<Decoration>()
                     for (const { from, to } of view.visibleRanges) {
-                        const text = view.state.doc.sliceString(from, to)
+                        const startOfFromLine = view.state.doc.lineAt(from).from
+                        const endOfToLine = view.state.doc.lineAt(to).to
+                        const text = view.state.doc.sliceString(startOfFromLine, endOfToLine)
                         let match
                         while ((match = linkRegex.exec(text))) {
-                            const start = from + match.index
+                            const start = startOfFromLine + match.index
                             const end = start + match[0].length
                             if (!isCursorInRange(view.state, start, end)) {
                                 const isCode = isInCodeBlock(view.state, start)
@@ -87,7 +89,6 @@ function createMarkdownLinkDecorationPlugin(): Extension {
     )
 }
 
-// Combine the extension with the mention plugin
 export const markdownLinkExtension = (stylingEnabled: boolean) => [
     stylingEnabled ? createMarkdownLinkExtension() : [],
     stylingEnabled ? createMarkdownLinkDecorationPlugin() : [],
