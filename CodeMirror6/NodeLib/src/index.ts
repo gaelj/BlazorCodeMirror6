@@ -59,7 +59,7 @@ import { foldMarkdownCodeBlocks, hideMarksExtension } from "./CmHideMarkdownMark
 import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSeparator, csvToMarkdownTable } from "./CmColumns"
 import { consoleLog } from "./CmLogging"
 import { createEditorWithId } from "./CmId"
-import { hyperLink, hyperLinkStyle } from './CmHyperlink'
+import { hyperLink } from './CmHyperlink'
 
 export { csvToMarkdownTable}
 
@@ -139,6 +139,7 @@ export async function initCodeMirror(
             CMInstances[id].dropCursorCompartment.of(initialConfig.dropCursor ? dropCursor() : []),
             CMInstances[id].scrollPastEndCompartment.of(initialConfig.scrollPastEnd ? scrollPastEnd() : []),
             CMInstances[id].highlightActiveLineCompartment.of(initialConfig.highlightActiveLine ? highlightActiveLine() : []),
+            hyperLink,
 
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
             linter(async view => maxDocLengthLintSource(id, view)),
@@ -503,7 +504,6 @@ const autoFormatMarkdownExtensions = (id: string, autoFormatMarkdown: boolean = 
     blockquote(),
     viewEmojiExtension(autoFormatMarkdown),
     htmlViewPlugin(autoFormatMarkdown),
-    hyperLink, hyperLinkStyle,
     markdownLinkExtension(autoFormatMarkdown),
     markdownTableExtension(autoFormatMarkdown),
     hideMarksExtension(autoFormatMarkdown),
