@@ -61,7 +61,7 @@ import { consoleLog } from "./CmLogging"
 import { createEditorWithId } from "./CmId"
 import { hyperLink } from './CmHyperlink'
 
-export { csvToMarkdownTable, getCmInstance }
+export { csvToMarkdownTable, getCmInstance, cut, copy, paste }
 
 /**
  * Initialize a new CodeMirror instance
