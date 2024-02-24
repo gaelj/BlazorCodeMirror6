@@ -50,7 +50,8 @@ export async function getLanguage(id: string, languageName: string, fileNameOrEx
                     sequenceLanguageDescription,
                     journeyLanguageDescription,
                     requirementLanguageDescription,
-                    ganttLanguageDescription],
+                    ganttLanguageDescription,
+                ],
                 addKeymap: true
             })
         default:

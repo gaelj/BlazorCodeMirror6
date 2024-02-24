@@ -1,5 +1,5 @@
 import { Decoration, ViewPlugin, EditorView, KeyBinding } from "@codemirror/view";
-import { Extension, RangeSetBuilder, Transaction } from "@codemirror/state";
+import { Extension, RangeSetBuilder, Transaction, EditorSelection, SelectionRange } from "@codemirror/state";
 import { buildWidget } from "./lib/codemirror-kit";
 import { Diagnostic } from "@codemirror/lint";
 import { consoleLog } from "./CmLogging";
@@ -114,11 +114,11 @@ export function columnStylingPlugin(separator: string): Extension {
                 if (e.ctrlKey === true || e.metaKey === true || e.altKey === true || e.shiftKey === true)
                     return
                 if (e.key === "ArrowLeft") {
-                    moveCursor(view, -1)
+                    moveCursors(view, true, separator)
                     e.preventDefault()
                 }
                 else if (e.key === "ArrowRight") {
-                    moveCursor(view, 1)
+                    moveCursors(view, false, separator)
                     e.preventDefault()
                 }
             }
@@ -128,13 +128,12 @@ export function columnStylingPlugin(separator: string): Extension {
 
 export const getColumnStylingKeymap = (separator: string): KeyBinding[] => [
     { key: 'Tab', run: (view) => {
-        const offset = getRelativeColumnOffset(view.state.doc.toString(), separator, view.state.selection.main.anchor, false)
-        moveCursor(view, offset + 1)
+        moveCursors(view, false, separator)
+        insertTabulationAtEndOfDocumentIfSelectionAtEnd(view)
         return true
     }},
     { key: 'Shift-Tab', run: (view) => {
-        const offset = getRelativeColumnOffset(view.state.doc.toString(), separator, view.state.selection.main.anchor, true)
-        moveCursor(view, offset)
+        moveCursors(view, true, separator)
         return true
     }},
 ]
@@ -168,18 +167,46 @@ export async function columnLintSource(id: string, view: EditorView, separator: 
     }
 }
 
-function moveCursor(view: EditorView, inc: number) {
+function moveCursors(view: EditorView, previous: boolean, separator: string) {
     const { state } = view
-    state.selection.main
-    const range = state.selection.main
-    const newAnchor = Math.max(Math.min(state.doc.length, range.anchor + inc), 0)
+    const newSelectionRanges: SelectionRange[] = []
+    for (const range of state.selection.ranges) {
+        let offset = getRelativeColumnOffset(view.state.doc.toString(), separator, range.anchor, previous)
+        if (!previous) offset += 1
+        const newAnchor = Math.max(Math.min(state.doc.length, range.anchor + offset), 0)
+        const newHead = Math.max(Math.min(state.doc.length, range.head + offset), 0)
+        newSelectionRanges.push(EditorSelection.range(newAnchor, newHead));
+    }
     view.dispatch(state.update({
-        selection: { anchor: newAnchor },
+        selection: EditorSelection.create(newSelectionRanges),
         scrollIntoView: true,
         userEvent: 'input'
     }))
 }
 
+function insertTabulationAtEndOfDocumentIfSelectionAtEnd(view: EditorView) {
+    const { state } = view
+    const newSelectionRanges: SelectionRange[] = []
+    const changes = []
+    for (const range of state.selection.ranges) {
+        if (range.anchor === range.head) {
+            if (range.anchor === state.doc.length || range.head === state.doc.length) {
+                changes.push({ from: state.doc.length, to: state.doc.length, insert: "\t" })
+                const newAnchor = state.doc.length + 1
+                const newHead = state.doc.length + 1
+                newSelectionRanges.push(EditorSelection.range(newAnchor, newHead));
+                continue
+            }
+        }
+        newSelectionRanges.push(range)
+    }
+    view.dispatch(state.update({
+        changes: changes,
+        selection: EditorSelection.create(newSelectionRanges),
+        scrollIntoView: true,
+        userEvent: 'input'
+    }))
+}
 
 // extract first csv cell from a line of text. Ignore the separator if it is inside quotes. Ignore quotes if they are escaped by another quote. Return the extracted cell and the remaining text after the cell.
 function extractNextCell(line: string, separator: string): string[] {
