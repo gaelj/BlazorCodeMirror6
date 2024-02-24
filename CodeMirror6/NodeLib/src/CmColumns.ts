@@ -114,11 +114,11 @@ export function columnStylingPlugin(separator: string): Extension {
                 if (e.ctrlKey === true || e.metaKey === true || e.altKey === true || e.shiftKey === true)
                     return
                 if (e.key === "ArrowLeft") {
-                    moveCursors(view, -1)
+                    moveCursors(view, true, separator)
                     e.preventDefault()
                 }
                 else if (e.key === "ArrowRight") {
-                    moveCursors(view, 1)
+                    moveCursors(view, false, separator)
                     e.preventDefault()
                 }
             }
@@ -128,12 +128,11 @@ export function columnStylingPlugin(separator: string): Extension {
 
 export const getColumnStylingKeymap = (separator: string): KeyBinding[] => [
     { key: 'Tab', run: (view) => {
-        const offset = getRelativeColumnOffset(view.state.doc.toString(), separator, view.state.selection.main.anchor, false)
         moveCursors(view, false, separator)
+        insertTabulationAtEndOfDocumentIfSelectionAtEnd(view)
         return true
     }},
     { key: 'Shift-Tab', run: (view) => {
-        const offset = getRelativeColumnOffset(view.state.doc.toString(), separator, view.state.selection.main.anchor, true)
         moveCursors(view, true, separator)
         return true
     }},
@@ -171,7 +170,7 @@ export async function columnLintSource(id: string, view: EditorView, separator: 
 function moveCursors(view: EditorView, previous: boolean, separator: string) {
     const { state } = view
     const newSelectionRanges: SelectionRange[] = []
-    for (const range of view.state.selection.ranges) {
+    for (const range of state.selection.ranges) {
         let offset = getRelativeColumnOffset(view.state.doc.toString(), separator, range.anchor, previous)
         if (!previous) offset += 1
         const newAnchor = Math.max(Math.min(state.doc.length, range.anchor + offset), 0)
@@ -179,6 +178,30 @@ function moveCursors(view: EditorView, previous: boolean, separator: string) {
         newSelectionRanges.push(EditorSelection.range(newAnchor, newHead));
     }
     view.dispatch(state.update({
+        selection: EditorSelection.create(newSelectionRanges),
+        scrollIntoView: true,
+        userEvent: 'input'
+    }))
+}
+
+function insertTabulationAtEndOfDocumentIfSelectionAtEnd(view: EditorView) {
+    const { state } = view
+    const newSelectionRanges: SelectionRange[] = []
+    const changes = []
+    for (const range of state.selection.ranges) {
+        if (range.anchor === range.head) {
+            if (range.anchor === state.doc.length || range.head === state.doc.length) {
+                changes.push({ from: state.doc.length, to: state.doc.length, insert: "\t" })
+                const newAnchor = state.doc.length + 1
+                const newHead = state.doc.length + 1
+                newSelectionRanges.push(EditorSelection.range(newAnchor, newHead));
+                continue
+            }
+        }
+        newSelectionRanges.push(range)
+    }
+    view.dispatch(state.update({
+        changes: changes,
         selection: EditorSelection.create(newSelectionRanges),
         scrollIntoView: true,
         userEvent: 'input'
