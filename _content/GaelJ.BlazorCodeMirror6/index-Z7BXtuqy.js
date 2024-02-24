@@ -20711,6 +20711,136 @@ const simplifySelection = ({ state, dispatch }) => {
     dispatch(setSel(state, selection));
     return true;
 };
+function deleteBy(target, by) {
+    if (target.state.readOnly)
+        return false;
+    let event = "delete.selection", { state } = target;
+    let changes = state.changeByRange(range => {
+        let { from, to } = range;
+        if (from == to) {
+            let towards = by(range);
+            if (towards < from) {
+                event = "delete.backward";
+                towards = skipAtomic(target, towards, false);
+            }
+            else if (towards > from) {
+                event = "delete.forward";
+                towards = skipAtomic(target, towards, true);
+            }
+            from = Math.min(from, towards);
+            to = Math.max(to, towards);
+        }
+        else {
+            from = skipAtomic(target, from, false);
+            to = skipAtomic(target, to, true);
+        }
+        return from == to ? { range } : { changes: { from, to }, range: EditorSelection.cursor(from, from < range.head ? -1 : 1) };
+    });
+    if (changes.changes.empty)
+        return false;
+    target.dispatch(state.update(changes, {
+        scrollIntoView: true,
+        userEvent: event,
+        effects: event == "delete.selection" ? EditorView.announce.of(state.phrase("Selection deleted")) : undefined
+    }));
+    return true;
+}
+function skipAtomic(target, pos, forward) {
+    if (target instanceof EditorView)
+        for (let ranges of target.state.facet(EditorView.atomicRanges).map(f => f(target)))
+            ranges.between(pos, pos, (from, to) => {
+                if (from < pos && to > pos)
+                    pos = forward ? to : from;
+            });
+    return pos;
+}
+const deleteByChar = (target, forward) => deleteBy(target, range => {
+    let pos = range.from, { state } = target, line = state.doc.lineAt(pos), before, targetPos;
+    if (!forward && pos > line.from && pos < line.from + 200 &&
+        !/[^ \t]/.test(before = line.text.slice(0, pos - line.from))) {
+        if (before[before.length - 1] == "\t")
+            return pos - 1;
+        let col = countColumn(before, state.tabSize), drop = col % getIndentUnit(state) || getIndentUnit(state);
+        for (let i = 0; i < drop && before[before.length - 1 - i] == " "; i++)
+            pos--;
+        targetPos = pos;
+    }
+    else {
+        targetPos = findClusterBreak(line.text, pos - line.from, forward, forward) + line.from;
+        if (targetPos == pos && line.number != (forward ? state.doc.lines : 1))
+            targetPos += forward ? 1 : -1;
+        else if (!forward && /[\ufe00-\ufe0f]/.test(line.text.slice(targetPos - line.from, pos - line.from)))
+            targetPos = findClusterBreak(line.text, targetPos - line.from, false, false) + line.from;
+    }
+    return targetPos;
+});
+/**
+Delete the selection, or, for cursor selections, the character
+before the cursor.
+*/
+const deleteCharBackward = view => deleteByChar(view, false);
+/**
+Delete the selection or the character after the cursor.
+*/
+const deleteCharForward = view => deleteByChar(view, true);
+const deleteByGroup = (target, forward) => deleteBy(target, range => {
+    let pos = range.head, { state } = target, line = state.doc.lineAt(pos);
+    let categorize = state.charCategorizer(pos);
+    for (let cat = null;;) {
+        if (pos == (forward ? line.to : line.from)) {
+            if (pos == range.head && line.number != (forward ? state.doc.lines : 1))
+                pos += forward ? 1 : -1;
+            break;
+        }
+        let next = findClusterBreak(line.text, pos - line.from, forward) + line.from;
+        let nextChar = line.text.slice(Math.min(pos, next) - line.from, Math.max(pos, next) - line.from);
+        let nextCat = categorize(nextChar);
+        if (cat != null && nextCat != cat)
+            break;
+        if (nextChar != " " || pos != range.head)
+            cat = nextCat;
+        pos = next;
+    }
+    return pos;
+});
+/**
+Delete the selection or backward until the end of the next
+[group](https://codemirror.net/6/docs/ref/#view.EditorView.moveByGroup), only skipping groups of
+whitespace when they consist of a single space.
+*/
+const deleteGroupBackward = target => deleteByGroup(target, false);
+/**
+Delete the selection or forward until the end of the next group.
+*/
+const deleteGroupForward = target => deleteByGroup(target, true);
+/**
+Delete all whitespace directly before a line end from the
+document.
+*/
+const deleteTrailingWhitespace = ({ state, dispatch }) => {
+    if (state.readOnly)
+        return false;
+    let changes = [];
+    for (let pos = 0, prev = "", iter = state.doc.iter();;) {
+        iter.next();
+        if (iter.lineBreak || iter.done) {
+            let trailing = prev.search(/\s+$/);
+            if (trailing > -1)
+                changes.push({ from: pos - (prev.length - trailing), to: pos });
+            if (iter.done)
+                break;
+            prev = "";
+        }
+        else {
+            prev = iter.value;
+        }
+        pos += iter.value.length;
+    }
+    if (!changes.length)
+        return false;
+    dispatch(state.update({ changes, userEvent: "delete" }));
+    return true;
+};
 function selectedLineBlocks(state) {
     let blocks = [], upto = -1;
     for (let range of state.selection.ranges) {
@@ -20940,7 +21070,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-aqbMDWKK.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-pqxFGUXs.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -20951,7 +21081,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-BHyeKX3K.js').then(m => m.cpp());
+            return import('./index-BScLp2k1.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20959,7 +21089,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-BHyeKX3K.js').then(m => m.cpp());
+            return import('./index-BScLp2k1.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -20987,7 +21117,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-jxzyOdKC.js').then(m => m.java());
+            return import('./index-DpqnWWvX.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21003,7 +21133,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-xpURhZl6.js').then(m => m.json());
+            return import('./index-Byf-u5rK.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21017,14 +21147,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-BUr4MUJh.js').then(m => m.less());
+            return import('./index-C8qBrT2J.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-DDXio_ok.js').then(m => m.liquid());
+            return import('./index-DMT8jL1D.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21050,7 +21180,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-D5-RtejU.js').then(m => m.php());
+            return import('./index-BmTVeGHQ.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21067,28 +21197,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-CLCvtmj9.js').then(m => m.python());
+            return import('./index-1RJ2rYdZ.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-CPtf8cPk.js').then(m => m.rust());
+            return import('./index-BTe38OT2.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-B38CwbPV.js').then(m => m.sass({ indented: true }));
+            return import('./index-CqvhEQZt.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-B38CwbPV.js').then(m => m.sass());
+            return import('./index-CqvhEQZt.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21119,7 +21249,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-QdWC8uA0.js').then(m => m.wast());
+            return import('./index-BsFzSM-g.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21127,7 +21257,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-Bsgcfrgh.js').then(m => m.xml());
+            return import('./index-CPYEGA_d.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21135,7 +21265,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-Dopv5Mkb.js').then(m => m.yaml());
+            return import('./index-B6VQ1MBY.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -21930,13 +22060,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-W30hGEEc.js').then(m => m.vue());
+            return import('./index-BImH1uD3.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-CRZ939Fl.js').then(m => m.angular());
+            return import('./index-WlcCcwV3.js').then(m => m.angular());
         }
     })
 ];
@@ -32344,7 +32474,7 @@ const keywords$3 = /*@__PURE__*/"break case const continue default delete export
 const typescriptKeywords = /*@__PURE__*/keywords$3.concat(/*@__PURE__*/["declare", "implements", "private", "protected", "public"].map(kwCompletion));
 /**
 JavaScript support. Includes [snippet](https://codemirror.net/6/docs/ref/#lang-javascript.snippets)
-completion.
+and local variable completion.
 */
 function javascript(config = {}) {
     let lang = config.jsx ? (config.typescript ? tsxLanguage : jsxLanguage)
@@ -32407,7 +32537,7 @@ const autoCloseTags$1 = /*@__PURE__*/EditorView.inputHandler.of((view, from, to,
         }
         else if (text == ">") {
             let openTag = findOpenTag(around);
-            if (openTag &&
+            if (openTag && openTag.name == "JSXOpenTag" &&
                 !/^\/?>|^<\//.test(state.doc.sliceString(head, head + 2)) &&
                 (name = elementName$1(state.doc, openTag, head)))
                 return { range, changes: { from: head, insert: `</${name}>` } };
@@ -34744,11 +34874,11 @@ function columnStylingPlugin(separator) {
                 if (e.ctrlKey === true || e.metaKey === true || e.altKey === true || e.shiftKey === true)
                     return;
                 if (e.key === "ArrowLeft") {
-                    moveCursor(view, -1);
+                    moveCursors(view, true, separator);
                     e.preventDefault();
                 }
                 else if (e.key === "ArrowRight") {
-                    moveCursor(view, 1);
+                    moveCursors(view, false, separator);
                     e.preventDefault();
                 }
             }
@@ -34757,13 +34887,12 @@ function columnStylingPlugin(separator) {
 }
 const getColumnStylingKeymap = (separator) => [
     { key: 'Tab', run: (view) => {
-            const offset = getRelativeColumnOffset(view.state.doc.toString(), separator, view.state.selection.main.anchor, false);
-            moveCursor(view, offset + 1);
+            moveCursors(view, false, separator);
+            insertTabulationAtEndOfDocumentIfSelectionAtEnd(view);
             return true;
         } },
     { key: 'Shift-Tab', run: (view) => {
-            const offset = getRelativeColumnOffset(view.state.doc.toString(), separator, view.state.selection.main.anchor, true);
-            moveCursor(view, offset);
+            moveCursors(view, true, separator);
             return true;
         } },
 ];
@@ -34797,13 +34926,42 @@ async function columnLintSource(id, view, separator) {
         return;
     }
 }
-function moveCursor(view, inc) {
+function moveCursors(view, previous, separator) {
     const { state } = view;
-    state.selection.main;
-    const range = state.selection.main;
-    const newAnchor = Math.max(Math.min(state.doc.length, range.anchor + inc), 0);
+    const newSelectionRanges = [];
+    for (const range of state.selection.ranges) {
+        let offset = getRelativeColumnOffset(view.state.doc.toString(), separator, range.anchor, previous);
+        if (!previous)
+            offset += 1;
+        const newAnchor = Math.max(Math.min(state.doc.length, range.anchor + offset), 0);
+        const newHead = Math.max(Math.min(state.doc.length, range.head + offset), 0);
+        newSelectionRanges.push(EditorSelection.range(newAnchor, newHead));
+    }
     view.dispatch(state.update({
-        selection: { anchor: newAnchor },
+        selection: EditorSelection.create(newSelectionRanges),
+        scrollIntoView: true,
+        userEvent: 'input'
+    }));
+}
+function insertTabulationAtEndOfDocumentIfSelectionAtEnd(view) {
+    const { state } = view;
+    const newSelectionRanges = [];
+    const changes = [];
+    for (const range of state.selection.ranges) {
+        if (range.anchor === range.head) {
+            if (range.anchor === state.doc.length || range.head === state.doc.length) {
+                changes.push({ from: state.doc.length, to: state.doc.length, insert: "\t" });
+                const newAnchor = state.doc.length + 1;
+                const newHead = state.doc.length + 1;
+                newSelectionRanges.push(EditorSelection.range(newAnchor, newHead));
+                continue;
+            }
+        }
+        newSelectionRanges.push(range);
+    }
+    view.dispatch(state.update({
+        changes: changes,
+        selection: EditorSelection.create(newSelectionRanges),
         scrollIntoView: true,
         userEvent: 'input'
     }));
@@ -35141,10 +35299,11 @@ function insertTextAboveCommand(view, textToInsert) {
 }
 async function copy(view) {
     try {
-        const text = view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to);
-        if (text === null || text === undefined || text === "")
-            return;
-        await navigator.clipboard.writeText(text);
+        const texts = view.state.selection.ranges
+            .map(range => view.state.sliceDoc(range.from, range.to))
+            .filter(text => text) // remove empty strings
+            .map(t => new ClipboardItem({ "text/plain": new Blob([t], { type: "text/plain" }) }));
+        await navigator.clipboard.write(texts);
         view.focus();
         return true;
     }
@@ -35154,11 +35313,21 @@ async function copy(view) {
     }
 }
 async function cut(view) {
-    if (await copy(view))
-        view.dispatch(view.state.update({
-            changes: { from: view.state.selection.main.from, to: view.state.selection.main.to, insert: "" },
-            scrollIntoView: true
-        }));
+    if (await copy(view)) {
+        const changes = [];
+        for (const range of view.state.selection.ranges) {
+            if (!range.empty) {
+                changes.push({ from: range.from, to: range.to, insert: "" });
+            }
+        }
+        if (changes.length > 0) {
+            view.dispatch(view.state.update({
+                changes: changes,
+                scrollIntoView: true,
+                userEvent: 'cut',
+            }));
+        }
+    }
 }
 async function paste(view) {
     try {
@@ -35174,12 +35343,20 @@ async function paste(view) {
                 }
             }
         } */
-        if (markdownLanguage.isActiveAt(view.state, view.state.selection.main.from) &&
-            markdownLanguage.isActiveAt(view.state, view.state.selection.main.to))
-            text = csvToMarkdownTable(text, "\t", true);
+        const changes = [];
+        const newSelectionRanges = [];
+        let totalTextLength = 0;
+        for (const range of view.state.selection.ranges) {
+            if (markdownLanguage.isActiveAt(view.state, range.from) &&
+                markdownLanguage.isActiveAt(view.state, range.to))
+                text = csvToMarkdownTable(text, "\t", true);
+            changes.push({ from: range.from, to: range.to, insert: text });
+            totalTextLength += text.length;
+            newSelectionRanges.push(EditorSelection.range(range.from + totalTextLength, range.from + totalTextLength));
+        }
         view.dispatch(view.state.update({
-            changes: { from: view.state.selection.main.from, to: view.state.selection.main.to, insert: text },
-            selection: { anchor: view.state.selection.main.anchor + text.length, head: view.state.selection.main.anchor + text.length },
+            changes: changes,
+            selection: EditorSelection.create(newSelectionRanges),
             scrollIntoView: true
         }));
         return true;
@@ -35193,6 +35370,12 @@ async function paste(view) {
 const customMarkdownKeymap = [
     { key: 'Mod-b', run: toggleMarkdownBold }, // Cmd/Ctrl + B for bold
     { key: 'Mod-i', run: toggleMarkdownItalic }, // Cmd/Ctrl + I for italics
+];
+const customDeleteKeymap = [
+    { key: "Delete", run: deleteCharForward },
+    { key: "Backspace", run: deleteCharBackward },
+    { key: "Mod-Delete", run: deleteGroupForward },
+    { key: "Mod-Backspace", run: deleteGroupBackward },
 ];
 
 /**
@@ -35237,7 +35420,7 @@ async function getLanguage(id, languageName, fileNameOrExtension) {
                     sequenceLanguageDescription,
                     journeyLanguageDescription,
                     requirementLanguageDescription,
-                    ganttLanguageDescription
+                    ganttLanguageDescription,
                 ],
                 addKeymap: true
             });
@@ -75944,6 +76127,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
                 ...foldKeymap,
                 ...completionKeymap,
                 ...lintKeymap,
+                ...customDeleteKeymap,
             ])
         ];
         // Basic Setup
@@ -76377,6 +76561,9 @@ function dispatchCommand(id, functionName, ...args) {
             case 'ToggleLineComment':
                 toggleLineComment(view);
                 break;
+            case 'DeleteTrailingWhitespace':
+                deleteTrailingWhitespace(view);
+                break;
             case 'InsertTable':
                 insertTableAboveCommand(view, args[0], args[1]);
                 break;
@@ -76440,4 +76627,4 @@ function dispose(id) {
     delete CMInstances[id];
 }
 
-export { getAllSupportedLanguageNames as A, setConfiguration as B, ContextTracker as C, setMentionCompletions as D, ExternalTokenizer as E, forceRedraw as F, clearLocalStorage as G, dispatchCommand as H, IterMode as I, dispose as J, LRLanguage as L, NodeWeakMap as N, LanguageSupport as a, LRParser as b, continuedIndent as c, ifNotIn as d, completeFromList as e, foldNodeProp as f, syntaxTree as g, flatIndent as h, indentNodeProp as i, delimitedIndent as j, foldInside as k, defineCSSCompletionSource as l, EditorView as m, EditorSelection as n, html as o, parseMixed as p, snippetCompletion as q, bracketMatchingHandle as r, styleTags as s, tags$1 as t, LocalTokenGroup as u, javascriptLanguage as v, csvToMarkdownTable as w, getCmInstance as x, initCodeMirror as y, maxDocLengthLintSource as z };
+export { paste as A, initCodeMirror as B, ContextTracker as C, maxDocLengthLintSource as D, ExternalTokenizer as E, getAllSupportedLanguageNames as F, setConfiguration as G, setMentionCompletions as H, IterMode as I, forceRedraw as J, clearLocalStorage as K, LRLanguage as L, dispatchCommand as M, NodeWeakMap as N, dispose as O, LanguageSupport as a, LRParser as b, continuedIndent as c, ifNotIn as d, completeFromList as e, foldNodeProp as f, syntaxTree as g, flatIndent as h, indentNodeProp as i, delimitedIndent as j, foldInside as k, defineCSSCompletionSource as l, EditorView as m, EditorSelection as n, html as o, parseMixed as p, snippetCompletion as q, bracketMatchingHandle as r, styleTags as s, tags$1 as t, LocalTokenGroup as u, javascriptLanguage as v, csvToMarkdownTable as w, getCmInstance as x, cut as y, copy as z };
