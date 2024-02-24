@@ -255,9 +255,11 @@ export function insertTextAboveCommand(view: EditorView, textToInsert: string) {
 
 export async function copy(view: EditorView) {
     try {
-        const text = view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to);
-        if (text === null || text === undefined || text === "") return;
-        await navigator.clipboard.writeText(text)
+        const texts = view.state.selection.ranges
+            .map(range => view.state.sliceDoc(range.from, range.to))
+            .filter(text => text) // remove empty strings
+            .map(t => new ClipboardItem({ "text/plain": new Blob([t], { type: "text/plain" }) }))
+        await navigator.clipboard.write(texts)
         view.focus()
         return true
     } catch (err) {
@@ -267,16 +269,26 @@ export async function copy(view: EditorView) {
 }
 
 export async function cut(view: EditorView) {
-    if (await copy(view))
-        view.dispatch(view.state.update({
-            changes: { from: view.state.selection.main.from, to: view.state.selection.main.to, insert: "" },
-            scrollIntoView: true
-        }));
+    if (await copy(view)) {
+        const changes: ChangeSpec[] = []
+        for (const range of view.state.selection.ranges) {
+            if (!range.empty) {
+                changes.push({ from: range.from, to: range.to, insert: "" })
+            }
+        }
+        if (changes.length > 0) {
+            view.dispatch(view.state.update({
+                changes: changes,
+                scrollIntoView: true,
+                userEvent: 'cut',
+            }))
+        }
+    }
 }
 
 export async function paste(view: EditorView): Promise<boolean> {
     try {
-        let text = await navigator.clipboard.readText();
+        let text = await navigator.clipboard.readText()
         /*
         let items = await navigator.clipboard.read()
         const htmlItems = items.filter(item => item.types.includes("text/html"))
@@ -288,14 +300,22 @@ export async function paste(view: EditorView): Promise<boolean> {
                 }
             }
         } */
-        if (markdownLanguage.isActiveAt(view.state, view.state.selection.main.from) &&
-            markdownLanguage.isActiveAt(view.state, view.state.selection.main.to))
-            text = csvToMarkdownTable(text, "\t", true)
+        const changes: ChangeSpec[] = []
+        const newSelectionRanges: SelectionRange[] = []
+        let totalTextLength = 0
+        for (const range of view.state.selection.ranges) {
+            if (markdownLanguage.isActiveAt(view.state, range.from) &&
+                markdownLanguage.isActiveAt(view.state, range.to))
+                text = csvToMarkdownTable(text, "\t", true)
+            changes.push({ from: range.from, to: range.to, insert: text })
+            totalTextLength += text.length
+            newSelectionRanges.push(EditorSelection.range(range.from + totalTextLength, range.from + totalTextLength))
+        }
         view.dispatch(view.state.update({
-            changes: { from: view.state.selection.main.from, to: view.state.selection.main.to, insert: text },
-            selection: { anchor: view.state.selection.main.anchor + text.length, head: view.state.selection.main.anchor + text.length },
+            changes: changes,
+            selection: EditorSelection.create(newSelectionRanges),
             scrollIntoView: true
-        }));
+        }))
         return true
     } catch (err) {
         console.error('Failed to paste text: ', err)
