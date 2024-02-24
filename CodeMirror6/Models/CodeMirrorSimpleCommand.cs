@@ -200,4 +200,8 @@ public enum CodeMirrorSimpleCommand
     /// Scroll the current selection into view
     /// </summary>
     ScrollIntoView,
+    /// <summary>
+    /// Delete the trailing whitespace
+    /// </summary>
+    DeleteTrailingWhitespace,
 }
