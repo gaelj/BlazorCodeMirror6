@@ -21070,7 +21070,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-pqxFGUXs.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-DAbLQJ0J.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -21081,7 +21081,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-BScLp2k1.js').then(m => m.cpp());
+            return import('./index-BNo4l8kK.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21089,7 +21089,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-BScLp2k1.js').then(m => m.cpp());
+            return import('./index-BNo4l8kK.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21117,7 +21117,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-DpqnWWvX.js').then(m => m.java());
+            return import('./index-C26LNK8e.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21133,7 +21133,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-Byf-u5rK.js').then(m => m.json());
+            return import('./index-4fm0-FTa.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21147,14 +21147,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-C8qBrT2J.js').then(m => m.less());
+            return import('./index-DXiGv17d.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-DMT8jL1D.js').then(m => m.liquid());
+            return import('./index-DHojhV8f.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21180,7 +21180,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-BmTVeGHQ.js').then(m => m.php());
+            return import('./index-_dpxaThU.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21197,28 +21197,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-1RJ2rYdZ.js').then(m => m.python());
+            return import('./index-i8W8TVA2.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-BTe38OT2.js').then(m => m.rust());
+            return import('./index-BX1l8TGh.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-CqvhEQZt.js').then(m => m.sass({ indented: true }));
+            return import('./index-C1PE_0J1.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-CqvhEQZt.js').then(m => m.sass());
+            return import('./index-C1PE_0J1.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21249,7 +21249,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-BsFzSM-g.js').then(m => m.wast());
+            return import('./index-C5B0otOE.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21257,7 +21257,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-CPYEGA_d.js').then(m => m.xml());
+            return import('./index-BVXxnhPB.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21265,7 +21265,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-B6VQ1MBY.js').then(m => m.yaml());
+            return import('./index-bx4Dz75Z.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -22060,13 +22060,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-BImH1uD3.js').then(m => m.vue());
+            return import('./index-DFCulXi6.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-WlcCcwV3.js').then(m => m.angular());
+            return import('./index-3TALvXEJ.js').then(m => m.angular());
         }
     })
 ];
@@ -34874,11 +34874,11 @@ function columnStylingPlugin(separator) {
                 if (e.ctrlKey === true || e.metaKey === true || e.altKey === true || e.shiftKey === true)
                     return;
                 if (e.key === "ArrowLeft") {
-                    moveCursors(view, true, separator);
+                    moveCursorsByColumn(view, true, separator);
                     e.preventDefault();
                 }
                 else if (e.key === "ArrowRight") {
-                    moveCursors(view, false, separator);
+                    moveCursorsByColumn(view, false, separator);
                     e.preventDefault();
                 }
             }
@@ -34887,12 +34887,12 @@ function columnStylingPlugin(separator) {
 }
 const getColumnStylingKeymap = (separator) => [
     { key: 'Tab', run: (view) => {
-            moveCursors(view, false, separator);
+            moveCursorsByColumn(view, false, separator);
             insertTabulationAtEndOfDocumentIfSelectionAtEnd(view);
             return true;
         } },
     { key: 'Shift-Tab', run: (view) => {
-            moveCursors(view, true, separator);
+            moveCursorsByColumn(view, true, separator);
             return true;
         } },
 ];
@@ -34926,7 +34926,7 @@ async function columnLintSource(id, view, separator) {
         return;
     }
 }
-function moveCursors(view, previous, separator) {
+function moveCursorsByColumn(view, previous, separator) {
     const { state } = view;
     const newSelectionRanges = [];
     for (const range of state.selection.ranges) {
@@ -35377,6 +35377,84 @@ const customDeleteKeymap = [
     { key: "Mod-Delete", run: deleteGroupForward },
     { key: "Mod-Backspace", run: deleteGroupBackward },
 ];
+const customArrowKeymap = [
+    {
+        key: "ArrowLeft",
+        run: (view) => moveCursorsByCharacter(view, true, false),
+        shift: (view) => moveCursorsByCharacter(view, true, true),
+    },
+    {
+        key: "ArrowRight",
+        run: (view) => moveCursorsByCharacter(view, false, false),
+        shift: (view) => moveCursorsByCharacter(view, false, true),
+    },
+    {
+        key: "Mod-ArrowLeft",
+        run: (view) => moveCursorsByWord(view, true, false),
+        shift: (view) => moveCursorsByWord(view, true, true),
+    },
+    {
+        key: "Mod-ArrowRight",
+        run: (view) => moveCursorsByWord(view, false, false),
+        shift: (view) => moveCursorsByWord(view, false, true),
+    },
+];
+function moveCursorsByCharacter(view, previous, headOnly) {
+    const { state } = view;
+    const newSelectionRanges = [];
+    for (const range of state.selection.ranges) {
+        const offset = previous ? -1 : 1;
+        const newAnchor = headOnly ? range.anchor : Math.max(Math.min(state.doc.length, range.head + offset), 0);
+        const newHead = !headOnly ? newAnchor : Math.max(Math.min(state.doc.length, range.head + offset), 0);
+        newSelectionRanges.push(EditorSelection.range(newAnchor, newHead));
+    }
+    view.dispatch(state.update({
+        selection: EditorSelection.create(newSelectionRanges),
+        scrollIntoView: true,
+        userEvent: 'input'
+    }));
+    return true;
+}
+function moveCursorsByWord(view, previous, headOnly) {
+    const { state } = view;
+    const newSelectionRanges = [];
+    for (const range of state.selection.ranges) {
+        const currentPos = range.head;
+        const wordBoundary = findWordBoundary(state.doc, currentPos, previous, true);
+        const newAnchor = headOnly ? range.anchor : wordBoundary;
+        const newHead = !headOnly ? newAnchor : wordBoundary;
+        newSelectionRanges.push(EditorSelection.range(newAnchor, newHead));
+    }
+    view.dispatch(state.update({
+        selection: EditorSelection.create(newSelectionRanges),
+        scrollIntoView: true,
+        userEvent: 'input'
+    }));
+    return true;
+}
+function findWordBoundary(doc, pos, previous, firstRun) {
+    if (previous && pos === 0)
+        return 0;
+    if (!previous && pos === doc.length)
+        return doc.length;
+    if (isWordBoundary(doc, pos) && firstRun) {
+        pos += previous ? -1 : 1;
+        return findWordBoundary(doc, pos, previous, false);
+    }
+    for (let i = pos; previous ? i >= 0 : i < doc.length; i += (previous ? -1 : 1)) {
+        if (isWordBoundary(doc, i)) {
+            return i;
+        }
+    }
+    return previous ? 0 : doc.length;
+}
+function isWordBoundary(doc, pos) {
+    if (pos < 0 || pos >= doc.length)
+        return true;
+    const charBefore = doc.sliceString(pos - 1, pos);
+    const charAfter = doc.sliceString(pos, pos + 1);
+    return /\s/.test(charBefore) !== /\s/.test(charAfter);
+}
 
 /**
  * StateEffect that is triggered when the language changes
@@ -76128,6 +76206,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
                 ...completionKeymap,
                 ...lintKeymap,
                 ...customDeleteKeymap,
+                ...customArrowKeymap,
             ])
         ];
         // Basic Setup
