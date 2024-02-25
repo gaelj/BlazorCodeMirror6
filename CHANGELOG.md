@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.7.2 - 2024-02-25
+
+### ✨ Introduce new features
+
+- Support multiple cursors for arrow / shift / ctrl / ctrl-shift + arrow keys
+
+### 📝 Add or update documentation
+
+- Add an example using ref
+
 ## 0.7.1 - 2024-02-24
 
 ### ✨ Introduce new features

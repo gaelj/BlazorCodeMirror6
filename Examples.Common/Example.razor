@@ -106,7 +106,15 @@
     })
 >Change local storage key</button>
 
+<button class="btn btn-primary"
+    @onclick=@(async () => {
+        if (codeMirror6WrapperRef.CommandDispatcher is not null)
+        await codeMirror6WrapperRef.CommandDispatcher.Dispatch(CodeMirrorSimpleCommand.ScrollIntoView);
+    })
+>Scroll into view</button>
+
 <CodeMirror6Wrapper
+    @ref=@codeMirror6WrapperRef
     IsWASM=@IsWASM
     @bind-Doc=@Text
     Placeholder="Enter your code.... (1)"
@@ -313,6 +321,8 @@
 @code
 {
     [Parameter] public bool IsWASM { get; set; }
+
+    private CodeMirror6Wrapper codeMirror6WrapperRef = null!;
 
     private string? Text = code;
     private string? Text2 = "# Example 2";
