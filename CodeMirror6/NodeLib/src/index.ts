@@ -61,7 +61,7 @@ import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSepar
 import { consoleLog } from "./CmLogging"
 import { createEditorWithId } from "./CmId"
 import { hyperLink } from './CmHyperlink'
-import { customDeleteKeymap } from "./CmKeymap"
+import { customArrowKeymap, customDeleteKeymap } from "./CmKeymap"
 
 export { csvToMarkdownTable, getCmInstance, cut, copy, paste }
 
@@ -181,6 +181,7 @@ export async function initCodeMirror(
                 ...completionKeymap,
                 ...lintKeymap,
                 ...customDeleteKeymap,
+                ...customArrowKeymap,
             ])
         ]
 
