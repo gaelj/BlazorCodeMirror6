@@ -114,11 +114,11 @@ export function columnStylingPlugin(separator: string): Extension {
                 if (e.ctrlKey === true || e.metaKey === true || e.altKey === true || e.shiftKey === true)
                     return
                 if (e.key === "ArrowLeft") {
-                    moveCursors(view, true, separator)
+                    moveCursorsByColumn(view, true, separator)
                     e.preventDefault()
                 }
                 else if (e.key === "ArrowRight") {
-                    moveCursors(view, false, separator)
+                    moveCursorsByColumn(view, false, separator)
                     e.preventDefault()
                 }
             }
@@ -128,12 +128,12 @@ export function columnStylingPlugin(separator: string): Extension {
 
 export const getColumnStylingKeymap = (separator: string): KeyBinding[] => [
     { key: 'Tab', run: (view) => {
-        moveCursors(view, false, separator)
+        moveCursorsByColumn(view, false, separator)
         insertTabulationAtEndOfDocumentIfSelectionAtEnd(view)
         return true
     }},
     { key: 'Shift-Tab', run: (view) => {
-        moveCursors(view, true, separator)
+        moveCursorsByColumn(view, true, separator)
         return true
     }},
 ]
@@ -167,7 +167,7 @@ export async function columnLintSource(id: string, view: EditorView, separator: 
     }
 }
 
-function moveCursors(view: EditorView, previous: boolean, separator: string) {
+function moveCursorsByColumn(view: EditorView, previous: boolean, separator: string) {
     const { state } = view
     const newSelectionRanges: SelectionRange[] = []
     for (const range of state.selection.ranges) {
