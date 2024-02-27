@@ -63,7 +63,7 @@ import { createEditorWithId } from "./CmId"
 import { hyperLink } from './CmHyperlink'
 import { customArrowKeymap, customDeleteKeymap } from "./CmKeymap"
 
-export { csvToMarkdownTable, getCmInstance, cut, copy, paste }
+export { getCmInstance }
 
 /**
  * Initialize a new CodeMirror instance
