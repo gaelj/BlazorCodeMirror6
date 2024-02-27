@@ -21070,7 +21070,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-DAbLQJ0J.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-HImtTZii.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -21081,7 +21081,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-BNo4l8kK.js').then(m => m.cpp());
+            return import('./index-D-OyMCsz.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21089,7 +21089,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-BNo4l8kK.js').then(m => m.cpp());
+            return import('./index-D-OyMCsz.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21117,7 +21117,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-C26LNK8e.js').then(m => m.java());
+            return import('./index-4lojneG6.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21133,7 +21133,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-4fm0-FTa.js').then(m => m.json());
+            return import('./index-glw01GqB.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21147,14 +21147,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-DXiGv17d.js').then(m => m.less());
+            return import('./index-Czrg91tJ.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-DHojhV8f.js').then(m => m.liquid());
+            return import('./index-BaZIgm4a.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21180,7 +21180,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-_dpxaThU.js').then(m => m.php());
+            return import('./index-_QzvpqSc.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21197,28 +21197,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-i8W8TVA2.js').then(m => m.python());
+            return import('./index-BpFdYq2C.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-BX1l8TGh.js').then(m => m.rust());
+            return import('./index-2BG6hl5b.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-C1PE_0J1.js').then(m => m.sass({ indented: true }));
+            return import('./index-DbpCN0US.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-C1PE_0J1.js').then(m => m.sass());
+            return import('./index-DbpCN0US.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21249,7 +21249,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-C5B0otOE.js').then(m => m.wast());
+            return import('./index-62Ri4Jun.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21257,7 +21257,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-BVXxnhPB.js').then(m => m.xml());
+            return import('./index-Ds-YulQP.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21265,7 +21265,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-bx4Dz75Z.js').then(m => m.yaml());
+            return import('./index-DE3xIJFt.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -22060,13 +22060,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-DFCulXi6.js').then(m => m.vue());
+            return import('./index-j8L5RuSA.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-3TALvXEJ.js').then(m => m.angular());
+            return import('./index-wg6zjTAT.js').then(m => m.angular());
         }
     })
 ];
@@ -35332,6 +35332,7 @@ async function cut(view) {
 async function paste(view) {
     try {
         let text = await navigator.clipboard.readText();
+        text = text.replace(/\r\n/g, '\n');
         /*
         let items = await navigator.clipboard.read()
         const htmlItems = items.filter(item => item.types.includes("text/html"))
@@ -61987,7 +61988,7 @@ const hasOverlap = (x1, x2, y1, y2) => {
 };
 const isCursorInRange = (state, from, to) => {
     const id = getIdFromState(state);
-    if (!CMInstances[id].config.showMarkdownControlCharactersAroundCursor)
+    if (!CMInstances[id].config?.showMarkdownControlCharactersAroundCursor)
         return false;
     return state.selection.ranges.some((range) => {
         return hasOverlap(from, to, range.from, range.to);
@@ -76706,4 +76707,4 @@ function dispose(id) {
     delete CMInstances[id];
 }
 
-export { paste as A, initCodeMirror as B, ContextTracker as C, maxDocLengthLintSource as D, ExternalTokenizer as E, getAllSupportedLanguageNames as F, setConfiguration as G, setMentionCompletions as H, IterMode as I, forceRedraw as J, clearLocalStorage as K, LRLanguage as L, dispatchCommand as M, NodeWeakMap as N, dispose as O, LanguageSupport as a, LRParser as b, continuedIndent as c, ifNotIn as d, completeFromList as e, foldNodeProp as f, syntaxTree as g, flatIndent as h, indentNodeProp as i, delimitedIndent as j, foldInside as k, defineCSSCompletionSource as l, EditorView as m, EditorSelection as n, html as o, parseMixed as p, snippetCompletion as q, bracketMatchingHandle as r, styleTags as s, tags$1 as t, LocalTokenGroup as u, javascriptLanguage as v, csvToMarkdownTable as w, getCmInstance as x, cut as y, copy as z };
+export { setConfiguration as A, setMentionCompletions as B, ContextTracker as C, forceRedraw as D, ExternalTokenizer as E, clearLocalStorage as F, dispatchCommand as G, dispose as H, IterMode as I, LRLanguage as L, NodeWeakMap as N, LanguageSupport as a, LRParser as b, continuedIndent as c, ifNotIn as d, completeFromList as e, foldNodeProp as f, syntaxTree as g, flatIndent as h, indentNodeProp as i, delimitedIndent as j, foldInside as k, defineCSSCompletionSource as l, EditorView as m, EditorSelection as n, html as o, parseMixed as p, snippetCompletion as q, bracketMatchingHandle as r, styleTags as s, tags$1 as t, LocalTokenGroup as u, javascriptLanguage as v, getCmInstance as w, initCodeMirror as x, maxDocLengthLintSource as y, getAllSupportedLanguageNames as z };
