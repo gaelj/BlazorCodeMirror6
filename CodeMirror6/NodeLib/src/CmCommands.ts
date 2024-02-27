@@ -289,6 +289,7 @@ export async function cut(view: EditorView) {
 export async function paste(view: EditorView): Promise<boolean> {
     try {
         let text = await navigator.clipboard.readText()
+        text = text.replace(/\r\n/g, '\n')
         /*
         let items = await navigator.clipboard.read()
         const htmlItems = items.filter(item => item.types.includes("text/html"))

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.3 - 2024-02-27
+
+### 🐛 Fix a bug
+
+- Fix possible null ref on startup
+- Replace \r\n with \n when pasting, to prevent crash in windows (#153)
+
+### 🗑️ Deprecate code that needs to be cleaned up
+
+- Remove useless exports (#144)
+
 ## 0.7.2 - 2024-02-25
 
 ### ✨ Introduce new features
