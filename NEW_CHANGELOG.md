@@ -1,7 +1,8 @@
-### ✨ Introduce new features
+### 🐛 Fix a bug
 
-- Support multiple cursors for arrow / shift / ctrl / ctrl-shift + arrow keys
+- Fix possible null ref on startup
+- Replace \r\n with \n when pasting, to prevent crash in windows (#153)
 
-### 📝 Add or update documentation
+### 🗑️ Deprecate code that needs to be cleaned up
 
-- Add an example using ref
+- Remove useless exports (#144)
