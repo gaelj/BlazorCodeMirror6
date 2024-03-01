@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.7.4 - 2024-03-01
+
+### ✨ Introduce new features
+
+- Support multiple cursors for (shift +) home & end keys
+
+### 🐛 Fix a bug
+
+- Fix error when parsing TSV line with empty cell(s) at the end of the last row
+
 ## 0.7.3 - 2024-02-27
 
 ### 🐛 Fix a bug
