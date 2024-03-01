@@ -21070,7 +21070,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-HImtTZii.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-R1rFhzx9.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -21081,7 +21081,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-D-OyMCsz.js').then(m => m.cpp());
+            return import('./index-C4Uw-Veu.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21089,7 +21089,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-D-OyMCsz.js').then(m => m.cpp());
+            return import('./index-C4Uw-Veu.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21117,7 +21117,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-4lojneG6.js').then(m => m.java());
+            return import('./index-DzSNcHxC.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21133,7 +21133,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-glw01GqB.js').then(m => m.json());
+            return import('./index-DD09WKoZ.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21147,14 +21147,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-Czrg91tJ.js').then(m => m.less());
+            return import('./index-D8V4vzcP.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-BaZIgm4a.js').then(m => m.liquid());
+            return import('./index-a4rSX92h.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21180,7 +21180,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-_QzvpqSc.js').then(m => m.php());
+            return import('./index-CjZNsUYW.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21197,28 +21197,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-BpFdYq2C.js').then(m => m.python());
+            return import('./index-WoTe78x2.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-2BG6hl5b.js').then(m => m.rust());
+            return import('./index-D4efewlk.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-DbpCN0US.js').then(m => m.sass({ indented: true }));
+            return import('./index-BOyhOjC2.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-DbpCN0US.js').then(m => m.sass());
+            return import('./index-BOyhOjC2.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21249,7 +21249,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-62Ri4Jun.js').then(m => m.wast());
+            return import('./index-B1oOty9j.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21257,7 +21257,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-Ds-YulQP.js').then(m => m.xml());
+            return import('./index-QrLX5sr_.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21265,7 +21265,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-DE3xIJFt.js').then(m => m.yaml());
+            return import('./index-Cgq2OABG.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -22060,13 +22060,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-j8L5RuSA.js').then(m => m.vue());
+            return import('./index-BKhLm6y5.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-wg6zjTAT.js').then(m => m.angular());
+            return import('./index-BJ4ihxul.js').then(m => m.angular());
         }
     })
 ];
@@ -35030,7 +35030,7 @@ function findMaxColumnWidths(data) {
     return maxWidths;
 }
 function parseCSV(csvData, separator) {
-    return csvData.trim().split('\n').map((row) => extractAllRowCells(row, separator));
+    return csvData.split('\n').filter(row => row).map((row) => extractAllRowCells(row, separator));
 }
 function csvToMarkdownTable(text, separator, withHeaders) {
     if (text.indexOf(separator) < 0)
@@ -35372,13 +35372,13 @@ const customMarkdownKeymap = [
     { key: 'Mod-b', run: toggleMarkdownBold }, // Cmd/Ctrl + B for bold
     { key: 'Mod-i', run: toggleMarkdownItalic }, // Cmd/Ctrl + I for italics
 ];
-const customDeleteKeymap = [
+const multipleCursorDeleteKeymap = [
     { key: "Delete", run: deleteCharForward },
     { key: "Backspace", run: deleteCharBackward },
     { key: "Mod-Delete", run: deleteGroupForward },
     { key: "Mod-Backspace", run: deleteGroupBackward },
 ];
-const customArrowKeymap = [
+const multipleCursorNavigationKeymap = [
     {
         key: "ArrowLeft",
         run: (view) => moveCursorsByCharacter(view, true, false),
@@ -35398,6 +35398,16 @@ const customArrowKeymap = [
         key: "Mod-ArrowRight",
         run: (view) => moveCursorsByWord(view, false, false),
         shift: (view) => moveCursorsByWord(view, false, true),
+    },
+    {
+        key: "Home",
+        run: (view) => moveCursorsToLineBoundaries(view, true, false),
+        shift: (view) => moveCursorsToLineBoundaries(view, true, true),
+    },
+    {
+        key: "End",
+        run: (view) => moveCursorsToLineBoundaries(view, false, false),
+        shift: (view) => moveCursorsToLineBoundaries(view, false, true),
     },
 ];
 function moveCursorsByCharacter(view, previous, headOnly) {
@@ -35424,6 +35434,25 @@ function moveCursorsByWord(view, previous, headOnly) {
         const wordBoundary = findWordBoundary(state.doc, currentPos, previous, true);
         const newAnchor = headOnly ? range.anchor : wordBoundary;
         const newHead = !headOnly ? newAnchor : wordBoundary;
+        newSelectionRanges.push(EditorSelection.range(newAnchor, newHead));
+    }
+    view.dispatch(state.update({
+        selection: EditorSelection.create(newSelectionRanges),
+        scrollIntoView: true,
+        userEvent: 'input'
+    }));
+    return true;
+}
+function moveCursorsToLineBoundaries(view, start, headOnly) {
+    const { state } = view;
+    const newSelectionRanges = [];
+    for (const range of state.selection.ranges) {
+        const currentPos = range.head;
+        const startOfLine = state.doc.lineAt(currentPos).from;
+        const endOfLine = state.doc.lineAt(currentPos).to;
+        const lineBoundary = start ? startOfLine : endOfLine;
+        const newAnchor = headOnly ? range.anchor : lineBoundary;
+        const newHead = !headOnly ? newAnchor : lineBoundary;
         newSelectionRanges.push(EditorSelection.range(newAnchor, newHead));
     }
     view.dispatch(state.update({
@@ -62193,9 +62222,7 @@ function getMentionCompletions(firstCharacters) {
 }
 function setCachedCompletions(completions) {
     if (cachedCompletions.length === 0) {
-        completions.forEach(completion => {
-            cachedCompletions.push(completion);
-        });
+        cachedCompletions.push(...completions);
     }
 }
 const mentionCompletionExtension = (enabled) => {
@@ -76206,8 +76233,8 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
                 ...foldKeymap,
                 ...completionKeymap,
                 ...lintKeymap,
-                ...customDeleteKeymap,
-                ...customArrowKeymap,
+                ...multipleCursorDeleteKeymap,
+                ...multipleCursorNavigationKeymap,
             ])
         ];
         // Basic Setup
