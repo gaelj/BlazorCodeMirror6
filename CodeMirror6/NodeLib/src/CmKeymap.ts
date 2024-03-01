@@ -1,6 +1,6 @@
 import { toggleMarkdownBold, toggleMarkdownItalic } from "./CmCommands"
 import { KeyBinding, EditorView } from '@codemirror/view'
-import { Extension, RangeSetBuilder, Transaction, EditorSelection, SelectionRange, Text } from "@codemirror/state"
+import { EditorSelection, SelectionRange, Text } from "@codemirror/state"
 import {
     deleteCharBackward, deleteCharForward, deleteGroupBackward, deleteGroupForward,
     cursorGroupLeft, cursorGroupRight, selectGroupLeft, selectGroupRight,
@@ -12,14 +12,14 @@ export const customMarkdownKeymap: KeyBinding[] = [
     { key: 'Mod-i', run: toggleMarkdownItalic },  // Cmd/Ctrl + I for italics
 ]
 
-export const customDeleteKeymap = [
+export const multipleCursorDeleteKeymap = [
     { key: "Delete", run: deleteCharForward },
     { key: "Backspace", run: deleteCharBackward },
     { key: "Mod-Delete", run: deleteGroupForward },
     { key: "Mod-Backspace", run: deleteGroupBackward },
 ]
 
-export const customArrowKeymap: KeyBinding[] = [
+export const multipleCursorNavigationKeymap: KeyBinding[] = [
     {
         key: "ArrowLeft",
         run: (view) => moveCursorsByCharacter(view, true, false),
@@ -39,6 +39,16 @@ export const customArrowKeymap: KeyBinding[] = [
         key: "Mod-ArrowRight",
         run: (view) => moveCursorsByWord(view, false, false),
         shift: (view) => moveCursorsByWord(view, false, true),
+    },
+    {
+        key: "Home",
+        run: (view) => moveCursorsToLineBoundaries(view, true, false),
+        shift: (view) => moveCursorsToLineBoundaries(view, true, true),
+    },
+    {
+        key: "End",
+        run: (view) => moveCursorsToLineBoundaries(view, false, false),
+        shift: (view) => moveCursorsToLineBoundaries(view, false, true),
     },
 ]
 
@@ -69,6 +79,28 @@ function moveCursorsByWord(view: EditorView, previous: boolean, headOnly: boolea
 
         const newAnchor = headOnly ? range.anchor : wordBoundary
         const newHead = !headOnly ? newAnchor : wordBoundary
+
+        newSelectionRanges.push(EditorSelection.range(newAnchor, newHead))
+    }
+    view.dispatch(state.update({
+        selection: EditorSelection.create(newSelectionRanges),
+        scrollIntoView: true,
+        userEvent: 'input'
+    }))
+    return true
+}
+
+function moveCursorsToLineBoundaries(view: EditorView, start: boolean, headOnly: boolean): boolean {
+    const { state } = view
+    const newSelectionRanges: SelectionRange[] = []
+    for (const range of state.selection.ranges) {
+        const currentPos = range.head
+        const startOfLine = state.doc.lineAt(currentPos).from
+        const endOfLine = state.doc.lineAt(currentPos).to
+        const lineBoundary = start ? startOfLine : endOfLine
+
+        const newAnchor = headOnly ? range.anchor : lineBoundary
+        const newHead = !headOnly ? newAnchor : lineBoundary
 
         newSelectionRanges.push(EditorSelection.range(newAnchor, newHead))
     }

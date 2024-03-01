@@ -275,7 +275,7 @@ function findMaxColumnWidths(data: string[][]): number[] {
 }
 
 function parseCSV(csvData: string, separator: string): string[][] {
-    return csvData.trim().split('\n').map((row) => extractAllRowCells(row, separator))
+    return csvData.split('\n').filter(row => row).map((row) => extractAllRowCells(row, separator))
 }
 
 export function csvToMarkdownTable(text: string, separator: string, withHeaders: boolean)

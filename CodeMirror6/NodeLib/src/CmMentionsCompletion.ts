@@ -44,9 +44,7 @@ function getMentionCompletions(firstCharacters: string | null): Completion[] {
 
 export function setCachedCompletions(completions: Completion[]) {
     if (cachedCompletions.length === 0) {
-        completions.forEach(completion => {
-            cachedCompletions.push(completion)
-        })
+        cachedCompletions.push(...completions)
     }
 }
 
