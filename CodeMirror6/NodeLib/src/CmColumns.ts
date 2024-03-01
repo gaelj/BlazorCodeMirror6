@@ -209,17 +209,17 @@ function insertTabulationAtEndOfDocumentIfSelectionAtEnd(view: EditorView) {
 }
 
 // extract first csv cell from a line of text. Ignore the separator if it is inside quotes. Ignore quotes if they are escaped by another quote. Return the extracted cell and the remaining text after the cell.
-function extractNextCell(line: string, separator: string): string[] {
+function extractNextCell(remaining: string, separator: string): string[] {
     let cell = ""
     let inQuotes = false
     let escapeNext = false
     let separatorFound = false
-    for (let i = 0; i < line.length; i++) {
-        const char = line[i]
+    for (let i = 0; i < remaining.length; i++) {
+        const char = remaining[i]
         if (escapeNext) {
             cell += char
             escapeNext = false
-        } else if (char === '"' && i < (line.length - 1) && line[i + 1] === '"') {
+        } else if (char === '"' && i < (remaining.length - 1) && remaining[i + 1] === '"') {
             cell += char
             escapeNext = true
         } else if (char === '"') {
@@ -235,7 +235,7 @@ function extractNextCell(line: string, separator: string): string[] {
             cell += char
         }
     }
-    return [cell, separatorFound === false ? null : line.slice(cell.length + 1)]
+    return [cell, separatorFound ? remaining.slice(cell.length + 1) : null]
 }
 
 function extractAllRowCells(line: string, separator: string): string[] {
