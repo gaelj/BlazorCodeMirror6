@@ -1,1 +1,1 @@
-export { F as clearLocalStorage, G as dispatchCommand, H as dispose, D as forceRedraw, z as getAllSupportedLanguageNames, w as getCmInstance, x as initCodeMirror, y as maxDocLengthLintSource, A as setConfiguration, B as setMentionCompletions } from './index-9srO0oxQ.js';
+export { G as clearLocalStorage, H as dispatchCommand, J as dispose, F as forceRedraw, A as getAllSupportedLanguageNames, w as getCmInstance, y as initCodeMirror, z as maxDocLengthLintSource, x as requestLinterRefresh, B as setConfiguration, D as setMentionCompletions } from './index-D4RUh_kt.js';

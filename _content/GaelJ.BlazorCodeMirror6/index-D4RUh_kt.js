@@ -21506,7 +21506,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-BCIwsPKe.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-BlJb3Hhx.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -21517,7 +21517,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-CG4Li2va.js').then(m => m.cpp());
+            return import('./index-Bwh-0fm0.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21525,7 +21525,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-CG4Li2va.js').then(m => m.cpp());
+            return import('./index-Bwh-0fm0.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21553,7 +21553,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-CK0dZGwp.js').then(m => m.java());
+            return import('./index-BjAGiyQb.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21569,7 +21569,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-RogbykB3.js').then(m => m.json());
+            return import('./index-DH0zTF03.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21583,14 +21583,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-TOUbvN3i.js').then(m => m.less());
+            return import('./index-BY5f9JUf.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-C8xy4bj9.js').then(m => m.liquid());
+            return import('./index-Apx_EEfT.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21616,7 +21616,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-SFVwN450.js').then(m => m.php());
+            return import('./index-DeFMYyWW.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21633,28 +21633,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-195aCAVl.js').then(m => m.python());
+            return import('./index-ozgJI9jf.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-_ywb6V8l.js').then(m => m.rust());
+            return import('./index-n8a80Swd.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-CX2EeDw6.js').then(m => m.sass({ indented: true }));
+            return import('./index-Dku7mP_U.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-CX2EeDw6.js').then(m => m.sass());
+            return import('./index-Dku7mP_U.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21685,7 +21685,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-DmbDPJnh.js').then(m => m.wast());
+            return import('./index-Dm9tyigL.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21693,7 +21693,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-DVIB9wC8.js').then(m => m.xml());
+            return import('./index-B0a2kyL_.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21701,7 +21701,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-DyKrzofB.js').then(m => m.yaml());
+            return import('./index-BKIgdzrV.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -22496,13 +22496,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-VEvQ00s1.js').then(m => m.vue());
+            return import('./index-DuF37ht3.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-DcR5pvOL.js').then(m => m.angular());
+            return import('./index-DUZw4eRT.js').then(m => m.angular());
         }
     })
 ];
@@ -27708,6 +27708,7 @@ function indentationMarkers(config = {}) {
  */
 class CmInstance {
     constructor() {
+        this.lintRefreshRequested = false;
         this.languageCompartment = new Compartment;
         this.markdownStylingCompartment = new Compartment;
         this.tabSizeCompartment = new Compartment;
@@ -40949,7 +40950,7 @@ const dynamicImagesExtension = (enabled = true) => {
 };
 
 /**
- * A function that fetches diagnostics from the Blazor component.
+ * Fetch diagnostics from the Blazor component
  */
 async function externalLintSource(id, view, dotnetHelper) {
     try {
@@ -40965,9 +40966,16 @@ async function externalLintSource(id, view, dotnetHelper) {
     }
 }
 /**
+ * Request a linter refresh. Linting is always re-done on document changes.
+ */
+function requestLinterRefresh(id) {
+    consoleLog(id, `Linter refresh requested for Id ${id}`);
+    CMInstances[id].lintRefreshRequested = true;
+}
+/**
  * A function that fetches the linter configuration
  */
-function getExternalLinterConfig() {
+function getExternalLinterConfig(id) {
     return {
         /**
         Time to wait (in milliseconds) after a change before running
@@ -40979,7 +40987,11 @@ function getExternalLinterConfig() {
         need to be recomputed. Linting is always re-done on document
         changes.
         */
-        needsRefresh: null,
+        needsRefresh: (update) => {
+            const lintRefreshRequested = CMInstances[id].lintRefreshRequested;
+            CMInstances[id].lintRefreshRequested = false;
+            return lintRefreshRequested;
+        },
         /**
         Optional filter to determine which diagnostics produce markers
         in the content.
@@ -76583,7 +76595,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         if (setup.allowMultipleSelections === true)
             extensions.push(EditorState.allowMultipleSelections.of(true));
         if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput") {
-            extensions.push(linter(async (view) => await externalLintSource(id, view, dotnetHelper), getExternalLinterConfig()));
+            extensions.push(linter(async (view) => await externalLintSource(id, view, dotnetHelper), getExternalLinterConfig(id)));
         }
         if (initialConfig.lintingEnabled === true)
             extensions.push(lintGutter());
@@ -77013,6 +77025,9 @@ function dispatchCommand(id, functionName, ...args) {
             case 'ScrollIntoView':
                 view.dispatch({ scrollIntoView: true });
                 break;
+            case 'RequestLinterRefresh':
+                requestLinterRefresh(id);
+                break;
             default: throw new Error(`Function ${functionName} does not exist.`);
         }
         view.focus();
@@ -77054,4 +77069,4 @@ function dispose(id) {
     delete CMInstances[id];
 }
 
-export { setConfiguration as A, setMentionCompletions as B, ContextTracker as C, forceRedraw as D, ExternalTokenizer as E, clearLocalStorage as F, dispatchCommand as G, dispose as H, IterMode as I, LRLanguage as L, NodeWeakMap as N, LanguageSupport as a, LRParser as b, continuedIndent as c, ifNotIn as d, completeFromList as e, foldNodeProp as f, syntaxTree as g, flatIndent as h, indentNodeProp as i, delimitedIndent as j, foldInside as k, defineCSSCompletionSource as l, EditorView as m, EditorSelection as n, html as o, parseMixed as p, snippetCompletion as q, bracketMatchingHandle as r, styleTags as s, tags$1 as t, LocalTokenGroup as u, javascriptLanguage as v, getCmInstance as w, initCodeMirror as x, maxDocLengthLintSource as y, getAllSupportedLanguageNames as z };
+export { getAllSupportedLanguageNames as A, setConfiguration as B, ContextTracker as C, setMentionCompletions as D, ExternalTokenizer as E, forceRedraw as F, clearLocalStorage as G, dispatchCommand as H, IterMode as I, dispose as J, LRLanguage as L, NodeWeakMap as N, LanguageSupport as a, LRParser as b, continuedIndent as c, ifNotIn as d, completeFromList as e, foldNodeProp as f, syntaxTree as g, flatIndent as h, indentNodeProp as i, delimitedIndent as j, foldInside as k, defineCSSCompletionSource as l, EditorView as m, EditorSelection as n, html as o, parseMixed as p, snippetCompletion as q, bracketMatchingHandle as r, styleTags as s, tags$1 as t, LocalTokenGroup as u, javascriptLanguage as v, getCmInstance as w, requestLinterRefresh as x, initCodeMirror as y, maxDocLengthLintSource as z };
