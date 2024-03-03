@@ -20587,9 +20587,36 @@ function moveSel({ state, dispatch }, how) {
     dispatch(setSel(state, selection));
     return true;
 }
+function rangeEnd(range, forward) {
+    return EditorSelection.cursor(forward ? range.to : range.from);
+}
+function cursorByChar(view, forward) {
+    return moveSel(view, range => range.empty ? view.moveByChar(range, forward) : rangeEnd(range, forward));
+}
 function ltrAtCursor(view) {
     return view.textDirectionAt(view.state.selection.main.head) == Direction.LTR;
 }
+/**
+Move the selection one character to the left (which is backward in
+left-to-right text, forward in right-to-left text).
+*/
+const cursorCharLeft = view => cursorByChar(view, !ltrAtCursor(view));
+/**
+Move the selection one character to the right.
+*/
+const cursorCharRight = view => cursorByChar(view, ltrAtCursor(view));
+function cursorByGroup(view, forward) {
+    return moveSel(view, range => range.empty ? view.moveByGroup(range, forward) : rangeEnd(range, forward));
+}
+/**
+Move the selection to the left across one group of word or
+non-word (but also non-space) characters.
+*/
+const cursorGroupLeft = view => cursorByGroup(view, !ltrAtCursor(view));
+/**
+Move the selection one group to the right.
+*/
+const cursorGroupRight = view => cursorByGroup(view, ltrAtCursor(view));
 function interestingNode(state, node, bracketProp) {
     if (node.type.prop(bracketProp))
         return true;
@@ -20625,6 +20652,107 @@ const cursorSyntaxLeft = view => moveSel(view, range => moveBySyntax(view.state,
 Move the cursor over the next syntactic element to the right.
 */
 const cursorSyntaxRight = view => moveSel(view, range => moveBySyntax(view.state, range, ltrAtCursor(view)));
+function cursorByLine(view, forward) {
+    return moveSel(view, range => {
+        if (!range.empty)
+            return rangeEnd(range, forward);
+        let moved = view.moveVertically(range, forward);
+        return moved.head != range.head ? moved : view.moveToLineBoundary(range, forward);
+    });
+}
+/**
+Move the selection one line up.
+*/
+const cursorLineUp = view => cursorByLine(view, false);
+/**
+Move the selection one line down.
+*/
+const cursorLineDown = view => cursorByLine(view, true);
+function pageInfo(view) {
+    let selfScroll = view.scrollDOM.clientHeight < view.scrollDOM.scrollHeight - 2;
+    let marginTop = 0, marginBottom = 0, height;
+    if (selfScroll) {
+        for (let source of view.state.facet(EditorView.scrollMargins)) {
+            let margins = source(view);
+            if (margins === null || margins === void 0 ? void 0 : margins.top)
+                marginTop = Math.max(margins === null || margins === void 0 ? void 0 : margins.top, marginTop);
+            if (margins === null || margins === void 0 ? void 0 : margins.bottom)
+                marginBottom = Math.max(margins === null || margins === void 0 ? void 0 : margins.bottom, marginBottom);
+        }
+        height = view.scrollDOM.clientHeight - marginTop - marginBottom;
+    }
+    else {
+        height = (view.dom.ownerDocument.defaultView || window).innerHeight;
+    }
+    return { marginTop, marginBottom, selfScroll,
+        height: Math.max(view.defaultLineHeight, height - 5) };
+}
+function cursorByPage(view, forward) {
+    let page = pageInfo(view);
+    let { state } = view, selection = updateSel(state.selection, range => {
+        return range.empty ? view.moveVertically(range, forward, page.height)
+            : rangeEnd(range, forward);
+    });
+    if (selection.eq(state.selection))
+        return false;
+    let effect;
+    if (page.selfScroll) {
+        let startPos = view.coordsAtPos(state.selection.main.head);
+        let scrollRect = view.scrollDOM.getBoundingClientRect();
+        let scrollTop = scrollRect.top + page.marginTop, scrollBottom = scrollRect.bottom - page.marginBottom;
+        if (startPos && startPos.top > scrollTop && startPos.bottom < scrollBottom)
+            effect = EditorView.scrollIntoView(selection.main.head, { y: "start", yMargin: startPos.top - scrollTop });
+    }
+    view.dispatch(setSel(state, selection), { effects: effect });
+    return true;
+}
+/**
+Move the selection one page up.
+*/
+const cursorPageUp = view => cursorByPage(view, false);
+/**
+Move the selection one page down.
+*/
+const cursorPageDown = view => cursorByPage(view, true);
+function moveByLineBoundary(view, start, forward) {
+    let line = view.lineBlockAt(start.head), moved = view.moveToLineBoundary(start, forward);
+    if (moved.head == start.head && moved.head != (forward ? line.to : line.from))
+        moved = view.moveToLineBoundary(start, forward, false);
+    if (!forward && moved.head == line.from && line.length) {
+        let space = /^\s*/.exec(view.state.sliceDoc(line.from, Math.min(line.from + 100, line.to)))[0].length;
+        if (space && start.head != line.from + space)
+            moved = EditorSelection.cursor(line.from + space);
+    }
+    return moved;
+}
+/**
+Move the selection to the next line wrap point, or to the end of
+the line if there isn't one left on this line.
+*/
+const cursorLineBoundaryForward = view => moveSel(view, range => moveByLineBoundary(view, range, true));
+/**
+Move the selection to previous line wrap point, or failing that to
+the start of the line. If the line is indented, and the cursor
+isn't already at the end of the indentation, this will move to the
+end of the indentation instead of the start of the line.
+*/
+const cursorLineBoundaryBackward = view => moveSel(view, range => moveByLineBoundary(view, range, false));
+/**
+Move the selection one line wrap point to the left.
+*/
+const cursorLineBoundaryLeft = view => moveSel(view, range => moveByLineBoundary(view, range, !ltrAtCursor(view)));
+/**
+Move the selection one line wrap point to the right.
+*/
+const cursorLineBoundaryRight = view => moveSel(view, range => moveByLineBoundary(view, range, ltrAtCursor(view)));
+/**
+Move the selection to the start of the line.
+*/
+const cursorLineStart = view => moveSel(view, range => EditorSelection.cursor(view.lineBlockAt(range.head).from, 1));
+/**
+Move the selection to the end of the line.
+*/
+const cursorLineEnd = view => moveSel(view, range => EditorSelection.cursor(view.lineBlockAt(range.head).to, -1));
 function toMatchingBracket(state, dispatch, extend) {
     let found = false, selection = updateSel(state.selection, range => {
         let matching = matchBrackets(state, range.head, -1)
@@ -20657,6 +20785,30 @@ function extendSel(view, how) {
     view.dispatch(setSel(view.state, selection));
     return true;
 }
+function selectByChar(view, forward) {
+    return extendSel(view, range => view.moveByChar(range, forward));
+}
+/**
+Move the selection head one character to the left, while leaving
+the anchor in place.
+*/
+const selectCharLeft = view => selectByChar(view, !ltrAtCursor(view));
+/**
+Move the selection head one character to the right.
+*/
+const selectCharRight = view => selectByChar(view, ltrAtCursor(view));
+function selectByGroup(view, forward) {
+    return extendSel(view, range => view.moveByGroup(range, forward));
+}
+/**
+Move the selection head one [group](https://codemirror.net/6/docs/ref/#commands.cursorGroupLeft) to
+the left.
+*/
+const selectGroupLeft = view => selectByGroup(view, !ltrAtCursor(view));
+/**
+Move the selection head one group to the right.
+*/
+const selectGroupRight = view => selectByGroup(view, ltrAtCursor(view));
 /**
 Move the selection head over the next syntactic element to the left.
 */
@@ -20665,6 +20817,87 @@ const selectSyntaxLeft = view => extendSel(view, range => moveBySyntax(view.stat
 Move the selection head over the next syntactic element to the right.
 */
 const selectSyntaxRight = view => extendSel(view, range => moveBySyntax(view.state, range, ltrAtCursor(view)));
+function selectByLine(view, forward) {
+    return extendSel(view, range => view.moveVertically(range, forward));
+}
+/**
+Move the selection head one line up.
+*/
+const selectLineUp = view => selectByLine(view, false);
+/**
+Move the selection head one line down.
+*/
+const selectLineDown = view => selectByLine(view, true);
+function selectByPage(view, forward) {
+    return extendSel(view, range => view.moveVertically(range, forward, pageInfo(view).height));
+}
+/**
+Move the selection head one page up.
+*/
+const selectPageUp = view => selectByPage(view, false);
+/**
+Move the selection head one page down.
+*/
+const selectPageDown = view => selectByPage(view, true);
+/**
+Move the selection head to the next line boundary.
+*/
+const selectLineBoundaryForward = view => extendSel(view, range => moveByLineBoundary(view, range, true));
+/**
+Move the selection head to the previous line boundary.
+*/
+const selectLineBoundaryBackward = view => extendSel(view, range => moveByLineBoundary(view, range, false));
+/**
+Move the selection head one line boundary to the left.
+*/
+const selectLineBoundaryLeft = view => extendSel(view, range => moveByLineBoundary(view, range, !ltrAtCursor(view)));
+/**
+Move the selection head one line boundary to the right.
+*/
+const selectLineBoundaryRight = view => extendSel(view, range => moveByLineBoundary(view, range, ltrAtCursor(view)));
+/**
+Move the selection head to the start of the line.
+*/
+const selectLineStart = view => extendSel(view, range => EditorSelection.cursor(view.lineBlockAt(range.head).from));
+/**
+Move the selection head to the end of the line.
+*/
+const selectLineEnd = view => extendSel(view, range => EditorSelection.cursor(view.lineBlockAt(range.head).to));
+/**
+Move the selection to the start of the document.
+*/
+const cursorDocStart = ({ state, dispatch }) => {
+    dispatch(setSel(state, { anchor: 0 }));
+    return true;
+};
+/**
+Move the selection to the end of the document.
+*/
+const cursorDocEnd = ({ state, dispatch }) => {
+    dispatch(setSel(state, { anchor: state.doc.length }));
+    return true;
+};
+/**
+Move the selection head to the start of the document.
+*/
+const selectDocStart = ({ state, dispatch }) => {
+    dispatch(setSel(state, { anchor: state.selection.main.anchor, head: 0 }));
+    return true;
+};
+/**
+Move the selection head to the end of the document.
+*/
+const selectDocEnd = ({ state, dispatch }) => {
+    dispatch(setSel(state, { anchor: state.selection.main.anchor, head: state.doc.length }));
+    return true;
+};
+/**
+Select the entire document.
+*/
+const selectAll = ({ state, dispatch }) => {
+    dispatch(state.update({ selection: { anchor: 0, head: state.doc.length }, userEvent: "select" }));
+    return true;
+};
 /**
 Expand the selection to cover entire lines.
 */
@@ -20814,6 +21047,31 @@ Delete the selection or forward until the end of the next group.
 */
 const deleteGroupForward = target => deleteByGroup(target, true);
 /**
+Delete the selection, or, if it is a cursor selection, delete to
+the end of the line. If the cursor is directly at the end of the
+line, delete the line break after it.
+*/
+const deleteToLineEnd = view => deleteBy(view, range => {
+    let lineEnd = view.lineBlockAt(range.head).to;
+    return range.head < lineEnd ? lineEnd : Math.min(view.state.doc.length, range.head + 1);
+});
+/**
+Delete the selection, or, if it is a cursor selection, delete to
+the start of the line or the next line wrap before the cursor.
+*/
+const deleteLineBoundaryBackward = view => deleteBy(view, range => {
+    let lineStart = view.moveToLineBoundary(range, false).head;
+    return range.head > lineStart ? lineStart : Math.max(0, range.head - 1);
+});
+/**
+Delete the selection, or, if it is a cursor selection, delete to
+the end of the line or the next line wrap after the cursor.
+*/
+const deleteLineBoundaryForward = view => deleteBy(view, range => {
+    let lineStart = view.moveToLineBoundary(range, true).head;
+    return range.head < lineStart ? lineStart : Math.min(view.state.doc.length, range.head + 1);
+});
+/**
 Delete all whitespace directly before a line end from the
 document.
 */
@@ -20839,6 +21097,40 @@ const deleteTrailingWhitespace = ({ state, dispatch }) => {
     if (!changes.length)
         return false;
     dispatch(state.update({ changes, userEvent: "delete" }));
+    return true;
+};
+/**
+Replace each selection range with a line break, leaving the cursor
+on the line before the break.
+*/
+const splitLine = ({ state, dispatch }) => {
+    if (state.readOnly)
+        return false;
+    let changes = state.changeByRange(range => {
+        return { changes: { from: range.from, to: range.to, insert: Text.of(["", ""]) },
+            range: EditorSelection.cursor(range.from) };
+    });
+    dispatch(state.update(changes, { scrollIntoView: true, userEvent: "input" }));
+    return true;
+};
+/**
+Flip the characters before and after the cursor(s).
+*/
+const transposeChars = ({ state, dispatch }) => {
+    if (state.readOnly)
+        return false;
+    let changes = state.changeByRange(range => {
+        if (!range.empty || range.from == 0 || range.from == state.doc.length)
+            return { range };
+        let pos = range.from, line = state.doc.lineAt(pos);
+        let from = pos == line.from ? pos - 1 : findClusterBreak(line.text, pos - line.from, false) + line.from;
+        let to = pos == line.to ? pos + 1 : findClusterBreak(line.text, pos - line.from, true) + line.from;
+        return { changes: { from, to, insert: state.doc.slice(pos, to).append(state.doc.slice(from, pos)) },
+            range: EditorSelection.cursor(to) };
+    });
+    if (changes.changes.empty)
+        return false;
+    dispatch(state.update(changes, { scrollIntoView: true, userEvent: "move.character" }));
     return true;
 };
 function selectedLineBlocks(state) {
@@ -20947,6 +21239,14 @@ function isBetweenBrackets(state, pos) {
         return { from: before.to, to: after.from };
     return null;
 }
+/**
+Replace the selection with a newline and indent the newly created
+line(s). If the current line consists only of whitespace, this
+will also delete that whitespace. When the cursor is between
+matching brackets, an additional newline will be inserted after
+the cursor.
+*/
+const insertNewlineAndIndent = /*@__PURE__*/newlineAndIndent(false);
 /**
 Create a blank, indented line below the current line.
 */
@@ -21059,6 +21359,142 @@ const indentLess = ({ state, dispatch }) => {
     return true;
 };
 /**
+Array of key bindings containing the Emacs-style bindings that are
+available on macOS by default.
+
+ - Ctrl-b: [`cursorCharLeft`](https://codemirror.net/6/docs/ref/#commands.cursorCharLeft) ([`selectCharLeft`](https://codemirror.net/6/docs/ref/#commands.selectCharLeft) with Shift)
+ - Ctrl-f: [`cursorCharRight`](https://codemirror.net/6/docs/ref/#commands.cursorCharRight) ([`selectCharRight`](https://codemirror.net/6/docs/ref/#commands.selectCharRight) with Shift)
+ - Ctrl-p: [`cursorLineUp`](https://codemirror.net/6/docs/ref/#commands.cursorLineUp) ([`selectLineUp`](https://codemirror.net/6/docs/ref/#commands.selectLineUp) with Shift)
+ - Ctrl-n: [`cursorLineDown`](https://codemirror.net/6/docs/ref/#commands.cursorLineDown) ([`selectLineDown`](https://codemirror.net/6/docs/ref/#commands.selectLineDown) with Shift)
+ - Ctrl-a: [`cursorLineStart`](https://codemirror.net/6/docs/ref/#commands.cursorLineStart) ([`selectLineStart`](https://codemirror.net/6/docs/ref/#commands.selectLineStart) with Shift)
+ - Ctrl-e: [`cursorLineEnd`](https://codemirror.net/6/docs/ref/#commands.cursorLineEnd) ([`selectLineEnd`](https://codemirror.net/6/docs/ref/#commands.selectLineEnd) with Shift)
+ - Ctrl-d: [`deleteCharForward`](https://codemirror.net/6/docs/ref/#commands.deleteCharForward)
+ - Ctrl-h: [`deleteCharBackward`](https://codemirror.net/6/docs/ref/#commands.deleteCharBackward)
+ - Ctrl-k: [`deleteToLineEnd`](https://codemirror.net/6/docs/ref/#commands.deleteToLineEnd)
+ - Ctrl-Alt-h: [`deleteGroupBackward`](https://codemirror.net/6/docs/ref/#commands.deleteGroupBackward)
+ - Ctrl-o: [`splitLine`](https://codemirror.net/6/docs/ref/#commands.splitLine)
+ - Ctrl-t: [`transposeChars`](https://codemirror.net/6/docs/ref/#commands.transposeChars)
+ - Ctrl-v: [`cursorPageDown`](https://codemirror.net/6/docs/ref/#commands.cursorPageDown)
+ - Alt-v: [`cursorPageUp`](https://codemirror.net/6/docs/ref/#commands.cursorPageUp)
+*/
+const emacsStyleKeymap = [
+    { key: "Ctrl-b", run: cursorCharLeft, shift: selectCharLeft, preventDefault: true },
+    { key: "Ctrl-f", run: cursorCharRight, shift: selectCharRight },
+    { key: "Ctrl-p", run: cursorLineUp, shift: selectLineUp },
+    { key: "Ctrl-n", run: cursorLineDown, shift: selectLineDown },
+    { key: "Ctrl-a", run: cursorLineStart, shift: selectLineStart },
+    { key: "Ctrl-e", run: cursorLineEnd, shift: selectLineEnd },
+    { key: "Ctrl-d", run: deleteCharForward },
+    { key: "Ctrl-h", run: deleteCharBackward },
+    { key: "Ctrl-k", run: deleteToLineEnd },
+    { key: "Ctrl-Alt-h", run: deleteGroupBackward },
+    { key: "Ctrl-o", run: splitLine },
+    { key: "Ctrl-t", run: transposeChars },
+    { key: "Ctrl-v", run: cursorPageDown },
+];
+/**
+An array of key bindings closely sticking to platform-standard or
+widely used bindings. (This includes the bindings from
+[`emacsStyleKeymap`](https://codemirror.net/6/docs/ref/#commands.emacsStyleKeymap), with their `key`
+property changed to `mac`.)
+
+ - ArrowLeft: [`cursorCharLeft`](https://codemirror.net/6/docs/ref/#commands.cursorCharLeft) ([`selectCharLeft`](https://codemirror.net/6/docs/ref/#commands.selectCharLeft) with Shift)
+ - ArrowRight: [`cursorCharRight`](https://codemirror.net/6/docs/ref/#commands.cursorCharRight) ([`selectCharRight`](https://codemirror.net/6/docs/ref/#commands.selectCharRight) with Shift)
+ - Ctrl-ArrowLeft (Alt-ArrowLeft on macOS): [`cursorGroupLeft`](https://codemirror.net/6/docs/ref/#commands.cursorGroupLeft) ([`selectGroupLeft`](https://codemirror.net/6/docs/ref/#commands.selectGroupLeft) with Shift)
+ - Ctrl-ArrowRight (Alt-ArrowRight on macOS): [`cursorGroupRight`](https://codemirror.net/6/docs/ref/#commands.cursorGroupRight) ([`selectGroupRight`](https://codemirror.net/6/docs/ref/#commands.selectGroupRight) with Shift)
+ - Cmd-ArrowLeft (on macOS): [`cursorLineStart`](https://codemirror.net/6/docs/ref/#commands.cursorLineStart) ([`selectLineStart`](https://codemirror.net/6/docs/ref/#commands.selectLineStart) with Shift)
+ - Cmd-ArrowRight (on macOS): [`cursorLineEnd`](https://codemirror.net/6/docs/ref/#commands.cursorLineEnd) ([`selectLineEnd`](https://codemirror.net/6/docs/ref/#commands.selectLineEnd) with Shift)
+ - ArrowUp: [`cursorLineUp`](https://codemirror.net/6/docs/ref/#commands.cursorLineUp) ([`selectLineUp`](https://codemirror.net/6/docs/ref/#commands.selectLineUp) with Shift)
+ - ArrowDown: [`cursorLineDown`](https://codemirror.net/6/docs/ref/#commands.cursorLineDown) ([`selectLineDown`](https://codemirror.net/6/docs/ref/#commands.selectLineDown) with Shift)
+ - Cmd-ArrowUp (on macOS): [`cursorDocStart`](https://codemirror.net/6/docs/ref/#commands.cursorDocStart) ([`selectDocStart`](https://codemirror.net/6/docs/ref/#commands.selectDocStart) with Shift)
+ - Cmd-ArrowDown (on macOS): [`cursorDocEnd`](https://codemirror.net/6/docs/ref/#commands.cursorDocEnd) ([`selectDocEnd`](https://codemirror.net/6/docs/ref/#commands.selectDocEnd) with Shift)
+ - Ctrl-ArrowUp (on macOS): [`cursorPageUp`](https://codemirror.net/6/docs/ref/#commands.cursorPageUp) ([`selectPageUp`](https://codemirror.net/6/docs/ref/#commands.selectPageUp) with Shift)
+ - Ctrl-ArrowDown (on macOS): [`cursorPageDown`](https://codemirror.net/6/docs/ref/#commands.cursorPageDown) ([`selectPageDown`](https://codemirror.net/6/docs/ref/#commands.selectPageDown) with Shift)
+ - PageUp: [`cursorPageUp`](https://codemirror.net/6/docs/ref/#commands.cursorPageUp) ([`selectPageUp`](https://codemirror.net/6/docs/ref/#commands.selectPageUp) with Shift)
+ - PageDown: [`cursorPageDown`](https://codemirror.net/6/docs/ref/#commands.cursorPageDown) ([`selectPageDown`](https://codemirror.net/6/docs/ref/#commands.selectPageDown) with Shift)
+ - Home: [`cursorLineBoundaryBackward`](https://codemirror.net/6/docs/ref/#commands.cursorLineBoundaryBackward) ([`selectLineBoundaryBackward`](https://codemirror.net/6/docs/ref/#commands.selectLineBoundaryBackward) with Shift)
+ - End: [`cursorLineBoundaryForward`](https://codemirror.net/6/docs/ref/#commands.cursorLineBoundaryForward) ([`selectLineBoundaryForward`](https://codemirror.net/6/docs/ref/#commands.selectLineBoundaryForward) with Shift)
+ - Ctrl-Home (Cmd-Home on macOS): [`cursorDocStart`](https://codemirror.net/6/docs/ref/#commands.cursorDocStart) ([`selectDocStart`](https://codemirror.net/6/docs/ref/#commands.selectDocStart) with Shift)
+ - Ctrl-End (Cmd-Home on macOS): [`cursorDocEnd`](https://codemirror.net/6/docs/ref/#commands.cursorDocEnd) ([`selectDocEnd`](https://codemirror.net/6/docs/ref/#commands.selectDocEnd) with Shift)
+ - Enter: [`insertNewlineAndIndent`](https://codemirror.net/6/docs/ref/#commands.insertNewlineAndIndent)
+ - Ctrl-a (Cmd-a on macOS): [`selectAll`](https://codemirror.net/6/docs/ref/#commands.selectAll)
+ - Backspace: [`deleteCharBackward`](https://codemirror.net/6/docs/ref/#commands.deleteCharBackward)
+ - Delete: [`deleteCharForward`](https://codemirror.net/6/docs/ref/#commands.deleteCharForward)
+ - Ctrl-Backspace (Alt-Backspace on macOS): [`deleteGroupBackward`](https://codemirror.net/6/docs/ref/#commands.deleteGroupBackward)
+ - Ctrl-Delete (Alt-Delete on macOS): [`deleteGroupForward`](https://codemirror.net/6/docs/ref/#commands.deleteGroupForward)
+ - Cmd-Backspace (macOS): [`deleteLineBoundaryBackward`](https://codemirror.net/6/docs/ref/#commands.deleteLineBoundaryBackward).
+ - Cmd-Delete (macOS): [`deleteLineBoundaryForward`](https://codemirror.net/6/docs/ref/#commands.deleteLineBoundaryForward).
+*/
+const standardKeymap = /*@__PURE__*/[
+    { key: "ArrowLeft", run: cursorCharLeft, shift: selectCharLeft, preventDefault: true },
+    { key: "Mod-ArrowLeft", mac: "Alt-ArrowLeft", run: cursorGroupLeft, shift: selectGroupLeft, preventDefault: true },
+    { mac: "Cmd-ArrowLeft", run: cursorLineBoundaryLeft, shift: selectLineBoundaryLeft, preventDefault: true },
+    { key: "ArrowRight", run: cursorCharRight, shift: selectCharRight, preventDefault: true },
+    { key: "Mod-ArrowRight", mac: "Alt-ArrowRight", run: cursorGroupRight, shift: selectGroupRight, preventDefault: true },
+    { mac: "Cmd-ArrowRight", run: cursorLineBoundaryRight, shift: selectLineBoundaryRight, preventDefault: true },
+    { key: "ArrowUp", run: cursorLineUp, shift: selectLineUp, preventDefault: true },
+    { mac: "Cmd-ArrowUp", run: cursorDocStart, shift: selectDocStart },
+    { mac: "Ctrl-ArrowUp", run: cursorPageUp, shift: selectPageUp },
+    { key: "ArrowDown", run: cursorLineDown, shift: selectLineDown, preventDefault: true },
+    { mac: "Cmd-ArrowDown", run: cursorDocEnd, shift: selectDocEnd },
+    { mac: "Ctrl-ArrowDown", run: cursorPageDown, shift: selectPageDown },
+    { key: "PageUp", run: cursorPageUp, shift: selectPageUp },
+    { key: "PageDown", run: cursorPageDown, shift: selectPageDown },
+    { key: "Home", run: cursorLineBoundaryBackward, shift: selectLineBoundaryBackward, preventDefault: true },
+    { key: "Mod-Home", run: cursorDocStart, shift: selectDocStart },
+    { key: "End", run: cursorLineBoundaryForward, shift: selectLineBoundaryForward, preventDefault: true },
+    { key: "Mod-End", run: cursorDocEnd, shift: selectDocEnd },
+    { key: "Enter", run: insertNewlineAndIndent },
+    { key: "Mod-a", run: selectAll },
+    { key: "Backspace", run: deleteCharBackward, shift: deleteCharBackward },
+    { key: "Delete", run: deleteCharForward },
+    { key: "Mod-Backspace", mac: "Alt-Backspace", run: deleteGroupBackward },
+    { key: "Mod-Delete", mac: "Alt-Delete", run: deleteGroupForward },
+    { mac: "Mod-Backspace", run: deleteLineBoundaryBackward },
+    { mac: "Mod-Delete", run: deleteLineBoundaryForward }
+].concat(/*@__PURE__*/emacsStyleKeymap.map(b => ({ mac: b.key, run: b.run, shift: b.shift })));
+/**
+The default keymap. Includes all bindings from
+[`standardKeymap`](https://codemirror.net/6/docs/ref/#commands.standardKeymap) plus the following:
+
+- Alt-ArrowLeft (Ctrl-ArrowLeft on macOS): [`cursorSyntaxLeft`](https://codemirror.net/6/docs/ref/#commands.cursorSyntaxLeft) ([`selectSyntaxLeft`](https://codemirror.net/6/docs/ref/#commands.selectSyntaxLeft) with Shift)
+- Alt-ArrowRight (Ctrl-ArrowRight on macOS): [`cursorSyntaxRight`](https://codemirror.net/6/docs/ref/#commands.cursorSyntaxRight) ([`selectSyntaxRight`](https://codemirror.net/6/docs/ref/#commands.selectSyntaxRight) with Shift)
+- Alt-ArrowUp: [`moveLineUp`](https://codemirror.net/6/docs/ref/#commands.moveLineUp)
+- Alt-ArrowDown: [`moveLineDown`](https://codemirror.net/6/docs/ref/#commands.moveLineDown)
+- Shift-Alt-ArrowUp: [`copyLineUp`](https://codemirror.net/6/docs/ref/#commands.copyLineUp)
+- Shift-Alt-ArrowDown: [`copyLineDown`](https://codemirror.net/6/docs/ref/#commands.copyLineDown)
+- Escape: [`simplifySelection`](https://codemirror.net/6/docs/ref/#commands.simplifySelection)
+- Ctrl-Enter (Cmd-Enter on macOS): [`insertBlankLine`](https://codemirror.net/6/docs/ref/#commands.insertBlankLine)
+- Alt-l (Ctrl-l on macOS): [`selectLine`](https://codemirror.net/6/docs/ref/#commands.selectLine)
+- Ctrl-i (Cmd-i on macOS): [`selectParentSyntax`](https://codemirror.net/6/docs/ref/#commands.selectParentSyntax)
+- Ctrl-[ (Cmd-[ on macOS): [`indentLess`](https://codemirror.net/6/docs/ref/#commands.indentLess)
+- Ctrl-] (Cmd-] on macOS): [`indentMore`](https://codemirror.net/6/docs/ref/#commands.indentMore)
+- Ctrl-Alt-\\ (Cmd-Alt-\\ on macOS): [`indentSelection`](https://codemirror.net/6/docs/ref/#commands.indentSelection)
+- Shift-Ctrl-k (Shift-Cmd-k on macOS): [`deleteLine`](https://codemirror.net/6/docs/ref/#commands.deleteLine)
+- Shift-Ctrl-\\ (Shift-Cmd-\\ on macOS): [`cursorMatchingBracket`](https://codemirror.net/6/docs/ref/#commands.cursorMatchingBracket)
+- Ctrl-/ (Cmd-/ on macOS): [`toggleComment`](https://codemirror.net/6/docs/ref/#commands.toggleComment).
+- Shift-Alt-a: [`toggleBlockComment`](https://codemirror.net/6/docs/ref/#commands.toggleBlockComment).
+*/
+const defaultKeymap = /*@__PURE__*/[
+    { key: "Alt-ArrowLeft", mac: "Ctrl-ArrowLeft", run: cursorSyntaxLeft, shift: selectSyntaxLeft },
+    { key: "Alt-ArrowRight", mac: "Ctrl-ArrowRight", run: cursorSyntaxRight, shift: selectSyntaxRight },
+    { key: "Alt-ArrowUp", run: moveLineUp },
+    { key: "Shift-Alt-ArrowUp", run: copyLineUp },
+    { key: "Alt-ArrowDown", run: moveLineDown },
+    { key: "Shift-Alt-ArrowDown", run: copyLineDown },
+    { key: "Escape", run: simplifySelection },
+    { key: "Mod-Enter", run: insertBlankLine },
+    { key: "Alt-l", mac: "Ctrl-l", run: selectLine },
+    { key: "Mod-i", run: selectParentSyntax, preventDefault: true },
+    { key: "Mod-[", run: indentLess },
+    { key: "Mod-]", run: indentMore },
+    { key: "Mod-Alt-\\", run: indentSelection },
+    { key: "Shift-Mod-k", run: deleteLine },
+    { key: "Shift-Mod-\\", run: cursorMatchingBracket },
+    { key: "Mod-/", run: toggleComment },
+    { key: "Alt-A", run: toggleBlockComment }
+].concat(standardKeymap);
+/**
 A binding that binds Tab to [`indentMore`](https://codemirror.net/6/docs/ref/#commands.indentMore) and
 Shift-Tab to [`indentLess`](https://codemirror.net/6/docs/ref/#commands.indentLess).
 Please see the [Tab example](../../examples/tab/) before using
@@ -21070,7 +21506,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-R1rFhzx9.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-BCIwsPKe.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -21081,7 +21517,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-C4Uw-Veu.js').then(m => m.cpp());
+            return import('./index-CG4Li2va.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21089,7 +21525,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-C4Uw-Veu.js').then(m => m.cpp());
+            return import('./index-CG4Li2va.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21117,7 +21553,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-DzSNcHxC.js').then(m => m.java());
+            return import('./index-CK0dZGwp.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21133,7 +21569,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-DD09WKoZ.js').then(m => m.json());
+            return import('./index-RogbykB3.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21147,14 +21583,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-D8V4vzcP.js').then(m => m.less());
+            return import('./index-TOUbvN3i.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-a4rSX92h.js').then(m => m.liquid());
+            return import('./index-C8xy4bj9.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21180,7 +21616,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-CjZNsUYW.js').then(m => m.php());
+            return import('./index-SFVwN450.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21197,28 +21633,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-WoTe78x2.js').then(m => m.python());
+            return import('./index-195aCAVl.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-D4efewlk.js').then(m => m.rust());
+            return import('./index-_ywb6V8l.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-BOyhOjC2.js').then(m => m.sass({ indented: true }));
+            return import('./index-CX2EeDw6.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-BOyhOjC2.js').then(m => m.sass());
+            return import('./index-CX2EeDw6.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21249,7 +21685,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-B1oOty9j.js').then(m => m.wast());
+            return import('./index-DmbDPJnh.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21257,7 +21693,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-QrLX5sr_.js').then(m => m.xml());
+            return import('./index-DVIB9wC8.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21265,7 +21701,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-Cgq2OABG.js').then(m => m.yaml());
+            return import('./index-DyKrzofB.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -22060,13 +22496,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-BKhLm6y5.js').then(m => m.vue());
+            return import('./index-VEvQ00s1.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-BJ4ihxul.js').then(m => m.angular());
+            return import('./index-DcR5pvOL.js').then(m => m.angular());
         }
     })
 ];
@@ -24244,6 +24680,21 @@ const completionPlugin = /*@__PURE__*/ViewPlugin.fromClass(class {
         }
     }
 });
+const windows = typeof navigator == "object" && /*@__PURE__*//Win/.test(navigator.platform);
+const commitCharacters = /*@__PURE__*/Prec.highest(/*@__PURE__*/EditorView.domEventHandlers({
+    keydown(event, view) {
+        let field = view.state.field(completionState, false);
+        if (!field || !field.open || field.open.disabled || field.open.selected < 0 ||
+            event.key.length > 1 || event.ctrlKey && !(windows && event.altKey) || event.metaKey)
+            return false;
+        let option = field.open.options[field.open.selected];
+        let result = field.active.find(a => a.source == option.source);
+        let commitChars = option.completion.commitCharacters || result.result.commitCharacters;
+        if (commitChars && commitChars.indexOf(event.key) > -1)
+            applyCompletion(view, option);
+        return false;
+    }
+}));
 
 const baseTheme$3 = /*@__PURE__*/EditorView.baseTheme({
     ".cm-tooltip.cm-tooltip-autocomplete": {
@@ -24872,6 +25323,7 @@ Returns an extension that enables autocompletion.
 */
 function autocompletion(config = {}) {
     return [
+        commitCharacters,
         completionState,
         completionConfig.of(config),
         completionPlugin,
@@ -34967,18 +35419,18 @@ function insertTabulationAtEndOfDocumentIfSelectionAtEnd(view) {
     }));
 }
 // extract first csv cell from a line of text. Ignore the separator if it is inside quotes. Ignore quotes if they are escaped by another quote. Return the extracted cell and the remaining text after the cell.
-function extractNextCell(line, separator) {
+function extractNextCell(remaining, separator) {
     let cell = "";
     let inQuotes = false;
     let escapeNext = false;
     let separatorFound = false;
-    for (let i = 0; i < line.length; i++) {
-        const char = line[i];
+    for (let i = 0; i < remaining.length; i++) {
+        const char = remaining[i];
         if (escapeNext) {
             cell += char;
             escapeNext = false;
         }
-        else if (char === '"' && i < (line.length - 1) && line[i + 1] === '"') {
+        else if (char === '"' && i < (remaining.length - 1) && remaining[i + 1] === '"') {
             cell += char;
             escapeNext = true;
         }
@@ -34998,7 +35450,7 @@ function extractNextCell(line, separator) {
             cell += char;
         }
     }
-    return [cell, separatorFound === false ? null : line.slice(cell.length + 1)];
+    return [cell, separatorFound ? remaining.slice(cell.length + 1) : null];
 }
 function extractAllRowCells(line, separator) {
     let remaining = line;
@@ -35372,119 +35824,6 @@ const customMarkdownKeymap = [
     { key: 'Mod-b', run: toggleMarkdownBold }, // Cmd/Ctrl + B for bold
     { key: 'Mod-i', run: toggleMarkdownItalic }, // Cmd/Ctrl + I for italics
 ];
-const multipleCursorDeleteKeymap = [
-    { key: "Delete", run: deleteCharForward },
-    { key: "Backspace", run: deleteCharBackward },
-    { key: "Mod-Delete", run: deleteGroupForward },
-    { key: "Mod-Backspace", run: deleteGroupBackward },
-];
-const multipleCursorNavigationKeymap = [
-    {
-        key: "ArrowLeft",
-        run: (view) => moveCursorsByCharacter(view, true, false),
-        shift: (view) => moveCursorsByCharacter(view, true, true),
-    },
-    {
-        key: "ArrowRight",
-        run: (view) => moveCursorsByCharacter(view, false, false),
-        shift: (view) => moveCursorsByCharacter(view, false, true),
-    },
-    {
-        key: "Mod-ArrowLeft",
-        run: (view) => moveCursorsByWord(view, true, false),
-        shift: (view) => moveCursorsByWord(view, true, true),
-    },
-    {
-        key: "Mod-ArrowRight",
-        run: (view) => moveCursorsByWord(view, false, false),
-        shift: (view) => moveCursorsByWord(view, false, true),
-    },
-    {
-        key: "Home",
-        run: (view) => moveCursorsToLineBoundaries(view, true, false),
-        shift: (view) => moveCursorsToLineBoundaries(view, true, true),
-    },
-    {
-        key: "End",
-        run: (view) => moveCursorsToLineBoundaries(view, false, false),
-        shift: (view) => moveCursorsToLineBoundaries(view, false, true),
-    },
-];
-function moveCursorsByCharacter(view, previous, headOnly) {
-    const { state } = view;
-    const newSelectionRanges = [];
-    for (const range of state.selection.ranges) {
-        const offset = previous ? -1 : 1;
-        const newAnchor = headOnly ? range.anchor : Math.max(Math.min(state.doc.length, range.head + offset), 0);
-        const newHead = !headOnly ? newAnchor : Math.max(Math.min(state.doc.length, range.head + offset), 0);
-        newSelectionRanges.push(EditorSelection.range(newAnchor, newHead));
-    }
-    view.dispatch(state.update({
-        selection: EditorSelection.create(newSelectionRanges),
-        scrollIntoView: true,
-        userEvent: 'input'
-    }));
-    return true;
-}
-function moveCursorsByWord(view, previous, headOnly) {
-    const { state } = view;
-    const newSelectionRanges = [];
-    for (const range of state.selection.ranges) {
-        const currentPos = range.head;
-        const wordBoundary = findWordBoundary(state.doc, currentPos, previous, true);
-        const newAnchor = headOnly ? range.anchor : wordBoundary;
-        const newHead = !headOnly ? newAnchor : wordBoundary;
-        newSelectionRanges.push(EditorSelection.range(newAnchor, newHead));
-    }
-    view.dispatch(state.update({
-        selection: EditorSelection.create(newSelectionRanges),
-        scrollIntoView: true,
-        userEvent: 'input'
-    }));
-    return true;
-}
-function moveCursorsToLineBoundaries(view, start, headOnly) {
-    const { state } = view;
-    const newSelectionRanges = [];
-    for (const range of state.selection.ranges) {
-        const currentPos = range.head;
-        const startOfLine = state.doc.lineAt(currentPos).from;
-        const endOfLine = state.doc.lineAt(currentPos).to;
-        const lineBoundary = start ? startOfLine : endOfLine;
-        const newAnchor = headOnly ? range.anchor : lineBoundary;
-        const newHead = !headOnly ? newAnchor : lineBoundary;
-        newSelectionRanges.push(EditorSelection.range(newAnchor, newHead));
-    }
-    view.dispatch(state.update({
-        selection: EditorSelection.create(newSelectionRanges),
-        scrollIntoView: true,
-        userEvent: 'input'
-    }));
-    return true;
-}
-function findWordBoundary(doc, pos, previous, firstRun) {
-    if (previous && pos === 0)
-        return 0;
-    if (!previous && pos === doc.length)
-        return doc.length;
-    if (isWordBoundary(doc, pos) && firstRun) {
-        pos += previous ? -1 : 1;
-        return findWordBoundary(doc, pos, previous, false);
-    }
-    for (let i = pos; previous ? i >= 0 : i < doc.length; i += (previous ? -1 : 1)) {
-        if (isWordBoundary(doc, i)) {
-            return i;
-        }
-    }
-    return previous ? 0 : doc.length;
-}
-function isWordBoundary(doc, pos) {
-    if (pos < 0 || pos >= doc.length)
-        return true;
-    const charBefore = doc.sliceString(pos - 1, pos);
-    const charAfter = doc.sliceString(pos, pos + 1);
-    return /\s/.test(charBefore) !== /\s/.test(charAfter);
-}
 
 /**
  * StateEffect that is triggered when the language changes
@@ -76210,31 +76549,12 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             linter(async (view) => maxDocLengthLintSource(id, view)),
             keymap.of([
                 ...closeBracketsKeymap,
-                //...defaultKeymap,
-                { key: "Alt-ArrowLeft", mac: "Mod-ArrowLeft", run: cursorSyntaxLeft, shift: selectSyntaxLeft },
-                { key: "Alt-ArrowRight", mac: "Mod-ArrowRight", run: cursorSyntaxRight, shift: selectSyntaxRight },
-                { key: "Alt-ArrowUp", run: moveLineUp },
-                { key: "Shift-Alt-ArrowUp", run: copyLineUp },
-                { key: "Alt-ArrowDown", run: moveLineDown },
-                { key: "Shift-Alt-ArrowDown", run: copyLineDown },
-                { key: "Escape", run: simplifySelection },
-                { key: "Mod-Enter", run: insertBlankLine },
-                { key: "Alt-l", mac: "Mod-l", run: selectLine },
-                { key: "Mod-i", run: selectParentSyntax, preventDefault: true },
-                { key: "Mod-[", run: indentLess },
-                { key: "Mod-]", run: indentMore },
-                { key: "Mod-Alt-\\", run: indentSelection },
-                { key: "Shift-Mod-k", run: deleteLine },
-                { key: "Shift-Mod-\\", run: cursorMatchingBracket },
-                { key: "Mod-/", run: toggleComment },
-                { key: "Alt-A", run: toggleBlockComment },
+                ...defaultKeymap,
+                ...completionKeymap,
+                ...lintKeymap,
                 ...searchKeymap,
                 ...historyKeymap,
                 ...foldKeymap,
-                ...completionKeymap,
-                ...lintKeymap,
-                ...multipleCursorDeleteKeymap,
-                ...multipleCursorNavigationKeymap,
             ])
         ];
         // Basic Setup
