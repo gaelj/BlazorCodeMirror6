@@ -113,6 +113,13 @@
     })
 >Scroll into view</button>
 
+<button class="btn btn-primary"
+    @onclick=@(async () => {
+        if (codeMirror6WrapperRef.CommandDispatcher is not null)
+        await codeMirror6WrapperRef.CommandDispatcher.Dispatch(CodeMirrorSimpleCommand.RequestLinterRefresh);
+    })
+>Refresh linter</button>
+
 <CodeMirror6Wrapper
     @ref=@codeMirror6WrapperRef
     IsWASM=@IsWASM
