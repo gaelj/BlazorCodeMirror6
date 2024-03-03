@@ -204,4 +204,8 @@ public enum CodeMirrorSimpleCommand
     /// Delete the trailing whitespace
     /// </summary>
     DeleteTrailingWhitespace,
+    /// <summary>
+    /// Refresh the linter
+    /// </summary>
+    RequestLinterRefresh,
 }
