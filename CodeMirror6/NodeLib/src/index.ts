@@ -39,7 +39,7 @@ import {
     cut, copy, paste,
 } from "./CmCommands"
 import { dynamicImagesExtension } from "./CmImages"
-import { externalLintSource, getExternalLinterConfig } from "./CmLint"
+import { externalLintSource, getExternalLinterConfig, requestLinterRefresh } from "./CmLint"
 import { CmSetup } from "./CmSetup"
 import { replaceEmojiExtension, lastOperationWasUndo } from "./CmEmojiReplace"
 import { blockquote } from "./CmBlockquote"
@@ -61,6 +61,7 @@ import { createEditorWithId } from "./CmId"
 import { hyperLink } from './CmHyperlink'
 
 export { getCmInstance }
+export { requestLinterRefresh }
 
 /**
  * Initialize a new CodeMirror instance
@@ -167,7 +168,7 @@ export async function initCodeMirror(
         if (setup.highlightSelectionMatches === true) extensions.push(highlightSelectionMatches())
         if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
         if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput") {
-            extensions.push(linter(async view => await externalLintSource(id, view, dotnetHelper), getExternalLinterConfig()))
+            extensions.push(linter(async view => await externalLintSource(id, view, dotnetHelper), getExternalLinterConfig(id)))
         }
         if (initialConfig.lintingEnabled === true)
             extensions.push(lintGutter())
@@ -533,6 +534,8 @@ export function dispatchCommand(id: string, functionName: string, ...args: any[]
             case 'Focus': break;
             case 'ClearLocalStorage': clearLocalStorage(id); break;
             case 'ScrollIntoView': view.dispatch({ scrollIntoView: true }); break;
+
+            case 'RequestLinterRefresh': requestLinterRefresh(id); break;
 
             default: throw new Error(`Function ${functionName} does not exist.`);
         }
