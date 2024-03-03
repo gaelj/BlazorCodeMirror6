@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0 - 2024-03-03
+
+### ✨ Introduce new features
+
+- Add a command to force linter update (#121)
+
 ## 0.7.5 - 2024-03-03
 
 ### 🎨 Improve structure / format of the code
