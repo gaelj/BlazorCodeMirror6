@@ -5,9 +5,7 @@ import {
 } from "@codemirror/view"
 import { EditorState, SelectionRange, Text, StateEffect, ChangeSpec } from "@codemirror/state"
 import {
-    indentWithTab, history, historyKeymap,
-    cursorSyntaxLeft, selectSyntaxLeft, selectSyntaxRight, cursorSyntaxRight, deleteLine,
-    moveLineDown, moveLineUp, selectParentSyntax, indentLess, indentMore,
+    indentWithTab, history, historyKeymap, defaultKeymap, indentLess, indentMore,
     copyLineUp, copyLineDown, indentSelection, cursorMatchingBracket, toggleComment, toggleBlockComment,
     simplifySelection, insertBlankLine, selectLine, undo, redo, redoSelection, undoSelection,
     blockComment, blockUncomment, toggleBlockCommentByLine, lineComment, lineUncomment, toggleLineComment,
@@ -61,7 +59,6 @@ import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSepar
 import { consoleLog } from "./CmLogging"
 import { createEditorWithId } from "./CmId"
 import { hyperLink } from './CmHyperlink'
-import { multipleCursorNavigationKeymap, multipleCursorDeleteKeymap } from "./CmKeymap"
 
 export { getCmInstance }
 
@@ -147,41 +144,12 @@ export async function initCodeMirror(
             linter(async view => maxDocLengthLintSource(id, view)),
             keymap.of([
                 ...closeBracketsKeymap,
-
-                //...defaultKeymap,
-                { key: "Alt-ArrowLeft", mac: "Mod-ArrowLeft", run: cursorSyntaxLeft, shift: selectSyntaxLeft },
-                { key: "Alt-ArrowRight", mac: "Mod-ArrowRight", run: cursorSyntaxRight, shift: selectSyntaxRight },
-
-                { key: "Alt-ArrowUp", run: moveLineUp },
-                { key: "Shift-Alt-ArrowUp", run: copyLineUp },
-
-                { key: "Alt-ArrowDown", run: moveLineDown },
-                { key: "Shift-Alt-ArrowDown", run: copyLineDown },
-
-                { key: "Escape", run: simplifySelection },
-                { key: "Mod-Enter", run: insertBlankLine },
-
-                { key: "Alt-l", mac: "Mod-l", run: selectLine },
-                { key: "Mod-i", run: selectParentSyntax, preventDefault: true },
-
-                { key: "Mod-[", run: indentLess },
-                { key: "Mod-]", run: indentMore },
-                { key: "Mod-Alt-\\", run: indentSelection },
-
-                { key: "Shift-Mod-k", run: deleteLine },
-
-                { key: "Shift-Mod-\\", run: cursorMatchingBracket },
-
-                { key: "Mod-/", run: toggleComment },
-                { key: "Alt-A", run: toggleBlockComment },
-
+                ...defaultKeymap,
+                ...completionKeymap,
+                ...lintKeymap,
                 ...searchKeymap,
                 ...historyKeymap,
                 ...foldKeymap,
-                ...completionKeymap,
-                ...lintKeymap,
-                ...multipleCursorDeleteKeymap,
-                ...multipleCursorNavigationKeymap,
             ])
         ]
 
