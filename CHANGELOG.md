@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.7.5 - 2024-03-03
+
+### 🎨 Improve structure / format of the code
+
+- Minor cleanup
+- Use integrated support for multiple cursors
+
+### ⬆️ Upgrade dependencies
+
+- Update js dependencies
+
+### 🚨 Fix compiler / linter warnings
+
+- Fix warning in example project Upload endpoint
+
 ## 0.7.4 - 2024-03-01
 
 ### ✨ Introduce new features

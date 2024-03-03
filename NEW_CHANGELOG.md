@@ -1,7 +1,12 @@
-### ✨ Introduce new features
+### 🎨 Improve structure / format of the code
 
-- Support multiple cursors for (shift +) home & end keys
+- Minor cleanup
+- Use integrated support for multiple cursors
 
-### 🐛 Fix a bug
+### ⬆️ Upgrade dependencies
 
-- Fix error when parsing TSV line with empty cell(s) at the end of the last row
+- Update js dependencies
+
+### 🚨 Fix compiler / linter warnings
+
+- Fix warning in example project Upload endpoint
