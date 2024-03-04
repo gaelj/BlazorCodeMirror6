@@ -36,14 +36,14 @@ function createMentionsCompletionSource(): CompletionSource {
 function getMentionCompletions(firstCharacters: string | null): Completion[] {
     try {
         console.log(cachedCompletions.filter(cached => !firstCharacters ||
-            cached.label.toLowerCase().startsWith(firstCharacters.toLowerCase()) ||
-            cached.detail.toLowerCase().indexOf(firstCharacters.toLowerCase()) > -1 ||
-            (cached.info as string).toLowerCase().indexOf(firstCharacters.toLowerCase()) > -1
+            cached.label.toLowerCase().replace(/\s/g, '').startsWith(firstCharacters.toLowerCase()) ||
+            cached.detail.toLowerCase().replace(/\s/g, '').indexOf(firstCharacters.toLowerCase()) > -1 ||
+            (cached.info as string).toLowerCase().replace(/\s/g, '').indexOf(firstCharacters.toLowerCase()) > -1
             ).length)
         return cachedCompletions.filter(cached => !firstCharacters ||
-            cached.label.toLowerCase().startsWith(firstCharacters.toLowerCase()) ||
-            cached.detail.toLowerCase().indexOf(firstCharacters.toLowerCase()) > -1 ||
-            (cached.info as string).toLowerCase().indexOf(firstCharacters.toLowerCase()) > -1
+            cached.label.toLowerCase().replace(/\s/g, '').startsWith(firstCharacters.toLowerCase()) ||
+            cached.detail.toLowerCase().replace(/\s/g, '').indexOf(firstCharacters.toLowerCase()) > -1 ||
+            (cached.info as string).toLowerCase().replace(/\s/g, '').indexOf(firstCharacters.toLowerCase()) > -1
             )
     } catch (error) {
         console.error('Error fetching mention completions:', error)
