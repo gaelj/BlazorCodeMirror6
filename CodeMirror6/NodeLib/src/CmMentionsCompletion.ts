@@ -32,9 +32,11 @@ function createMentionsCompletionSource(): CompletionSource {
 function getMentionCompletions(firstCharacters: string | null): Completion[] {
     try {
         return cachedCompletions.filter(cached => !firstCharacters ||
-            cached.label.startsWith(firstCharacters) ||
-            cached.detail.startsWith(firstCharacters) ||
-            cached.detail.indexOf(` ${firstCharacters}`) > -1
+            cached.label.toLowerCase().startsWith(firstCharacters.toLowerCase()) ||
+            cached.detail.toLowerCase().startsWith(firstCharacters.toLowerCase()) ||
+            cached.detail.toLowerCase().indexOf(` ${firstCharacters.toLowerCase()}`) > -1 ||
+            (cached.info as string).toLowerCase().startsWith(firstCharacters.toLowerCase()) ||
+            (cached.info as string).toLowerCase().indexOf(` ${firstCharacters.toLowerCase()}`) > -1
             )
     } catch (error) {
         console.error('Error fetching mention completions:', error)
