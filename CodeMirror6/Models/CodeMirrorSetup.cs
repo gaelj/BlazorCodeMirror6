@@ -109,5 +109,10 @@ public readonly record struct CodeMirrorSetup
     /// <summary>
     /// Whether to show the debug logs
     /// </summary>
-    [JsonPropertyName("debugLogs")] public bool DebugLogs { get; init; } = false;
+    [JsonPropertyName("debugLogs")] public bool DebugLogs { get; init; }
+
+    /// <summary>
+    /// Whether to focus on the editor when it is created
+    /// </summary>
+    [JsonPropertyName("focusOnCreation")] public bool FocusOnCreation { get; init; }
 }
