@@ -199,7 +199,13 @@ export async function initCodeMirror(
         const textInLocalStorage = localStorage.getItem(initialConfig.localStorageKey)
         const initialDoc = textInLocalStorage ? textInLocalStorage : initialConfig.doc
 
-        const initialScrollEffect = EditorView.scrollIntoView((initialDoc && setup.scrollToEnd === true) ? initialDoc.length : 0, { y: setup.scrollToEnd === true ? 'end' : 'start' })
+        const initialScrollPosition = (initialDoc && setup.scrollToEnd === true)
+            ? initialDoc.length
+            : 0
+        const initialScrollEffect = EditorView.scrollIntoView(
+            initialScrollPosition,
+            { y: setup.scrollToEnd === true ? 'end' : 'start' }
+        )
         const docLines = initialDoc?.split(/\r\n|\r|\n/) ?? [initialDoc]
         const text = Text.of(docLines)
         const textLength = text?.length ?? 0
@@ -215,7 +221,7 @@ export async function initCodeMirror(
         CMInstances[id].view = new EditorView({
             state: CMInstances[id].state,
             parent: parentDiv,
-            scrollTo: setup.scrollToEnd === true ? initialScrollEffect : null,
+            scrollTo: initialScrollEffect,
         })
 
         if (setup.focusOnCreation === true) {
