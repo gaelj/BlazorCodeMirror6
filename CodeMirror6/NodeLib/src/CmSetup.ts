@@ -22,4 +22,5 @@ export class CmSetup
     public bindValueMode: string
     public krokiUrl: string
     public debugLogs: boolean
+    public focusOnCreation: boolean
 }

@@ -218,7 +218,7 @@ export async function initCodeMirror(
             scrollTo: setup.scrollToEnd === true ? initialScrollEffect : null,
         })
 
-        if (setup.scrollToEnd === true) {
+        if (setup.focusOnCreation === true) {
             CMInstances[id].view.focus()
         }
 
