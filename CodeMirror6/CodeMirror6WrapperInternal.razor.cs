@@ -260,6 +260,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     internal CodeMirrorConfiguration Config = null!;
     private bool shouldRender = true;
     private bool IsCodeMirrorInitialized;
+    private readonly CancellationTokenSource LifeCycleCancellationTokenSource = new();
 
     /// <summary>
     /// Life-cycle method invoked when the component is initialized.
@@ -323,12 +324,16 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     private async Task InitializeJsInterop()
     {
         if (CmJsInterop is null) {
+            Logger.LogDebug("Initializing CodeMirror JS Interop with id {id}", Setup.Id);
+            if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
             CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
+            if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
             if (!await CmJsInterop.PropertySetters.InitCodeMirror()) return;
             if (GetMentionCompletions is not null) {
                 var mentionCompletions = await GetMentionCompletions();
                 if (!await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions)) return;
             }
+            if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
             IsCodeMirrorInitialized = true;
             await InvokeAsync(StateHasChanged);
             await OnParametersSetAsync();
@@ -463,6 +468,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
                 Config.ShowMarkdownControlCharactersAroundCursor = ShowMarkdownControlCharactersAroundCursor;
                 updated = true;
             }
+            if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
             if (updated)
                 await CmJsInterop.PropertySetters.SetConfiguration();
         }
@@ -486,6 +492,11 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     public async ValueTask DisposeAsync()
     {
+        try {
+            LifeCycleCancellationTokenSource.Cancel();
+            LifeCycleCancellationTokenSource.Dispose();
+        }
+        catch (ObjectDisposedException) {}
         if (CmJsInterop?.IsJSReady == true)
             await CmJsInterop.DisposeAsync();
         CmJsInterop = null;
