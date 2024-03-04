@@ -225,6 +225,11 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     public CMCommandDispatcher? CommandDispatcher => CmJsInterop?.CommandDispatcher;
 
+    /// <summary>
+    /// Is the JS CodeMirror instance ready?
+    /// </summary>
+    public bool IsLoaded => CmJsInterop?.IsJSReady == true;
+
     private string SetupId = null!;
     private string LoadingDivId => $"{SetupId}_Loading";
     private string ContainerId => $"{SetupId}_Container";
@@ -248,7 +253,6 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     private string MaxWidthStyle => FullScreen || (string.IsNullOrEmpty(MaxWidth) && string.IsNullOrEmpty(Width)) ? string.Empty : $"max-width: {MaxWidth ?? Width};";
     private string MaxHeightStyle => FullScreen || (string.IsNullOrEmpty(MaxHeight) && string.IsNullOrEmpty(Height)) ? string.Empty : $"max-height: {MaxHeight ?? Height};";
     private string EditorStyle => $"{WidthStyle} {HeightStyle} {MaxWidthStyle} {MaxHeightStyle}";
-
     /// <summary>
     /// JavaScript interop instance
     /// </summary>
@@ -256,6 +260,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     internal CodeMirrorConfiguration Config = null!;
     private bool shouldRender = true;
     private bool IsCodeMirrorInitialized;
+    private readonly CancellationTokenSource LifeCycleCancellationTokenSource = new();
 
     /// <summary>
     /// Life-cycle method invoked when the component is initialized.
@@ -319,12 +324,16 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     private async Task InitializeJsInterop()
     {
         if (CmJsInterop is null) {
+            Logger.LogDebug("Initializing CodeMirror JS Interop with id {id}", Setup.Id);
+            if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
             CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
+            if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
             if (!await CmJsInterop.PropertySetters.InitCodeMirror()) return;
             if (GetMentionCompletions is not null) {
                 var mentionCompletions = await GetMentionCompletions();
                 if (!await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions)) return;
             }
+            if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
             IsCodeMirrorInitialized = true;
             await InvokeAsync(StateHasChanged);
             await OnParametersSetAsync();
@@ -459,6 +468,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
                 Config.ShowMarkdownControlCharactersAroundCursor = ShowMarkdownControlCharactersAroundCursor;
                 updated = true;
             }
+            if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
             if (updated)
                 await CmJsInterop.PropertySetters.SetConfiguration();
         }
@@ -475,10 +485,6 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// </summary>
     /// <returns></returns>
     protected override bool ShouldRender() => shouldRender;
-    /// <summary>
-    /// Is the JS CodeMirror instance ready?
-    /// </summary>
-    public bool IsLoaded => CmJsInterop?.IsJSReady == true;
 
     /// <summary>
     /// Dispose resources
@@ -486,6 +492,11 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     public async ValueTask DisposeAsync()
     {
+        try {
+            LifeCycleCancellationTokenSource.Cancel();
+            LifeCycleCancellationTokenSource.Dispose();
+        }
+        catch (ObjectDisposedException) {}
         if (CmJsInterop?.IsJSReady == true)
             await CmJsInterop.DisposeAsync();
         CmJsInterop = null;
