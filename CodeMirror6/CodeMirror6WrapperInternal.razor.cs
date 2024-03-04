@@ -225,6 +225,11 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <returns></returns>
     public CMCommandDispatcher? CommandDispatcher => CmJsInterop?.CommandDispatcher;
 
+    /// <summary>
+    /// Is the JS CodeMirror instance ready?
+    /// </summary>
+    public bool IsLoaded => CmJsInterop?.IsJSReady == true;
+
     private string SetupId = null!;
     private string LoadingDivId => $"{SetupId}_Loading";
     private string ContainerId => $"{SetupId}_Container";
@@ -248,7 +253,6 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     private string MaxWidthStyle => FullScreen || (string.IsNullOrEmpty(MaxWidth) && string.IsNullOrEmpty(Width)) ? string.Empty : $"max-width: {MaxWidth ?? Width};";
     private string MaxHeightStyle => FullScreen || (string.IsNullOrEmpty(MaxHeight) && string.IsNullOrEmpty(Height)) ? string.Empty : $"max-height: {MaxHeight ?? Height};";
     private string EditorStyle => $"{WidthStyle} {HeightStyle} {MaxWidthStyle} {MaxHeightStyle}";
-
     /// <summary>
     /// JavaScript interop instance
     /// </summary>
@@ -475,10 +479,6 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// </summary>
     /// <returns></returns>
     protected override bool ShouldRender() => shouldRender;
-    /// <summary>
-    /// Is the JS CodeMirror instance ready?
-    /// </summary>
-    public bool IsLoaded => CmJsInterop?.IsJSReady == true;
 
     /// <summary>
     /// Dispose resources
