@@ -21506,7 +21506,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-BlJb3Hhx.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-CI57nqS0.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -21517,7 +21517,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-Bwh-0fm0.js').then(m => m.cpp());
+            return import('./index-CIBuGb0c.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21525,7 +21525,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-Bwh-0fm0.js').then(m => m.cpp());
+            return import('./index-CIBuGb0c.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21553,7 +21553,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-BjAGiyQb.js').then(m => m.java());
+            return import('./index-D32zGt5P.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21569,7 +21569,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-DH0zTF03.js').then(m => m.json());
+            return import('./index-BJgwVnI0.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21583,14 +21583,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-BY5f9JUf.js').then(m => m.less());
+            return import('./index-Dq1mnadz.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-Apx_EEfT.js').then(m => m.liquid());
+            return import('./index-DXVQ_L_Z.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21616,7 +21616,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-DeFMYyWW.js').then(m => m.php());
+            return import('./index-DWAFi5h3.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21633,28 +21633,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-ozgJI9jf.js').then(m => m.python());
+            return import('./index-DFyMD972.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-n8a80Swd.js').then(m => m.rust());
+            return import('./index-BUGs7EjD.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-Dku7mP_U.js').then(m => m.sass({ indented: true }));
+            return import('./index-VxQMdw6I.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-Dku7mP_U.js').then(m => m.sass());
+            return import('./index-VxQMdw6I.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21685,7 +21685,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-Dm9tyigL.js').then(m => m.wast());
+            return import('./index-BcVXIZi5.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21693,7 +21693,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-B0a2kyL_.js').then(m => m.xml());
+            return import('./index-DTgndAe2.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21701,7 +21701,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-BKIgdzrV.js').then(m => m.yaml());
+            return import('./index-BflOEseb.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -22496,13 +22496,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-DuF37ht3.js').then(m => m.vue());
+            return import('./index-eQ-QfHXl.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-DUZw4eRT.js').then(m => m.angular());
+            return import('./index-DEXzEjKq.js').then(m => m.angular());
         }
     })
 ];
@@ -76620,7 +76620,10 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         await minDelay;
         const textInLocalStorage = localStorage.getItem(initialConfig.localStorageKey);
         const initialDoc = textInLocalStorage ? textInLocalStorage : initialConfig.doc;
-        const initialScrollEffect = EditorView.scrollIntoView((initialDoc && setup.scrollToEnd === true) ? initialDoc.length : 0, { y: setup.scrollToEnd === true ? 'end' : 'start' });
+        const initialScrollPosition = (initialDoc && setup.scrollToEnd === true)
+            ? initialDoc.length
+            : 0;
+        const initialScrollEffect = EditorView.scrollIntoView(initialScrollPosition, { y: setup.scrollToEnd === true ? 'end' : 'start' });
         const docLines = initialDoc?.split(/\r\n|\r|\n/) ?? [initialDoc];
         const text = Text.of(docLines);
         const textLength = text?.length ?? 0;
@@ -76634,9 +76637,9 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         CMInstances[id].view = new EditorView({
             state: CMInstances[id].state,
             parent: parentDiv,
-            scrollTo: setup.scrollToEnd === true ? initialScrollEffect : null,
+            scrollTo: initialScrollEffect,
         });
-        if (setup.scrollToEnd === true) {
+        if (setup.focusOnCreation === true) {
             CMInstances[id].view.focus();
         }
         // Hide the placeholder once the editor is initialized
