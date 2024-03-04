@@ -8,6 +8,7 @@ function createMentionsCompletionSource(): CompletionSource {
     return async (context: CompletionContext) => {
         let options: Completion[] = []
         let from = context.pos
+        let to = context.pos
 
         const isCode = isInCodeBlock(context.state, from)
 
@@ -15,28 +16,34 @@ function createMentionsCompletionSource(): CompletionSource {
             const match = context.matchBefore(/(?:\s|^)\@[\w]*$/)
             if (match) {
                 const searchText = context.matchBefore(/[\w]+/)
-                if (searchText)
+                if (searchText) {
                     from = searchText.from
+                    to = searchText.to
+                }
                 options = getMentionCompletions(searchText ? searchText.text : null)
             }
         }
 
         return {
             from: from,
+            to: to,
             options: options,
-            validFor: /^[\w]*$/,
+            filter: false,
         }
     }
 }
 
 function getMentionCompletions(firstCharacters: string | null): Completion[] {
     try {
+        console.log(cachedCompletions.filter(cached => !firstCharacters ||
+            cached.label.toLowerCase().startsWith(firstCharacters.toLowerCase()) ||
+            cached.detail.toLowerCase().indexOf(firstCharacters.toLowerCase()) > -1 ||
+            (cached.info as string).toLowerCase().indexOf(firstCharacters.toLowerCase()) > -1
+            ).length)
         return cachedCompletions.filter(cached => !firstCharacters ||
             cached.label.toLowerCase().startsWith(firstCharacters.toLowerCase()) ||
-            cached.detail.toLowerCase().startsWith(firstCharacters.toLowerCase()) ||
-            cached.detail.toLowerCase().indexOf(` ${firstCharacters.toLowerCase()}`) > -1 ||
-            (cached.info as string).toLowerCase().startsWith(firstCharacters.toLowerCase()) ||
-            (cached.info as string).toLowerCase().indexOf(` ${firstCharacters.toLowerCase()}`) > -1
+            cached.detail.toLowerCase().indexOf(firstCharacters.toLowerCase()) > -1 ||
+            (cached.info as string).toLowerCase().indexOf(firstCharacters.toLowerCase()) > -1
             )
     } catch (error) {
         console.error('Error fetching mention completions:', error)
