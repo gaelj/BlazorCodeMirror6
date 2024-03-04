@@ -1,7 +1,7 @@
-### ⚡️ Improve performance
+### ✨ Introduce new features
 
-- Add a cancellation token to help remove errors in Blazor Server with pre-rendering
+- Add setup property FocusOnCreation
 
-### 🚚 Move or rename resources (e.g., files, paths)
+### 🐛 Fix a bug
 
-- Move code blocks for consistency
+- Force scroll to start of document if not scrolling to end, on creation

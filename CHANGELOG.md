@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.2 - 2024-03-04
+
+### ✨ Introduce new features
+
+- Add setup property FocusOnCreation
+
+### 🐛 Fix a bug
+
+- Force scroll to start of document if not scrolling to end, on creation
+
 ## 0.8.1 - 2024-03-04
 
 ### ⚡️ Improve performance
