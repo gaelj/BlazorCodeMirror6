@@ -102,13 +102,13 @@ export async function initCodeMirror(
         consoleLog(id, 'Config', initialConfig)
         consoleLog(id, 'Setup', setup)
 
-        const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension)
-        if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
-            customKeyMap.push(indentWithTab)
+        const customLanguageKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension)
+        if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV" && setup.indentWithTab)
+            customLanguageKeyMap.push(indentWithTab)
 
         let extensions = [
             createEditorWithId(id),
-            CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
+            CMInstances[id].keymapCompartment.of(keymap.of(customLanguageKeyMap)),
             CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
             CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
@@ -128,7 +128,7 @@ export async function initCodeMirror(
                 initialConfig.languageName === "CSV" || initialConfig.languageName === "TSV"
                     ? [
                         columnStylingPlugin(getSeparator(initialConfig.languageName)),
-                        keymap.of(getColumnStylingKeymap(getSeparator(initialConfig.languageName))),
+                        setup.indentWithTab ? keymap.of(getColumnStylingKeymap(getSeparator(initialConfig.languageName))) : [],
                         linter(async view => columnLintSource(id, view, getSeparator(initialConfig.languageName))),
                     ]
                     : []
@@ -354,20 +354,20 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
     if (oldConfig.editable !== newConfig.editable) effects.push(CMInstances[id].editableCompartment.reconfigure(EditorView.editable.of(newConfig.editable)))
     if (oldConfig.languageName !== newConfig.languageName || oldConfig.fileNameOrExtension !== newConfig.fileNameOrExtension) {
         const language = await getLanguage(id, newConfig.languageName, newConfig.fileNameOrExtension)
-        const customKeyMap = getLanguageKeyMaps(newConfig.languageName, newConfig.fileNameOrExtension)
-        if (newConfig.languageName !== "CSV" && newConfig.languageName !== "TSV")
-            customKeyMap.push(indentWithTab)
+        const customLanguageKeyMap = getLanguageKeyMaps(newConfig.languageName, newConfig.fileNameOrExtension)
+        if (newConfig.languageName !== "CSV" && newConfig.languageName !== "TSV" && CMInstances[id].setup.indentWithTab)
+            customLanguageKeyMap.push(indentWithTab)
         const separator = getSeparator(newConfig.languageName)
         effects.push(
             CMInstances[id].languageCompartment.reconfigure(language ?? []),
-            CMInstances[id].keymapCompartment.reconfigure(keymap.of(customKeyMap)),
+            CMInstances[id].keymapCompartment.reconfigure(keymap.of(customLanguageKeyMap)),
             languageChangeEffect.of(language?.language),
             CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.languageName === 'Markdown')),
             CMInstances[id].columnsStylingCompartment.reconfigure(
                 newConfig.languageName === "CSV" || newConfig.languageName === "TSV"
                     ? [
                         columnStylingPlugin(separator),
-                        keymap.of(getColumnStylingKeymap(separator)),
+                        CMInstances[id].setup.indentWithTab ? keymap.of(getColumnStylingKeymap(separator)) : [],
                         linter(async view => columnLintSource(id, view, separator)),
                     ]
                     : []

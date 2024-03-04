@@ -23,4 +23,5 @@ export class CmSetup
     public krokiUrl: string
     public debugLogs: boolean
     public focusOnCreation: boolean
+    public indentWithTab: boolean
 }
