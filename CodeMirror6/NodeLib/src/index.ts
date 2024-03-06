@@ -13,10 +13,9 @@ import {
 } from "@codemirror/commands"
 import {
     indentUnit, defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
-    foldGutter, foldKeymap,
+    foldGutter, foldKeymap, unfoldAll,
 } from "@codemirror/language"
 import { languages } from "@codemirror/language-data"
-import { markdownLanguage } from "@codemirror/lang-markdown"
 import { unifiedMergeView } from "@codemirror/merge"
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap, Completion } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
@@ -54,7 +53,7 @@ import { htmlViewPlugin } from "./CmHtml"
 import { getFileUploadExtensions, uploadFiles } from "./CmFileUpload"
 import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
-import { foldMarkdownCodeBlocks, hideMarksExtension } from "./CmHideMarkdownMarks"
+import { foldMarkdownDiagramCodeBlocks, hideMarksExtension } from "./CmHideMarkdownMarks"
 import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSeparator, csvToMarkdownTable } from "./CmColumns"
 import { consoleLog } from "./CmLogging"
 import { createEditorWithId } from "./CmId"
@@ -167,9 +166,8 @@ export async function initCodeMirror(
         if (setup.crossHairSelection === true) extensions.push(crosshairCursor())
         if (setup.highlightSelectionMatches === true) extensions.push(highlightSelectionMatches())
         if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
-        if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput") {
+        if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput")
             extensions.push(linter(async view => await externalLintSource(id, view, dotnetHelper), getExternalLinterConfig(id)))
-        }
         if (initialConfig.lintingEnabled === true)
             extensions.push(lintGutter())
 
@@ -234,7 +232,8 @@ export async function initCodeMirror(
             loadingPlaceholder.style.display = 'none'
         }
 
-        // foldMarkdownCodeBlocks(CMInstances[id].view)
+        if (initialConfig.languageName === "Markdown" && initialConfig.autoFormatMarkdown)
+            foldMarkdownDiagramCodeBlocks(CMInstances[id].view)
 
         // add a class to allow resizing of the editor
         setResize(id, initialConfig.resize)
@@ -373,9 +372,18 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
                     : []
             ),
         )
+        if (newConfig.languageName === "Markdown" && newConfig.autoFormatMarkdown)
+            foldMarkdownDiagramCodeBlocks(CMInstances[id].view)
+        else
+            unfoldAll(CMInstances[id].view)
     }
-    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages)
+    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages) {
         effects.push(CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.autoFormatMarkdown)))
+        if (newConfig.languageName === "Markdown" && newConfig.autoFormatMarkdown)
+            foldMarkdownDiagramCodeBlocks(CMInstances[id].view)
+        else
+            unfoldAll(CMInstances[id].view)
+    }
     if (oldConfig.replaceEmojiCodes !== newConfig.replaceEmojiCodes) effects.push(CMInstances[id].emojiReplacerCompartment.reconfigure(replaceEmojiExtension(newConfig.replaceEmojiCodes)))
     if (oldConfig.lineWrapping !== newConfig.lineWrapping) effects.push(CMInstances[id].lineWrappingCompartment.reconfigure(newConfig.lineWrapping ? EditorView.lineWrapping : []))
     if (oldConfig.mergeViewConfiguration !== newConfig.mergeViewConfiguration) effects.push(CMInstances[id].unifiedMergeViewCompartment.reconfigure(newConfig.mergeViewConfiguration ? unifiedMergeView(newConfig.mergeViewConfiguration) : []))
