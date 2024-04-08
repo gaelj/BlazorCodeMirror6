@@ -21506,7 +21506,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-CKchg1Za.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-9xZ_1nYD.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -21517,7 +21517,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-Cd4aimTV.js').then(m => m.cpp());
+            return import('./index-Bkjbba2O.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21525,7 +21525,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-Cd4aimTV.js').then(m => m.cpp());
+            return import('./index-Bkjbba2O.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21553,7 +21553,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-DXzMFA7q.js').then(m => m.java());
+            return import('./index-CVfmZNgj.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21569,7 +21569,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-D8hKODLN.js').then(m => m.json());
+            return import('./index-BMPFFQBI.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21583,14 +21583,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-D-Sy5hHs.js').then(m => m.less());
+            return import('./index-D-zE3t-2.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-DNNQvXpD.js').then(m => m.liquid());
+            return import('./index-B9sNQo39.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21616,7 +21616,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-DpA0D7lG.js').then(m => m.php());
+            return import('./index-CFYWy9Sy.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21633,28 +21633,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-B_uln2M4.js').then(m => m.python());
+            return import('./index-GokqFSFB.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-A-njVhm2.js').then(m => m.rust());
+            return import('./index-CYyqLb7K.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-BROGqJa2.js').then(m => m.sass({ indented: true }));
+            return import('./index-CExhWrr5.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-BROGqJa2.js').then(m => m.sass());
+            return import('./index-CExhWrr5.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21685,7 +21685,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-DkMkP_dT.js').then(m => m.wast());
+            return import('./index-90cvpY6F.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21693,7 +21693,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-Cf85-wwM.js').then(m => m.xml());
+            return import('./index-B3GSF7RW.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21701,7 +21701,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-VlQFPrmV.js').then(m => m.yaml());
+            return import('./index-BGxWmxWy.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -22496,13 +22496,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-BLD7y8EK.js').then(m => m.vue());
+            return import('./index-CCxW_d4h.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-BwsysQVU.js').then(m => m.angular());
+            return import('./index-CO73l3P4.js').then(m => m.angular());
         }
     })
 ];
@@ -40902,17 +40902,20 @@ function getTheme(themeName) {
     }
 }
 
-const imageWidget = (src, from, baseUrl) => buildWidget({
+const imageWidget = (id, src, from) => buildWidget({
     src: src,
     eq(other) {
         return other.src === src;
     },
     toDOM(view) {
+        const basePathForLinks = (CMInstances[id] !== undefined && CMInstances[id].config.basePathForLinks)
+            ? CMInstances[id].config.basePathForLinks.replace(/\/+$/, '') + "/"
+            : '';
         const container = document.createElement('div');
         container.setAttribute('aria-hidden', 'true');
         const image = container.appendChild(document.createElement('img'));
         image.setAttribute('aria-hidden', 'true');
-        image.src = `${baseUrl}${src}`;
+        image.src = `${basePathForLinks}${src}`;
         image.style.maxHeight = '320px';
         image.style.maxWidth = 'calc(100% - 2em)';
         image.style.objectFit = 'scale-down';
@@ -40942,11 +40945,8 @@ const dynamicImagesExtension = (id, enabled = true) => {
         return [];
     }
     const imageRegex = /!\[.*?\]\((?<src>.*?)\)/;
-    const basePathForLinks = (CMInstances[id] !== undefined && CMInstances[id].config.basePathForLinks)
-        ? CMInstances[id].config.basePathForLinks.replace(/\/+$/, '') + "/"
-        : '';
     const imageDecoration = (src, from) => Decoration.widget({
-        widget: imageWidget(src, from, basePathForLinks),
+        widget: imageWidget(id, src, from),
         side: -1,
         block: true,
     });
