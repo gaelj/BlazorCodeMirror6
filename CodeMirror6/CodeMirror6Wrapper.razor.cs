@@ -212,6 +212,11 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// <value></value>
     [Parameter] public string? BasePathForLinks { get; set; }
     /// <summary>
+    /// The URL to the markdown viewer page, to optionally handle links to Markdown files. The original link will be appended as a query string parameter value
+    /// </summary>
+    /// <value></value>
+    [Parameter] public string? MarkdownViewPath { get; set; }
+    /// <summary>
     /// Whether to show the markdown control characters around the cursor
     /// </summary>
     [Parameter] public bool ShowMarkdownControlCharactersAroundCursor { get; init; } = true;

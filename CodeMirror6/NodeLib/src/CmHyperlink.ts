@@ -19,6 +19,7 @@ export interface HyperLinkState
     at: number;
     url: string;
     baseUrl?: string;
+    viewer?: string;
 }
 
 class HyperLinkIcon extends WidgetType
@@ -41,6 +42,8 @@ class HyperLinkIcon extends WidgetType
         }
         else
             link.href = `${this.state.baseUrl}${this.state.url}`;
+        if (link.href.endsWith('.md') && this.state.viewer)
+            link.href = `${this.state.viewer}${encodeURIComponent(link.href)}`;
         link.target = '_blank';
         link.innerHTML = linkSvgImage;
         link.className = 'cm-hyper-link-icon';
@@ -57,6 +60,9 @@ function hyperLinkDecorations(view: EditorView, id: string)
     const basePathForLinks = (CMInstances[id] !== undefined && CMInstances[id].config.basePathForLinks)
         ? CMInstances[id].config.basePathForLinks.replace(/\/+$/, '') + "/"
         : '';
+    const markdownViewPath = (CMInstances[id] !== undefined && CMInstances[id].config.markdownViewPath)
+        ? CMInstances[id].config.markdownViewPath
+        : '';
 
     while ((match = anyLinkRegexp.exec(doc)) !== null) {
         const from = match.index;
@@ -66,6 +72,7 @@ function hyperLinkDecorations(view: EditorView, id: string)
                 at: to,
                 url: match[0],
                 baseUrl: basePathForLinks,
+                viewer: markdownViewPath,
             }),
             side: 1,
         });

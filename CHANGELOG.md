@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.5 - 2024-04-09
+
+### ✨ Introduce new features
+
+- Allow opening markdown links by passing them as query parameter value to a viewer URL + query parameter name + '='
+
+### 🐛 Fix a bug
+
+- Update images when bath path for links is initially set
+- Update links when bath path for links is initially set
+
 ## 0.8.4 - 2024-04-08
 
 ### 🐛 Fix a bug

@@ -35,6 +35,7 @@ export class CmConfiguration {
     public highlightActiveLine: boolean
     public showMarkdownControlCharactersAroundCursor: boolean
     public basePathForLinks: string | null
+    public markdownViewPath: string | null
 }
 
 export interface UnifiedMergeConfig {
