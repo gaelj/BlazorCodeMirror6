@@ -7,19 +7,22 @@ import { buildWidget } from './lib/codemirror-kit'
 import { CMInstances } from './CmInstance'
 
 
-const imageWidget = (src: string, from: number, baseUrl: string | null) => buildWidget({
+const imageWidget = (id: string, src: string, from: number) => buildWidget({
     src: src,
     eq(other) {
         return other.src === src
     },
 
     toDOM(view: EditorView) {
+    const basePathForLinks = (CMInstances[id] !== undefined && CMInstances[id].config.basePathForLinks)
+        ? CMInstances[id].config.basePathForLinks.replace(/\/+$/, '') + "/"
+        : '';
         const container = document.createElement('div')
         container.setAttribute('aria-hidden', 'true')
         const image = container.appendChild(document.createElement('img'))
 
         image.setAttribute('aria-hidden', 'true')
-        image.src = `${baseUrl}${src}`
+        image.src = `${basePathForLinks}${src}`
         image.style.maxHeight = '320px'
         image.style.maxWidth = 'calc(100% - 2em)'
         image.style.objectFit = 'scale-down'
@@ -57,12 +60,9 @@ export const dynamicImagesExtension = (id: string, enabled: boolean = true): Ext
     }
 
     const imageRegex = /!\[.*?\]\((?<src>.*?)\)/
-    const basePathForLinks = (CMInstances[id] !== undefined && CMInstances[id].config.basePathForLinks)
-        ? CMInstances[id].config.basePathForLinks.replace(/\/+$/, '') + "/"
-        : '';
 
     const imageDecoration = (src: string, from: number) => Decoration.widget({
-        widget: imageWidget(src, from, basePathForLinks),
+        widget: imageWidget(id, src, from),
         side: -1,
         block: true,
     })
