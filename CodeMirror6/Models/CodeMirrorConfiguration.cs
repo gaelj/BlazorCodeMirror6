@@ -36,6 +36,7 @@ namespace GaelJ.BlazorCodeMirror6.Models;
 /// <param name="highlightActiveLine"></param>
 /// <param name="showMarkdownControlCharactersAroundCursor"></param>
 /// <param name="embedUploadsAsDataUrls"></param>
+/// <param name="basePathForLinks"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -66,7 +67,8 @@ public class CodeMirrorConfiguration(
     bool scrollPastEnd,
     bool highlightActiveLine,
     bool showMarkdownControlCharactersAroundCursor,
-    bool embedUploadsAsDataUrls)
+    bool embedUploadsAsDataUrls,
+    string? basePathForLinks)
 {
     /// <summary>
     /// The text to display in the editor
@@ -217,4 +219,10 @@ public class CodeMirrorConfiguration(
     /// When uploading a file, instead of using the callback, encode the file contents as base64 and include it as a data URL in the document
     /// </summary>
     [JsonPropertyName("embedUploadsAsDataUrls")] public bool EmbedUploadsAsDataUrls { get; internal set; } = embedUploadsAsDataUrls;
+
+    /// <summary>
+    /// If a Markdown document contains relative links, this property can be used to specify the base path for the links, if different from the current page.
+    /// </summary>
+    /// <value></value>
+    [JsonPropertyName("basePathForLinks")] public string? BasePathForLinks { get; set; } = basePathForLinks;
 }

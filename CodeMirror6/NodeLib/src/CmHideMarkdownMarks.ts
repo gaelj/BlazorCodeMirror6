@@ -3,7 +3,7 @@ import { RangeSet, StateField } from '@codemirror/state'
 import { Decoration, EditorView, ViewPlugin } from '@codemirror/view'
 import type { EditorState, Extension, Range } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
-import { foldInside, unfoldCode, unfoldEffect, foldEffect } from '@codemirror/language'
+import { foldInside, foldEffect } from '@codemirror/language'
 import { buildWidget } from './lib/codemirror-kit'
 import { isCursorInRange } from './CmHelpers'
 import { markdownLanguage } from '@codemirror/lang-markdown'
@@ -17,19 +17,13 @@ const hideWidget = () => buildWidget({
     },
 })
 
-export function foldMarkdownCodeBlocks(view: EditorView) {
-    // Get the syntax tree for the current state
-    let tree = syntaxTree(view.state);
-
-    // Iterate over the tree to find code block nodes
-    tree.iterate({
+export function foldMarkdownDiagramCodeBlocks(view: EditorView) {
+    syntaxTree(view.state).iterate({
         enter: (node) => {
-            if (markdownLanguage.isActiveAt(view.state, node.from) &&
-                node.type.name === "FencedCode") { // Check if the node is a fenced code block
-                // Attempt to fold the code block range
+            if (markdownLanguage.isActiveAt(view.state, node.from) && node.type.name === "FencedCode") { // Check if the node is a fenced code block
                 const codeAndLanguage = view.state.doc.sliceString(node.from, node.to)
-                var language = detectDiagramLanguage(codeAndLanguage)
-                if (language === undefined) return
+                var diagramLanguage = detectDiagramLanguage(codeAndLanguage)
+                if (diagramLanguage === undefined) return
                 let effect = foldInside(node.node);
                 if (effect) view.dispatch({effects: foldEffect.of(effect)});
             }
@@ -53,6 +47,9 @@ export const hideMarksExtension = (enabled: boolean = true): Extension => {
                 enter: ({ node, type, from, to }) => {
                     if (type.name.endsWith('Mark') && type.name !== 'ListMark') {
                         if (type.name === 'CodeMark') {
+                            const codeAndLanguage = state.doc.sliceString(node.from, node.to)
+                            var diagramLanguage = detectDiagramLanguage(codeAndLanguage)
+                            if (diagramLanguage !== undefined) return
                             const eFC = node.parent
                             if (eFC.type.name === 'FencedCode') {
                                 const cursorFrom = state.doc.lineAt(eFC.from).from

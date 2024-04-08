@@ -4,9 +4,10 @@ import { RangeSet, StateField } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
 import { Decoration, EditorView, WidgetType, ViewUpdate } from '@codemirror/view'
 import { buildWidget } from './lib/codemirror-kit'
+import { CMInstances } from './CmInstance'
 
 
-const imageWidget = (src: string, from: number) => buildWidget({
+const imageWidget = (src: string, from: number, baseUrl: string | null) => buildWidget({
     src: src,
     eq(other) {
         return other.src === src
@@ -18,7 +19,7 @@ const imageWidget = (src: string, from: number) => buildWidget({
         const image = container.appendChild(document.createElement('img'))
 
         image.setAttribute('aria-hidden', 'true')
-        image.src = src
+        image.src = `${baseUrl}${src}`
         image.style.maxHeight = '320px'
         image.style.maxWidth = 'calc(100% - 2em)'
         image.style.objectFit = 'scale-down'
@@ -50,15 +51,18 @@ const imageWidget = (src: string, from: number) => buildWidget({
     },
 })
 
-export const dynamicImagesExtension = (enabled: boolean = true): Extension => {
+export const dynamicImagesExtension = (id: string, enabled: boolean = true): Extension => {
     if (!enabled) {
         return []
     }
 
     const imageRegex = /!\[.*?\]\((?<src>.*?)\)/
+    const basePathForLinks = (CMInstances[id] !== undefined && CMInstances[id].config.basePathForLinks)
+        ? CMInstances[id].config.basePathForLinks.replace(/\/+$/, '') + "/"
+        : '';
 
     const imageDecoration = (src: string, from: number) => Decoration.widget({
-        widget: imageWidget(src, from),
+        widget: imageWidget(src, from, basePathForLinks),
         side: -1,
         block: true,
     })

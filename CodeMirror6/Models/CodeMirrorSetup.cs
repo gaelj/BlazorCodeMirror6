@@ -115,4 +115,9 @@ public readonly record struct CodeMirrorSetup
     /// Whether to focus on the editor when it is created
     /// </summary>
     [JsonPropertyName("focusOnCreation")] public bool FocusOnCreation { get; init; }
+
+    /// <summary>
+    /// Whether the tab key should be handled by the editor (to indent the current line), or be used to move focus to the next element (accessible mode)
+    /// </summary>
+    [JsonPropertyName("indentWithTab")] public bool IndentWithTab { get; init; } = true;
 }

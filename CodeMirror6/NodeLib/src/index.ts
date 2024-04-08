@@ -13,10 +13,9 @@ import {
 } from "@codemirror/commands"
 import {
     indentUnit, defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
-    foldGutter, foldKeymap,
+    foldGutter, foldKeymap, unfoldAll,
 } from "@codemirror/language"
 import { languages } from "@codemirror/language-data"
-import { markdownLanguage } from "@codemirror/lang-markdown"
 import { unifiedMergeView } from "@codemirror/merge"
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap, Completion } from "@codemirror/autocomplete"
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
@@ -54,7 +53,7 @@ import { htmlViewPlugin } from "./CmHtml"
 import { getFileUploadExtensions, uploadFiles } from "./CmFileUpload"
 import { markdownTableExtension } from "./CmMarkdownTable"
 import { dynamicDiagramsExtension } from "./CmDiagrams"
-import { foldMarkdownCodeBlocks, hideMarksExtension } from "./CmHideMarkdownMarks"
+import { foldMarkdownDiagramCodeBlocks, hideMarksExtension } from "./CmHideMarkdownMarks"
 import { getColumnStylingKeymap, columnStylingPlugin, columnLintSource, getSeparator, csvToMarkdownTable } from "./CmColumns"
 import { consoleLog } from "./CmLogging"
 import { createEditorWithId } from "./CmId"
@@ -102,13 +101,13 @@ export async function initCodeMirror(
         consoleLog(id, 'Config', initialConfig)
         consoleLog(id, 'Setup', setup)
 
-        const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension)
-        if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
-            customKeyMap.push(indentWithTab)
+        const customLanguageKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension)
+        if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV" && setup.indentWithTab)
+            customLanguageKeyMap.push(indentWithTab)
 
         let extensions = [
             createEditorWithId(id),
-            CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
+            CMInstances[id].keymapCompartment.of(keymap.of(customLanguageKeyMap)),
             CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
             CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
@@ -128,7 +127,7 @@ export async function initCodeMirror(
                 initialConfig.languageName === "CSV" || initialConfig.languageName === "TSV"
                     ? [
                         columnStylingPlugin(getSeparator(initialConfig.languageName)),
-                        keymap.of(getColumnStylingKeymap(getSeparator(initialConfig.languageName))),
+                        setup.indentWithTab ? keymap.of(getColumnStylingKeymap(getSeparator(initialConfig.languageName))) : [],
                         linter(async view => columnLintSource(id, view, getSeparator(initialConfig.languageName))),
                     ]
                     : []
@@ -139,7 +138,7 @@ export async function initCodeMirror(
             CMInstances[id].dropCursorCompartment.of(initialConfig.dropCursor ? dropCursor() : []),
             CMInstances[id].scrollPastEndCompartment.of(initialConfig.scrollPastEnd ? scrollPastEnd() : []),
             CMInstances[id].highlightActiveLineCompartment.of(initialConfig.highlightActiveLine ? highlightActiveLine() : []),
-            hyperLink,
+            hyperLink(id),
 
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
             linter(async view => maxDocLengthLintSource(id, view)),
@@ -167,9 +166,8 @@ export async function initCodeMirror(
         if (setup.crossHairSelection === true) extensions.push(crosshairCursor())
         if (setup.highlightSelectionMatches === true) extensions.push(highlightSelectionMatches())
         if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
-        if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput") {
+        if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput")
             extensions.push(linter(async view => await externalLintSource(id, view, dotnetHelper), getExternalLinterConfig(id)))
-        }
         if (initialConfig.lintingEnabled === true)
             extensions.push(lintGutter())
 
@@ -234,7 +232,8 @@ export async function initCodeMirror(
             loadingPlaceholder.style.display = 'none'
         }
 
-        // foldMarkdownCodeBlocks(CMInstances[id].view)
+        if (initialConfig.languageName === "Markdown" && initialConfig.autoFormatMarkdown)
+            foldMarkdownDiagramCodeBlocks(CMInstances[id].view)
 
         // add a class to allow resizing of the editor
         setResize(id, initialConfig.resize)
@@ -354,28 +353,37 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
     if (oldConfig.editable !== newConfig.editable) effects.push(CMInstances[id].editableCompartment.reconfigure(EditorView.editable.of(newConfig.editable)))
     if (oldConfig.languageName !== newConfig.languageName || oldConfig.fileNameOrExtension !== newConfig.fileNameOrExtension) {
         const language = await getLanguage(id, newConfig.languageName, newConfig.fileNameOrExtension)
-        const customKeyMap = getLanguageKeyMaps(newConfig.languageName, newConfig.fileNameOrExtension)
-        if (newConfig.languageName !== "CSV" && newConfig.languageName !== "TSV")
-            customKeyMap.push(indentWithTab)
+        const customLanguageKeyMap = getLanguageKeyMaps(newConfig.languageName, newConfig.fileNameOrExtension)
+        if (newConfig.languageName !== "CSV" && newConfig.languageName !== "TSV" && CMInstances[id].setup.indentWithTab)
+            customLanguageKeyMap.push(indentWithTab)
         const separator = getSeparator(newConfig.languageName)
         effects.push(
             CMInstances[id].languageCompartment.reconfigure(language ?? []),
-            CMInstances[id].keymapCompartment.reconfigure(keymap.of(customKeyMap)),
+            CMInstances[id].keymapCompartment.reconfigure(keymap.of(customLanguageKeyMap)),
             languageChangeEffect.of(language?.language),
             CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.languageName === 'Markdown')),
             CMInstances[id].columnsStylingCompartment.reconfigure(
                 newConfig.languageName === "CSV" || newConfig.languageName === "TSV"
                     ? [
                         columnStylingPlugin(separator),
-                        keymap.of(getColumnStylingKeymap(separator)),
+                        CMInstances[id].setup.indentWithTab ? keymap.of(getColumnStylingKeymap(separator)) : [],
                         linter(async view => columnLintSource(id, view, separator)),
                     ]
                     : []
             ),
         )
+        if (newConfig.languageName === "Markdown" && newConfig.autoFormatMarkdown)
+            foldMarkdownDiagramCodeBlocks(CMInstances[id].view)
+        else
+            unfoldAll(CMInstances[id].view)
     }
-    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages)
+    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages) {
         effects.push(CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.autoFormatMarkdown)))
+        if (newConfig.languageName === "Markdown" && newConfig.autoFormatMarkdown)
+            foldMarkdownDiagramCodeBlocks(CMInstances[id].view)
+        else
+            unfoldAll(CMInstances[id].view)
+    }
     if (oldConfig.replaceEmojiCodes !== newConfig.replaceEmojiCodes) effects.push(CMInstances[id].emojiReplacerCompartment.reconfigure(replaceEmojiExtension(newConfig.replaceEmojiCodes)))
     if (oldConfig.lineWrapping !== newConfig.lineWrapping) effects.push(CMInstances[id].lineWrappingCompartment.reconfigure(newConfig.lineWrapping ? EditorView.lineWrapping : []))
     if (oldConfig.mergeViewConfiguration !== newConfig.mergeViewConfiguration) effects.push(CMInstances[id].unifiedMergeViewCompartment.reconfigure(newConfig.mergeViewConfiguration ? unifiedMergeView(newConfig.mergeViewConfiguration) : []))
@@ -470,7 +478,7 @@ function saveToLocalStorage(id: string) {
 const autoFormatMarkdownExtensions = (id: string, autoFormatMarkdown: boolean = true) => [
     getDynamicHeaderStyling(autoFormatMarkdown),
     dynamicHrExtension(autoFormatMarkdown),
-    dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].config.previewImages === true),
+    dynamicImagesExtension(id, autoFormatMarkdown && CMInstances[id].config.previewImages === true),
     dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
     autocompletion({
         override: [
