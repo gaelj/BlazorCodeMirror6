@@ -138,7 +138,7 @@ export async function initCodeMirror(
             CMInstances[id].dropCursorCompartment.of(initialConfig.dropCursor ? dropCursor() : []),
             CMInstances[id].scrollPastEndCompartment.of(initialConfig.scrollPastEnd ? scrollPastEnd() : []),
             CMInstances[id].highlightActiveLineCompartment.of(initialConfig.highlightActiveLine ? highlightActiveLine() : []),
-            hyperLink(id),
+            CMInstances[id].hyperLinksCompartment.of(hyperLink(id)),
 
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
             linter(async view => maxDocLengthLintSource(id, view)),
@@ -399,6 +399,7 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
     if (oldConfig.dropCursor !== newConfig.dropCursor) effects.push(CMInstances[id].dropCursorCompartment.reconfigure(newConfig.dropCursor ? dropCursor() : []))
     if (oldConfig.scrollPastEnd !== newConfig.scrollPastEnd) effects.push(CMInstances[id].scrollPastEndCompartment.reconfigure(newConfig.scrollPastEnd ? scrollPastEnd() : []))
     if (oldConfig.highlightActiveLine !== newConfig.highlightActiveLine) effects.push(CMInstances[id].highlightActiveLineCompartment.reconfigure(newConfig.highlightActiveLine ? highlightActiveLine() : []))
+    if (oldConfig.basePathForLinks !== newConfig.basePathForLinks || oldConfig.markdownViewPath != newConfig.markdownViewPath) effects.push(CMInstances[id].hyperLinksCompartment.reconfigure(hyperLink(id)))
 
     CMInstances[id].config = newConfig
     if (effects.length > 0 || changes.length > 0)
