@@ -36,6 +36,7 @@ export class CmInstance
     public drawSelectionCompartment: Compartment = new Compartment
     public dropCursorCompartment: Compartment = new Compartment
     public scrollPastEndCompartment: Compartment = new Compartment
+    public hyperLinksCompartment: Compartment = new Compartment
 }
 
 export const CMInstances: { [id: string]: CmInstance}  = {}
