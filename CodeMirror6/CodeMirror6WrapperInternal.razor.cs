@@ -215,6 +215,11 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// </summary>
     [Parameter] public bool ShowMarkdownControlCharactersAroundCursor { get; init; } = true;
     /// <summary>
+    /// If a Markdown document contains relative links, this property can be used to specify the base path for the links, if different from the current page.
+    /// </summary>
+    /// <value></value>
+    [Parameter] public string? BasePathForLinks { get; set; }
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
@@ -298,7 +303,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             ScrollPastEnd,
             HighlightActiveLine,
             ShowMarkdownControlCharactersAroundCursor,
-            EmbedUploadsAsDataUrls
+            EmbedUploadsAsDataUrls,
+            BasePathForLinks
         );
         try {
             if (IsWASM)
@@ -466,6 +472,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             }
             if (Config.ShowMarkdownControlCharactersAroundCursor != ShowMarkdownControlCharactersAroundCursor) {
                 Config.ShowMarkdownControlCharactersAroundCursor = ShowMarkdownControlCharactersAroundCursor;
+                updated = true;
+            }
+            if (Config.BasePathForLinks != BasePathForLinks) {
+                Config.BasePathForLinks = BasePathForLinks;
                 updated = true;
             }
             if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;

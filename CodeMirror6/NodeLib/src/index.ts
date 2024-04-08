@@ -138,7 +138,7 @@ export async function initCodeMirror(
             CMInstances[id].dropCursorCompartment.of(initialConfig.dropCursor ? dropCursor() : []),
             CMInstances[id].scrollPastEndCompartment.of(initialConfig.scrollPastEnd ? scrollPastEnd() : []),
             CMInstances[id].highlightActiveLineCompartment.of(initialConfig.highlightActiveLine ? highlightActiveLine() : []),
-            hyperLink,
+            hyperLink(id),
 
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
             linter(async view => maxDocLengthLintSource(id, view)),
@@ -478,7 +478,7 @@ function saveToLocalStorage(id: string) {
 const autoFormatMarkdownExtensions = (id: string, autoFormatMarkdown: boolean = true) => [
     getDynamicHeaderStyling(autoFormatMarkdown),
     dynamicHrExtension(autoFormatMarkdown),
-    dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].config.previewImages === true),
+    dynamicImagesExtension(id, autoFormatMarkdown && CMInstances[id].config.previewImages === true),
     dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
     autocompletion({
         override: [

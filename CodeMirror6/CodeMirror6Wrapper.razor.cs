@@ -207,6 +207,11 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// </summary>
     [Parameter] public bool ScrollPastEnd { get; init; } = true;
     /// <summary>
+    /// If a Markdown document contains relative links, this property can be used to specify the base path for the links, if different from the current page.
+    /// </summary>
+    /// <value></value>
+    [Parameter] public string? BasePathForLinks { get; set; }
+    /// <summary>
     /// Whether to show the markdown control characters around the cursor
     /// </summary>
     [Parameter] public bool ShowMarkdownControlCharactersAroundCursor { get; init; } = true;

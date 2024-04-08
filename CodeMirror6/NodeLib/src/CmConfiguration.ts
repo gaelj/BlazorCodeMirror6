@@ -34,6 +34,7 @@ export class CmConfiguration {
     public scrollPastEnd: boolean
     public highlightActiveLine: boolean
     public showMarkdownControlCharactersAroundCursor: boolean
+    public basePathForLinks: string | null
 }
 
 export interface UnifiedMergeConfig {
