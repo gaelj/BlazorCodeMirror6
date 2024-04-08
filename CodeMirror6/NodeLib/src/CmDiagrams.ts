@@ -2,7 +2,7 @@ import type { EditorState, Extension, Range } from '@codemirror/state'
 import { RangeSet, StateField, StateEffect } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
 import { Decoration, EditorView, ViewUpdate, WidgetType, ViewPlugin } from "@codemirror/view"
-import { syntaxTree } from "@codemirror/language"
+import { syntaxTree, foldCode, unfoldCode } from "@codemirror/language"
 import { SyntaxNodeRef } from "@lezer/common"
 import { isCursorInRange } from "./CmHelpers"
 
@@ -59,7 +59,7 @@ function readSvgDimensions(svgContent: string): { width: number, height: number 
     return { width: parseInt(width), height: parseInt(height) }
 }
 
-async function fetchDiagramSvg(view: EditorView, code: string, language: string, krokiUrl: string): Promise<{ response: string, error: boolean }> {
+async function fetchDiagramSvg(view: EditorView, code: string, language: string, krokiUrl: string, node: SyntaxNodeRef): Promise<{ response: string, error: boolean }> {
     const key = `${language}\n${code}`
     if (svgCache.has(key)) return
     let svgContent: { response: string, error: boolean }
@@ -86,7 +86,7 @@ async function fetchDiagramSvg(view: EditorView, code: string, language: string,
     const { height } = readSvgDimensions(svgContent.response)
 
     view.dispatch({
-        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response, from: null, to: null, height })
+        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response, from: node.from, to: node.to, height })
     })
 }
 
@@ -176,31 +176,31 @@ class DiagramWidget extends WidgetType {
         container.style.maxWidth = '100%'
         container.style.overflow = 'hidden'
 
-        if (this.from !== null) {
-            container.style.cursor = 'pointer'
-            container.title = 'Click to edit diagram'
-            container.onclick = () => {
-                container.title = 'Click to close diagram edition'
-                const pos = this.from
-                const transaction = view.state.update({selection: {anchor: pos}, scrollIntoView: true})
-                view.dispatch(transaction)
-            }
-        }
-        else {
-            container.style.cursor = 'pointer'
-            container.title = 'Click to close diagram edition'
-            container.onclick = () => {
-                container.title = 'Click to edit diagram'
-                const pos = this.to + 1
-                const transaction = view.state.update({selection: {anchor: pos}, scrollIntoView: true})
-                view.dispatch(transaction)
-            }
-        }
+        container.style.cursor = 'pointer'
+        container.title = this.editMessage
+        container.onclick = () => this.onEdit(view, container)
         view.requestMeasure()
 
         return container
     }
 
+    private readonly editMessage = 'Click to edit diagram'
+    private readonly closeMessage = 'Click to close diagram edition'
+
+    private onEdit(view: EditorView, container: HTMLDivElement) {
+        container.title = this.editMessage
+        view.dispatch(view.state.update({selection: {anchor: this.from}, scrollIntoView: true}))
+        unfoldCode(view)
+        container.onclick = () => this.onClose(view, container)
+    }
+
+    private onClose(view: EditorView, container: HTMLDivElement) {
+        container.title = this.closeMessage
+        view.dispatch(view.state.update({selection: {anchor: this.from}, scrollIntoView: true}))
+        foldCode(view)
+        view.dispatch(view.state.update({selection: {anchor: this.to + 1}, scrollIntoView: true}))
+        container.onclick = () => this.onEdit(view, container)
+    }
     ignoreEvent: () => false
 
     get estimatedHeight(): number {
@@ -237,7 +237,7 @@ const diagramPlugin = (krokiUrl: string) => ViewPlugin.fromClass(
                     if (node.type.name === 'FencedCode') {
                         const { diagramLanguage, code } = getLanguageAndCode(view.state, node)
                         if (diagramLanguage) {
-                            fetchDiagramSvg(view, code, diagramLanguage, krokiUrl)
+                            fetchDiagramSvg(view, code, diagramLanguage, krokiUrl, node)
                         }
                     }
                 },
@@ -250,13 +250,6 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
     if (!enabled) {
         return []
     }
-
-    const diagramReplacementDecoration = (diagramWidgetParams: DiagramWidgetParams) => Decoration.replace({
-        widget: new DiagramWidget(diagramWidgetParams),
-        side: -1,
-        block: true,
-        inclusive: false,
-    })
 
     const diagramWidgetDecoration = (diagramWidgetParams: DiagramWidgetParams) => Decoration.widget({
         widget: new DiagramWidget(diagramWidgetParams),
@@ -276,12 +269,9 @@ export const dynamicDiagramsExtension = (enabled: boolean = true, krokiUrl: stri
         const cursorInRange = isCursorInRange(state, from, to)
 
         let params: DiagramWidgetParams
-        params = { language: diagramLanguage, code, from: cursorInRange ? null : from, to: cursorInRange ? null : to, svgContent: null, height: null }
+        params = { language: diagramLanguage, code, from, to, svgContent: null, height: null }
 
-        if (cursorInRange)
-            return diagramWidgetDecoration(params).range(state.doc.lineAt(from).from)
-        else
-            return diagramReplacementDecoration(params).range(from, to)
+        return diagramWidgetDecoration(params).range(state.doc.lineAt(from).from)
     }
 
     const decorate = (state: EditorState) => {
