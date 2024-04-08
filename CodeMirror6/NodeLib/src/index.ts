@@ -377,7 +377,7 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
         else
             unfoldAll(CMInstances[id].view)
     }
-    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages) {
+    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages || oldConfig.basePathForLinks !== newConfig.basePathForLinks) {
         effects.push(CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.autoFormatMarkdown)))
         if (newConfig.languageName === "Markdown" && newConfig.autoFormatMarkdown)
             foldMarkdownDiagramCodeBlocks(CMInstances[id].view)
