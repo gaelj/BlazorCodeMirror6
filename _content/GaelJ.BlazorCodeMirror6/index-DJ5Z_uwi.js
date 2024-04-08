@@ -21506,7 +21506,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-CI57nqS0.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-CKchg1Za.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -21517,7 +21517,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-CIBuGb0c.js').then(m => m.cpp());
+            return import('./index-Cd4aimTV.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21525,7 +21525,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-CIBuGb0c.js').then(m => m.cpp());
+            return import('./index-Cd4aimTV.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21553,7 +21553,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-D32zGt5P.js').then(m => m.java());
+            return import('./index-DXzMFA7q.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21569,7 +21569,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-BJgwVnI0.js').then(m => m.json());
+            return import('./index-D8hKODLN.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21583,14 +21583,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-Dq1mnadz.js').then(m => m.less());
+            return import('./index-D-Sy5hHs.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-DXVQ_L_Z.js').then(m => m.liquid());
+            return import('./index-DNNQvXpD.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21616,7 +21616,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-DWAFi5h3.js').then(m => m.php());
+            return import('./index-DpA0D7lG.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21633,28 +21633,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-DFyMD972.js').then(m => m.python());
+            return import('./index-B_uln2M4.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-BUGs7EjD.js').then(m => m.rust());
+            return import('./index-A-njVhm2.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-VxQMdw6I.js').then(m => m.sass({ indented: true }));
+            return import('./index-BROGqJa2.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-VxQMdw6I.js').then(m => m.sass());
+            return import('./index-BROGqJa2.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21685,7 +21685,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-BcVXIZi5.js').then(m => m.wast());
+            return import('./index-DkMkP_dT.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21693,7 +21693,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-DTgndAe2.js').then(m => m.xml());
+            return import('./index-Cf85-wwM.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21701,7 +21701,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-BflOEseb.js').then(m => m.yaml());
+            return import('./index-VlQFPrmV.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -22496,13 +22496,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-eQ-QfHXl.js').then(m => m.vue());
+            return import('./index-BLD7y8EK.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-DEXzEjKq.js').then(m => m.angular());
+            return import('./index-BwsysQVU.js').then(m => m.angular());
         }
     })
 ];
@@ -23156,32 +23156,32 @@ function findRangesForChange(chunks, changes, isA, otherLen) {
 function updateChunks(ranges, chunks, a, b, conf) {
     if (!ranges.length)
         return chunks;
-    let chunkI = 0, offA = 0, offB = 0;
     let result = [];
-    for (let range of ranges) {
-        let fromA = range.fromA + offA, toA = range.toA + offA + range.diffA;
-        let fromB = range.fromB + offB, toB = range.toB + offB + range.diffB;
+    for (let i = 0, offA = 0, offB = 0, chunkI = 0;; i++) {
+        let range = i == ranges.length ? null : ranges[i];
+        let fromA = range ? range.fromA + offA : a.length, fromB = range ? range.fromB + offB : b.length;
         while (chunkI < chunks.length) {
             let next = chunks[chunkI];
-            if (next.toA + offA <= fromA && next.toB + offB <= fromB)
-                result.push(next.offset(offA, offB));
-            else if (next.fromA + offA > toA)
+            if (next.toA + offA > fromA || next.toB + offB > fromB)
                 break;
+            result.push(next.offset(offA, offB));
             chunkI++;
         }
-        for (let chunk of toChunks(presentableDiff(a.sliceString(fromA, toA), b.sliceString(fromB, toB), conf), a, b, fromA, fromB))
+        if (!range)
+            break;
+        let toA = range.toA + offA + range.diffA, toB = range.toB + offB + range.diffB;
+        let diff = presentableDiff(a.sliceString(fromA, toA), b.sliceString(fromB, toB), conf);
+        for (let chunk of toChunks(diff, a, b, fromA, fromB))
             result.push(chunk);
         offA += range.diffA;
         offB += range.diffB;
         while (chunkI < chunks.length) {
             let next = chunks[chunkI];
-            if (next.fromA > toA + offA && next.fromB > toB + offB)
+            if (next.fromA + offA > toA && next.fromB + offB > toB)
                 break;
             chunkI++;
         }
     }
-    while (chunkI < chunks.length)
-        result.push(chunks[chunkI++].offset(offA, offB));
     return result;
 }
 
@@ -23715,7 +23715,7 @@ class FuzzyMatcher {
     ret(score, matched) {
         this.score = score;
         this.matched = matched;
-        return true;
+        return this;
     }
     // Matches a given word (completion) against the pattern (input).
     // Will return a boolean indicating whether there was a match and,
@@ -23728,7 +23728,7 @@ class FuzzyMatcher {
         if (this.pattern.length == 0)
             return this.ret(-100 /* Penalty.NotFull */, []);
         if (word.length < this.pattern.length)
-            return false;
+            return null;
         let { chars, folded, any, precise, byWord } = this;
         // For single-character queries, only match when they occur right
         // at the start
@@ -23739,7 +23739,7 @@ class FuzzyMatcher {
             else if (first == folded[0])
                 score += -200 /* Penalty.CaseFold */;
             else
-                return false;
+                return null;
             return this.ret(score, [0, firstSize]);
         }
         let direct = word.indexOf(this.pattern);
@@ -23755,7 +23755,7 @@ class FuzzyMatcher {
             }
             // No match, exit immediately
             if (anyTo < len)
-                return false;
+                return null;
         }
         // This tracks the extent of the precise (non-folded, not
         // necessarily adjacent) match
@@ -23808,7 +23808,7 @@ class FuzzyMatcher {
         if (byWordTo == len)
             return this.result(-100 /* Penalty.ByWord */ + (byWordFolded ? -200 /* Penalty.CaseFold */ : 0) + -700 /* Penalty.NotStart */ +
                 (wordAdjacent ? 0 : -1100 /* Penalty.Gap */), byWord, word);
-        return chars.length == 2 ? false
+        return chars.length == 2 ? null
             : this.result((any[0] ? -700 /* Penalty.NotStart */ : 0) + -200 /* Penalty.CaseFold */ + -1100 /* Penalty.Gap */, any, word);
     }
     result(score, positions, word) {
@@ -23823,6 +23823,25 @@ class FuzzyMatcher {
             }
         }
         return this.ret(score - word.length, result);
+    }
+}
+class StrictMatcher {
+    constructor(pattern) {
+        this.pattern = pattern;
+        this.matched = [];
+        this.score = 0;
+        this.folded = pattern.toLowerCase();
+    }
+    match(word) {
+        if (word.length < this.pattern.length)
+            return null;
+        let start = word.slice(0, this.pattern.length);
+        let match = start == this.pattern ? 0 : start.toLowerCase() == this.folded ? -200 /* Penalty.CaseFold */ : null;
+        if (match == null)
+            return null;
+        this.matched = [0, start.length];
+        this.score = match + (word.length == this.pattern.length ? 0 : -100 /* Penalty.NotFull */);
+        return this;
     }
 }
 
@@ -23842,6 +23861,7 @@ const completionConfig = /*@__PURE__*/Facet.define({
             icons: true,
             addToOptions: [],
             positionInfo: defaultPositionInfo,
+            filterStrict: false,
             compareCompletions: (a, b) => a.label.localeCompare(b.label),
             interactionDelay: 75,
             updateSyncTime: 100
@@ -23851,7 +23871,8 @@ const completionConfig = /*@__PURE__*/Facet.define({
             icons: (a, b) => a && b,
             tooltipClass: (a, b) => c => joinClass(a(c), b(c)),
             optionClass: (a, b) => c => joinClass(a(c), b(c)),
-            addToOptions: (a, b) => a.concat(b)
+            addToOptions: (a, b) => a.concat(b),
+            filterStrict: (a, b) => a || b,
         });
     }
 });
@@ -24211,6 +24232,7 @@ function sortOptions(active, state) {
                 sections.push(typeof section == "string" ? { name } : section);
         }
     };
+    let conf = state.facet(completionConfig);
     for (let a of active)
         if (a.hasResult()) {
             let getMatch = a.result.getMatch;
@@ -24220,11 +24242,12 @@ function sortOptions(active, state) {
                 }
             }
             else {
-                let matcher = new FuzzyMatcher(state.sliceDoc(a.from, a.to));
+                let pattern = state.sliceDoc(a.from, a.to), match;
+                let matcher = conf.filterStrict ? new StrictMatcher(pattern) : new FuzzyMatcher(pattern);
                 for (let option of a.result.options)
-                    if (matcher.match(option.label)) {
-                        let matched = !option.displayLabel ? matcher.matched : getMatch ? getMatch(option, matcher.matched) : [];
-                        addOption(new Option(option, a.source, matched, matcher.score + (option.boost || 0)));
+                    if (match = matcher.match(option.label)) {
+                        let matched = !option.displayLabel ? match.matched : getMatch ? getMatch(option, match.matched) : [];
+                        addOption(new Option(option, a.source, matched, match.score + (option.boost || 0)));
                     }
             }
         }
@@ -24242,7 +24265,7 @@ function sortOptions(active, state) {
         }
     }
     let result = [], prev = null;
-    let compare = state.facet(completionConfig).compareCompletions;
+    let compare = conf.compareCompletions;
     for (let opt of options.sort((a, b) => (b.score - a.score) || compare(a.completion, b.completion))) {
         let cur = opt.completion;
         if (!prev || prev.label != cur.label || prev.detail != cur.detail ||
@@ -24410,26 +24433,33 @@ class ActiveResult extends ActiveSource {
     hasResult() { return true; }
     handleUserEvent(tr, type, conf) {
         var _a;
+        let result = this.result;
+        if (result.map && !tr.changes.empty)
+            result = result.map(result, tr.changes);
         let from = tr.changes.mapPos(this.from), to = tr.changes.mapPos(this.to, 1);
         let pos = cur(tr.state);
         if ((this.explicitPos < 0 ? pos <= from : pos < this.from) ||
-            pos > to ||
+            pos > to || !result ||
             type == "delete" && cur(tr.startState) == this.from)
             return new ActiveSource(this.source, type == "input" && conf.activateOnTyping ? 1 /* State.Pending */ : 0 /* State.Inactive */);
-        let explicitPos = this.explicitPos < 0 ? -1 : tr.changes.mapPos(this.explicitPos), updated;
-        if (checkValid(this.result.validFor, tr.state, from, to))
-            return new ActiveResult(this.source, explicitPos, this.result, from, to);
-        if (this.result.update &&
-            (updated = this.result.update(this.result, from, to, new CompletionContext(tr.state, pos, explicitPos >= 0))))
-            return new ActiveResult(this.source, explicitPos, updated, updated.from, (_a = updated.to) !== null && _a !== void 0 ? _a : cur(tr.state));
+        let explicitPos = this.explicitPos < 0 ? -1 : tr.changes.mapPos(this.explicitPos);
+        if (checkValid(result.validFor, tr.state, from, to))
+            return new ActiveResult(this.source, explicitPos, result, from, to);
+        if (result.update &&
+            (result = result.update(result, from, to, new CompletionContext(tr.state, pos, explicitPos >= 0))))
+            return new ActiveResult(this.source, explicitPos, result, result.from, (_a = result.to) !== null && _a !== void 0 ? _a : cur(tr.state));
         return new ActiveSource(this.source, 1 /* State.Pending */, explicitPos);
     }
     handleChange(tr) {
         return tr.changes.touchesRange(this.from, this.to) ? new ActiveSource(this.source, 0 /* State.Inactive */) : this.map(tr.changes);
     }
     map(mapping) {
-        return mapping.empty ? this :
-            new ActiveResult(this.source, this.explicitPos < 0 ? -1 : mapping.mapPos(this.explicitPos), this.result, mapping.mapPos(this.from), mapping.mapPos(this.to, 1));
+        if (mapping.empty)
+            return this;
+        let result = this.result.map ? this.result.map(this.result, mapping) : this.result;
+        if (!result)
+            return new ActiveSource(this.source, 0 /* State.Inactive */);
+        return new ActiveResult(this.source, this.explicitPos < 0 ? -1 : mapping.mapPos(this.explicitPos), this.result, mapping.mapPos(this.from), mapping.mapPos(this.to, 1));
     }
 }
 function checkValid(validFor, state, from, to) {
@@ -27612,7 +27642,9 @@ function indentTheme(colorOptions) {
             content: '""',
             position: 'absolute',
             top: 0,
-            left: 0,
+            // .cm-line has a padding of 2px 
+            // https://github.com/codemirror/view/blob/1c0a0880fc904714339f059658f3ba3a88bb8e6e/src/theme.ts#L85
+            left: `2px`,
             right: 0,
             bottom: 0,
             background: 'var(--indent-markers)',
@@ -37442,8 +37474,8 @@ var defaultSettingsNord = {
   background: '#2e3440',
   foreground: '#FFFFFF',
   caret: '#FFFFFF',
-  selection: '#4b556a',
-  selectionMatch: '#4b556a',
+  selection: '#00000073',
+  selectionMatch: '#00000073',
   gutterBackground: '#2e3440',
   gutterForeground: '#4c566a',
   gutterActiveForeground: '#d8dee9',
@@ -40870,7 +40902,7 @@ function getTheme(themeName) {
     }
 }
 
-const imageWidget = (src, from) => buildWidget({
+const imageWidget = (src, from, baseUrl) => buildWidget({
     src: src,
     eq(other) {
         return other.src === src;
@@ -40880,7 +40912,7 @@ const imageWidget = (src, from) => buildWidget({
         container.setAttribute('aria-hidden', 'true');
         const image = container.appendChild(document.createElement('img'));
         image.setAttribute('aria-hidden', 'true');
-        image.src = src;
+        image.src = `${baseUrl}${src}`;
         image.style.maxHeight = '320px';
         image.style.maxWidth = 'calc(100% - 2em)';
         image.style.objectFit = 'scale-down';
@@ -40905,13 +40937,16 @@ const imageWidget = (src, from) => buildWidget({
         return 320;
     },
 });
-const dynamicImagesExtension = (enabled = true) => {
+const dynamicImagesExtension = (id, enabled = true) => {
     if (!enabled) {
         return [];
     }
     const imageRegex = /!\[.*?\]\((?<src>.*?)\)/;
+    const basePathForLinks = (CMInstances[id] !== undefined && CMInstances[id].config.basePathForLinks)
+        ? CMInstances[id].config.basePathForLinks.replace(/\/+$/, '') + "/"
+        : '';
     const imageDecoration = (src, from) => Decoration.widget({
-        widget: imageWidget(src, from),
+        widget: imageWidget(src, from, basePathForLinks),
         side: -1,
         block: true,
     });
@@ -62542,29 +62577,38 @@ function createMentionsCompletionSource() {
     return async (context) => {
         let options = [];
         let from = context.pos;
+        let to = context.pos;
         const isCode = isInCodeBlock(context.state, from);
         if (!isCode) {
             const match = context.matchBefore(/(?:\s|^)\@[\w]*$/);
             if (match) {
                 const searchText = context.matchBefore(/[\w]+/);
-                if (searchText)
+                if (searchText) {
                     from = searchText.from;
+                    to = searchText.to;
+                }
                 options = getMentionCompletions(searchText ? searchText.text : null);
             }
         }
         return {
             from: from,
+            to: to,
             options: options,
-            validFor: /^[\w]*$/,
+            filter: false,
         };
     };
 }
 function getMentionCompletions(firstCharacters) {
     try {
+        // console.log(cachedCompletions.filter(cached => !firstCharacters ||
+        //     cached.label.toLowerCase().replace(/\s/g, '').startsWith(firstCharacters.toLowerCase()) ||
+        //     cached.detail.toLowerCase().replace(/\s/g, '').indexOf(firstCharacters.toLowerCase()) > -1 ||
+        //     (cached.info as string).toLowerCase().replace(/\s/g, '').indexOf(firstCharacters.toLowerCase()) > -1
+        //     ).length)
         return cachedCompletions.filter(cached => !firstCharacters ||
-            cached.label.startsWith(firstCharacters) ||
-            cached.detail.startsWith(firstCharacters) ||
-            cached.detail.indexOf(` ${firstCharacters}`) > -1);
+            cached.label.toLowerCase().replace(/\s/g, '').startsWith(firstCharacters.toLowerCase()) ||
+            cached.detail.toLowerCase().replace(/\s/g, '').indexOf(firstCharacters.toLowerCase()) > -1 ||
+            cached.info.toLowerCase().replace(/\s/g, '').indexOf(firstCharacters.toLowerCase()) > -1);
     }
     catch (error) {
         console.error('Error fetching mention completions:', error);
@@ -63422,7 +63466,8 @@ var emojilib = {
 	"gas",
 	"phew",
 	"proud",
-	"pride"
+	"pride",
+	"triumph"
 ],
 	"😡": [
 	"pouting_face",
@@ -75716,6 +75761,159 @@ var emojilib = {
 	"internet",
 	"contactless",
 	"signal"
+],
+	"🙂‍↔️": [
+	"head shaking horizontally",
+	"disapprove",
+	"indiffernt",
+	"left"
+],
+	"🙂‍↕️": [
+	"head shaking vertically",
+	"down",
+	"nod"
+],
+	"🚶‍➡️": [
+	"person walking facing right",
+	"peerson",
+	"exercise"
+],
+	"🚶‍♀️‍➡️": [
+	"woman walking facing right",
+	"person",
+	"exercise"
+],
+	"🚶‍♂️‍➡️": [
+	"man walking facing right",
+	"person",
+	"exercise"
+],
+	"🧎‍➡️": [
+	"person kneeling facing right",
+	"pray"
+],
+	"🧎‍♀️‍➡️": [
+	"woman kneeling facing right",
+	"pray",
+	"worship"
+],
+	"🧎‍♂️‍➡️": [
+	"man kneeling facing right",
+	"pray",
+	"worship"
+],
+	"🧑‍🦯‍➡️": [
+	"person with white cane facing right",
+	"walk",
+	"walk",
+	"visually impaired",
+	"blind"
+],
+	"👨‍🦯‍➡️": [
+	"man with white cane facing right",
+	"visually impaired",
+	"blind",
+	"walk",
+	"stick"
+],
+	"👩‍🦯‍➡️": [
+	"woman with white cane facing right",
+	"stick",
+	"visually impaired",
+	"blind"
+],
+	"🧑‍🦼‍➡️": [
+	"person in motorized wheelchair facing right",
+	"accessibility",
+	"disability"
+],
+	"👨‍🦼‍➡️": [
+	"man in motorized wheelchair facing right",
+	"disability",
+	"accessibility",
+	"mobility"
+],
+	"👩‍🦼‍➡️": [
+	"woman in motorized wheelchair facing right",
+	"mobility",
+	"accessibility",
+	"disability"
+],
+	"🧑‍🦽‍➡️": [
+	"person in manual wheelchair facing right",
+	"mobility",
+	"accessibility",
+	"disability"
+],
+	"👨‍🦽‍➡️": [
+	"man in manual wheelchair facing right",
+	"mobility",
+	"accessibility",
+	"disability"
+],
+	"👩‍🦽‍➡️": [
+	"woman in manual wheelchair facing right",
+	"disability",
+	"mobility",
+	"accessibility"
+],
+	"🏃‍➡️": [
+	"person running facing right",
+	"exercise",
+	"jog"
+],
+	"🏃‍♀️‍➡️": [
+	"woman running facing right",
+	"exercise",
+	"jog"
+],
+	"🏃‍♂️‍➡️": [
+	"man running facing right",
+	"jog",
+	"exercise"
+],
+	"🧑‍🧑‍🧒": [
+	"family adult, adult, child",
+	"kid",
+	"parents"
+],
+	"🧑‍🧑‍🧒‍🧒": [
+	"family adult, adult, child, child",
+	"children",
+	"parents"
+],
+	"🧑‍🧒": [
+	"family adult, child",
+	"parent",
+	"kid"
+],
+	"🧑‍🧒‍🧒": [
+	"family adult, child, child",
+	"parent",
+	"children"
+],
+	"🐦‍🔥": [
+	"phoenix",
+	"immortal",
+	"bird",
+	"mythtical",
+	"reborn"
+],
+	"🍋‍🟩": [
+	"lime",
+	"fruit",
+	"acidic",
+	"citric"
+],
+	"🍄‍🟫": [
+	"brown mushroom",
+	"toadstool",
+	"fungus"
+],
+	"⛓️‍💥": [
+	"broken chain",
+	"constraint",
+	"break"
 ]
 };
 
@@ -76148,7 +76346,7 @@ function readSvgDimensions(svgContent) {
     const height = svgElement.getAttribute("height");
     return { width: parseInt(width), height: parseInt(height) };
 }
-async function fetchDiagramSvg(view, code, language, krokiUrl) {
+async function fetchDiagramSvg(view, code, language, krokiUrl, node) {
     const key = `${language}\n${code}`;
     if (svgCache.has(key))
         return;
@@ -76173,7 +76371,7 @@ async function fetchDiagramSvg(view, code, language, krokiUrl) {
     svgCache.set(key, svgContent);
     const { height } = readSvgDimensions(svgContent.response);
     view.dispatch({
-        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response, from: null, to: null, height })
+        effects: updateDiagramEffect.of({ code, language, svgContent: svgContent.response, from: node.from, to: node.to, height })
     });
 }
 function detectDiagramLanguage(code) {
@@ -76194,6 +76392,8 @@ const updateDiagramEffect = StateEffect.define();
 class DiagramWidget extends WidgetType {
     constructor({ language, code, svgContent = null, from, to, height }) {
         super();
+        this.editMessage = 'Click to edit diagram';
+        this.closeMessage = 'Click to close diagram edition';
         this.language = language;
         this.code = code;
         this.from = from;
@@ -76237,28 +76437,24 @@ class DiagramWidget extends WidgetType {
         container.style.justifyContent = 'center';
         container.style.maxWidth = '100%';
         container.style.overflow = 'hidden';
-        if (this.from !== null) {
-            container.style.cursor = 'pointer';
-            container.title = 'Click to edit diagram';
-            container.onclick = () => {
-                container.title = 'Click to close diagram edition';
-                const pos = this.from;
-                const transaction = view.state.update({ selection: { anchor: pos }, scrollIntoView: true });
-                view.dispatch(transaction);
-            };
-        }
-        else {
-            container.style.cursor = 'pointer';
-            container.title = 'Click to close diagram edition';
-            container.onclick = () => {
-                container.title = 'Click to edit diagram';
-                const pos = this.to + 1;
-                const transaction = view.state.update({ selection: { anchor: pos }, scrollIntoView: true });
-                view.dispatch(transaction);
-            };
-        }
+        container.style.cursor = 'pointer';
+        container.title = this.editMessage;
+        container.onclick = () => this.onEdit(view, container);
         view.requestMeasure();
         return container;
+    }
+    onEdit(view, container) {
+        container.title = this.editMessage;
+        view.dispatch(view.state.update({ selection: { anchor: this.from }, scrollIntoView: true }));
+        unfoldCode(view);
+        container.onclick = () => this.onClose(view, container);
+    }
+    onClose(view, container) {
+        container.title = this.closeMessage;
+        view.dispatch(view.state.update({ selection: { anchor: this.from }, scrollIntoView: true }));
+        foldCode(view);
+        view.dispatch(view.state.update({ selection: { anchor: this.to + 1 }, scrollIntoView: true }));
+        container.onclick = () => this.onEdit(view, container);
     }
     get estimatedHeight() {
         return this.height ?? -1;
@@ -76287,7 +76483,7 @@ const diagramPlugin = (krokiUrl) => ViewPlugin.fromClass(class {
                 if (node.type.name === 'FencedCode') {
                     const { diagramLanguage, code } = getLanguageAndCode(view.state, node);
                     if (diagramLanguage) {
-                        fetchDiagramSvg(view, code, diagramLanguage, krokiUrl);
+                        fetchDiagramSvg(view, code, diagramLanguage, krokiUrl, node);
                     }
                 }
             },
@@ -76298,12 +76494,6 @@ const dynamicDiagramsExtension = (enabled = true, krokiUrl = "https://kroki.io")
     if (!enabled) {
         return [];
     }
-    const diagramReplacementDecoration = (diagramWidgetParams) => Decoration.replace({
-        widget: new DiagramWidget(diagramWidgetParams),
-        side: -1,
-        block: true,
-        inclusive: false,
-    });
     const diagramWidgetDecoration = (diagramWidgetParams) => Decoration.widget({
         widget: new DiagramWidget(diagramWidgetParams),
         side: -1,
@@ -76318,13 +76508,10 @@ const dynamicDiagramsExtension = (enabled = true, krokiUrl = "https://kroki.io")
         if (diagramLanguage === undefined) {
             return null;
         }
-        const cursorInRange = isCursorInRange(state, from, to);
+        isCursorInRange(state, from, to);
         let params;
-        params = { language: diagramLanguage, code, from: cursorInRange ? null : from, to: cursorInRange ? null : to, svgContent: null, height: null };
-        if (cursorInRange)
-            return diagramWidgetDecoration(params).range(state.doc.lineAt(from).from);
-        else
-            return diagramReplacementDecoration(params).range(from, to);
+        params = { language: diagramLanguage, code, from, to, svgContent: null, height: null };
+        return diagramWidgetDecoration(params).range(state.doc.lineAt(from).from);
     }
     const decorate = (state) => {
         let decorationsRange = [];
@@ -76364,6 +76551,21 @@ const hideWidget = () => buildWidget({
         return span;
     },
 });
+function foldMarkdownDiagramCodeBlocks(view) {
+    syntaxTree(view.state).iterate({
+        enter: (node) => {
+            if (markdownLanguage.isActiveAt(view.state, node.from) && node.type.name === "FencedCode") { // Check if the node is a fenced code block
+                const codeAndLanguage = view.state.doc.sliceString(node.from, node.to);
+                var diagramLanguage = detectDiagramLanguage(codeAndLanguage);
+                if (diagramLanguage === undefined)
+                    return;
+                let effect = foldInside(node.node);
+                if (effect)
+                    view.dispatch({ effects: foldEffect.of(effect) });
+            }
+        }
+    });
+}
 const hideMarksExtension = (enabled = true) => {
     if (!enabled)
         return [];
@@ -76377,6 +76579,10 @@ const hideMarksExtension = (enabled = true) => {
                 enter: ({ node, type, from, to }) => {
                     if (type.name.endsWith('Mark') && type.name !== 'ListMark') {
                         if (type.name === 'CodeMark') {
+                            const codeAndLanguage = state.doc.sliceString(node.from, node.to);
+                            var diagramLanguage = detectDiagramLanguage(codeAndLanguage);
+                            if (diagramLanguage !== undefined)
+                                return;
                             const eFC = node.parent;
                             if (eFC.type.name === 'FencedCode') {
                                 const cursorFrom = state.doc.lineAt(eFC.from).from;
@@ -76436,10 +76642,10 @@ class HyperLinkIcon extends WidgetType {
         const match = [...matchAll][0];
         if (match && match.length > 1) {
             const url = match[1];
-            link.href = url;
+            link.href = `${this.state.baseUrl}${url}`;
         }
         else
-            link.href = this.state.url;
+            link.href = `${this.state.baseUrl}${this.state.url}`;
         link.target = '_blank';
         link.innerHTML = linkSvgImage;
         link.className = 'cm-hyper-link-icon';
@@ -76447,17 +76653,21 @@ class HyperLinkIcon extends WidgetType {
         return link;
     }
 }
-function hyperLinkDecorations(view) {
+function hyperLinkDecorations(view, id) {
     const widgets = [];
     const doc = view.state.doc.toString();
     let match;
+    const basePathForLinks = (CMInstances[id] !== undefined && CMInstances[id].config.basePathForLinks)
+        ? CMInstances[id].config.basePathForLinks.replace(/\/+$/, '') + "/"
+        : '';
     while ((match = anyLinkRegexp.exec(doc)) !== null) {
         const from = match.index;
         const to = from + match[0].length;
         const widget = Decoration.widget({
             widget: new HyperLinkIcon({
                 at: to,
-                url: match[0]
+                url: match[0],
+                baseUrl: basePathForLinks,
             }),
             side: 1,
         });
@@ -76465,14 +76675,14 @@ function hyperLinkDecorations(view) {
     }
     return Decoration.set(widgets);
 }
-function hyperLinkExtension() {
+function hyperLinkExtension(id) {
     return ViewPlugin.fromClass(class HyperLinkView {
         constructor(view) {
-            this.decorations = hyperLinkDecorations(view);
+            this.decorations = hyperLinkDecorations(view, id);
         }
         update(update) {
             if (update.docChanged || update.viewportChanged) {
-                this.decorations = hyperLinkDecorations(update.view);
+                this.decorations = hyperLinkDecorations(update.view, id);
             }
         }
     }, {
@@ -76492,7 +76702,7 @@ const hyperLinkStyle = EditorView.baseTheme({
         textDecoration: 'underline',
     },
 });
-const hyperLink = [hyperLinkExtension(), hyperLinkStyle];
+const hyperLink = (id) => [hyperLinkExtension(id), hyperLinkStyle];
 
 /**
  * Initialize a new CodeMirror instance
@@ -76522,12 +76732,12 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         CMInstances[id].config = initialConfig;
         consoleLog(id, 'Config', initialConfig);
         consoleLog(id, 'Setup', setup);
-        const customKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension);
-        if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV")
-            customKeyMap.push(indentWithTab);
+        const customLanguageKeyMap = getLanguageKeyMaps(initialConfig.languageName, initialConfig.fileNameOrExtension);
+        if (initialConfig.languageName !== "CSV" && initialConfig.languageName !== "TSV" && setup.indentWithTab)
+            customLanguageKeyMap.push(indentWithTab);
         let extensions = [
             createEditorWithId(id),
-            CMInstances[id].keymapCompartment.of(keymap.of(customKeyMap)),
+            CMInstances[id].keymapCompartment.of(keymap.of(customLanguageKeyMap)),
             CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
             CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
@@ -76546,7 +76756,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             CMInstances[id].columnsStylingCompartment.of(initialConfig.languageName === "CSV" || initialConfig.languageName === "TSV"
                 ? [
                     columnStylingPlugin(getSeparator(initialConfig.languageName)),
-                    keymap.of(getColumnStylingKeymap(getSeparator(initialConfig.languageName))),
+                    setup.indentWithTab ? keymap.of(getColumnStylingKeymap(getSeparator(initialConfig.languageName))) : [],
                     linter(async (view) => columnLintSource(id, view, getSeparator(initialConfig.languageName))),
                 ]
                 : []),
@@ -76556,7 +76766,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             CMInstances[id].dropCursorCompartment.of(initialConfig.dropCursor ? dropCursor() : []),
             CMInstances[id].scrollPastEndCompartment.of(initialConfig.scrollPastEnd ? scrollPastEnd() : []),
             CMInstances[id].highlightActiveLineCompartment.of(initialConfig.highlightActiveLine ? highlightActiveLine() : []),
-            hyperLink,
+            hyperLink(id),
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update); }),
             linter(async (view) => maxDocLengthLintSource(id, view)),
             keymap.of([
@@ -76594,9 +76804,8 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             extensions.push(highlightSelectionMatches());
         if (setup.allowMultipleSelections === true)
             extensions.push(EditorState.allowMultipleSelections.of(true));
-        if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput") {
+        if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput")
             extensions.push(linter(async (view) => await externalLintSource(id, view, dotnetHelper), getExternalLinterConfig(id)));
-        }
         if (initialConfig.lintingEnabled === true)
             extensions.push(lintGutter());
         extensions.push(...getFileUploadExtensions(id, setup));
@@ -76647,7 +76856,8 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
         if (loadingPlaceholder) {
             loadingPlaceholder.style.display = 'none';
         }
-        // foldMarkdownCodeBlocks(CMInstances[id].view)
+        if (initialConfig.languageName === "Markdown" && initialConfig.autoFormatMarkdown)
+            foldMarkdownDiagramCodeBlocks(CMInstances[id].view);
         // add a class to allow resizing of the editor
         setResize(id, initialConfig.resize);
         adjustEditorHeight(id);
@@ -76763,20 +76973,29 @@ async function setConfiguration(id, newConfig) {
         effects.push(CMInstances[id].editableCompartment.reconfigure(EditorView.editable.of(newConfig.editable)));
     if (oldConfig.languageName !== newConfig.languageName || oldConfig.fileNameOrExtension !== newConfig.fileNameOrExtension) {
         const language = await getLanguage(id, newConfig.languageName, newConfig.fileNameOrExtension);
-        const customKeyMap = getLanguageKeyMaps(newConfig.languageName, newConfig.fileNameOrExtension);
-        if (newConfig.languageName !== "CSV" && newConfig.languageName !== "TSV")
-            customKeyMap.push(indentWithTab);
+        const customLanguageKeyMap = getLanguageKeyMaps(newConfig.languageName, newConfig.fileNameOrExtension);
+        if (newConfig.languageName !== "CSV" && newConfig.languageName !== "TSV" && CMInstances[id].setup.indentWithTab)
+            customLanguageKeyMap.push(indentWithTab);
         const separator = getSeparator(newConfig.languageName);
-        effects.push(CMInstances[id].languageCompartment.reconfigure(language ?? []), CMInstances[id].keymapCompartment.reconfigure(keymap.of(customKeyMap)), languageChangeEffect.of(language?.language), CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.languageName === 'Markdown')), CMInstances[id].columnsStylingCompartment.reconfigure(newConfig.languageName === "CSV" || newConfig.languageName === "TSV"
+        effects.push(CMInstances[id].languageCompartment.reconfigure(language ?? []), CMInstances[id].keymapCompartment.reconfigure(keymap.of(customLanguageKeyMap)), languageChangeEffect.of(language?.language), CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.languageName === 'Markdown')), CMInstances[id].columnsStylingCompartment.reconfigure(newConfig.languageName === "CSV" || newConfig.languageName === "TSV"
             ? [
                 columnStylingPlugin(separator),
-                keymap.of(getColumnStylingKeymap(separator)),
+                CMInstances[id].setup.indentWithTab ? keymap.of(getColumnStylingKeymap(separator)) : [],
                 linter(async (view) => columnLintSource(id, view, separator)),
             ]
             : []));
+        if (newConfig.languageName === "Markdown" && newConfig.autoFormatMarkdown)
+            foldMarkdownDiagramCodeBlocks(CMInstances[id].view);
+        else
+            unfoldAll(CMInstances[id].view);
     }
-    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages)
+    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages) {
         effects.push(CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.autoFormatMarkdown)));
+        if (newConfig.languageName === "Markdown" && newConfig.autoFormatMarkdown)
+            foldMarkdownDiagramCodeBlocks(CMInstances[id].view);
+        else
+            unfoldAll(CMInstances[id].view);
+    }
     if (oldConfig.replaceEmojiCodes !== newConfig.replaceEmojiCodes)
         effects.push(CMInstances[id].emojiReplacerCompartment.reconfigure(replaceEmojiExtension(newConfig.replaceEmojiCodes)));
     if (oldConfig.lineWrapping !== newConfig.lineWrapping)
@@ -76877,7 +77096,7 @@ function saveToLocalStorage(id) {
 const autoFormatMarkdownExtensions = (id, autoFormatMarkdown = true) => [
     getDynamicHeaderStyling(autoFormatMarkdown),
     dynamicHrExtension(autoFormatMarkdown),
-    dynamicImagesExtension(autoFormatMarkdown && CMInstances[id].config.previewImages === true),
+    dynamicImagesExtension(id, autoFormatMarkdown && CMInstances[id].config.previewImages === true),
     dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
     autocompletion({
         override: [
