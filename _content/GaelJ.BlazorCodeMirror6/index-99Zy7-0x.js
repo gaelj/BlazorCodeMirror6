@@ -21506,7 +21506,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-9xZ_1nYD.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-C8oOgXsd.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -21517,7 +21517,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-Bkjbba2O.js').then(m => m.cpp());
+            return import('./index-vAtv0Oyr.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21525,7 +21525,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-Bkjbba2O.js').then(m => m.cpp());
+            return import('./index-vAtv0Oyr.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21553,7 +21553,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-CVfmZNgj.js').then(m => m.java());
+            return import('./index-BuVqmXjK.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21569,7 +21569,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-BMPFFQBI.js').then(m => m.json());
+            return import('./index-ERwKYWmZ.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21583,14 +21583,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-D-zE3t-2.js').then(m => m.less());
+            return import('./index-Dr14Fmq2.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-B9sNQo39.js').then(m => m.liquid());
+            return import('./index-CXdzrJTH.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21616,7 +21616,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-CFYWy9Sy.js').then(m => m.php());
+            return import('./index-CJlNldvy.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21633,28 +21633,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-GokqFSFB.js').then(m => m.python());
+            return import('./index-BgHepwA5.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-CYyqLb7K.js').then(m => m.rust());
+            return import('./index-dpAJldFb.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-CExhWrr5.js').then(m => m.sass({ indented: true }));
+            return import('./index-BcOVGuvx.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-CExhWrr5.js').then(m => m.sass());
+            return import('./index-BcOVGuvx.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21685,7 +21685,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-90cvpY6F.js').then(m => m.wast());
+            return import('./index-Bg3w4eGm.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21693,7 +21693,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-B3GSF7RW.js').then(m => m.xml());
+            return import('./index-B-ywaLxi.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21701,7 +21701,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-BGxWmxWy.js').then(m => m.yaml());
+            return import('./index-BJ0nX3Ml.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -22496,13 +22496,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-CCxW_d4h.js').then(m => m.vue());
+            return import('./index-BM9QGVbO.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-CO73l3P4.js').then(m => m.angular());
+            return import('./index-B3j0DKha.js').then(m => m.angular());
         }
     })
 ];
@@ -27762,6 +27762,7 @@ class CmInstance {
         this.drawSelectionCompartment = new Compartment;
         this.dropCursorCompartment = new Compartment;
         this.scrollPastEndCompartment = new Compartment;
+        this.hyperLinksCompartment = new Compartment;
     }
 }
 const CMInstances = {};
@@ -76646,6 +76647,8 @@ class HyperLinkIcon extends WidgetType {
         }
         else
             link.href = `${this.state.baseUrl}${this.state.url}`;
+        if (link.href.endsWith('.md') && this.state.viewer)
+            link.href = `${this.state.viewer}${encodeURIComponent(link.href)}`;
         link.target = '_blank';
         link.innerHTML = linkSvgImage;
         link.className = 'cm-hyper-link-icon';
@@ -76660,6 +76663,9 @@ function hyperLinkDecorations(view, id) {
     const basePathForLinks = (CMInstances[id] !== undefined && CMInstances[id].config.basePathForLinks)
         ? CMInstances[id].config.basePathForLinks.replace(/\/+$/, '') + "/"
         : '';
+    const markdownViewPath = (CMInstances[id] !== undefined && CMInstances[id].config.markdownViewPath)
+        ? CMInstances[id].config.markdownViewPath
+        : '';
     while ((match = anyLinkRegexp.exec(doc)) !== null) {
         const from = match.index;
         const to = from + match[0].length;
@@ -76668,6 +76674,7 @@ function hyperLinkDecorations(view, id) {
                 at: to,
                 url: match[0],
                 baseUrl: basePathForLinks,
+                viewer: markdownViewPath,
             }),
             side: 1,
         });
@@ -76766,7 +76773,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             CMInstances[id].dropCursorCompartment.of(initialConfig.dropCursor ? dropCursor() : []),
             CMInstances[id].scrollPastEndCompartment.of(initialConfig.scrollPastEnd ? scrollPastEnd() : []),
             CMInstances[id].highlightActiveLineCompartment.of(initialConfig.highlightActiveLine ? highlightActiveLine() : []),
-            hyperLink(id),
+            CMInstances[id].hyperLinksCompartment.of(hyperLink(id)),
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update); }),
             linter(async (view) => maxDocLengthLintSource(id, view)),
             keymap.of([
@@ -76989,7 +76996,7 @@ async function setConfiguration(id, newConfig) {
         else
             unfoldAll(CMInstances[id].view);
     }
-    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages) {
+    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages || oldConfig.basePathForLinks !== newConfig.basePathForLinks) {
         effects.push(CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.autoFormatMarkdown)));
         if (newConfig.languageName === "Markdown" && newConfig.autoFormatMarkdown)
             foldMarkdownDiagramCodeBlocks(CMInstances[id].view);
@@ -77024,6 +77031,8 @@ async function setConfiguration(id, newConfig) {
         effects.push(CMInstances[id].scrollPastEndCompartment.reconfigure(newConfig.scrollPastEnd ? scrollPastEnd() : []));
     if (oldConfig.highlightActiveLine !== newConfig.highlightActiveLine)
         effects.push(CMInstances[id].highlightActiveLineCompartment.reconfigure(newConfig.highlightActiveLine ? highlightActiveLine() : []));
+    if (oldConfig.basePathForLinks !== newConfig.basePathForLinks || oldConfig.markdownViewPath != newConfig.markdownViewPath)
+        effects.push(CMInstances[id].hyperLinksCompartment.reconfigure(hyperLink(id)));
     CMInstances[id].config = newConfig;
     if (effects.length > 0 || changes.length > 0)
         view.dispatch({
