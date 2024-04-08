@@ -220,6 +220,11 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// <value></value>
     [Parameter] public string? BasePathForLinks { get; set; }
     /// <summary>
+    /// The URL to the markdown viewer page, to optionally handle links to Markdown files. The original link will be appended as a query string parameter value
+    /// </summary>
+    /// <value></value>
+    [Parameter] public string? MarkdownViewPath { get; set; }
+    /// <summary>
     /// Additional attributes to be applied to the container element
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
@@ -304,7 +309,8 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             HighlightActiveLine,
             ShowMarkdownControlCharactersAroundCursor,
             EmbedUploadsAsDataUrls,
-            BasePathForLinks
+            BasePathForLinks,
+            MarkdownViewPath
         );
         try {
             if (IsWASM)
@@ -476,6 +482,10 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             }
             if (Config.BasePathForLinks != BasePathForLinks) {
                 Config.BasePathForLinks = BasePathForLinks;
+                updated = true;
+            }
+            if (Config.MarkdownViewPath != MarkdownViewPath) {
+                Config.MarkdownViewPath = MarkdownViewPath;
                 updated = true;
             }
             if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;

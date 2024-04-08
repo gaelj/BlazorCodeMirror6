@@ -37,6 +37,7 @@ namespace GaelJ.BlazorCodeMirror6.Models;
 /// <param name="showMarkdownControlCharactersAroundCursor"></param>
 /// <param name="embedUploadsAsDataUrls"></param>
 /// <param name="basePathForLinks"></param>
+/// <param name="markdownViewPath"></param>
 public class CodeMirrorConfiguration(
     string? doc,
     string? placeholder,
@@ -68,7 +69,8 @@ public class CodeMirrorConfiguration(
     bool highlightActiveLine,
     bool showMarkdownControlCharactersAroundCursor,
     bool embedUploadsAsDataUrls,
-    string? basePathForLinks)
+    string? basePathForLinks,
+    string? markdownViewPath)
 {
     /// <summary>
     /// The text to display in the editor
@@ -225,4 +227,10 @@ public class CodeMirrorConfiguration(
     /// </summary>
     /// <value></value>
     [JsonPropertyName("basePathForLinks")] public string? BasePathForLinks { get; set; } = basePathForLinks;
+
+    /// <summary>
+    /// The URL to the markdown viewer page, to optionally handle links to Markdown files. The original link will be appended as a query string parameter value
+    /// </summary>
+    /// <value></value>
+    [JsonPropertyName("markdownViewPath")] public string? MarkdownViewPath { get; set; } = markdownViewPath;
 }
