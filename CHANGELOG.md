@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.4 - 2024-04-08
+
+### 🐛 Fix a bug
+
+- Ensure base path for images is read dynamically
+
 ## 0.8.3 - 2024-04-08
 
 ### ✨ Introduce new features
