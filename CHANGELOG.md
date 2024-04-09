@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.7 - 2024-04-09
+
+### 🐛 Fix a bug
+
+- Fix initial setting of base link URLs for images, once more
+
 ## 0.8.6 - 2024-04-09
 
 ### 🐛 Fix a bug

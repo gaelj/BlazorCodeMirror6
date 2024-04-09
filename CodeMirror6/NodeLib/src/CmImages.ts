@@ -8,8 +8,9 @@ import { buildWidget } from './lib/codemirror-kit'
 
 const imageWidget = (basePathForLinks: string, src: string, from: number) => buildWidget({
     src: src,
+    basePathForLinks: basePathForLinks,
     eq(other) {
-        return other.src === src
+        return other.src === src && basePathForLinks === other.basePathForLinks
     },
 
     toDOM(view: EditorView) {
