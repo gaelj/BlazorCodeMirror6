@@ -109,7 +109,7 @@ export async function initCodeMirror(
             createEditorWithId(id),
             CMInstances[id].keymapCompartment.of(keymap.of(customLanguageKeyMap)),
             CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
-            CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
+            CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.previewImages, initialConfig.basePathForLinks, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
             CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.indentationUnit))),
             CMInstances[id].placeholderCompartment.of(placeholder(initialConfig.placeholder)),
@@ -138,7 +138,7 @@ export async function initCodeMirror(
             CMInstances[id].dropCursorCompartment.of(initialConfig.dropCursor ? dropCursor() : []),
             CMInstances[id].scrollPastEndCompartment.of(initialConfig.scrollPastEnd ? scrollPastEnd() : []),
             CMInstances[id].highlightActiveLineCompartment.of(initialConfig.highlightActiveLine ? highlightActiveLine() : []),
-            CMInstances[id].hyperLinksCompartment.of(hyperLink(id)),
+            CMInstances[id].hyperLinksCompartment.of(hyperLink(initialConfig.basePathForLinks, initialConfig.markdownViewPath)),
 
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
             linter(async view => maxDocLengthLintSource(id, view)),
@@ -361,7 +361,7 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
             CMInstances[id].languageCompartment.reconfigure(language ?? []),
             CMInstances[id].keymapCompartment.reconfigure(keymap.of(customLanguageKeyMap)),
             languageChangeEffect.of(language?.language),
-            CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.languageName === 'Markdown')),
+            CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.previewImages, newConfig.basePathForLinks, newConfig.languageName === 'Markdown')),
             CMInstances[id].columnsStylingCompartment.reconfigure(
                 newConfig.languageName === "CSV" || newConfig.languageName === "TSV"
                     ? [
@@ -378,7 +378,7 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
             unfoldAll(CMInstances[id].view)
     }
     if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages || oldConfig.basePathForLinks !== newConfig.basePathForLinks) {
-        effects.push(CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.autoFormatMarkdown)))
+        effects.push(CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.previewImages, newConfig.basePathForLinks, newConfig.autoFormatMarkdown)))
         if (newConfig.languageName === "Markdown" && newConfig.autoFormatMarkdown)
             foldMarkdownDiagramCodeBlocks(CMInstances[id].view)
         else
@@ -399,7 +399,8 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
     if (oldConfig.dropCursor !== newConfig.dropCursor) effects.push(CMInstances[id].dropCursorCompartment.reconfigure(newConfig.dropCursor ? dropCursor() : []))
     if (oldConfig.scrollPastEnd !== newConfig.scrollPastEnd) effects.push(CMInstances[id].scrollPastEndCompartment.reconfigure(newConfig.scrollPastEnd ? scrollPastEnd() : []))
     if (oldConfig.highlightActiveLine !== newConfig.highlightActiveLine) effects.push(CMInstances[id].highlightActiveLineCompartment.reconfigure(newConfig.highlightActiveLine ? highlightActiveLine() : []))
-    if (oldConfig.basePathForLinks !== newConfig.basePathForLinks || oldConfig.markdownViewPath != newConfig.markdownViewPath) effects.push(CMInstances[id].hyperLinksCompartment.reconfigure(hyperLink(id)))
+    if (oldConfig.basePathForLinks !== newConfig.basePathForLinks || oldConfig.markdownViewPath != newConfig.markdownViewPath)
+        effects.push(CMInstances[id].hyperLinksCompartment.reconfigure(hyperLink(newConfig.basePathForLinks, newConfig.markdownViewPath)))
 
     CMInstances[id].config = newConfig
     if (effects.length > 0 || changes.length > 0)
@@ -476,10 +477,10 @@ function saveToLocalStorage(id: string) {
     }
 }
 
-const autoFormatMarkdownExtensions = (id: string, autoFormatMarkdown: boolean = true) => [
+const autoFormatMarkdownExtensions = (id: string, previewImages: boolean, basePathForLinks: string, autoFormatMarkdown: boolean = true) => [
     getDynamicHeaderStyling(autoFormatMarkdown),
     dynamicHrExtension(autoFormatMarkdown),
-    dynamicImagesExtension(id, autoFormatMarkdown && CMInstances[id].config.previewImages === true),
+    dynamicImagesExtension(basePathForLinks, autoFormatMarkdown && previewImages === true),
     dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
     autocompletion({
         override: [
