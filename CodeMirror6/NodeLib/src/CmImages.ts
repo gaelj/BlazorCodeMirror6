@@ -4,25 +4,27 @@ import { RangeSet, StateField } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
 import { Decoration, EditorView, WidgetType, ViewUpdate } from '@codemirror/view'
 import { buildWidget } from './lib/codemirror-kit'
-import { CMInstances } from './CmInstance'
 
 
-const imageWidget = (id: string, src: string, from: number) => buildWidget({
+const imageWidget = (basePathForLinks: string, src: string, from: number) => buildWidget({
     src: src,
     eq(other) {
         return other.src === src
     },
 
     toDOM(view: EditorView) {
-    const basePathForLinks = (CMInstances[id] !== undefined && CMInstances[id].config.basePathForLinks)
-        ? CMInstances[id].config.basePathForLinks.replace(/\/+$/, '') + "/"
-        : '';
+        basePathForLinks = basePathForLinks
+            ? basePathForLinks.replace(/\/+$/, '') + "/"
+            : '';
         const container = document.createElement('div')
         container.setAttribute('aria-hidden', 'true')
         const image = container.appendChild(document.createElement('img'))
 
         image.setAttribute('aria-hidden', 'true')
-        image.src = `${basePathForLinks}${src}`
+        if (src.includes('://') || src.startsWith('data:'))
+            image.src = src;
+        else
+            image.src = `${basePathForLinks}${src}`
         image.style.maxHeight = '320px'
         image.style.maxWidth = 'calc(100% - 2em)'
         image.style.objectFit = 'scale-down'
@@ -54,7 +56,7 @@ const imageWidget = (id: string, src: string, from: number) => buildWidget({
     },
 })
 
-export const dynamicImagesExtension = (id: string, enabled: boolean = true): Extension => {
+export const dynamicImagesExtension = (basePathForLinks: string, enabled: boolean = true): Extension => {
     if (!enabled) {
         return []
     }
@@ -62,7 +64,7 @@ export const dynamicImagesExtension = (id: string, enabled: boolean = true): Ext
     const imageRegex = /!\[.*?\]\((?<src>.*?)\)/
 
     const imageDecoration = (src: string, from: number) => Decoration.widget({
-        widget: imageWidget(id, src, from),
+        widget: imageWidget(basePathForLinks, src, from),
         side: -1,
         block: true,
     })
