@@ -21506,7 +21506,7 @@ function legacy(parser) {
     return new LanguageSupport(StreamLanguage.define(parser));
 }
 function sql(dialectName) {
-    return import('./index-C8oOgXsd.js').then(m => m.sql({ dialect: m[dialectName] }));
+    return import('./index-CbEr64WU.js').then(m => m.sql({ dialect: m[dialectName] }));
 }
 /**
 An array of language descriptions for known language packages.
@@ -21517,7 +21517,7 @@ const languages = [
         name: "C",
         extensions: ["c", "h", "ino"],
         load() {
-            return import('./index-vAtv0Oyr.js').then(m => m.cpp());
+            return import('./index-CvnfEr7h.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21525,7 +21525,7 @@ const languages = [
         alias: ["cpp"],
         extensions: ["cpp", "c++", "cc", "cxx", "hpp", "h++", "hh", "hxx"],
         load() {
-            return import('./index-vAtv0Oyr.js').then(m => m.cpp());
+            return import('./index-CvnfEr7h.js').then(m => m.cpp());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21553,7 +21553,7 @@ const languages = [
         name: "Java",
         extensions: ["java"],
         load() {
-            return import('./index-BuVqmXjK.js').then(m => m.java());
+            return import('./index-CJ2-z87l.js').then(m => m.java());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21569,7 +21569,7 @@ const languages = [
         alias: ["json5"],
         extensions: ["json", "map"],
         load() {
-            return import('./index-ERwKYWmZ.js').then(m => m.json());
+            return import('./index-DhH1ecSm.js').then(m => m.json());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21583,14 +21583,14 @@ const languages = [
         name: "LESS",
         extensions: ["less"],
         load() {
-            return import('./index-Dr14Fmq2.js').then(m => m.less());
+            return import('./index-Qj8-8iku.js').then(m => m.less());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Liquid",
         extensions: ["liquid"],
         load() {
-            return import('./index-CXdzrJTH.js').then(m => m.liquid());
+            return import('./index-mO_SJyFU.js').then(m => m.liquid());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21616,7 +21616,7 @@ const languages = [
         name: "PHP",
         extensions: ["php", "php3", "php4", "php5", "php7", "phtml"],
         load() {
-            return import('./index-CJlNldvy.js').then(m => m.php());
+            return import('./index-Cv1jKgEK.js').then(m => m.php());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21633,28 +21633,28 @@ const languages = [
         extensions: ["BUILD", "bzl", "py", "pyw"],
         filename: /^(BUCK|BUILD)$/,
         load() {
-            return import('./index-BgHepwA5.js').then(m => m.python());
+            return import('./index-KRDK5t9F.js').then(m => m.python());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Rust",
         extensions: ["rs"],
         load() {
-            return import('./index-dpAJldFb.js').then(m => m.rust());
+            return import('./index-yqr3Cr08.js').then(m => m.rust());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Sass",
         extensions: ["sass"],
         load() {
-            return import('./index-BcOVGuvx.js').then(m => m.sass({ indented: true }));
+            return import('./index-BAK12LVZ.js').then(m => m.sass({ indented: true }));
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "SCSS",
         extensions: ["scss"],
         load() {
-            return import('./index-BcOVGuvx.js').then(m => m.sass());
+            return import('./index-BAK12LVZ.js').then(m => m.sass());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21685,7 +21685,7 @@ const languages = [
         name: "WebAssembly",
         extensions: ["wat", "wast"],
         load() {
-            return import('./index-Bg3w4eGm.js').then(m => m.wast());
+            return import('./index-CWixgErX.js').then(m => m.wast());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21693,7 +21693,7 @@ const languages = [
         alias: ["rss", "wsdl", "xsd"],
         extensions: ["xml", "xsl", "xsd", "svg"],
         load() {
-            return import('./index-B-ywaLxi.js').then(m => m.xml());
+            return import('./index-BZAHOBcl.js').then(m => m.xml());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
@@ -21701,7 +21701,7 @@ const languages = [
         alias: ["yml"],
         extensions: ["yaml", "yml"],
         load() {
-            return import('./index-BJ0nX3Ml.js').then(m => m.yaml());
+            return import('./index-C-61nlp4.js').then(m => m.yaml());
         }
     }),
     // Legacy modes ported from CodeMirror 5
@@ -22496,13 +22496,13 @@ const languages = [
         name: "Vue",
         extensions: ["vue"],
         load() {
-            return import('./index-BM9QGVbO.js').then(m => m.vue());
+            return import('./index-Dx4m1K92.js').then(m => m.vue());
         }
     }),
     /*@__PURE__*/LanguageDescription.of({
         name: "Angular Template",
         load() {
-            return import('./index-B3j0DKha.js').then(m => m.angular());
+            return import('./index-C5kVFfPF.js').then(m => m.angular());
         }
     })
 ];
@@ -40903,20 +40903,23 @@ function getTheme(themeName) {
     }
 }
 
-const imageWidget = (id, src, from) => buildWidget({
+const imageWidget = (basePathForLinks, src, from) => buildWidget({
     src: src,
     eq(other) {
         return other.src === src;
     },
     toDOM(view) {
-        const basePathForLinks = (CMInstances[id] !== undefined && CMInstances[id].config.basePathForLinks)
-            ? CMInstances[id].config.basePathForLinks.replace(/\/+$/, '') + "/"
+        basePathForLinks = basePathForLinks
+            ? basePathForLinks.replace(/\/+$/, '') + "/"
             : '';
         const container = document.createElement('div');
         container.setAttribute('aria-hidden', 'true');
         const image = container.appendChild(document.createElement('img'));
         image.setAttribute('aria-hidden', 'true');
-        image.src = `${basePathForLinks}${src}`;
+        if (src.includes('://') || src.startsWith('data:'))
+            image.src = src;
+        else
+            image.src = `${basePathForLinks}${src}`;
         image.style.maxHeight = '320px';
         image.style.maxWidth = 'calc(100% - 2em)';
         image.style.objectFit = 'scale-down';
@@ -40941,13 +40944,13 @@ const imageWidget = (id, src, from) => buildWidget({
         return 320;
     },
 });
-const dynamicImagesExtension = (id, enabled = true) => {
+const dynamicImagesExtension = (basePathForLinks, enabled = true) => {
     if (!enabled) {
         return [];
     }
     const imageRegex = /!\[.*?\]\((?<src>.*?)\)/;
     const imageDecoration = (src, from) => Decoration.widget({
-        widget: imageWidget(id, src, from),
+        widget: imageWidget(basePathForLinks, src, from),
         side: -1,
         block: true,
     });
@@ -76639,15 +76642,23 @@ class HyperLinkIcon extends WidgetType {
     }
     toDOM() {
         const link = document.createElement('a');
-        const matchAll = this.state.url.matchAll(linkRegexp);
-        const match = [...matchAll][0];
-        if (match && match.length > 1) {
-            const url = match[1];
-            link.href = `${this.state.baseUrl}${url}`;
+        const matchUrlPart = this.state.url.matchAll(linkRegexp);
+        const matchUrl = [...matchUrlPart][0];
+        if (matchUrl && matchUrl.length > 1) {
+            const url = matchUrl[1];
+            if (url.includes('://') || url.startsWith('data:'))
+                link.href = url;
+            else
+                link.href = `${this.state.baseUrl}${url}`;
         }
-        else
-            link.href = `${this.state.baseUrl}${this.state.url}`;
-        if (link.href.endsWith('.md') && this.state.viewer)
+        else {
+            if (this.state.url.includes('://') || this.state.url.startsWith('data:'))
+                link.href = this.state.url;
+            else
+                link.href = `${this.state.baseUrl}${this.state.url}`;
+        }
+        // Open .md links in the optional markdown viewer
+        if (link.href.endsWith('.md') || link.href.includes('.md#') || link.href.includes('.md?'))
             link.href = `${this.state.viewer}${encodeURIComponent(link.href)}`;
         link.target = '_blank';
         link.innerHTML = linkSvgImage;
@@ -76656,16 +76667,14 @@ class HyperLinkIcon extends WidgetType {
         return link;
     }
 }
-function hyperLinkDecorations(view, id) {
+function hyperLinkDecorations(view, basePathForLinks, markdownViewerPath) {
     const widgets = [];
     const doc = view.state.doc.toString();
     let match;
-    const basePathForLinks = (CMInstances[id] !== undefined && CMInstances[id].config.basePathForLinks)
-        ? CMInstances[id].config.basePathForLinks.replace(/\/+$/, '') + "/"
+    basePathForLinks = basePathForLinks
+        ? basePathForLinks.replace(/\/+$/, '') + "/"
         : '';
-    const markdownViewPath = (CMInstances[id] !== undefined && CMInstances[id].config.markdownViewPath)
-        ? CMInstances[id].config.markdownViewPath
-        : '';
+    markdownViewerPath = markdownViewerPath ?? '';
     while ((match = anyLinkRegexp.exec(doc)) !== null) {
         const from = match.index;
         const to = from + match[0].length;
@@ -76674,7 +76683,7 @@ function hyperLinkDecorations(view, id) {
                 at: to,
                 url: match[0],
                 baseUrl: basePathForLinks,
-                viewer: markdownViewPath,
+                viewer: markdownViewerPath,
             }),
             side: 1,
         });
@@ -76682,14 +76691,14 @@ function hyperLinkDecorations(view, id) {
     }
     return Decoration.set(widgets);
 }
-function hyperLinkExtension(id) {
+function hyperLinkExtension(basePathForLinks, markdownViewerPath) {
     return ViewPlugin.fromClass(class HyperLinkView {
         constructor(view) {
-            this.decorations = hyperLinkDecorations(view, id);
+            this.decorations = hyperLinkDecorations(view, basePathForLinks, markdownViewerPath);
         }
         update(update) {
             if (update.docChanged || update.viewportChanged) {
-                this.decorations = hyperLinkDecorations(update.view, id);
+                this.decorations = hyperLinkDecorations(update.view, basePathForLinks, markdownViewerPath);
             }
         }
     }, {
@@ -76709,7 +76718,7 @@ const hyperLinkStyle = EditorView.baseTheme({
         textDecoration: 'underline',
     },
 });
-const hyperLink = (id) => [hyperLinkExtension(id), hyperLinkStyle];
+const hyperLink = (basePathForLinks, markdownViewerPath) => [hyperLinkExtension(basePathForLinks, markdownViewerPath), hyperLinkStyle];
 
 /**
  * Initialize a new CodeMirror instance
@@ -76746,7 +76755,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             createEditorWithId(id),
             CMInstances[id].keymapCompartment.of(keymap.of(customLanguageKeyMap)),
             CMInstances[id].languageCompartment.of(await getLanguage(id, initialConfig.languageName, initialConfig.fileNameOrExtension) ?? []),
-            CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.autoFormatMarkdown)),
+            CMInstances[id].markdownStylingCompartment.of(initialConfig.languageName !== "Markdown" ? [] : autoFormatMarkdownExtensions(id, initialConfig.previewImages, initialConfig.basePathForLinks, initialConfig.autoFormatMarkdown)),
             CMInstances[id].tabSizeCompartment.of(EditorState.tabSize.of(initialConfig.tabSize)),
             CMInstances[id].indentUnitCompartment.of(indentUnit.of(" ".repeat(initialConfig.indentationUnit))),
             CMInstances[id].placeholderCompartment.of(placeholder(initialConfig.placeholder)),
@@ -76773,7 +76782,7 @@ async function initCodeMirror(id, dotnetHelper, initialConfig, setup) {
             CMInstances[id].dropCursorCompartment.of(initialConfig.dropCursor ? dropCursor() : []),
             CMInstances[id].scrollPastEndCompartment.of(initialConfig.scrollPastEnd ? scrollPastEnd() : []),
             CMInstances[id].highlightActiveLineCompartment.of(initialConfig.highlightActiveLine ? highlightActiveLine() : []),
-            CMInstances[id].hyperLinksCompartment.of(hyperLink(id)),
+            CMInstances[id].hyperLinksCompartment.of(hyperLink(initialConfig.basePathForLinks, initialConfig.markdownViewPath)),
             EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update); }),
             linter(async (view) => maxDocLengthLintSource(id, view)),
             keymap.of([
@@ -76984,7 +76993,7 @@ async function setConfiguration(id, newConfig) {
         if (newConfig.languageName !== "CSV" && newConfig.languageName !== "TSV" && CMInstances[id].setup.indentWithTab)
             customLanguageKeyMap.push(indentWithTab);
         const separator = getSeparator(newConfig.languageName);
-        effects.push(CMInstances[id].languageCompartment.reconfigure(language ?? []), CMInstances[id].keymapCompartment.reconfigure(keymap.of(customLanguageKeyMap)), languageChangeEffect.of(language?.language), CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.languageName === 'Markdown')), CMInstances[id].columnsStylingCompartment.reconfigure(newConfig.languageName === "CSV" || newConfig.languageName === "TSV"
+        effects.push(CMInstances[id].languageCompartment.reconfigure(language ?? []), CMInstances[id].keymapCompartment.reconfigure(keymap.of(customLanguageKeyMap)), languageChangeEffect.of(language?.language), CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.previewImages, newConfig.basePathForLinks, newConfig.languageName === 'Markdown')), CMInstances[id].columnsStylingCompartment.reconfigure(newConfig.languageName === "CSV" || newConfig.languageName === "TSV"
             ? [
                 columnStylingPlugin(separator),
                 CMInstances[id].setup.indentWithTab ? keymap.of(getColumnStylingKeymap(separator)) : [],
@@ -76997,7 +77006,7 @@ async function setConfiguration(id, newConfig) {
             unfoldAll(CMInstances[id].view);
     }
     if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages || oldConfig.basePathForLinks !== newConfig.basePathForLinks) {
-        effects.push(CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.autoFormatMarkdown)));
+        effects.push(CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.previewImages, newConfig.basePathForLinks, newConfig.autoFormatMarkdown)));
         if (newConfig.languageName === "Markdown" && newConfig.autoFormatMarkdown)
             foldMarkdownDiagramCodeBlocks(CMInstances[id].view);
         else
@@ -77032,7 +77041,7 @@ async function setConfiguration(id, newConfig) {
     if (oldConfig.highlightActiveLine !== newConfig.highlightActiveLine)
         effects.push(CMInstances[id].highlightActiveLineCompartment.reconfigure(newConfig.highlightActiveLine ? highlightActiveLine() : []));
     if (oldConfig.basePathForLinks !== newConfig.basePathForLinks || oldConfig.markdownViewPath != newConfig.markdownViewPath)
-        effects.push(CMInstances[id].hyperLinksCompartment.reconfigure(hyperLink(id)));
+        effects.push(CMInstances[id].hyperLinksCompartment.reconfigure(hyperLink(newConfig.basePathForLinks, newConfig.markdownViewPath)));
     CMInstances[id].config = newConfig;
     if (effects.length > 0 || changes.length > 0)
         view.dispatch({
@@ -77102,10 +77111,10 @@ function saveToLocalStorage(id) {
         localStorage.removeItem(localStorageKey);
     }
 }
-const autoFormatMarkdownExtensions = (id, autoFormatMarkdown = true) => [
+const autoFormatMarkdownExtensions = (id, previewImages, basePathForLinks, autoFormatMarkdown = true) => [
     getDynamicHeaderStyling(autoFormatMarkdown),
     dynamicHrExtension(autoFormatMarkdown),
-    dynamicImagesExtension(id, autoFormatMarkdown && CMInstances[id].config.previewImages === true),
+    dynamicImagesExtension(basePathForLinks, autoFormatMarkdown && previewImages === true),
     dynamicDiagramsExtension(autoFormatMarkdown, CMInstances[id].setup.krokiUrl.replace(/\/$/, '')),
     autocompletion({
         override: [
