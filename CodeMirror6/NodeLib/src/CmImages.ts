@@ -4,7 +4,6 @@ import { RangeSet, StateField } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
 import { Decoration, EditorView, WidgetType, ViewUpdate } from '@codemirror/view'
 import { buildWidget } from './lib/codemirror-kit'
-import { fullUrlRegexp } from './CmHyperlink'
 
 
 const imageWidget = (basePathForLinks: string, src: string, from: number) => buildWidget({
@@ -22,7 +21,7 @@ const imageWidget = (basePathForLinks: string, src: string, from: number) => bui
         const image = container.appendChild(document.createElement('img'))
 
         image.setAttribute('aria-hidden', 'true')
-        if (fullUrlRegexp.test(src))
+        if (src.includes('://') || src.startsWith('data:'))
             image.src = src;
         else
             image.src = `${basePathForLinks}${src}`
