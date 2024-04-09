@@ -331,6 +331,7 @@ function setClassToParent(id: string, className: string, classNamesToRemove: str
 export async function setConfiguration(id: string, newConfig: CmConfiguration) {
     consoleLog(id, `Setting configuration for ${id} to`, newConfig)
     const view = CMInstances[id]?.view
+    var redrawNeeded = false
     if (!view) {
         consoleLog(id, `View is undefined`)
         return
@@ -351,6 +352,7 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
     if (oldConfig.indentationUnit !== newConfig.indentationUnit) effects.push(CMInstances[id].indentUnitCompartment.reconfigure(indentUnit.of(' '.repeat(newConfig.indentationUnit))))
     if (oldConfig.readOnly !== newConfig.readOnly) effects.push(CMInstances[id].readonlyCompartment.reconfigure(EditorState.readOnly.of(newConfig.readOnly)))
     if (oldConfig.editable !== newConfig.editable) effects.push(CMInstances[id].editableCompartment.reconfigure(EditorView.editable.of(newConfig.editable)))
+
     if (oldConfig.languageName !== newConfig.languageName || oldConfig.fileNameOrExtension !== newConfig.fileNameOrExtension) {
         const language = await getLanguage(id, newConfig.languageName, newConfig.fileNameOrExtension)
         const customLanguageKeyMap = getLanguageKeyMaps(newConfig.languageName, newConfig.fileNameOrExtension)
@@ -376,14 +378,17 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
             foldMarkdownDiagramCodeBlocks(CMInstances[id].view)
         else
             unfoldAll(CMInstances[id].view)
+        redrawNeeded = true
     }
-    if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages || oldConfig.basePathForLinks !== newConfig.basePathForLinks) {
+    else if (oldConfig.autoFormatMarkdown !== newConfig.autoFormatMarkdown || oldConfig.previewImages !== newConfig.previewImages || oldConfig.basePathForLinks !== newConfig.basePathForLinks) {
         effects.push(CMInstances[id].markdownStylingCompartment.reconfigure(autoFormatMarkdownExtensions(id, newConfig.previewImages, newConfig.basePathForLinks, newConfig.autoFormatMarkdown)))
         if (newConfig.languageName === "Markdown" && newConfig.autoFormatMarkdown)
             foldMarkdownDiagramCodeBlocks(CMInstances[id].view)
         else
             unfoldAll(CMInstances[id].view)
+        redrawNeeded = true
     }
+
     if (oldConfig.replaceEmojiCodes !== newConfig.replaceEmojiCodes) effects.push(CMInstances[id].emojiReplacerCompartment.reconfigure(replaceEmojiExtension(newConfig.replaceEmojiCodes)))
     if (oldConfig.lineWrapping !== newConfig.lineWrapping) effects.push(CMInstances[id].lineWrappingCompartment.reconfigure(newConfig.lineWrapping ? EditorView.lineWrapping : []))
     if (oldConfig.mergeViewConfiguration !== newConfig.mergeViewConfiguration) effects.push(CMInstances[id].unifiedMergeViewCompartment.reconfigure(newConfig.mergeViewConfiguration ? unifiedMergeView(newConfig.mergeViewConfiguration) : []))
@@ -408,6 +413,8 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
             effects: effects,
             changes: changes,
     })
+    if (redrawNeeded)
+        forceRedraw(id)
 }
 
 export function setMentionCompletions(id: string, mentionCompletions: Completion[]) {
