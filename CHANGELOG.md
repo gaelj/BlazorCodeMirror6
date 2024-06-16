@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.8 - 2024-06-16
+
+### ⬆️ Upgrade dependencies
+
+- Update nuget packages
+
 ## 0.8.7 - 2024-04-09
 
 ### 🐛 Fix a bug

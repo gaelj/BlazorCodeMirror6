@@ -9,7 +9,7 @@
     <AssemblyName>GaelJ.BlazorCodeMirror6</AssemblyName>
     <IsPackable>true</IsPackable>
     <PackageId>GaelJ.BlazorCodeMirror6</PackageId>
-    <Version>0.8.7</Version>
+    <Version>0.8.8</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -38,9 +38,9 @@
     <SupportedPlatform Include="browser-wasm" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.27" Condition="'$(TargetFramework)'=='net6.0'" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.16" Condition="'$(TargetFramework)'=='net7.0'" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.3" Condition="'$(TargetFramework)'=='net8.0'" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.31" Condition="'$(TargetFramework)'=='net6.0'" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.20" Condition="'$(TargetFramework)'=='net7.0'" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.6" Condition="'$(TargetFramework)'=='net8.0'" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.Github" Version="8.0.0">
