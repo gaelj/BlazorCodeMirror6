@@ -1,3 +1,3 @@
-### 🐛 Fix a bug
+### ⬆️ Upgrade dependencies
 
-- Fix initial setting of base link URLs for images, once more
+- Update nuget packages
