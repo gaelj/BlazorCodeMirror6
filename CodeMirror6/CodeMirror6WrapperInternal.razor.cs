@@ -333,12 +333,9 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         }
     }
 
-    private static int InitCounter = 0;
-
     private async Task InitializeJsInterop()
     {
         if (CmJsInterop is null || !IsCodeMirrorInitialized) {
-            var currentCount = InitCounter++;
             try {
                 try {
                     LifeCycleCancellationTokenSource.Cancel();
@@ -349,36 +346,26 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
                 LifeCycleCancellationTokenSource = new();
 
                 var token = LifeCycleCancellationTokenSource.Token;
-                Logger.LogInformation("{currentCount} Initializing CodeMirror JS Interop with id {id}...", currentCount, Setup.Id);
+                Logger.LogInformation("Initializing CodeMirror JS Interop with id {id}...", Setup.Id);
                 if (token.IsCancellationRequested) return;
                 CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
 
                 if (token.IsCancellationRequested) return;
-                Logger.LogInformation("{currentCount} InitCodeMirror...", currentCount);
                 if (!await CmJsInterop.PropertySetters.InitCodeMirror()) return;
 
                 if (GetMentionCompletions is not null) {
-                    Logger.LogInformation("{currentCount} GetMentionCompletions...", currentCount);
                     var mentionCompletions = await GetMentionCompletions();
                     if (token.IsCancellationRequested) return;
-                    Logger.LogInformation("{currentCount} SetMentionCompletions...", currentCount);
                     if (!await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions)) return;
                 }
                 if (token.IsCancellationRequested) return;
                 IsCodeMirrorInitialized = true;
                 await InvokeAsync(StateHasChanged);
-                Logger.LogInformation("{currentCount} OnParametersSetAsync...", currentCount);
                 await OnParametersSetAsync();
-                Logger.LogInformation("{currentCount} InitializeJsInterop OK", currentCount);
             }
             catch (OperationCanceledException) {
-                Logger.LogInformation("{currentCount} CM Component initialization canceled", currentCount);
             }
             catch (ObjectDisposedException) {
-                Logger.LogInformation("{currentCount} CM Component disposed during initialization", currentCount);
-            }
-            finally {
-                Logger.LogInformation("{currentCount} InitializeJsInterop Exit", currentCount);
             }
         }
     }
