@@ -519,7 +519,6 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         catch (ObjectDisposedException) {}
         if (CmJsInterop?.IsJSReady == true)
             await CmJsInterop.DisposeAsync();
-        CmJsInterop = null;
         try {
             LinterCancellationTokenSource.Cancel();
             LinterCancellationTokenSource.Dispose();
