@@ -336,19 +336,25 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     private async Task InitializeJsInterop()
     {
         if (CmJsInterop is null) {
-            Logger.LogDebug("Initializing CodeMirror JS Interop with id {id}", Setup.Id);
+            Logger.LogInformation("Initializing CodeMirror JS Interop with id {id}...", Setup.Id);
             if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
+            Logger.LogInformation("Creating new CodeMirrorJsInterop...");
             CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
             if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
+            Logger.LogInformation("InitCodeMirror...");
             if (!await CmJsInterop.PropertySetters.InitCodeMirror()) return;
             if (GetMentionCompletions is not null) {
+                Logger.LogInformation("GetMentionCompletions...");
                 var mentionCompletions = await GetMentionCompletions();
+                Logger.LogInformation("SetMentionCompletions...");
                 if (!await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions)) return;
             }
             if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
             IsCodeMirrorInitialized = true;
             await InvokeAsync(StateHasChanged);
+            Logger.LogInformation("OnParametersSetAsync...");
             await OnParametersSetAsync();
+            Logger.LogInformation("InitializeJsInterop OK");
         }
     }
 
