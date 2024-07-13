@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.9 - 2024-07-13
+
+### 🔇 Remove logs
+
+- Remove the loggings
+
+### 🐛 Fix bugs
+
+- Better manage to the lifecycle cancellation token source
+- Prevent a null  reference on CmJsInterop: don't nullify it on component disposal
+
 ## 0.8.8 - 2024-06-16
 
 ### ⬆️ Upgrade dependencies
