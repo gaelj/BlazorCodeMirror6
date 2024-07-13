@@ -333,28 +333,36 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
         }
     }
 
+    private static int InitCounter = 0;
+
     private async Task InitializeJsInterop()
     {
         if (CmJsInterop is null) {
-            Logger.LogInformation("Initializing CodeMirror JS Interop with id {id}...", Setup.Id);
-            if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
-            Logger.LogInformation("Creating new CodeMirrorJsInterop...");
-            CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
-            if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
-            Logger.LogInformation("InitCodeMirror...");
-            if (!await CmJsInterop.PropertySetters.InitCodeMirror()) return;
-            if (GetMentionCompletions is not null) {
-                Logger.LogInformation("GetMentionCompletions...");
-                var mentionCompletions = await GetMentionCompletions();
-                Logger.LogInformation("SetMentionCompletions...");
-                if (!await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions)) return;
+            var currentCount = InitCounter++;
+            try {
+                Logger.LogInformation("{currentCount} Initializing CodeMirror JS Interop with id {id}...", currentCount, Setup.Id);
+                if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
+                Logger.LogInformation("{currentCount} Creating new CodeMirrorJsInterop...", currentCount);
+                CmJsInterop = new CodeMirrorJsInterop(JSRuntime, this);
+                if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
+                Logger.LogInformation("{currentCount} InitCodeMirror...", currentCount);
+                if (!await CmJsInterop.PropertySetters.InitCodeMirror()) return;
+                if (GetMentionCompletions is not null) {
+                    Logger.LogInformation("{currentCount} GetMentionCompletions...", currentCount);
+                    var mentionCompletions = await GetMentionCompletions();
+                    Logger.LogInformation("{currentCount} SetMentionCompletions...", currentCount);
+                    if (!await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions)) return;
+                }
+                if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
+                IsCodeMirrorInitialized = true;
+                await InvokeAsync(StateHasChanged);
+                Logger.LogInformation("{currentCount} OnParametersSetAsync...", currentCount);
+                await OnParametersSetAsync();
+                Logger.LogInformation("{currentCount} InitializeJsInterop OK", currentCount);
             }
-            if (LifeCycleCancellationTokenSource.IsCancellationRequested) return;
-            IsCodeMirrorInitialized = true;
-            await InvokeAsync(StateHasChanged);
-            Logger.LogInformation("OnParametersSetAsync...");
-            await OnParametersSetAsync();
-            Logger.LogInformation("InitializeJsInterop OK");
+            catch (ObjectDisposedException) {
+                Logger.LogInformation("{currentCount} CM Component disposed during initialization", currentCount);
+            }
         }
     }
 
