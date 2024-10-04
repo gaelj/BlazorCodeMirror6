@@ -140,8 +140,8 @@ export async function initCodeMirror(
             CMInstances[id].highlightActiveLineCompartment.of(initialConfig.highlightActiveLine ? highlightActiveLine() : []),
             CMInstances[id].hyperLinksCompartment.of(hyperLink(initialConfig.basePathForLinks, initialConfig.markdownViewPath)),
 
-            EditorView.updateListener.of(async (update) => { await updateListenerExtension(id, update) }),
-            linter(async view => maxDocLengthLintSource(id, view)),
+            EditorView.updateListener.of(async (update: ViewUpdate) => { await updateListenerExtension(id, update) }),
+            linter(async (view: EditorView) => maxDocLengthLintSource(id, view)),
             keymap.of([
                 ...closeBracketsKeymap,
                 ...defaultKeymap,
@@ -167,14 +167,14 @@ export async function initCodeMirror(
         if (setup.highlightSelectionMatches === true) extensions.push(highlightSelectionMatches())
         if (setup.allowMultipleSelections === true) extensions.push(EditorState.allowMultipleSelections.of(true))
         if (initialConfig.lintingEnabled === true || setup.bindValueMode == "OnDelayedInput")
-            extensions.push(linter(async view => await externalLintSource(id, view, dotnetHelper), getExternalLinterConfig(id)))
+            extensions.push(linter(async (view: EditorView) => await externalLintSource(id, view, dotnetHelper), getExternalLinterConfig(id)))
         if (initialConfig.lintingEnabled === true)
             extensions.push(lintGutter())
 
         extensions.push(...getFileUploadExtensions(id, setup))
 
         const pasteHandler = EditorView.domEventHandlers({
-            paste(event, view) {
+            paste(event: ClipboardEvent, view: EditorView) {
                 const transfer = event.clipboardData
 
                 consoleLog(id, "Pasting", transfer.files, transfer.types, transfer.items)
@@ -200,10 +200,13 @@ export async function initCodeMirror(
         const initialScrollPosition = (initialDoc && setup.scrollToEnd === true)
             ? initialDoc.length
             : 0
-        const initialScrollEffect = EditorView.scrollIntoView(
-            initialScrollPosition,
-            { y: setup.scrollToEnd === true ? 'end' : 'start' }
-        )
+
+        const initialScrollEffect = (setup.scrollToEnd === true || setup.scrollToStart === true)
+            ? EditorView.scrollIntoView(
+                initialScrollPosition,
+                { y: setup.scrollToEnd === true ? 'end' : 'start' }
+            )
+            : null
         const docLines = initialDoc?.split(/\r\n|\r|\n/) ?? [initialDoc]
         const text = Text.of(docLines)
         const textLength = text?.length ?? 0
