@@ -17,6 +17,7 @@ export class CmSetup
     public crossHairSelection: boolean
     public highlightSelectionMatches: boolean
     public allowMentions: boolean
+    public scrollToStart: boolean
     public scrollToEnd: boolean
     public fileIcon: string
     public bindValueMode: string

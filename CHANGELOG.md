@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.8.10 - 2024-10-04
+
+### ✨ Introduce new features
+
+- Make scrolling the editor into view optional with new ScrollToStart setup parameter (#184)
+
+### ⬆️ Upgrade dependencies
+
+- Update nuget packages
+
+### 🔨 Add or update development scripts
+
+- Fix semver usage
+
 ## 0.8.9 - 2024-07-13
 
 ### 🔇 Remove logs
