@@ -1,8 +1,11 @@
-### 🔇 Remove logs
+### ✨ Introduce new features
 
-- Remove the loggings
+- Make scrolling the editor into view optional with new ScrollToStart setup parameter (#184)
 
-### 🐛 Fix bugs
+### ⬆️ Upgrade dependencies
 
-- Better manage to the lifecycle cancellation token source
-- Prevent a null  reference on CmJsInterop: don't nullify it on component disposal
+- Update nuget packages
+
+### 🔨 Add or update development scripts
+
+- Fix semver usage
