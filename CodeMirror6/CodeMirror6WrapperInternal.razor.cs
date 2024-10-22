@@ -273,10 +273,12 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     private CancellationTokenSource LifeCycleCancellationTokenSource = new();
 
     /// <summary>
-    /// Life-cycle method invoked when the component is initialized.
+    /// Initialize the editor and JS interop
     /// </summary>
-    protected override async Task OnInitializedAsync()
+    /// <returns></returns>
+    public async Task InitializeAsync(bool initializeJsInterop)
     {
+        IsCodeMirrorInitialized = false;
         SetupId = Setup.Id;
         Config = new(
             Doc?.Replace("\r", ""),
@@ -313,12 +315,17 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
             MarkdownViewPath
         );
         try {
-            if (IsWASM)
+            if (initializeJsInterop)
                 await InitializeJsInterop();
         }
         catch (Exception) {
         }
     }
+
+    /// <summary>
+    /// Life-cycle method invoked when the component is initialized.
+    /// </summary>
+    protected override Task OnInitializedAsync() => InitializeAsync(IsWASM);
 
     /// <summary>
     /// Life-cycle method invoked when the component is ready to start, having received its initial parameters from its parent in the render tree.
