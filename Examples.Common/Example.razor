@@ -1,4 +1,4 @@
-<h1>Code Mirror 6 Wrapper Demo</h1>
+﻿<h1>Code Mirror 6 Wrapper Demo</h1>
 
 <label for="Theme">Theme</label>
 <select @bind=@Theme id="Theme">
@@ -120,6 +120,10 @@
     })
 >Refresh linter</button>
 
+<button class="btn btn-primary"
+    @onclick=@(() => codeMirror6WrapperRef.InitializeAsync())
+>Re-initialize</button>
+
 <CodeMirror6Wrapper
     @ref=@codeMirror6WrapperRef
     IsWASM=@IsWASM
@@ -140,7 +144,7 @@
     ReadOnly=@ReadOnly
     LineNumbers=@(!ReadOnly)
     HighlightActiveLineGutter=@(!ReadOnly)
-    ScrollPastEnd=@(!ReadOnly)
+    ScrollPastEnd=false
     DropCursor=@(!ReadOnly)
     DrawSelection=@(!ReadOnly)
     ShowMarkdownControlCharactersAroundCursor=@(!ReadOnly)
@@ -154,6 +158,8 @@
     FullScreen=@FullScreen
     LocalStorageKey=@LocalStorageKey
     MaxHeight="60em"
+    BasePathForLinks="https://gitlab.aweurope.be"
+    MarkdownViewPath="htps://localhost:5001/markdown?url="
 >
     <ContentBefore Context="c">
         <div class="toolbar sticky-top alert alert-info my-3">
@@ -203,7 +209,7 @@
                 <i class="fas fa-minus"></i>
             </button>
             <button class=@ButtonClass(ReplaceEmojiCodes) @onclick=@(() => ToggleEmojis(c.Commands)) title="Toggle replacing :emoji_codes: with the unicode character">
-                <i class="far fa-smile"></i>
+                <i class="far fa-smile"></i>Examples.BlazorServer/FileConverter.cs
             </button>
             <button class=@ButtonClass(LineWrapping) @onclick=@(() => LineWrapping = !LineWrapping) title="Toggle long line wrapping">
                 <i class="fas fa-paragraph"></i>
@@ -256,7 +262,7 @@
 }
 
 
-<CodeMirror6Wrapper
+@* <CodeMirror6Wrapper
     IsWASM=@IsWASM
     Placeholder="Enter your code.... (2)"
     @bind-Doc=@Text2
@@ -322,7 +328,7 @@
         PlaceHolderText = NewPlaceHolderText;
         await InvokeAsync(StateHasChanged);
     })
->Change placeholder text</button>
+>Change placeholder text</button> *@
 
 
 @code
@@ -332,15 +338,15 @@
     private CodeMirror6Wrapper codeMirror6WrapperRef = null!;
 
     private string? Text = code;
-    private string? Text2 = "# Example 2";
-    private string? Text3;
+    //private string? Text2 = "# Example 2";
+    //private string? Text3;
     private int TabSize = 4;
     private bool ReadOnly;
     private List<SelectionRange>? selectionRanges1;
-    private List<SelectionRange>? selectionRanges2;
-    private List<SelectionRange>? selectionRanges3;
-    private string PlaceHolderText = "Enter your code.... (3)";
-    private string NewPlaceHolderText = "New placeholder text !";
+    //private List<SelectionRange>? selectionRanges2;
+    //private List<SelectionRange>? selectionRanges3;
+    //private string PlaceHolderText = "Enter your code.... (3)";
+    //private string NewPlaceHolderText = "New placeholder text !";
     private ThemeMirrorTheme Theme = ThemeMirrorTheme.OneDark;
     private CodeMirrorLanguage Language = CodeMirrorLanguage.Markdown;
     private bool AutoFormatMarkdown = true;
@@ -359,8 +365,10 @@
             .ToList();
     private readonly CodeMirrorSetup Setup = new() {
         HighlightSelectionMatches = true,
-        ScrollToEnd = true,
+        //ScrollToEnd = true,
         BindMode = DocumentBindMode.OnDelayedInput,
+        KrokiUrl = "https://bau-tesrv-p03.aweurope.be/kroki",
+        DebugLogs = true,
     };
     private UnifiedMergeConfig? PreviousMergeViewConfiguration;
     private UnifiedMergeConfig? MergeViewConfiguration;

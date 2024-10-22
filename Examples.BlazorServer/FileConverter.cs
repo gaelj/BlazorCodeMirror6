@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Http;
-using System.IO;
 
 namespace Examples.BlazorServer;
 

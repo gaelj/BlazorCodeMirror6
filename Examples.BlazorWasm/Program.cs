@@ -5,13 +5,13 @@ using Sentry;
 using System.Diagnostics;
 
 // Capture blazor bootstrapping errors
-using var sdk = SentrySdk.Init(o =>
+/* using var sdk = SentrySdk.Init(o =>
 {
     o.Dsn = "https://d0ab79eee7b999c61d2c01fdf3958eeb@o4505402784546816.ingest.sentry.io/4506525909909504";
     o.Debug = true;
     //IsGlobalModeEnabled will be true for Blazor WASM
     Debug.Assert(o.IsGlobalModeEnabled);
-});
+}); */
 try
 {
     var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -24,7 +24,7 @@ try
 }
 catch (Exception e)
 {
-    SentrySdk.CaptureException(e);
-    await SentrySdk.FlushAsync();
+    /* SentrySdk.CaptureException(e);
+    await SentrySdk.FlushAsync(); */
     throw;
 }
