@@ -45,6 +45,7 @@ git add ./*CHANGELOG.md
 git commit -m "📝 Update changelog for $new_version"
 
 # Bump version in all .csproj files
+dotnet tool restore
 dotnet setversion -r "$new_version"
 git add ./**/*.csproj
 git commit -m "🔖 Bump version to $new_version"
