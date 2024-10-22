@@ -1,11 +1,3 @@
 ### ✨ Introduce new features
 
-- Make scrolling the editor into view optional with new ScrollToStart setup parameter (#184)
-
-### ⬆️ Upgrade dependencies
-
-- Update nuget packages
-
-### 🔨 Add or update development scripts
-
-- Fix semver usage
+- Add InitializeAsync method to allow forced re-init if needed (Issue rendering after the first time #187)

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.11 - 2024-10-22
+
+### ✨ Introduce new features
+
+- Add InitializeAsync method to allow forced re-init if needed (Issue rendering after the first time #187)
+
 ## 0.8.10 - 2024-10-04
 
 ### ✨ Introduce new features
