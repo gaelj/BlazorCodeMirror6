@@ -209,7 +209,7 @@
                 <i class="fas fa-minus"></i>
             </button>
             <button class=@ButtonClass(ReplaceEmojiCodes) @onclick=@(() => ToggleEmojis(c.Commands)) title="Toggle replacing :emoji_codes: with the unicode character">
-                <i class="far fa-smile"></i>Examples.BlazorServer/FileConverter.cs
+                <i class="far fa-smile"></i>
             </button>
             <button class=@ButtonClass(LineWrapping) @onclick=@(() => LineWrapping = !LineWrapping) title="Toggle long line wrapping">
                 <i class="fas fa-paragraph"></i>
@@ -262,7 +262,7 @@
 }
 
 
-@* <CodeMirror6Wrapper
+<CodeMirror6Wrapper
     IsWASM=@IsWASM
     Placeholder="Enter your code.... (2)"
     @bind-Doc=@Text2
@@ -328,7 +328,7 @@
         PlaceHolderText = NewPlaceHolderText;
         await InvokeAsync(StateHasChanged);
     })
->Change placeholder text</button> *@
+>Change placeholder text</button>
 
 
 @code
@@ -338,15 +338,15 @@
     private CodeMirror6Wrapper codeMirror6WrapperRef = null!;
 
     private string? Text = code;
-    //private string? Text2 = "# Example 2";
-    //private string? Text3;
+    private string? Text2 = "# Example 2";
+    private string? Text3;
     private int TabSize = 4;
     private bool ReadOnly;
     private List<SelectionRange>? selectionRanges1;
-    //private List<SelectionRange>? selectionRanges2;
-    //private List<SelectionRange>? selectionRanges3;
-    //private string PlaceHolderText = "Enter your code.... (3)";
-    //private string NewPlaceHolderText = "New placeholder text !";
+    private List<SelectionRange>? selectionRanges2;
+    private List<SelectionRange>? selectionRanges3;
+    private string PlaceHolderText = "Enter your code.... (3)";
+    private string NewPlaceHolderText = "New placeholder text !";
     private ThemeMirrorTheme Theme = ThemeMirrorTheme.OneDark;
     private CodeMirrorLanguage Language = CodeMirrorLanguage.Markdown;
     private bool AutoFormatMarkdown = true;
@@ -365,7 +365,7 @@
             .ToList();
     private readonly CodeMirrorSetup Setup = new() {
         HighlightSelectionMatches = true,
-        //ScrollToEnd = true,
+        ScrollToEnd = true,
         BindMode = DocumentBindMode.OnDelayedInput,
         KrokiUrl = "https://bau-tesrv-p03.aweurope.be/kroki",
         DebugLogs = true,
