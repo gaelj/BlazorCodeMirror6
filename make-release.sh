@@ -30,9 +30,9 @@ echo "Current version: $last_version"
 echo "What kind of release is this?"
 select yn in "major" "minor" "patch"; do
     case $yn in
-        patch ) new_version=$(semver -i patch "$last_version"); break;;
-        minor ) new_version=$(semver -i minor "$last_version"); break;;
-        major ) new_version=$(semver -i major "$last_version"); break;;
+        patch ) new_version=$(semver bump patch "$last_version"); break;;
+        minor ) new_version=$(semver bump minor "$last_version"); break;;
+        major ) new_version=$(semver bump major "$last_version"); break;;
     esac
 done
 
@@ -45,6 +45,7 @@ git add ./*CHANGELOG.md
 git commit -m "📝 Update changelog for $new_version"
 
 # Bump version in all .csproj files
+dotnet tool restore
 dotnet setversion -r "$new_version"
 git add ./**/*.csproj
 git commit -m "🔖 Bump version to $new_version"

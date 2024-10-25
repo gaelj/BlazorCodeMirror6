@@ -1,8 +1,15 @@
-### 🔇 Remove logs
+### ⏪ Revert changes
 
-- Remove the loggings
+- Remove code comments
 
-### 🐛 Fix bugs
+### ✨ Introduce new features
 
-- Better manage to the lifecycle cancellation token source
-- Prevent a null  reference on CmJsInterop: don't nullify it on component disposal
+- Add InitializeAsync method to allow forced re-init if needed (Issue rendering after the first time #187)
+
+### 🐛 Fix a bug
+
+- Fix versioning
+
+### 📝 Add or update documentation
+
+- Update changelog for 0.8.11

@@ -1,5 +1,43 @@
 # Changelog
 
+## 0.8.11 - 2024-10-22
+
+### ⏪ Revert changes
+
+- Remove code comments
+
+### ✨ Introduce new features
+
+- Add InitializeAsync method to allow forced re-init if needed (Issue rendering after the first time #187)
+
+### 🐛 Fix a bug
+
+- Fix versioning
+
+### 📝 Add or update documentation
+
+- Update changelog for 0.8.11
+
+## 0.8.11 - 2024-10-22
+
+### ✨ Introduce new features
+
+- Add InitializeAsync method to allow forced re-init if needed (Issue rendering after the first time #187)
+
+## 0.8.10 - 2024-10-04
+
+### ✨ Introduce new features
+
+- Make scrolling the editor into view optional with new ScrollToStart setup parameter (#184)
+
+### ⬆️ Upgrade dependencies
+
+- Update nuget packages
+
+### 🔨 Add or update development scripts
+
+- Fix semver usage
+
 ## 0.8.9 - 2024-07-13
 
 ### 🔇 Remove logs

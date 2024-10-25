@@ -1,4 +1,4 @@
-<h1>Code Mirror 6 Wrapper Demo</h1>
+﻿<h1>Code Mirror 6 Wrapper Demo</h1>
 
 <label for="Theme">Theme</label>
 <select @bind=@Theme id="Theme">
@@ -119,6 +119,10 @@
         await codeMirror6WrapperRef.CommandDispatcher.Dispatch(CodeMirrorSimpleCommand.RequestLinterRefresh);
     })
 >Refresh linter</button>
+
+<button class="btn btn-primary"
+    @onclick=@(() => codeMirror6WrapperRef.InitializeAsync())
+>Re-initialize</button>
 
 <CodeMirror6Wrapper
     @ref=@codeMirror6WrapperRef
