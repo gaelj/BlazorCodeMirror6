@@ -479,5 +479,6 @@ $RECYCLE.BIN/
 # Auto-generated files
 
 **/wwwroot/*.js
+**/wwwroot/*.map
 
 build/**/*
