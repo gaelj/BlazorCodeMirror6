@@ -1,0 +1,48 @@
+﻿@using GaelJ.BlazorCodeMirror6
+@using GaelJ.BlazorCodeMirror6.Models
+
+
+<CodeMirror6Wrapper
+    IsWASM="false"
+    @bind-Doc="Text"
+    TabSize="@TabSize"
+    IndentationUnit="@TabSize"
+    Theme="@Theme"
+    Language="@Language"
+    AutoFormatMarkdown="@AutoFormatMarkdown"
+    LineWrapping="@LineWrapping"
+    ReadOnly="@ReadOnly"
+    FullScreen="@FullScreen"
+    Height="50em">
+
+</CodeMirror6Wrapper>
+
+@code {
+    private string _text;
+
+    [Parameter]
+    public string Text
+    {
+        get => _text;
+        set
+        {
+            if (_text != value)
+            {
+                _text = value;
+                TextChanged.InvokeAsync(value);
+            }
+        }
+    }
+
+    [Parameter]
+    public EventCallback<string> TextChanged { get; set; }
+
+    private bool ReadOnly = false;
+    private int TabSize = 4;
+    private ThemeMirrorTheme Theme = ThemeMirrorTheme.AyuLight;
+    private CodeMirrorLanguage Language = CodeMirrorLanguage.Html;
+    private bool AutoFormatMarkdown = false;
+    private bool LineWrapping = false;
+    private bool FullScreen = false;
+    private bool ShowLineNumbers = true;
+}
