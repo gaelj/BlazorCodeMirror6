@@ -1,7 +1,10 @@
 ﻿@page "/"
 
+@rendermode InteractiveServer
+
 <PageTitle>Home</PageTitle>
+<CodeMirror @bind-Text="Text" />
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+@code {
+	private string Text = "<html>\n    <body>\n    </body>\n</html>";
+}
