@@ -118,6 +118,7 @@ We welcome contributions!
 ## FAQs / Troubleshooting
 
 - If you have npm / rollup errors when building (for example after pulling recent changes), `dotnet clean` will delete the `node_modules` directory. Then run `dotnet build` again.
+- If you are using Blazor Server Interactive rendering mode, you must include `<HeadOutlet @rendermode="InteractiveServer" />` in the `head` section of [`App.razor`](Examples.BlazorServerInteractive/Components/App.razor). Not doing so will break the editor when navigating to it after the initial page load.
 
 ## Changelog
 
