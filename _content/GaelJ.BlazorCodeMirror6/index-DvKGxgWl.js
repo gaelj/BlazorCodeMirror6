@@ -326,3 +326,4 @@ function liquid(config = {}) {
 }
 
 export { closePercentBrace, liquid, liquidCompletionSource, liquidLanguage };
+//# sourceMappingURL=index-DvKGxgWl.js.map

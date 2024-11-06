@@ -128,3 +128,4 @@ function angular(config = {}) {
 }
 
 export { angular, angularLanguage };
+//# sourceMappingURL=index-DRsPDPHL.js.map

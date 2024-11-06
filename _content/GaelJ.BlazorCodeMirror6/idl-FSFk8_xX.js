@@ -272,3 +272,4 @@ const idl = {
 };
 
 export { idl };
+//# sourceMappingURL=idl-FSFk8_xX.js.map

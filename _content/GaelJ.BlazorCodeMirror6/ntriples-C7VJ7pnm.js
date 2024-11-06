@@ -139,3 +139,4 @@ const ntriples = {
 };
 
 export { ntriples };
+//# sourceMappingURL=ntriples-C7VJ7pnm.js.map

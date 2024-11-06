@@ -60,3 +60,4 @@ const properties = {
 };
 
 export { properties };
+//# sourceMappingURL=properties-o21uErwC.js.map

@@ -244,3 +244,4 @@ const stex = mkStex(false);
 const stexMath = mkStex(true);
 
 export { stex, stexMath };
+//# sourceMappingURL=stex-DBkktma-.js.map

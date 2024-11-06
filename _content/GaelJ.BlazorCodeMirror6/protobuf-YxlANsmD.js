@@ -52,3 +52,4 @@ const protobuf = {
 };
 
 export { protobuf };
+//# sourceMappingURL=protobuf-YxlANsmD.js.map

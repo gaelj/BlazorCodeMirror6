@@ -68,3 +68,4 @@ const brainfuck = {
 };
 
 export { brainfuck };
+//# sourceMappingURL=brainfuck-COwWCBpq.js.map

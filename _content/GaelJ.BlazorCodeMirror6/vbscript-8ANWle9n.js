@@ -318,3 +318,4 @@ const vbScript = mkVBScript({});
 const vbScriptASP = mkVBScript({isASP: true});
 
 export { vbScript, vbScriptASP };
+//# sourceMappingURL=vbscript-8ANWle9n.js.map

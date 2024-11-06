@@ -190,3 +190,4 @@ function asn1(parserConfig) {
 }
 
 export { asn1 };
+//# sourceMappingURL=asn1-CG_zvzH1.js.map

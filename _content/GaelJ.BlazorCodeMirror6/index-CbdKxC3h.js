@@ -415,3 +415,4 @@ function php(config = {}) {
 }
 
 export { php, phpLanguage };
+//# sourceMappingURL=index-CbdKxC3h.js.map

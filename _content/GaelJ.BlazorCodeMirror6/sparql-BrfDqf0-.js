@@ -168,3 +168,4 @@ const sparql = {
 };
 
 export { sparql };
+//# sourceMappingURL=sparql-BrfDqf0-.js.map

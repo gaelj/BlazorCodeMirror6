@@ -341,3 +341,4 @@ const gas = mkGas("x86");
 const gasArm = mkGas("arm");
 
 export { gas, gasArm };
+//# sourceMappingURL=gas-B_Tj57Ve.js.map

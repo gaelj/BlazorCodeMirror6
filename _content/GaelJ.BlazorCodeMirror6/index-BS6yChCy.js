@@ -93,3 +93,4 @@ function json() {
 }
 
 export { json, jsonLanguage, jsonParseLinter };
+//# sourceMappingURL=index-BS6yChCy.js.map

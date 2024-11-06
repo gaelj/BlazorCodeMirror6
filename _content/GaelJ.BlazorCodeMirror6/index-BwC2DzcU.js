@@ -80,3 +80,4 @@ function vue(config = {}) {
 }
 
 export { vue, vueLanguage };
+//# sourceMappingURL=index-BwC2DzcU.js.map

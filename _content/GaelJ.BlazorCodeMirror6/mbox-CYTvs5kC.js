@@ -112,3 +112,4 @@ const mbox = {
 };
 
 export { mbox };
+//# sourceMappingURL=mbox-CYTvs5kC.js.map

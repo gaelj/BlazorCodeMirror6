@@ -56,3 +56,4 @@ function wast() {
 }
 
 export { wast, wastLanguage };
+//# sourceMappingURL=index-FFuqlNsn.js.map

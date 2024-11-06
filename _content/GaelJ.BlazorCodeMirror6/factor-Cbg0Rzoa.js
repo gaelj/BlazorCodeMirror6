@@ -63,3 +63,4 @@ const factor = simpleMode({
   });
 
 export { factor };
+//# sourceMappingURL=factor-Cbg0Rzoa.js.map

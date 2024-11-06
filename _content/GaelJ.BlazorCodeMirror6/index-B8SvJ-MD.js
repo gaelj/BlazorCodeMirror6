@@ -506,3 +506,4 @@ function python() {
 }
 
 export { globalCompletion, localCompletionSource, python, pythonLanguage };
+//# sourceMappingURL=index-B8SvJ-MD.js.map

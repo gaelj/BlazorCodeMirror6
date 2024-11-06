@@ -133,3 +133,4 @@ function indentFunction(states, meta) {
 }
 
 export { simpleMode as s };
+//# sourceMappingURL=simple-mode-CZwAritL.js.map

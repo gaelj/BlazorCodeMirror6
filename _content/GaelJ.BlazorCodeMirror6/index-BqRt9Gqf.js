@@ -335,3 +335,4 @@ function sass(config) {
 }
 
 export { sass, sassCompletionSource, sassLanguage };
+//# sourceMappingURL=index-BqRt9Gqf.js.map

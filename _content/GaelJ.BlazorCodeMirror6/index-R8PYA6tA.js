@@ -437,3 +437,4 @@ const autoCloseTags = /*@__PURE__*/EditorView.inputHandler.of((view, from, to, t
 });
 
 export { autoCloseTags, completeFromSchema, xml, xmlLanguage };
+//# sourceMappingURL=index-R8PYA6tA.js.map

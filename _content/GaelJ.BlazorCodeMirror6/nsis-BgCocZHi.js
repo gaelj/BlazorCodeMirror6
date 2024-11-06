@@ -78,3 +78,4 @@ const nsis = simpleMode({
 });
 
 export { nsis };
+//# sourceMappingURL=nsis-BgCocZHi.js.map

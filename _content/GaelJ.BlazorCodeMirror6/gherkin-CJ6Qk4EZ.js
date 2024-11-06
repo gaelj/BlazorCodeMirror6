@@ -145,3 +145,4 @@ const gherkin = {
 };
 
 export { gherkin };
+//# sourceMappingURL=gherkin-CJ6Qk4EZ.js.map

@@ -122,3 +122,4 @@ const pascal = {
 };
 
 export { pascal };
+//# sourceMappingURL=pascal-AdN1jbEG.js.map

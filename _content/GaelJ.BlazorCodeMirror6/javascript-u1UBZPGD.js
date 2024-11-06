@@ -920,3 +920,4 @@ const jsonld = mkJavaScript({name: "json", jsonld: true});
 const typescript = mkJavaScript({name: "typescript", typescript: true});
 
 export { javascript, json, jsonld, typescript };
+//# sourceMappingURL=javascript-u1UBZPGD.js.map

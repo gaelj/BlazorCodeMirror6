@@ -197,3 +197,4 @@ const dockerFile = simpleMode({
 });
 
 export { dockerFile };
+//# sourceMappingURL=dockerfile-Choe2tYn.js.map

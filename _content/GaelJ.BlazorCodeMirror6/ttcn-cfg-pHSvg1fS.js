@@ -199,3 +199,4 @@ const ttcnCfg = {
 };
 
 export { ttcnCfg };
+//# sourceMappingURL=ttcn-cfg-pHSvg1fS.js.map

@@ -147,3 +147,4 @@ function produceTokenFunction(pConfig) {
 }
 
 export { mscgen, msgenny, xu };
+//# sourceMappingURL=mscgen-D0GXtzMS.js.map

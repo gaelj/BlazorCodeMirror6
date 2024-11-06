@@ -792,3 +792,4 @@ const PLSQL = /*@__PURE__*/SQLDialect.define({
 });
 
 export { Cassandra, MSSQL, MariaSQL, MySQL, PLSQL, PostgreSQL, SQLDialect, SQLite, StandardSQL, keywordCompletion, keywordCompletionSource, schemaCompletion, schemaCompletionSource, sql };
+//# sourceMappingURL=index-DmKe2hu7.js.map

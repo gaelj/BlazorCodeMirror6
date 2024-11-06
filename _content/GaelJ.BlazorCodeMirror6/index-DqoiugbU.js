@@ -184,3 +184,4 @@ function rust() {
 }
 
 export { rust, rustLanguage };
+//# sourceMappingURL=index-DqoiugbU.js.map

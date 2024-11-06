@@ -479,3 +479,4 @@ const esper = sql({
 */
 
 export { cassandra, esper, gpSQL, gql, hive, mariaDB, msSQL, mySQL, pgSQL, plSQL, sparkSQL, sql, sqlite, standardSQL };
+//# sourceMappingURL=sql-Bhuc3u9R.js.map
