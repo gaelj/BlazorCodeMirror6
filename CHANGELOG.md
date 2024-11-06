@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.8.12 - 2024-11-06
+
+### ⚡️ Improve performance
+
+- Add attribute `data-permanent` to container div
+
+### 📝 Add or update documentation
+
+- Add FAQ about blazor server interactive
+- Include JS source maps in release
+
+### 🙈 Add or update a .gitignore file
+
+- git ignore map files
+
 ## 0.8.11 - 2024-10-22
 
 ### ⏪ Revert changes
