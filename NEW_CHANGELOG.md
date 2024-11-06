@@ -1,15 +1,12 @@
-### ⏪ Revert changes
+### ⚡️ Improve performance
 
-- Remove code comments
-
-### ✨ Introduce new features
-
-- Add InitializeAsync method to allow forced re-init if needed (Issue rendering after the first time #187)
-
-### 🐛 Fix a bug
-
-- Fix versioning
+- Add attribute `data-permanent` to container div
 
 ### 📝 Add or update documentation
 
-- Update changelog for 0.8.11
+- Add FAQ about blazor server interactive
+- Include JS source maps in release
+
+### 🙈 Add or update a .gitignore file
+
+- git ignore map files
