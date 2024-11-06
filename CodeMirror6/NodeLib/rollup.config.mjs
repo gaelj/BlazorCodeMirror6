@@ -9,6 +9,7 @@ export default {
         dir: '../wwwroot',
         format: "esm",
         name: 'CodeMirror',
+        sourcemap: true,
     },
     plugins: [commonjs(), json(), nodeResolve(), typescript()],
 };
