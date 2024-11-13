@@ -103,7 +103,6 @@ async function encodeFileAsDataUrl(id: string, file: File): Promise<string> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.onload = function (e) {
-            consoleLog(id, "Encoded file as data URL:", e.target.result as string)
             resolve(e.target.result as string)
         }
         reader.onerror = function (e) {
