@@ -5,7 +5,8 @@ namespace Examples.Common;
 public partial class Example : ComponentBase
 {
     private const string tab = "\t";
-    private const string code = $@"# Demo
+    private const string code = $$"""
+# Demo
 
 ## Markdown editor for Blazor
 ### Title 3
@@ -19,15 +20,15 @@ Code blocks in a variety of languages with syntax highlighting. For example:
 
 ```csharp
 public class Demo
-{{
-{tab}public string Name {{ get; set; }}
-}}
+{
+{{tab}}public string Name { get; set; }
+}
 ```
 
 ```css
-body {{
-{tab}background-color: red;
-}}
+body {
+{{tab}}background-color: red;
+}
 ```
 
 ```html
@@ -35,23 +36,23 @@ body {{
 ```
 
 ```javascript
-function Demo() {{
-{tab}return <div>demo</div>
-}}
+function Demo() {
+{{tab}}return <div>demo</div>
+}
 ```
 
 ```jsx
-function Demo() {{
-{tab}return <div>demo</div>
-}}
+function Demo() {
+{{tab}}return <div>demo</div>
+}
 ```
 
 ```go
 package main
-import ""fmt""
-func main() {{
-{tab}fmt.Println(""Hello, 世界"")
-}}
+import "fmt"
+func main() {
+{{tab}}fmt.Println("Hello, 世界")
+}
 ```
 
 ```bash
@@ -87,7 +88,7 @@ Type ':' to trigger the emoji autocomplete.
 
 ### Rendering of inline HTML in markdown
 
-<span style=""color: red"">red</span> <span style=""color: blue"">blue</span> <span style=""color: green"">green</span>
+<span style="color: red">red</span> <span style="color: blue">blue</span> <span style="color: green">green</span>
 
 ### Links
 
@@ -95,11 +96,11 @@ https://www.google.com
 
 [Google](https://www.google.com)
 
-<a href=""https://www.google.com"">Google</a>
+<a href="https://www.google.com">Google</a>
 
 #### Badges preview (shields.io)
 
-<img src=""https://img.shields.io/badge/any_text-you_like-blue""></img>
+<img src="https://img.shields.io/badge/any_text-you_like-blue"></img>
 
 ### Images preview
 
@@ -115,13 +116,13 @@ Click on a diagram or move the cursor / selection next to it to see the diagram 
 
 ```mermaid
 flowchart TB
-{tab}A & B--> C & D
+{{tab}}A & B--> C & D
 ```
 
 ```graphviz
-digraph G {{
+digraph G {
   Hello->World
-}}
+}
 ```
 
 ### Horizontal rules decoration
@@ -168,5 +169,6 @@ there is an error here. Error error error !
    - item 1.2
 
 The editor can be configured to initially scroll to the bottom line.
-";
+
+""";
 }

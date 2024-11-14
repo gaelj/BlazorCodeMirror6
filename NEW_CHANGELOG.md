@@ -1,12 +1,3 @@
-### ⚡️ Improve performance
+### ✨ Introduce new features
 
-- Add attribute `data-permanent` to container div
-
-### 📝 Add or update documentation
-
-- Add FAQ about blazor server interactive
-- Include JS source maps in release
-
-### 🙈 Add or update a .gitignore file
-
-- git ignore map files
+- Add new parameter `InsertDroppedFileContents`. If true, text files will have their content extracted and inserted in the editor. If false, all file types dropped into the editor will be passed to the upload callback. In case of multiple mixed-type files, they will all be uploaded

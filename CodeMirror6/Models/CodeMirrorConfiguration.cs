@@ -26,6 +26,7 @@ namespace GaelJ.BlazorCodeMirror6.Models;
 /// <param name="localStorageKey"></param>
 /// <param name="fullScreen"></param>
 /// <param name="supportFileUpload"></param>
+/// <param name="insertDroppedFileContents"></param>
 /// <param name="maxDocumentLength"></param>
 /// <param name="lineNumbers"></param>
 /// <param name="highlightActiveLineGutter"></param>
@@ -59,6 +60,7 @@ public class CodeMirrorConfiguration(
     string? localStorageKey,
     bool fullScreen,
     bool supportFileUpload,
+    bool insertDroppedFileContents,
     int? maxDocumentLength,
     bool lineNumbers,
     bool highlightActiveLineGutter,
@@ -171,6 +173,11 @@ public class CodeMirrorConfiguration(
     /// Whether to support file upload (either via a custom callback or as data URLs in the document)
     /// </summary>
     [JsonPropertyName("supportFileUpload")] public bool SupportFileUpload { get; internal set; } = supportFileUpload;
+
+    /// <summary>
+    /// Whether to upload dropped files, or let CodeMirror handle them, which means their contents will be inserted in the document if possible
+    /// </summary>
+    [JsonPropertyName("insertDroppedFileContents")] public bool InsertDroppedFileContents { get; internal set; } = insertDroppedFileContents;
 
     /// <summary>
     /// The maximum length of the document

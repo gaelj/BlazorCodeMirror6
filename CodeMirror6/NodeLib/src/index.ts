@@ -176,14 +176,15 @@ export async function initCodeMirror(
         const pasteHandler = EditorView.domEventHandlers({
             paste(event: ClipboardEvent, view: EditorView) {
                 const transfer = event.clipboardData
+                const fileList = transfer?.files
 
                 consoleLog(id, "Pasting", transfer.files, transfer.types, transfer.items)
                 for (let i = 0; i < transfer.items.length; i++) {
                     const item = transfer.items[i]
                     consoleLog(id, "Item", item.kind, item.type)
                 }
-                if (CMInstances[id].config.supportFileUpload && transfer?.files && transfer.files.length > 0 && !transfer.types.includes('text/plain')) {
-                    uploadFiles(id, transfer.files, view)
+                if (fileList && fileList.length > 0 && !transfer.types.includes('text/plain')) {
+                    uploadFiles(id, fileList, view)
                     event.preventDefault()
                 }
                 else if (paste(view))
@@ -400,6 +401,7 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
     if (oldConfig.localStorageKey !== newConfig.localStorageKey) setLocalStorageKey(id, newConfig.localStorageKey)
     if (oldConfig.fullScreen !== newConfig.fullScreen) view.focus()
     if (oldConfig.supportFileUpload !== newConfig.supportFileUpload) {}
+    if (oldConfig.insertDroppedFileContents !== newConfig.insertDroppedFileContents) {}
     if (oldConfig.maxDocumentLength !== newConfig.maxDocumentLength) {}
     if (oldConfig.lineNumbers !== newConfig.lineNumbers) effects.push(CMInstances[id].lineNumbersCompartment.reconfigure(newConfig.lineNumbers ? lineNumbers() : []))
     if (oldConfig.highlightActiveLineGutter !== newConfig.highlightActiveLineGutter) effects.push(CMInstances[id].highlightActiveLineGutterCompartment.reconfigure(newConfig.highlightActiveLineGutter ? highlightActiveLineGutter() : []))

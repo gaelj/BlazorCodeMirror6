@@ -112,6 +112,10 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// </summary>
     [Parameter] public Func<IBrowserFile, Task<string>>? UploadBrowserFile { get; set; }
     /// <summary>
+    /// Whether to upload dropped files, or let CodeMirror handle them, which means their contents will be inserted in the document if possible
+    /// </summary>
+    [Parameter] public bool InsertDroppedFileContents { get; set; }
+    /// <summary>
     /// Whether to embed uploads as data URLs instead of using the custom callback. Warning: this can cause performance issues, especially in Blazor Server apps.
     /// </summary>
     [Parameter] public bool EmbedUploadsAsDataUrls { get; set; }

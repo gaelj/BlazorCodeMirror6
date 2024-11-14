@@ -67,13 +67,14 @@ export function getFileUploadExtensions(id: string, setup: CmSetup)
             overlay.style.display = 'flex'
         },
         drop(event, view) {
-            if (!CMInstances[id].config.supportFileUpload || !isFileDragEvent(event)) return
+            if (!isFileDragEvent(event)) return
             consoleLog(id, "drop")
-            const transfer = event.dataTransfer
-            if (transfer?.files) {
+            const fileList = event.dataTransfer?.files
+            if (fileList) {
+                for (let i = 0; i < fileList.length; i++) {
+                    consoleLog(id, fileList[i].name, fileList[i].type)
+                }
                 overlay.style.display = 'none'
-                event.preventDefault()
-                event.stopPropagation()
                 const { clientX, clientY } = event
                 const pos = view.posAtCoords({ x: clientX, y: clientY })
                 if (pos !== null) {
@@ -82,7 +83,7 @@ export function getFileUploadExtensions(id: string, setup: CmSetup)
                         selection: newSelection
                     });
                 }
-                uploadFiles(id, transfer.files, view)
+                processAddedFiles(id, fileList, view, event)
                 depth = 0
             }
         }
@@ -98,39 +99,50 @@ async function uploadFileWithDotnet(id: string, file: File): Promise<string> {
     return await CMInstances[id].dotNetHelper.invokeMethodAsync('UploadFileFromJS', byteArray, file.name, file.type, lastModifiedDate)
 }
 
-async function encodeFileAsDataUrl(file: File): Promise<string> {
+async function encodeFileAsDataUrl(id: string, file: File): Promise<string> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.onload = function (e) {
             resolve(e.target.result as string)
         }
         reader.onerror = function (e) {
+            consoleLog(id, "Error encoding file as data URL:", e)
             reject(e)
         }
         reader.readAsDataURL(file)
     })
 }
 
+export async function processAddedFiles(id: string, fileList: FileList, view: EditorView, event: DragEvent | ClipboardEvent) {
+    const hasOtherFileType = Array.from(fileList).some(f => f.type && !f.type.startsWith("text/"))
+    if (!CMInstances[id].config.insertDroppedFileContents || hasOtherFileType) {
+        event.preventDefault()
+        event.stopPropagation()
+        uploadFiles(id, fileList, view)
+    }
+}
+
 export async function uploadFiles(id: string, files: FileList, view: EditorView) {
+    if (!CMInstances[id].config.supportFileUpload) return
     const fileUrls = []
     const embedUploadsAsDataUrls = CMInstances[id].config.embedUploadsAsDataUrls
     for (let i = 0; i < files.length; i++) {
         const file = files[i]
         const fileUrl = embedUploadsAsDataUrls
-            ? await encodeFileAsDataUrl(file)
+            ? await encodeFileAsDataUrl(id, file)
             : await uploadFileWithDotnet(id, file)
         fileUrls.push(fileUrl)
         consoleLog(id, "Uploaded file:", fileUrl)
         const fileName = files[0].name
         var imageChar = file.type.indexOf("image/") === 0 ? "!" : ""
-        var imageLink = `\n${imageChar}[${fileName}](${fileUrl})\n`
+        var mdLink = `\n${imageChar}[${fileName}](${fileUrl})\n`
         const ranges = view.state.selection.ranges;
         const lastRange = ranges[ranges.length - 1];
 
         view.dispatch(
             {
-                changes: { from: view.state.selection.main.from, insert: imageLink },
-                selection: { anchor: lastRange.from + imageLink.length, head: lastRange.from + imageLink.length }
+                changes: { from: view.state.selection.main.from, insert: mdLink },
+                selection: { anchor: lastRange.from + mdLink.length, head: lastRange.from + mdLink.length }
             },
             {
                 scrollIntoView: true
