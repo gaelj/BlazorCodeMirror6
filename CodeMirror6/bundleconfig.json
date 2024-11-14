@@ -1,0 +1,13 @@
+[
+  {
+    "outputFileName": "wwwroot/GaelJ.BlazorCodeMirror6.lib.module.js",
+    "inputFiles": [
+      "Resources/GaelJ.BlazorCodeMirror6.lib.module.js"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": false
+    },
+    "sourceMap": true
+  }
+]
