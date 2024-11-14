@@ -124,10 +124,6 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// </summary>
     [Parameter] public bool EmbedUploadsAsDataUrls { get; set; }
     /// <summary>
-    /// Define whether the component is used in a WASM or Server app. In a WASM app, JS interop can start sooner
-    /// </summary>
-    [Parameter] public bool IsWASM { get; set; }
-    /// <summary>
     /// The unified merge view configuration
     /// </summary>
     [Parameter] public UnifiedMergeConfig? MergeViewConfiguration { get; set; }
@@ -267,6 +263,7 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     private string MaxWidthStyle => FullScreen || (string.IsNullOrEmpty(MaxWidth) && string.IsNullOrEmpty(Width)) ? string.Empty : $"max-width: {MaxWidth ?? Width};";
     private string MaxHeightStyle => FullScreen || (string.IsNullOrEmpty(MaxHeight) && string.IsNullOrEmpty(Height)) ? string.Empty : $"max-height: {MaxHeight ?? Height};";
     private string EditorStyle => $"{WidthStyle} {HeightStyle} {MaxWidthStyle} {MaxHeightStyle}";
+    private static bool IsWASM => OperatingSystem.IsBrowser();
     /// <summary>
     /// JavaScript interop instance
     /// </summary>

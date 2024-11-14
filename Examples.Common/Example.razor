@@ -126,7 +126,6 @@
 
 <CodeMirror6Wrapper
     @ref=@codeMirror6WrapperRef
-    IsWASM=@IsWASM
     @bind-Doc=@Text
     Placeholder="Enter your code.... (1)"
     TabSize=@TabSize
@@ -261,7 +260,6 @@
 
 
 <CodeMirror6Wrapper
-    IsWASM=@IsWASM
     Placeholder="Enter your code.... (2)"
     @bind-Doc=@Text2
     @bind-Selection=@selectionRanges2
@@ -292,7 +290,6 @@
 }
 
 <CodeMirror6Wrapper
-    IsWASM=@IsWASM
     @bind-Doc=@Text3
     Placeholder=@PlaceHolderText
     @bind-Selection=@selectionRanges3
@@ -331,8 +328,6 @@
 
 @code
 {
-    [Parameter] public bool IsWASM { get; set; }
-
     private CodeMirror6Wrapper codeMirror6WrapperRef = null!;
 
     private string? Text = code;
