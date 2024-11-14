@@ -1,0 +1,13 @@
+[
+  {
+    "outputFileName": "wwwroot/CodeMirror6.lib.module.js",
+    "inputFiles": [
+      "Resources/CodeMirror6.lib.module.js"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": false
+    },
+    "sourceMap": true
+  }
+]

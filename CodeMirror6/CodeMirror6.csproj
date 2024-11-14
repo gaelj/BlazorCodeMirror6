@@ -43,6 +43,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" Condition="'$(TargetFramework)'=='net8.0'" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="Microsoft.SourceLink.Github" Version="8.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
