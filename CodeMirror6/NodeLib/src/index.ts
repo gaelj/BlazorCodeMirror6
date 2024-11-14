@@ -62,6 +62,35 @@ import { hyperLink } from './CmHyperlink'
 export { getCmInstance }
 export { requestLinterRefresh }
 
+let StyleTag: HTMLStyleElement | null = null
+
+export async function onUpdate() {
+    await loadCss("_content/GaelJ.BlazorCodeMirror6/GaelJ.BlazorCodeMirror6.bundle.scp.css")
+    if (StyleTag) {
+        const style = document.createElement('style');
+        style.textContent = StyleTag.textContent
+        document.head.appendChild(style);
+    }
+}
+
+export function onDispose() {
+    for (const id in CMInstances) {
+        dispose(id)
+    }
+}
+
+function findCodeMirrorStyleTag() {
+    const tags = document.querySelectorAll('style')
+    for (let i = 0; i < tags.length; i++) {
+        const tag = tags[i]
+        if (tag.innerHTML.includes('.ͼ1.cm-focused')) {
+            return tag
+        }
+    }
+    return null
+}
+
+
 /**
  * Initialize a new CodeMirror instance
  * @param dotnetHelper
@@ -246,6 +275,21 @@ export async function initCodeMirror(
         adjustEditorHeight(id)
 
         forceRedraw(id)
+
+        const tag = findCodeMirrorStyleTag()
+        if (tag) {
+            consoleLog(id, `Found CodeMirror style tag`)
+            StyleTag = tag
+        }
+        else if (StyleTag) {
+            consoleLog(id, `CodeMirror style tag not found, retrieving from CodeMirror instance`)
+            const style = document.createElement('style');
+            style.textContent = StyleTag.textContent
+            document.head.appendChild(style);
+        }
+        else {
+            console.error(`CodeMirror style tag not found and no previous style tag found to retrieve`)
+        }
     }
     catch (error) {
         console.error(`Error in initializing CodeMirror`, error)

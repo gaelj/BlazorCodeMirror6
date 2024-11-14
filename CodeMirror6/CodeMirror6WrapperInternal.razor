@@ -1,4 +1,6 @@
-﻿<div class=@ContainerClass style=@ContainerStyle id=@ContainerId>
+﻿<page-script src=@($"{CodeMirrorJsInterop.JsEntryPoint}")></page-script>
+
+<div class=@ContainerClass style=@ContainerStyle id=@ContainerId>
 
     <div id=@TopBarId>
         @if (Visible && ContentBefore is not null && CmJsInterop is not null && Config is not null && CommandDispatcher is not null) {
