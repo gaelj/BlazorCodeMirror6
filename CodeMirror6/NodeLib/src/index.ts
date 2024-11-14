@@ -417,7 +417,7 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
         view.dispatch({
             effects: effects,
             changes: changes,
-    })
+        })
     if (redrawNeeded)
         forceRedraw(id)
 }
