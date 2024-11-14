@@ -24,9 +24,12 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     ) : IAsyncDisposable
     {
         private static string LibraryName => typeof(CodeMirrorJsInterop).Assembly.GetName().Name!;
+        public static string JsEntryPoint => $"./_content/{LibraryName}/index.js";
         private readonly Lazy<Task<IJSObjectReference>> _moduleTask =
             new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
-                "import", $"./_content/{LibraryName}/index.js").AsTask()
+                    "import",
+                    JsEntryPoint
+                ).AsTask()
             );
         private readonly DotNetObjectReference<CodeMirror6WrapperInternal> _dotnetHelperRef = DotNetObjectReference.Create(cm6WrapperComponent);
         private CMSetters _setters = null!;
