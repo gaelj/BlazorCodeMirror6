@@ -1,8 +1,8 @@
 [
   {
-    "outputFileName": "wwwroot/CodeMirror6.lib.module.js",
+    "outputFileName": "wwwroot/GaelJ.BlazorCodeMirror6.lib.module.js",
     "inputFiles": [
-      "Resources/CodeMirror6.lib.module.js"
+      "Resources/GaelJ.BlazorCodeMirror6.lib.module.js"
     ],
     "minify": {
       "enabled": false,
