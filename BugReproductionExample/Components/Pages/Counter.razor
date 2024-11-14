@@ -1,0 +1,8 @@
+﻿@page "/counter"
+@rendermode InteractiveServer
+
+<CodeMirror @bind-Text="Text" />
+
+@code {
+	private string Text = "<html>\n    <body>\n    </body>\n</html>";
+}

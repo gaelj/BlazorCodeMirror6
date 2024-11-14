@@ -3,23 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMirror6", "CodeMirror6\CodeMirror6.csproj", "{323D2773-23E2-4F74-85CF-DA9815C07C16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeMirror6", "CodeMirror6\CodeMirror6.csproj", "{323D2773-23E2-4F74-85CF-DA9815C07C16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.BlazorServer", "Examples.BlazorServer\Examples.BlazorServer.csproj", "{5A81B862-5CE2-4EBA-ACE7-5561B07F8CD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Examples.BlazorServer", "Examples.BlazorServer\Examples.BlazorServer.csproj", "{5A81B862-5CE2-4EBA-ACE7-5561B07F8CD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.BlazorWasm", "Examples.BlazorWasm\Examples.BlazorWasm.csproj", "{C0FC7EBB-34B4-4466-9EE7-025DCE521174}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Examples.BlazorWasm", "Examples.BlazorWasm\Examples.BlazorWasm.csproj", "{C0FC7EBB-34B4-4466-9EE7-025DCE521174}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.Common", "Examples.Common\Examples.Common.csproj", "{553340A9-7C7B-431B-A291-70186983F0AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Examples.Common", "Examples.Common\Examples.Common.csproj", "{553340A9-7C7B-431B-A291-70186983F0AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.BlazorServerInteractive", "Examples.BlazorServerInteractive\Examples.BlazorServerInteractive.csproj", "{5F776A01-7F95-4BBA-BD72-B169ADC8ABA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Examples.BlazorServerInteractive", "Examples.BlazorServerInteractive\Examples.BlazorServerInteractive.csproj", "{5F776A01-7F95-4BBA-BD72-B169ADC8ABA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugReproductionExample", "BugReproductionExample\BugReproductionExample.csproj", "{26B2C692-6D38-48B9-A274-099E85B63D22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{323D2773-23E2-4F74-85CF-DA9815C07C16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -42,5 +41,15 @@ Global
 		{5F776A01-7F95-4BBA-BD72-B169ADC8ABA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F776A01-7F95-4BBA-BD72-B169ADC8ABA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F776A01-7F95-4BBA-BD72-B169ADC8ABA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26B2C692-6D38-48B9-A274-099E85B63D22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26B2C692-6D38-48B9-A274-099E85B63D22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26B2C692-6D38-48B9-A274-099E85B63D22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26B2C692-6D38-48B9-A274-099E85B63D22}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D1F7AA37-EF1F-4FE2-9538-8B89FAF7D378}
 	EndGlobalSection
 EndGlobal
