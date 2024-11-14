@@ -82,6 +82,7 @@ export async function initCodeMirror(
     const parentDiv = document.getElementById(id)
     if (!parentDiv) {
         console.error(`Parent div with id ${id} not found`)
+        dispose(id)
         return
     }
 
@@ -601,6 +602,7 @@ const getCmInstance = (id: string) => CMInstances[id]
  * @param id
  */
 export function dispose(id: string) {
+    if (!CMInstances || !CMInstances[id]) return
     consoleLog(id, `Disposing of CodeMirror instance ${id}`)
     if (CMInstances[id].dotNetHelper !== undefined) {
         CMInstances[id].dotNetHelper.dispose()
