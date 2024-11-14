@@ -122,6 +122,7 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// <summary>
     /// Define whether the component is used in a WASM or Server app. In a WASM app, JS interop can start sooner
     /// </summary>
+    [Obsolete("This parameter is now automatically set, and will be removed in a future version")]
     [Parameter] public bool IsWASM { get; set; }
     /// <summary>
     /// The unified merge view configuration
