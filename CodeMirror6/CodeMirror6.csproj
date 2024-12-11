@@ -9,7 +9,7 @@
     <AssemblyName>GaelJ.BlazorCodeMirror6</AssemblyName>
     <IsPackable>true</IsPackable>
     <PackageId>GaelJ.BlazorCodeMirror6</PackageId>
-    <Version>0.8.14</Version>
+    <Version>0.9.0</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
