@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.0 - 2024-12-11
+
+No change - new release to run the CI again after disabling CodeQL which fails with net9.0
+
 ## 0.8.15 - 2024-12-11
 
 No change - new release to run the CI again after disabling CodeQL which fails with net9.0
