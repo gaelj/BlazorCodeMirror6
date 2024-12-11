@@ -6,7 +6,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/Examples.BlazorServer/bin/Debug/net8.0/Examples.BlazorServer.dll",
+      "program": "${workspaceFolder}/Examples.BlazorServer/bin/Debug/net9.0/Examples.BlazorServer.dll",
       "args": [],
       "cwd": "${workspaceFolder}/Examples.BlazorServer",
       "stopAtEntry": false,
