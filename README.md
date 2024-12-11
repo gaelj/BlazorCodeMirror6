@@ -6,7 +6,7 @@
 
 ![codemirror.svg](codemirror.svg)
 
-Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.net/) code editor to Blazor, offering a comprehensive .NET 6 / .NET 7 / .NET 8 component. It's tailored for both general and specialized use-cases, supporting a range of languages and Markdown editing, extensive support for syntax highlighting, auto-completion, custom linting, themes, Markdown preview, and more.
+Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.net/) code editor to Blazor, offering a comprehensive .NET 6 / .NET 7 / .NET 8 / .NET 9 component. It's tailored for both general and specialized use-cases, supporting a range of languages and Markdown editing, extensive support for syntax highlighting, auto-completion, custom linting, themes, Markdown preview, and more.
 
 ## Try It Out
 

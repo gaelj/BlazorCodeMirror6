@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <LangVersion>12.0</LangVersion>
     <Nullable>enable</Nullable>
@@ -20,7 +20,7 @@
     <Title>GaelJ.BlazorCodeMirror6</Title>
     <Description>
       Blazor CodeMirror 6 brings the power of the [CodeMirror 6](https://codemirror.net/)
-      code editor to Blazor, offering a comprehensive .NET 6 / .NET 7 / .NET 8 component.
+      code editor to Blazor, offering a comprehensive .NET 6 / .NET 7 / .NET 8 / .NET 9 component.
       It's tailored for both general and specialized use-cases, supporting a range of
       languages and Markdown editing, extensive support for syntax highlighting,
       auto-completion, custom linting, themes, Markdown preview, and more.
@@ -38,9 +38,10 @@
     <SupportedPlatform Include="browser-wasm" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.33" Condition="'$(TargetFramework)'=='net6.0'" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.36" Condition="'$(TargetFramework)'=='net6.0'" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.20" Condition="'$(TargetFramework)'=='net7.0'" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" Condition="'$(TargetFramework)'=='net8.0'" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.11" Condition="'$(TargetFramework)'=='net8.0'" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" Condition="'$(TargetFramework)'=='net9.0'" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
