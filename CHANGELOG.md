@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.15 - 2024-12-11
+
+### ⬆️ Upgrade dependencies
+
+- Add dotnet 9 target
+
 ## 0.8.14 - 2024-11-14
 
 ### ⚡️ Improve performance
