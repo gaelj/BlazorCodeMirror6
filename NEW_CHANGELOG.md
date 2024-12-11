@@ -1,1 +1,3 @@
-No change - new release to run the CI again after disabling CodeQL which fails with net9.0
+### 🐛 Fix a bug
+
+- Fix CI with dotnet 9
