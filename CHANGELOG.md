@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.2 - 2025-02-26
+
+### ⬆️ Upgrade dependencies
+
+- Update nuget packages
+
+### 🐛 Fix a bug
+
+- Fix logs not in color
+
+### 🗑️ Deprecate code that needs to be cleaned up
+
+- Explicitly loading BlazorCodeMirror6.bundle.scp.css is unneeded and broken (#210)
+
 ## 0.9.1 - 2024-12-11
 
 ### 🐛 Fix a bug
