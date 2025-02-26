@@ -65,7 +65,6 @@ export { requestLinterRefresh }
 let StyleTag: HTMLStyleElement | null = null
 
 export async function onUpdate() {
-    await loadCss("_content/GaelJ.BlazorCodeMirror6/GaelJ.BlazorCodeMirror6.bundle.scp.css")
     if (StyleTag) {
         const style = document.createElement('style');
         style.textContent = StyleTag.textContent
@@ -114,8 +113,6 @@ export async function initCodeMirror(
         dispose(id)
         return
     }
-
-    await loadCss("_content/GaelJ.BlazorCodeMirror6/GaelJ.BlazorCodeMirror6.bundle.scp.css")
 
     if (setup.debugLogs === true) {
         console.log(`Initializing CodeMirror instance ${id}`)

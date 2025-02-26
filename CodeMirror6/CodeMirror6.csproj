@@ -9,7 +9,7 @@
     <AssemblyName>GaelJ.BlazorCodeMirror6</AssemblyName>
     <IsPackable>true</IsPackable>
     <PackageId>GaelJ.BlazorCodeMirror6</PackageId>
-    <Version>0.9.1</Version>
+    <Version>0.9.2</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -40,8 +40,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.36" Condition="'$(TargetFramework)'=='net6.0'" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.20" Condition="'$(TargetFramework)'=='net7.0'" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.11" Condition="'$(TargetFramework)'=='net8.0'" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" Condition="'$(TargetFramework)'=='net9.0'" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.13" Condition="'$(TargetFramework)'=='net8.0'" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.2" Condition="'$(TargetFramework)'=='net9.0'" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
