@@ -29,6 +29,11 @@ internal class CMSetters(
         mentionCompletions
     );
 
+    internal Task<bool> SetCssCompletions(List<CodeMirrorCompletion> cssCompletions) => cmJsInterop.ModuleInvokeVoidAsync(
+        "setCssCompletions",
+        cssCompletions
+    );
+
     internal Task<bool> ForceRedraw() => cmJsInterop.ModuleInvokeVoidAsync(
         "forceRedraw"
     );

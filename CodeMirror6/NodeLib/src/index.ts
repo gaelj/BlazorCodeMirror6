@@ -45,6 +45,7 @@ import { blockquote } from "./CmBlockquote"
 import { listsExtension } from "./CmLists"
 import { dynamicHrExtension } from "./CmHorizontalRule"
 import { mentionCompletionExtension, setCachedCompletions } from "./CmMentionsCompletion"
+import { cssCompletionExtension, setCachedCssCompletions } from "./CmCssCompletion"
 import { mentionDecorationExtension } from "./CmMentionsView"
 import { viewEmojiExtension } from "./CmEmojiView"
 import { emojiCompletionExtension } from "./CmEmojiCompletion"
@@ -199,6 +200,13 @@ export async function initCodeMirror(
             extensions.push(lintGutter())
 
         extensions.push(...getFileUploadExtensions(id, setup))
+
+     
+        if (setup.autocompletion === true && initialConfig.languageName === "CSS") {
+            extensions.push(autocompletion({
+                override: [...cssCompletionExtension(true)]
+            }))
+        }
 
         const pasteHandler = EditorView.domEventHandlers({
             paste(event: ClipboardEvent, view: EditorView) {
@@ -466,6 +474,11 @@ export async function setConfiguration(id: string, newConfig: CmConfiguration) {
 
 export function setMentionCompletions(id: string, mentionCompletions: Completion[]) {
     setCachedCompletions(mentionCompletions)
+    forceRedraw(id)
+}
+
+export function setCssCompletions(id: string, cssCompletions: Completion[]) {
+    setCachedCssCompletions(cssCompletions)
     forceRedraw(id)
 }
 

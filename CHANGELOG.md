@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.0 - 2025-06-16
+
+### Added 
+
+- GetCssCompletions parameter to inject additional variable and class name completins to CSS
+
 ## 0.9.2 - 2025-02-26
 
 ### ⬆️ Upgrade dependencies

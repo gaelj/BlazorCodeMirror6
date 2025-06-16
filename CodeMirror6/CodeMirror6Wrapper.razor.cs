@@ -107,6 +107,12 @@ public partial class CodeMirror6Wrapper : ComponentBase
     /// Get all users available for &#64;user mention completions
     /// </summary>
     [Parameter] public Func<Task<List<CodeMirrorCompletion>>>? GetMentionCompletions { get; set; }
+
+    /// <summary>
+    /// Gets a list of additional variables and class names available for autocomplete in CSS documents.
+    /// </summary>
+    [Parameter] public Func<Task<List<CodeMirrorCompletion>>>? GetCssCompletions { get; set; }
+
     /// <summary>
     /// Upload an IBrowserFile to a server and returns the URL to the file
     /// </summary>
