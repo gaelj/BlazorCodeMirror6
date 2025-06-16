@@ -111,6 +111,12 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
     /// Get all users available for &#64;user mention completions
     /// </summary>
     [Parameter] public Func<Task<List<CodeMirrorCompletion>>>? GetMentionCompletions { get; set; }
+
+    /// <summary>
+    /// Gets a list of additional variables and class names available for autocomplete in CSS documents.
+    /// </summary>
+    [Parameter] public Func<Task<List<CodeMirrorCompletion>>>? GetCssCompletions { get; set; }
+
     /// <summary>
     /// Upload an IBrowserFile to a server and returns the URL to the file
     /// </summary>
@@ -367,6 +373,14 @@ public partial class CodeMirror6WrapperInternal : ComponentBase, IAsyncDisposabl
                     if (token.IsCancellationRequested) return;
                     if (!await CmJsInterop.PropertySetters.SetMentionCompletions(mentionCompletions)) return;
                 }
+
+                if (GetCssCompletions is not null) {
+                    var cssCompletions = await GetCssCompletions();
+                    if (token.IsCancellationRequested) return;
+                    if (!await CmJsInterop.PropertySetters.SetCssCompletions(cssCompletions)) return;
+                }
+
+
                 if (token.IsCancellationRequested) return;
                 IsCodeMirrorInitialized = true;
                 await InvokeAsync(StateHasChanged);
